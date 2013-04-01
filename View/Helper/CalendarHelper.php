@@ -4,7 +4,11 @@ App::import('Lib', 'Date');
 class CalendarHelper extends AppHelper {
 	var $name = 'Calendar';
 	var $helpers = array(
-		'Asset','Html','Form','Time');
+		'Layout.Asset',
+		'Html',
+		'Form',
+		'Time'
+	);
 		
 	function beforeRender($viewFile) {		$this->Asset->css('Layout.layout');
 		//$this->Asset->js('event');
