@@ -1,8 +1,10 @@
 <?php
 class AssetHelper extends AppHelper {
 	var $name = 'Asset';
-	var $helpers = array('Html');		var $jquery = '//ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js';		function __construct(View $view, $options = array()) {		parent::__construct($view, $options);		if (!empty($options['jquery'])) {			$this->js($this->jquery);		}	}
-	var $_assets = array();
+	var $helpers = array('Html');		var $jquery = '//ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js';
+	private $_assets = array();
+	private $_usedAssets = array();
+	function __construct(View $view, $options = array()) {		parent::__construct($view, $options);		if (!empty($options['jquery'])) {			$this->js($this->jquery);		}	}
 	
 	function js($file, $config = array()) {
 		return $this->_addFile('js', $file, $config);
@@ -24,13 +26,17 @@ class AssetHelper extends AppHelper {
 		return $this->_removeFile('js', $file);
 	}
 
-	function output($inline = false) {
+	function output($inline = false, $repeat = false) {
 		$assetOrder = array('css', 'js', 'block');
 		$eol = "\n\t";
 		$out = $eol . '<!--- ASSETS -->'. $eol;
 		foreach ($assetOrder as $type) {
 			if (!empty($this->_assets[$type])) {
-				foreach ($this->_assets[$type] as $file => $config) {					$out .= $this->_output($type, $file, $config, $inline) . $eol;
+				foreach ($this->_assets[$type] as $file => $config) {
+					if (isset($this->_usedAssets[$type][$file]) && !$repeat) {
+						continue;
+					}					$out .= $this->_output($type, $file, $config, $inline) . $eol;
+					$this->_usedAssets[$type][$file] = $config;
 				}
 			}
 		}

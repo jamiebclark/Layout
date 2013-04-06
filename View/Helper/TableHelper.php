@@ -10,6 +10,7 @@ class TableHelper extends AppHelper {
 	var $row = array();
 	var $rows = array();
 	var $headers = array();
+	var $trOptions = array();
 	
 	var $columnCount = 0;
 	
@@ -94,7 +95,7 @@ class TableHelper extends AppHelper {
 			}
 		}
 		if ($rowEnd) {
-			$this->rowEnd();
+			$this->rowEnd(is_array($rowEnd) ? $rowEnd : array());
 		}
 	}
 	
@@ -172,19 +173,36 @@ class TableHelper extends AppHelper {
 	}
 
 	
-	function rowEnd() {
+	public function rowEnd($trOptions = array()) {
 		$this->getHeader = false;
 		$row = $this->row;
+		$this->trOptions[$this->trCount] = $trOptions;
 		
 		$this->tdCount = 0;
 		$this->trCount++;
-		
 		$this->rows[] = $row;
 		$this->row = array();
 		return $row;
 	}
 	
-	function table($options = array()) {
+	
+	/**
+	 * Legacy function to output table
+	 * 
+	 * @param array $options Table options
+	 * @return string HTML table
+	 **/
+	public function table($options = array()) {
+		return $this->output($options);
+	}
+	
+	/**
+	 * Outputs current table information
+	 * 
+	 * @param array $options Table options
+	 * @return string HTML table
+	 **/
+	public function output($options = array()) {
 		$options = array_merge(array(
 			'form' => $this->hasForm,
 		), $options);
@@ -337,15 +355,10 @@ class TableHelper extends AppHelper {
 			'continueOddEven' => true
 		), $options['tableCells']);
 
-		$return = '';
-		
 		$tableCellOptions = Param::keyCheck($options, 'tableCells', true, array());
 		$div = Param::keyCheck($options, 'div', true);
 		
-		if ($div) {
-			$return .= $this->Html->div($div);
-		}
-		$return .= $paginateNav;
+		$return = $paginateNav;
 		if (!empty($options['before'])) {
 			$return .= $options['before'];
 			unset($options['before']);
@@ -357,9 +370,9 @@ class TableHelper extends AppHelper {
 			$after = '';
 		}
 		
-		$return .= $this->Html->tag('table', null, $options);
+		$rowsOut = array();
 		if (!empty($headers)) {
-			$return .= $this->Html->tableHeaders($headers);
+			$rowsOut[] = $this->Html->tableHeaders($headers);
 		}
 		if (!empty($rows)) {
 			extract($tableCellOptions);
@@ -372,21 +385,40 @@ class TableHelper extends AppHelper {
 					}
 				}
 			}
-			$return .= $this->Html->tableCells($rows, $oddTrOptions, $evenTrOptions, $useCount, $continueOddEven);
+			foreach ($rows as $k => $row) {
+				$trOptions = !empty($this->trOptions[$k]) ? $this->trOptions[$k] : array();
+				if ($k % 2) {
+					$trOptions = array_merge((array)$oddTrOptions, $trOptions);
+				} else {
+					$trOptions = array_merge((array)$evenTrOptions, $trOptions);
+				}
+				$cellsOut = array();
+				foreach ($row as $cell) {
+					$cellOptions = array();
+					if (is_array($cell)) {
+						list($cell, $cellOptions) = $cell;
+					}
+					$cellsOut[] = $this->Html->tag('td', $cell, $cellOptions);
+				}
+				$rowsOut[] = $this->Html->tag('tr', implode('', $cellsOut), $trOptions);
+			}
+			$return .= $this->Html->tag('table', implode("\n", $rowsOut), $options) . "\n";
 		}
-		$return .= "</table>\n";
 		$return .= $after;
-		
 		$return .= $paginateNav;
-		
+
 		if ($div) {
-			$return .= "</div>\n";
+			$return .= $this->Html->div($div, $return);
 		}
-		
 		return $return;
 	}
 	
-		/**
+	private function tr(
+		$row, $options = array(), $oddTrOptions = array(), $evenTrOptions = array()
+	) {
+	
+	}
+	/**
 	 * A uniform grouping of the Paginator functions to make all paginate menus look the same
 	 *
 	 **/

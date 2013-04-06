@@ -75,10 +75,9 @@ App::uses('InflectorPlus', 'Layout.Lib');App::uses('Prefix', 'Layout.Lib');
 		}
 		
 		if (!empty($vars['parent'])) {
-			$parentModel = !empty($vars['parentModel']) ? $vars['parentModel'] : $this->viewVars['models'][0];
+			$parentModel = !empty($vars['parentModel']) ? $vars['parentModel'] : $this->getModel();
 			$this->setParent($parentModel, $vars['parent']);
 		}
-		
 		return true;
 	}
 	
@@ -277,7 +276,7 @@ App::uses('InflectorPlus', 'Layout.Lib');App::uses('Prefix', 'Layout.Lib');
 		} else if ($type == 'action') {
 			$urlBase = !empty($options['urlBase']) ? $options['urlBase'] : $this->_getUrlBase($options);
 			$action = $urlBase['action'];
-			if ($modelInfo = $this->_getModel()) {
+			if ($modelInfo = $this->getModelInfo()) {
 				extract($modelInfo);	//model, primaryKey, displayField
 				$result = $this->_getResult($model);
 				
@@ -345,9 +344,10 @@ App::uses('InflectorPlus', 'Layout.Lib');App::uses('Prefix', 'Layout.Lib');
 	
 	//Checks the passed variables to see if there has been a query result passed to view
 	function _getResult($model) {
+		$viewVars =& $this->_View->viewVars;
 		$varName = InflectorPlus::varNameSingular($model);
-		if (isset($this->viewVars[$varName]) && is_array($this->viewVars[$varName])) {
-			$result = $this->viewVars[$varName];
+		if (isset($viewVars[$varName]) && is_array($viewVars[$varName])) {
+			$result = $viewVars[$varName];
 		} else if (isset($this->request->data[$model])) {
 			$result = array($model => $this->request->data[$model]);
 		} else {
@@ -356,19 +356,10 @@ App::uses('InflectorPlus', 'Layout.Lib');App::uses('Prefix', 'Layout.Lib');
 		return $result;
 	}
 	
-	function _getModel() {
+	private function getModelInfo() {
 		$model = $primaryKey = $displayField = null;
-		if (isset($this->request->params['currentModel'])) {
-			$model = $this->request->params['currentModel']['name'];
-			$primaryKey = $this->request->params['currentModel']['primaryKey'];
-			if (!empty($this->request->params['currentModel']['displayField'])) {
-				$displayField = $this->request->params['currentModel']['displayField'];
-			} else {
-				$displayField = 'title';
-			}
-		} else if (!empty($this->request->params['models'][0])) {
-			$model = $this->request->params['models'][0]['name'];
-			if ($Model = ClassRegistry::init($model)) {
+		if (!empty($this->request->params['models'])) {
+			if ($Model = ClassRegistry::init($this->getModel())) {
 				$model = $Model->alias;
 				$displayField = $Model->displayField;
 				$primaryKey = $Model->primaryKey;
@@ -376,6 +367,13 @@ App::uses('InflectorPlus', 'Layout.Lib');App::uses('Prefix', 'Layout.Lib');
 		}
 		return compact('model', 'displayField', 'primaryKey');
 	}
+	
+	private function getModel() {
+		$modelInfo = array_shift(array_values($this->request->params['models']));
+		$model = !empty($modelInfo['plugin']) ? $modelInfo['plugin'] . '.' : '';
+		$model .= $modelInfo['className'];
+		return $model;
+	}	
 	
 	function _getHomeUrl($home, $url = array()) {
 		if (!empty($home)) {

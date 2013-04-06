@@ -1,5 +1,5 @@
 <?php
-App::import('Lib', 'Date');
+App::import('Lib', 'Layout.Date');
 
 class CalendarHelper extends AppHelper {
 	var $name = 'Calendar';
@@ -839,4 +839,3 @@ class CalendarHelper extends AppHelper {
 				
 			
 }
-?>

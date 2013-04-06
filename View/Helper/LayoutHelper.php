@@ -200,23 +200,17 @@ class LayoutHelper extends AppHelper {
 				array(
 					'Edit ' . $human,
 					$urlBase + array('action' => 'edit', $modelId),
-					array(
-						'icon' => 'pen',
-					)
+					array('icon' => 'pen')
 				),
 				array(
 					'Delete ' . $human,
 					$urlBase + array('action' => 'delete', $modelId),
-					array(
-						'icon' => 'x',
-					),
+					array('icon' => 'x'),
 					'Delete this ' . $human . '?'
 				)
 			);
 		} else {
-			$baseMenu = array(
-				array('Add ' . $human, $urlBase + array('action' => 'add')),
-			);
+			$baseMenu = array(array('Add ' . $human, $urlBase + array('action' => 'add')));
 		}
 		
 		$finalMenu = array();
@@ -385,6 +379,7 @@ class LayoutHelper extends AppHelper {
 			'tag' => 'div',
 			'class' => 'layoutActionMenu',
 			'named' => false,
+			'icons' => true,
 		), $attrs);
 
 		$resize = Param::keyCheck($attrs, 'resize', true, true);
@@ -539,7 +534,7 @@ class LayoutHelper extends AppHelper {
 		}
 	}
 	
-	function getAction($key, $useIcons = false) {
+	function getAction($key, $useIcons = true) {
 		if ($useIcons) {
 			$icon = !empty($this->actionIcons[$key]) ? $this->actionIcons[$key] : $key;
 			return $this->Iconic->icon($icon);
@@ -555,7 +550,7 @@ class LayoutHelper extends AppHelper {
 		$menu = array();
 		$url = Param::keyCheck($options, 'url', true, array());
 		$active = Param::keyCheck($options, 'active', true, true);
-		$useIcons = Param::keyCheck($options, 'icon');
+		$useIcons = Param::keyCheck($options, 'icon', false, true);
 		$model = Param::keyCheck($options, 'model', true);
 		if (empty($model)) {
 			$models = $this->request->params['models'];
@@ -755,7 +750,11 @@ class LayoutHelper extends AppHelper {
 				//Checks current parameters to see if it matches the given URL
 				//Can pass currentSelect as an array of what items to match array('action', 'controller')
 				
-				if (!isset($options['icon']) && !empty($attrs['icon']) && !empty($menuItem[1]['action'])) {
+				if (
+					!isset($options['icon']) && 
+					!empty($attrs['icon']) && 
+					!empty($menuItem[1]['action'])
+				) {
 					$options['icon'] = $menuItem[1]['action'];
 				}
 				$iconAlign = Param::keyCheck($options, 'iconAlign', true);
