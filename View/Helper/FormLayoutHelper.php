@@ -350,6 +350,7 @@ class FormLayoutHelper extends AppHelper {
 		$attrs = array_merge(array(
 			'class' => 'button',
 			'imgPosition' => 'before',
+			'div' => false,
 		), $attrs);
 		
 		if ($align = Param::keyCheck($attrs, 'align', true)) {
@@ -363,25 +364,16 @@ class FormLayoutHelper extends AppHelper {
 				$type = strtolower($words[0]);
 			}
 		}
-		
 		if (!empty($type)) {
 			$attrs = $this->addClass($attrs, $type);
-			/*
-			if ($type == 'submit') {
-				return $this->submit($text, $attrs);
-			} else if ($type == 'reset') {
-				return $this->reset($text, $attrs);
-			}
-			*/
 		}
-		
 		if (!empty($attrs['tagAttrs'])) {
 			$tagAttrs = array_merge($tagAttrs, $attrs['tagAttrs']);
 		}
 		if ($align = Param::keyCheck($attrs, 'align', true)) {
 			$tagAttrs += compact('align');
 		}
-		
+		//Adds image using img option
 		$img = Param::keyCheck($attrs, 'img', true);
 		if (!isset($img)) {
 			$class = Param::keyCheck($attrs, 'class');
@@ -395,15 +387,62 @@ class FormLayoutHelper extends AppHelper {
 			$attrs['escape'] = false;
 		}
 		unset($attrs['imgPosition']);
-		
 		$text = $this->buttonIcon($type) . $text;
 		
+		$attrs = $this->addClass($attrs, 'btn');
 		if ($url = Param::keyCheck($attrs, 'url', true)) {
 			$button = $this->Html->link($text, $url, $attrs);
 		} else {
 			$button = $this->Form->button($text, $attrs);
 		}
-		return $this->buttonWrapper($button, $attrs, $tagAttrs);
+		return $button;
+	}
+
+	public function buttons($buttons = array(), $attrs = array()) {
+		$out = '';
+		$buttonCount = 0;
+		$attrs = array_merge(array(
+			'align' => 'left',
+		), $attrs);
+		$secondary = Param::keyCheck($attrs, 'secondary', true);
+		foreach ($buttons as $buttonText => $buttonAttrs) {
+			if (is_numeric($buttonText)) {
+				if (!is_array($buttonAttrs)) {
+					if (preg_match('/[^a-zA-Z 0-9]+/', $buttonAttrs)) {
+						$out .= $buttonAttrs;
+						continue;
+					} else {
+						list($buttonText, $buttonAttrs) = array($buttonAttrs, array());
+					}
+				} else {
+					list($buttonText, $buttonAttrs) = $buttonAttrs + array(null, array());
+				}
+			} else if (!is_array($buttonAttrs)) {
+				$buttonAttrs = array('type' => $buttonAttrs);
+			}
+			$buttonAttrs = array('tag' => false) + $buttonAttrs;
+			if ($secondary && ++$buttonCount > 1) {
+				$buttonAttrs = $this->addClass($buttonAttrs, 'secondary');
+			}
+			$out .= $this->button($buttonText, $buttonAttrs);
+		}
+		return $this->Html->div('form-actions', $out);
+	}
+	
+	public function submit($text = null, $attrs = array()) {
+		$return = '';
+		if (is_array($text)) {
+			$return .= $this->buttons($text, $attrs);
+		} else {
+			if ($text === false) {
+				$text = '';
+			} else if (!isset($text)) {
+				$text = 'Submit';
+			}
+			$attrs = $this->addClass($attrs, 'submit');
+			$return .= $this->button($text, $attrs);
+		}
+		return $return;
 	}
 
 	public function buttonWrapper($return, $attrs = array(), $tagAttrs = array()) {
@@ -555,6 +594,45 @@ class FormLayoutHelper extends AppHelper {
 		return $name . ($this->_inputCount[$name]++);
 	}
 	
+	function inputRows($rows, $options = array()) {
+		$out = '';
+		foreach ($rows as $row) {
+			$out .= $this->inputRow($row, $options);
+		}
+		return $out;
+	}
+	
+	function inputRow($row, $options = array()) {
+		$options = array_merge(array(
+			'span' => 12,
+			'placeholder' => false,
+		), $options);
+		extract($options);
+		$inputs = array('fieldset' => false);
+		$rowCount = count($row);
+		foreach ($row as $fieldName => $inputOptions) {
+			if (is_numeric($fieldName)) {
+				$fieldName = $inputOptions;
+				$inputOptions = array();
+			}
+			$spanClass = 'span' . floor($span / $rowCount);
+			$inputOptions = array_merge($inputOptions, array(
+				'div' => "control-group $spanClass",
+				'class' => $spanClass,
+			));
+			if ($placeholder) {
+				if (!empty($inputOptions['label'])) {
+					$inputOptions['placeholder'] = $inputOptions['label'];
+				} else {
+					$inputOptions['placeholder'] = $this->getLabelText($fieldName, $inputOptions);
+				}
+				$inputOptions['label'] = false;
+			}
+			$inputs[$fieldName] = $inputOptions;
+		}
+		return $this->Html->div('controls controls-row', $this->Form->inputs($inputs));
+	}
+	
 	function inputChoices($inputs, $options = array()) {
 		$options = array_merge(array(
 			'name' => $this->__inputNameCount('input_choice'),
@@ -596,57 +674,7 @@ class FormLayoutHelper extends AppHelper {
 		}
 		return $return;
 	}
-	function buttons($buttons = array(), $attrs = array()) {
-		$return = '';
-		$buttonCount = 0;
-		$attrs = array_merge(array(
-			'align' => 'left',
-		), $attrs);
-		
-		$secondary = Param::keyCheck($attrs, 'secondary', true);
-		
-		foreach ($buttons as $buttonText => $buttonAttrs) {
-			if (is_numeric($buttonText)) {
-				if (!is_array($buttonAttrs)) {
-					if (preg_match('/[^a-zA-Z 0-9]+/', $buttonAttrs)) {
-						$return .= $buttonAttrs;
-						continue;
-					} else {
-						list($buttonText, $buttonAttrs) = array($buttonAttrs, array());
-					}
-				} else {
-					list($buttonText, $buttonAttrs) = $buttonAttrs + array(null, array());
-				}
-			} else if (!is_array($buttonAttrs)) {
-				$buttonAttrs = array('type' => $buttonAttrs);
-			}
-			$buttonAttrs = array('tag' => false) + $buttonAttrs;
-			if ($secondary && ++$buttonCount > 1) {
-				$buttonAttrs = $this->addClass($buttonAttrs, 'secondary');
-			}
-			$return .= $this->button($buttonText, $buttonAttrs);
-		}
-		$tag = Param::keyCheck($attrs, 'tag', true);
-		return $this->buttonWrapper($return, compact('tag'), $attrs);
-	}
 	
-	function submit($text = null, $attrs = array()) {
-		$return = '';
-		if (is_array($text)) {
-			$return .= $this->buttons($text, $attrs);
-		} else {
-			if ($text === false) {
-				$text = '';
-			} else if (!isset($text)) {
-				$text = 'Submit';
-			}
-			$attrs = array_merge(array(
-				'class' => 'submit',
-			), $attrs);
-			$return .= $this->button($text, $attrs);
-		}
-		return $return;
-	}
 	
 	function end($text = null, $attrs = array()) {
 		return $this->submit($text, $attrs) . $this->Form->end();
@@ -1055,4 +1083,21 @@ class FormLayoutHelper extends AppHelper {
 		}
 		return $list;
 	}
+	private function getLabelText($fieldName, $options) {
+		$text = !empty($options['label']) ? $options['label'] : null;
+		if ($text === null) {
+			if (strpos($fieldName, '.') !== false) {
+				$fieldElements = explode('.', $fieldName);
+				$text = array_pop($fieldElements);
+			} else {
+				$text = $fieldName;
+			}
+			if (substr($text, -3) == '_id') {
+				$text = substr($text, 0, -3);
+			}
+			$text = __(Inflector::humanize(Inflector::underscore($text)));
+		}	
+		return $text;
+	}
+
 }

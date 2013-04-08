@@ -5,7 +5,8 @@ class TableHelper extends AppHelper {
 		'Html', 
 		'Form',
 		'Paginator',
-		'Layout.Asset',	);
+		'Layout.Asset',
+		'Layout.Layout',	);
 	
 	var $row = array();
 	var $rows = array();
@@ -48,8 +49,39 @@ class TableHelper extends AppHelper {
 		$this->skip = $skipIds;
 	}
 	
-	//Adds another cell to the current table row
-	function cell($cell, $header = null, $headerSort = null, $skipId = null, $cellOptions = array()) {
+	/**
+	 * Adds a cell to the current table row
+	 * 
+	 * @param string $cell Cell content
+	 * @param string $header Header text
+	 * @param string $headerSort Field the column can be sorted by
+	 * @param string $skipId An identifier in which the column can be skipped
+	 * @param array $cellOptions Additional cell options
+	 **/
+	function cell() {
+		$argKeys = array('cell', 'header', 'headerSort', 'skipId', 'cellOptions');
+		$totalArgs = count($argKeys);
+		$totalArgKey = $lastArgKey = $totalArgs - 1;
+		$args = func_get_args();
+		$numArgs = count($args);
+		for ($i = $totalArgKey; $i > 0; $i--) {
+			if (!empty($args[$i])) {
+				$lastArgKey = $i;
+				break;
+			}
+		}
+		if ($lastArgKey < $totalArgKey) {
+			//The last passed argument can always be cell options
+			if (is_array($args[$lastArgKey])) {
+				$args[$totalArgKey] = $args[$lastArgKey];
+				for ($i = $lastArgKey; $i < $totalArgKey; $i++) {
+					$args[$i] = null;
+				}
+				ksort($args);
+			}
+		}
+		extract(array_combine($argKeys, $args + array_fill(0, $totalArgs, null)));
+		
 		//Checks if the skipId is in the skip array
 		if (!empty($skipId) && $this->__checkSkip($skipId)) {
 			return false;
@@ -178,10 +210,14 @@ class TableHelper extends AppHelper {
 		$row = $this->row;
 		$this->trOptions[$this->trCount] = $trOptions;
 		
+		$trKey = $this->trCount;
+		
 		$this->tdCount = 0;
 		$this->trCount++;
 		$this->rows[] = $row;
 		$this->row = array();
+		
+		$tdKey = count($this->rows) - 1;
 		return $row;
 	}
 	
@@ -309,7 +345,8 @@ class TableHelper extends AppHelper {
 			'currentCheckboxId' => null,
 			'columnCount' => 0,
 			'tdCount' => 0,
-			'trRcount' => 0,
+			'trCount' => 0,
+			'trOptions' => array(),
 		));
 
 		if (!empty($set)) {
@@ -333,7 +370,7 @@ class TableHelper extends AppHelper {
 	
 	function _table($headers = null, $rows = null, $options = array()) {
 		if (Param::keyValCheck($options, 'paginate', true)) {
-			$paginateNav = $this->_paginateNav();
+			$paginateNav = $this->Layout->paginateNav();
 		} else {
 			$paginateNav = '';
 		}
@@ -348,6 +385,7 @@ class TableHelper extends AppHelper {
 				'tableCells' => array(),
 			), (array) $options
 		);
+		$options = $this->addClass($options, 'table');
 		$options['tableCells'] = array_merge(array(
 			'oddTrOptions' => array('class' => 'altrow'),
 			'evenTrOptions' => null,
@@ -396,74 +434,20 @@ class TableHelper extends AppHelper {
 				foreach ($row as $cell) {
 					$cellOptions = array();
 					if (is_array($cell)) {
-						list($cell, $cellOptions) = $cell;
+						list($cell, $cellOptions) = $cell + array(null, null);
 					}
-					$cellsOut[] = $this->Html->tag('td', $cell, $cellOptions);
+					$tag = Param::keyCheck($cellOptions, 'th', true) ? 'th' : 'td';
+					$cellsOut[] = $this->Html->tag($tag, $cell, $cellOptions);
 				}
 				$rowsOut[] = $this->Html->tag('tr', implode('', $cellsOut), $trOptions);
 			}
 			$return .= $this->Html->tag('table', implode("\n", $rowsOut), $options) . "\n";
 		}
-		$return .= $after;
-		$return .= $paginateNav;
-
+		$return .= $after . $paginateNav;
 		if ($div) {
-			$return .= $this->Html->div($div, $return);
+			$return = $this->Html->div($div, $return);
 		}
 		return $return;
-	}
-	
-	private function tr(
-		$row, $options = array(), $oddTrOptions = array(), $evenTrOptions = array()
-	) {
-	
-	}
-	/**
-	 * A uniform grouping of the Paginator functions to make all paginate menus look the same
-	 *
-	 **/
-	function _paginateNav($options = null) {
-		/*
-		if (empty($this->Paginator)) {
-			return '';
-		}
-		*/
-		if ($options['hideBlank'] !== false && !$this->Paginator->hasPage(2)) {
-			return '';
-		}
-		$render = '';
-		
-		$render .= $this->Html->div('paginateControl');
-		$render .= $this->Paginator->prev(
-			'&laquo; ' . __('prev'), 
-			array('class' => 'control', 'escape' => false), 
-			null, 
-			array('class'=>'control disabled', 'escape' => false)
-		);
-		//$render .= ' | ';
-		
-		$render .= $this->Paginator->numbers(array(
-			'first' => 3,
-			'last' => 3,
-			'separator' => '',
-		));
-		//$render .= ' | ';
-		
-		$render .= $this->Paginator->next(
-			__('next') . ' &raquo;', 
-			array('class' => 'control', 'escape' => false), 
-			null, 
-			array('class' => 'control disabled', 'escape' => false)
-		);
-		$render .= "</div>";
-
-		//'Page %page% of %pages%, showing %current% records out of %count% total, starting on record %start%, ending on %end%'
-		$totalRows = number_format($this->Paginator->counter(array('format' => '%count%')));
-		$render .= $this->Html->div('paginateCounter', $this->Paginator->counter(array(
-			'format' => __('Showing %current% records out of ' . $totalRows . ' total')
-		)));
-		
-		return $this->Html->div('paginateNav', $render);
 	}
 
 	function _thSort($label = null, $sort = null, $options = array()) {

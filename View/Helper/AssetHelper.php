@@ -1,10 +1,34 @@
 <?php
 class AssetHelper extends AppHelper {
 	var $name = 'Asset';
-	var $helpers = array('Html');		var $jquery = '//ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js';
+	var $helpers = array('Html');		var $_default = array(
+		'css' => array(
+			'Layout.style.css',
+			'Layout.bootstrap/bootstrap.min',
+			'Layout.bootstrap/bootstrap-responsive.min',
+			'Layout.bootstrap/datetimepicker',
+		),
+		'js' => array(
+			'//ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js',
+			'//ajax.googleapis.com/ajax/libs/jqueryui/1.10.2/jquery-ui.min.js',
+			'Layout.bootstrap/bootstrap.min',
+			'Layout.bootstrap/bootstrap-datetimepicker.min',
+			'Layout.script',
+		)
+	);
+	
 	private $_assets = array();
 	private $_usedAssets = array();
-	function __construct(View $view, $options = array()) {		parent::__construct($view, $options);		if (!empty($options['jquery'])) {			$this->js($this->jquery);		}	}
+	function __construct(View $view, $options = array()) {		parent::__construct($view, $options);
+		
+		foreach (array('css', 'js') as $type) {
+			if (!empty($this->_default[$type])) {
+				$this->$type($this->_default[$type]);
+			}
+			if (!empty($options[$type])) {
+				$this->$type($options[$type]);
+			}
+		}	}
 	
 	function js($file, $config = array()) {
 		return $this->_addFile('js', $file, $config);

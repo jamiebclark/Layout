@@ -1,6 +1,6 @@
 <?php
 App::uses('InflectorPlus', 'Layout.Lib');App::uses('Prefix', 'Layout.Lib');
-class CrumbsHelper extends AppHelper {
+App::uses('LayoutAppHelper', 'Layout.View/Helper');class CrumbsHelper extends LayoutAppHelper {
 	var $name = 'Crumbs';
 	var $helpers = array('Html', 'Iconic',);
 	
@@ -98,7 +98,6 @@ App::uses('InflectorPlus', 'Layout.Lib');App::uses('Prefix', 'Layout.Lib');
 	
 	function output($options = array()) {
 		$options = array_merge(array(
-			'tag' => 'li',
 			'home' => $this->Iconic->icon('home'),
 			'homeUrl' => '/',
 			'before' => '',
@@ -107,6 +106,7 @@ App::uses('InflectorPlus', 'Layout.Lib');App::uses('Prefix', 'Layout.Lib');
 			//'wrap' => 'li',
 			'separator' => '<font>&gt;</font>',
 		), $options);
+
 		extract($options);
 
 		$home = array($this->_getHomeUrl($home, $homeUrl));
@@ -128,8 +128,23 @@ App::uses('InflectorPlus', 'Layout.Lib');App::uses('Prefix', 'Layout.Lib');
 			$separator = $wrapClose . $wrapOpen;
 		}
 		
+		if ($crumbs = $this->getCrumbs($crumbs, $home)) {
+			if ($this->bootstrap) {
+				$out = '';
+				foreach ($crumbs as $crumb) {
+					$out .= $this->Html->tag('li', $crumb . '<span class="divider">&gt;</span>');
+				}
+				return $this->Html->tag('ul', $out, array('class' => 'breadcrumb'));
+			} else {
+				return $this->Html->div('crumbs', $before . join($separator, $crumbs) . $after);
+			}
+		} else {
+			return null;
+		}
+	}
+	
+	private function getCrumbs($crumbs, $home = array()) {
 		$setCrumbs = array();
-		
 		if (!empty($this->Html->_crumbs)) {
 			$setCrumbs = $this->Html->_crumbs;
 		} else {
@@ -146,7 +161,6 @@ App::uses('InflectorPlus', 'Layout.Lib');App::uses('Prefix', 'Layout.Lib');
 			}
 		}			
 		$crumbs = $this->_mergeCrumbs($home, $setCrumbs, $crumbs);
-		
 		if (!empty($crumbs) && $crumbs != $home) {
 			$out = array();
 			$lastKey = count($crumbs) - 1;
@@ -157,10 +171,9 @@ App::uses('InflectorPlus', 'Layout.Lib');App::uses('Prefix', 'Layout.Lib');
 					$out[] = $crumb[0];
 				}
 			}
-			return $this->Html->div('crumbs', $before . join($separator, $out) . $after);
-		} else {
-			return null;
+			return $out;
 		}
+		return null;
 	}
 	
 	function baseCrumbs($options = array()) {

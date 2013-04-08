@@ -3,11 +3,10 @@
 * Layout Helper outputs some basic Html objects that help form a better organized view
 *
 */
-
 App::uses('Param', 'Layout.Lib');
 App::uses('InflectorPlus', 'Layout.Lib');
- 
-class LayoutHelper extends AppHelper {
+App::uses('LayoutAppHelper', 'Layout.View/Helper');
+class LayoutHelper extends LayoutAppHelper {
 	var $helpers = array(
 		'Html', 
 		'Paginator', 
@@ -15,6 +14,7 @@ class LayoutHelper extends AppHelper {
 		'Layout.Crumbs',
 		'Layout.Iconic',
 		'Layout.Calendar', 
+		'Layout.Table',
 	);
 
 	var $actionIcons = array(
@@ -40,9 +40,10 @@ class LayoutHelper extends AppHelper {
 		'spam', 'clock',
 	);
 
+
 	function beforeRender($viewFile) {
-		$this->Asset->css('Layout.layout');
-		$this->Asset->js('Layout.layout');
+		//$this->Asset->css('Layout.layout');
+		//$this->Asset->js('Layout.layout');
 		parent::beforeRender($viewFile);
 	}
 	
@@ -133,6 +134,10 @@ class LayoutHelper extends AppHelper {
 		//if (empty($this->Paginator)) {
 		//	return '';
 		//}
+		if ($this->bootstrap) {
+			return $this->Paginator->pagination();
+		}
+		
 		if ($options['hideBlank'] !== false && !$this->Paginator->hasPage(2)) {
 			return '';
 		}
@@ -177,10 +182,10 @@ class LayoutHelper extends AppHelper {
 	 */
 	function headerMenu($menu = null, $attrs = array()) {
 		$attrs = array_merge(array(
-			'tag' => 'div',
-			'class' => 'layoutHeaderMenu'
+			'tag' => false,
+			'class' => 'nav nav-pills'
 		), (array) $attrs);
-		return $this->menu($menu, $attrs) . $this->clearFix();
+		return $this->menu($menu, $attrs);
 	}
 	
 	/**
@@ -377,9 +382,10 @@ class LayoutHelper extends AppHelper {
 	function actionMenu($menu = null, $attrs = array()) {
 		$attrs = array_merge(array(
 			'tag' => 'div',
-			'class' => 'layoutActionMenu',
+			'class' => 'layout-action-menu inline',
 			'named' => false,
 			'icons' => true,
+			'tag' => false,
 		), $attrs);
 
 		$resize = Param::keyCheck($attrs, 'resize', true, true);
@@ -505,6 +511,19 @@ class LayoutHelper extends AppHelper {
 				}
 			}
 		}
+		if ($this->bootstrap) {
+			$list = array();
+			foreach ($menu as &$link) {
+				if (is_array($link)) {
+					$link[2] = $this->addClass($link[2], 'btn');
+					$list[] = $this->Html->link($link[0],$link[1],$link[2]);
+				} else {
+					$list[] = $this->Html->tag('span', $link, array('class' => 'btn'));
+				}
+			}
+			return $this->Html->div('btn-group', implode('', $list));
+		}
+		
 		if (Param::keyValCheck($attrs, 'titleList')) {
 			$tag = 'font';
 			$return = $this->Html->tag($tag, null, array('class' => $attrs['class']));
@@ -739,6 +758,8 @@ class LayoutHelper extends AppHelper {
 		$debug = !empty($attrs['debug']);
 		
 		$urlOptions = Param::keyCheck($attrs, 'urlOptions', true, array());
+		
+		$currentSelectClass = $this->bootstrap ? 'active' : 'selected';
 		$list = '';
 		$menuCount = count($menuItems);
 		foreach ($menuItems as $k => $menuItem) {
@@ -844,21 +865,8 @@ class LayoutHelper extends AppHelper {
 							break;
 						}
 					}
-					
-					/*
-					if (!is_array($selectItems) || Param::keyValCheck($selectItems, 'controller') !== null) {
-						$match *= $link['controller'] == $this->request->params['controller'];
-					}
-					if (!is_array($selectItems) || Param::keyValCheck($selectItems, 'action') !== null) {
-						//Checks action and also prefix + "_" + action
-						$match *= ($link['action'] == $this->request->params['action']) || (!empty($this->request->params['prefix']) && $link['action'] == $this->request->params['prefix'] . '_' . $this->request->params['action']);
-					}
-					if (!is_array($selectItems) || Param::keyValCheck($selectItems, 'prefix') !== null) {
-						$match *= $linkPrefix == $paramPrefix;
-					}
-					*/
 					if ($match) {
-						$liAttrs = $this->addClass($liAttrs, 'selected');
+						$liAttrs = $this->addClass($liAttrs, $currentSelectClass);
 					}
 				}
 				$menuItem = $this->Html->link($content, $link, $options, $confirm);
@@ -884,11 +892,14 @@ class LayoutHelper extends AppHelper {
 			$attrs['class'] = 'layoutMenu';
 		}
 		
-		$tag = Param::keyCheck($attrs, 'tag', true, 'div');
-		$output = $this->Html->tag($tag, $this->Html->tag('ul', $list), $attrs);
+		if ($tag = Param::keyCheck($attrs, 'tag', true, 'div')) {
+			$output = $this->Html->tag($tag, $this->Html->tag('ul', $list), $attrs);
+		} else {
+			$output = $this->Html->tag('ul', $list, $attrs);
+		}
+		
 		if (!empty($attrs['preCrumb']) || !empty($attrs['pre_crumb'])) {
-			$View =& $this->getView();
-			$View->viewVars['pre_crumb'] = $output;
+			$this->_View->viewVars['pre_crumb'] = $output;
 			$output = '';
 		}
 		return $output;
@@ -947,136 +958,27 @@ class LayoutHelper extends AppHelper {
 		return $return;		
 	}
 	
-	function thSort($label = null, $sort = null, $options = array()) {
-		$options = array_merge(array(
-			'model' => null
-		), $options);
-		
-		if (empty($label)) {
-			$label = '&nbsp;';
-		}
-		$paginate = !empty($this->Paginator);
-		if (!empty($paginate)) {
-			$params = $this->Paginator->params($options['model']);
-			$paginate = !empty($params);
-		}
-		if (!$paginate) {
-			return $this->thSortLink($label, $sort); //ucfirst($label);
-		} else {
-			return $this->Paginator->sort($label, $sort, array('escape' => false));
-		}
-	}
-	
-	function thSortLink($label, $sort = null) {
-		$direction = 'asc';
-		$class = null;
-		if (empty($sort)) {
-			$sort = str_replace(' ', '_', strtolower($label));
-		}
-		if (!empty($this->request->params['named']['sort']) && $this->request->params['named']['sort'] == $sort) {
-			if (!empty($this->request->params['named']['direction']) && $this->request->params['named']['direction'] == 'asc') {
-				$direction = 'desc';
-			}
-			$class = $direction;
-		}
-		return $this->Html->link($label, compact('sort', 'direction'), compact('class'));
-	}
-	
-	function table($headers = null, $rows = null, $options = array()) {
-		if (Param::keyValCheck($options, 'paginate', true)) {
-			$paginateNav = $this->paginateNav();
-		} else {
-			$paginateNav = '';
-		}
-		
-		if (empty($rows) && ($empty = Param::keyCheck($options, 'empty', true))) {
-			return $empty;
-		}
-		$options = array_merge(array(
-				'cellspacing' => 0,
-				'border' => 0,
-				//Default Html->tableCells stuff
-				'tableCells' => array(),
-			), (array) $options
-		);
-		$options['tableCells'] = array_merge(array(
-			'oddTrOptions' => array('class' => 'altrow'),
-			'evenTrOptions' => null,
-			'useCount' => false,
-			'continueOddEven' => true
-		), $options['tableCells']);
-
-		$return = '';
-		
-		$tableCellOptions = Param::keyCheck($options, 'tableCells', true, array());
-		$div = Param::keyCheck($options, 'div', true);
-		
-		if ($div) {
-			$return .= $this->Html->div($div);
-		}
-		$return .= $paginateNav;
-		if (!empty($options['before'])) {
-			$return .= $options['before'];
-			unset($options['before']);
-		}
-		if (!empty($options['after'])) {
-			$after = $options['after'];
-			unset($options['after']);
-		} else {
-			$after = '';
-		}
-		
-		$return .= $this->Html->tag('table', null, $options);
-		if (!empty($headers)) {
-			$return .= $this->Html->tableHeaders($headers);
-		}
-		if (!empty($rows)) {
-			extract($tableCellOptions);
-			if (!empty($options['full_width'])) {
-				foreach ($rows as $r => $row) {
-					foreach ($row as $c => $cell) {
-						if (!empty($cell[0])) {
-							$rows[$r][$c][0] = preg_replace('/([\s]+)/', '&nbsp;', $cell[0]);
-						}
-					}
-				}
-			}
-			$return .= $this->Html->tableCells($rows, $oddTrOptions, $evenTrOptions, $useCount, $continueOddEven);
-		}
-		$return .= "</table>\n";
-		$return .= $after;
-		
-		$return .= $paginateNav;
-		
-		if ($div) {
-			$return .= "</div>\n";
-		}
-		
-		return $return;
-	}
-	
 	function infoTable($list = array(), $options = array()) {
 		$options = array_merge(array(
-				'class' => 'layoutInfoTable',
+				'class' => 'info-table',
 				'hideEmpty' => false,
 			), $options);
-
 		$return = '';
+		$this->Table->reset();
 		foreach ($list as $k => $v) {
 			if (!empty($options['hideEmpty']) && empty($v)) {
 				continue;
 			}
-			$row = sprintf('<th>%s</th>', $k);
+			$this->Table->cell($k, array('class' => 'dt'));
 			if (!is_array($v)) {
 				$v = array($v);
 			}
-			foreach ($v as $td) {
-				$row .= sprintf('<td>%s</td>', $td);
+			foreach ($v as $cell) {
+				$this->Table->cell($cell);
 			}
-			$return .= sprintf('<tr>%s</tr>', $row) . "\n";
+			$this->Table->rowEnd();
 		}
-		$return = sprintf('<table>%s</table>', $return) . "\n";
-		return $this->Html->div($options['class'], $return);
+		return $this->Table->output($options);
 	}
 	
 	function resultDisplay($Result, $lines = array(), $options = array()) {
@@ -1320,24 +1222,23 @@ class LayoutHelper extends AppHelper {
 			'url' => array(),
 		), $options);
 		
-		$output  = $this->Html->tag('font', null, array('class' => 'activateLayout ' . ($isActive ? 'active' : 'inactive')));
 		$useIcons = !empty($options['icons']);
-		
+		$output = '';		
 		$alt = 'Activate';
 		$output .= $this->Html->link(
 			$this->getAction('inactive', $useIcons) .($options['fullText'] ? $alt : ''),
 			array_merge($options['url'], array($options['paramOn'] => $id)),
-			array('escape' => false, 'title' => $alt, 'class' => 'inactive activate')
+			array('escape' => false, 'title' => $alt, 'class' => 'activate')
 		);
-		
 		$alt = 'Deactivate';
 		$output .= $this->Html->link(
 			$this->getAction('active', $useIcons) . ($options['fullText'] ? $alt : ''),
 			array_merge($options['url'], array($options['paramOff'] => $id)),
-			array('escape' => false, 'title' => $alt, 'class' => 'active deactivate')
+			array('escape' => false, 'title' => $alt, 'class' => 'deactivate')
 		);
-		$output .= "</font>\n";
-		return $output;
+		return $this->Html->tag('span', $output, 
+			array('class' => 'set-active ' . ($isActive ? 'active' : 'inactive'))
+		);
 	}
 	
 	
