@@ -235,7 +235,6 @@ class LayoutHelper extends LayoutAppHelper {
 			$attrs = $modelId;
 			$modelId = null;
 		}
-		
 		$defaultAttrs = array(
 			'id' => $modelId,
 			//'menu' => array(),
@@ -246,9 +245,7 @@ class LayoutHelper extends LayoutAppHelper {
 		if (!empty($id)) {
 			$modelId = $id;
 		}
-		
-		$output = '';
-		
+		$out = '';
 		if (!isset($crumbs) || $crumbs !== false) {	
 			$this->Crumbs->addCrumbs(!empty($crumbs) ? $crumbs : null, compact('baseCrumbs', 'defaultCrumbs'));
 		}
@@ -257,7 +254,6 @@ class LayoutHelper extends LayoutAppHelper {
 			$menu = false;
 			$title = InflectorPlus::humanize($action) . ' ' . InflectorPlus::humanize($model);
 		}
-		
 		$titleAttrs = array();
 		if (empty($title)) {
 			$title = $model;
@@ -268,20 +264,16 @@ class LayoutHelper extends LayoutAppHelper {
 			}
 			$title = InflectorPlus::humanize($title);
 		}
-		
-		
 		if (!empty($title)) {
-			$output .= $this->Html->tag('h1', $title, $titleAttrs);
+			$out .= $this->Html->tag('h1', $title, $titleAttrs);
 		}
-		
 		foreach ($defaultAttrs as $k => $v) {
 			unset($attrs[$k]);
 		}
-		
 		if (!isset($menu) || $menu !== false) {
-			$output .= $this->defaultHeaderMenu($modelId, $menu, $attrs);
+			$out .= $this->defaultHeaderMenu($modelId, $menu, $attrs);
 		}
-		return $output;
+		return $this->Html->div('page-header', $out);
 	}
 	
 	function neighbors($prev = null, $next = null, $up = null, $options = array()) {
@@ -551,6 +543,103 @@ class LayoutHelper extends LayoutAppHelper {
 			}
 			return $this->menu($menu, $attrs);
 		}
+	}
+
+	function mediaThumb($title, $thumb, $url = array()) {
+		$out = '';
+		$thumb = $this->Html->image($thumb, array('class' => 'media-object'));
+		if (!empty($url)) {
+			$title = $this->Html->link($title, $url);
+			$thumb = $this->Html->link($thumb, array('escape' => false, 'class' => 'pull-left'));
+		} else {
+			$thumb = $this->Html->tag('span', $thumb, array('class' => 'pull-left'));
+		}
+		$title = $this->Html->tag('h4', $title, array('class' => 'media-heading'));
+		$out .= $thumb . $this->Html->div('media-body', $title);
+		$out = $this->Html->tag($tag, $out, array('class' => 'media'));
+		return $out;		
+	}
+	
+	/*
+		
+	function media() {
+	
+	}
+	
+	function mediaObject($tag, $content, $options = array()) {
+		$options = array_merge(array(
+			'pull' => 'left',
+			'tag' => 'span',
+			'url' => false,
+		), $options);
+		extract($options);
+		$contentOptions = $this->addClass(compact('class','style')', 'media-object');
+		$wrapOptions = array('class' => 'pull-' . $pull);
+		
+		if ($tag == 'img' || $tag == 'image') {
+			$out = $this->Html->Image($content, $contentOptions);
+		} else {
+			$out = $this->Html->tag('span', $content, $contentOptions);
+		}
+		if ($url) {
+			$tag = 'a';
+			$wrapOptions['href'] = is_array($url) ? Router::url($url) : $url;
+		}
+		return $this->Html->tag($tag, $out, $wrapOptions);
+	}
+	*/
+	function media($content, $options = array()) {
+		$options = array_merge(array(
+			'title' => '',
+			'objects' => null,
+			'left' => array(),
+			'right' => array(),
+			'url' => null,
+			'tag' => 'div',
+		), $options);
+		extract($options);
+		$out = '';
+		/*
+		if (!empty($thumb)) {
+			if (!is_array($thumb)) {
+				$thumb = array('src' => $thumb);
+			}
+			$objects[] = array_merge(array('type' => 'image', 'pull' => 'left'), $thumb);
+		}
+		foreach ($objects as $oType => $oOptions) {
+			$src = !is_array($oOptions) ? $oOptions : Param::keyCheck($oOptions, 'src', true);
+			$wrapTag = 'span';
+			$wrapOptions = array(
+				'class' => 'pull-' . Param::keyCheck($oOptions, 'pull', true, 'left'),
+			);
+			if (($oUrl = Param::keyCheck($oOptions, 'url', true)) || ($oUrl = $url)) {
+				$wrapOptions['href'] = is_array($oUrl) ? Router::url($oUrl) : $oUrl;
+				$wrapTag = 'a';
+			}
+			if (empty($oOptions['type'])) {
+				$oOptions['type'] = is_numeric($oType) ? 'text' : $oType;
+			}
+			$oOptions = $this->addClass($oOptions, 'media-object');
+			if ($oOptions['type'] == 'image') {
+				$out .= $this->Html->image($src, $oOptions);
+			} else {
+				$out .= $this->Html->tag('span', $src, $oOptions);
+			}
+			debug(compact('wrapTag', 'wrapOptions'));
+			$out = $this->Html->tag($wrapTag, $out, $wrapOptions);
+		}
+		*/
+		if (!empty($left)) {
+			//$out .= $this->Html->tag('span', $left
+		}
+		if (!empty($title)) {
+			if (!empty($url)) {
+				$title = $this->Html->link($title, $url, array('escape' => false));
+			}
+			$title = $this->Html->tag('h4', $title, array('class' => 'media-title'));
+		}
+		$out .= $this->Html->div('media-body', $title . $content);
+		return $this->Html->tag($tag, $out, array('class' => 'media'));	
 	}
 	
 	function getAction($key, $useIcons = true) {
