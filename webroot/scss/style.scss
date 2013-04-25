@@ -1,0 +1,18 @@
+@import "clearfix";
+@import "iconic";
+@import "table";
+@import "form-layout";
+@import "collapse_list";
+
+.clearfix {
+	@include clearfix;
+}
+
+@media print {
+	.no-print {
+		display: none;
+	}
+	a:after {
+		content: '' !important;
+	}
+}

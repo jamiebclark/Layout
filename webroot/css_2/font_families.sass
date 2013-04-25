@@ -1,0 +1,9 @@
+=font-face($family, $filename)
+	#{@font-face}
+		font-family: quote($family)
+		$prefix = unquote("'/files/fonts/#{$family}/#{$filename}")
+		src: url($prefix + ".eot'");
+		src: local(quote($family)), url($prefix + ".ttf'") format('truetype'), url($prefix + ".woff'") format('woff'), url($prefix + ".otf'") format('opentype'), url($prefix + ".svg##{$filename}'") format('svg')
+		font-weight: normal
+		font-style: normal
+		font-size: 100.01%

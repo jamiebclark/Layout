@@ -1,0 +1,128 @@
+/*Activate*/
+.set-active .activate {
+	display: none;
+}
+.set-active.inactive .activate {
+	display: block;
+}
+.set-active.inactive .deactivate {
+	display: none;
+}
+/*Table*/
+tr.inactive, tr.inactive td {
+	background-color: #CCC;
+}
+.info-table td {
+	border: 0;
+}
+.info-table .dt {
+	font-weight: bold;
+	text-align: right;
+}
+
+/*Date Build*/
+.timePickHolder,
+.calendarPickHolder {
+	position:relative;
+	float:left;
+	clear:none;
+}
+.dateBuild {display: block!important;}
+.dateBuild .date,
+.dateBuild .datetime {width: 6em !important;}
+.dateBuild .time {width:60px!important;}
+.dateBuild br {clear:both;}
+.dateBuild .dateBuild {
+	float:left;
+	clear:none;
+	padding:0;
+}
+.dateBuild .dateBuild label,
+.dateBuild .secondDate label,
+.calendarPickHolder label {width:auto!important;}
+.timePick, .calendarPick {
+	position:absolute;
+	border:1px solid #CCC;
+	background-color:white;
+	top:30px;
+	z-index:999;
+}
+.calendarPick h1 {
+	line-height:20px;
+	font-size:14px;
+	padding:0;
+	margin:0;
+	text-align:right;
+}
+.calendarPick h1 span {
+	display:block;
+	float:left;
+}
+.calendarPick table {border-collapse:collapse}
+.calendarPick td,
+.calendarPick th {
+	text-align:center;
+	margin:0;
+	line-height:1em;
+}
+.calendarPick td {
+	padding:0;
+}
+.calendarPick td a {
+	display:block!important;
+	float:none;
+	line-height:20px;
+	font-size:10px;
+	text-decoration:none;
+	text-align:center;
+	color:#666;
+}
+.timePick li a:hover,
+.calendarPick td a:hover {
+	color:white;
+	background-color:#09F;
+}
+
+.calendarPick td.nonMonth a {
+	background-color:#CCC;
+	color:#999;
+}
+
+.timePick a.sel ,
+.calendarPick td.sel a {
+	background-color:#FFE5CC;
+}
+
+.calendarPick td.now a {
+	background-color:#CCFFD1;
+}
+
+.timePick {
+	width:80px;
+	height:200px;
+	overflow:scroll;
+	overflow-x:hidden;
+}
+
+.timePick ul,
+.timePick li {
+	margin:0;
+	padding:0;
+	list-style-type:none;
+}
+.timePick a {
+	display:block;
+	padding:5px;
+	line-height:10px;
+	font-size:10px;
+	color:#666;
+	text-decoration:none;
+}
+
+.showMe {
+	border:1px solid red!important;
+	position:static!important;
+	float:none!important;
+	background-color:yellow!important;
+	width:auto!important;
+}

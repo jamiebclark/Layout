@@ -1,0 +1,28 @@
+@import "ui-timepicker";
+
+.date-time-input {
+	.datepicker {
+		width: 80px;
+	}
+	.timepicker {
+		width: 80px;
+	}
+}
+
+.input-list-item {
+	&.remove {
+		background-color: #EEE;
+	}
+	.input-list-remove {
+		text-align: center;
+		label {
+			font-size: 9px;
+		}
+	}
+}
+
+.catalog-item-image-input {
+	.media-object {
+		width: 80px;
+	}
+}

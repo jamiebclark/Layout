@@ -1,0 +1,105 @@
+@import "clearfix";
+@import "colors";
+@import "gradient";
+@import "lists";
+@import "opacity";
+@import "rounded";
+@import "overflow-fix";
+
+.collapse-list {
+	ul.cl {
+		&, li.cl {
+			@include reset-list;
+			display: block;
+			@include clearfix;
+		}
+
+		li.cl {
+			position: relative;
+			padding: .25em;
+			padding-left: 2.5em;
+			&.dragging {
+				border: 1px solid red;
+				background-color: white;
+				@include rounded-all();
+				cursor: move !important;
+				z-index: 3000;
+				@include opacity(.75);
+			}
+			&.drop-over {
+				border-top: 4px solid blue;
+			}
+
+			.divider {
+				border-color: #EEE;
+			}
+			.cl-t {
+				&.selected {
+					background: #EEE !important;
+				}
+			}
+			label {
+				font-size: 1em;
+				line-height: normal;
+				font-weight: normal;
+			}
+			.layoutInfoTable {
+				table {
+					&, th {
+						width: auto;
+					}					
+				}
+			}
+			
+			label.cl-tl {
+				display: block;
+				float: none;
+				&.hover .cl-t {
+					background: #F8F8F8;
+				}
+			}
+				
+		}
+	}
+
+	h1, h2, h3, h4, h5, h6 {
+		margin: 0;
+		padding: 0;
+	}
+	
+	label.cl {
+		position: absolute;
+		top: 1em;
+		left: 0;
+
+		font-family: Verdana, Courier, Arial;
+		display: block;
+		border: 1px solid;
+		@include rounded-all(1em);
+
+		&.hover {
+			cursor: pointer;
+			color: $color1;
+		}
+
+		span {
+			font-size: 1.5em;
+			width: 1em;
+			line-height: 1;
+			display: block;
+			text-align: center;
+		}
+		
+		input {
+			width: auto;
+			position: absolute;
+			left: -9999px;
+		}
+	}
+	.layoutActionMenu {
+		margin-top: .25em;
+		a .iconic {
+			font-size: 1.5em;
+		}
+	}
+}
