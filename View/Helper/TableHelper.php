@@ -1,5 +1,6 @@
 <?php
-class TableHelper extends AppHelper {
+App::uses('LayoutAppHelper', 'Layout.View/Helper');
+class TableHelper extends LayoutAppHelper {
 	var $name = 'Table';
 	var $helpers = array(
 		'Html', 
@@ -34,7 +35,6 @@ class TableHelper extends AppHelper {
 	
 	function beforeRender($viewFile) {
 		$this->Asset->css('Layout.layout');
-		$this->Asset->js('Layout.table');
 		$this->defaultModel = InflectorPlus::modelize($this->request->params['controller']);
 		return parent::beforeRender($viewFile);
 	}
@@ -87,7 +87,6 @@ class TableHelper extends AppHelper {
 			return false;
 		}
 		$formAddCell = '&nbsp;';
-		
 		if ($this->getHeader) {
 			$this->columnCount++;
 			//Stores first instance of non-blank header
@@ -98,17 +97,18 @@ class TableHelper extends AppHelper {
 				if ($headerSort === true) {
 					$headerSort = null;
 				}
-				$this->headers[] = $this->_thSort($header, $headerSort);
-			} else {
-				$this->headers[] = $header;
+				$header = $this->_thSort($header, $headerSort);
 			}
+			$thOptions = isset($cellOptions['th']) ? $cellOptions['th'] : $cellOptions;
+			$this->headers[] = array($header => $thOptions);
+			
 		}
-		
+		/*
 		if ($editCell = Param::keyCheck($cellOptions, 'edit', true)) {
 			$formAddCell = $editCell;
 			$cell = $this->_editCell($cell, $editCell);
-			$this->hasForm = true;
 		}
+		*/
 		
 		if (is_array($cellOptions)) {
 			$cell = array($cell, $cellOptions);
@@ -147,6 +147,9 @@ class TableHelper extends AppHelper {
 			'id' => $id,
 		), $options);
 		$this->currentCheckboxId = $options['id'];
+
+		$this->hasForm = true;
+
 		$this->checkboxCount++;
 		return $this->Form->input($name, $options);
 	}
@@ -163,23 +166,15 @@ class TableHelper extends AppHelper {
 			'div' => false,
 			'label' => false,
 		));
-		
 		$attrs = array(
 			'width' => 20,
-			'edit' => array(
-				'id' => array(
-					'value' => $options['value'],
-					'type' => 'hidden',
-				)
-			),
 			'class' => 'table-checkbox',
 		);
 		return $this->cell($cell, $header, null, 'checkbox', $attrs);
 	}
 	
 	function withChecked($content = null) {
-		$return = '';
-		$return .= $this->Html->div('with-checked');
+		$out = '';
 		if (is_array($content)) {
 			$withChecked = array('' => ' -- Select action -- ');
 			foreach ($content as $action => $label) {
@@ -189,7 +184,7 @@ class TableHelper extends AppHelper {
 				}
 				$withChecked[$action] = $label;
 			}
-			$return .= $this->Form->input(null, array(
+			$out .= $this->Form->input(null, array(
 				'type' => 'select',
 				'options' => $withChecked,
 				'label' => 'With Checked:',
@@ -199,9 +194,8 @@ class TableHelper extends AppHelper {
 		} else {
 			$return .= $content;
 		}
-		$return .= $this->Form->submit('Go', array('name' => 'with_checked','div' => false));
-		$return .= "</div>\n";
-		return $return;
+		$out .= $this->Form->submit('Go', array('name' => 'with_checked','div' => false));
+		return $this->Html->div('with-checked form-inline', $out);
 	}
 
 	
@@ -257,7 +251,6 @@ class TableHelper extends AppHelper {
 		if (!$this->hasHeader) {
 			$this->headers = null;
 		}
-		
 		if (!$isEmpty && !empty($this->checkboxCount)) {
 			if (!empty($options['withChecked'])) {
 				if (!isset($options['form'])) {
@@ -272,11 +265,12 @@ class TableHelper extends AppHelper {
 				$options['form'] = $this->hasForm;
 			}
 		}
+		
 		$formOptions = !empty($options['form']) ? $options['form'] : null;
 		unset($options['form']);
 
 		$output .= $this->_table($this->headers, $this->rows, $options + compact('after'));
-		
+
 		if (!empty($formOptions)) {
 			$output = $this->formWrap($output, $formOptions);
 		}
@@ -465,10 +459,11 @@ class TableHelper extends AppHelper {
 		}
 
 		if (!$paginate) {
-			return $this->_thSortLink($sort, $label); //ucfirst($label);
+			$label = $this->_thSortLink($sort, $label); //ucfirst($label);
 		} else {
-			return $this->Paginator->sort($sort, $label, array('escape' => false));
+			$label = $this->Paginator->sort($sort, $label, array('escape' => false));
 		}
+		return $label;
 	}
 	
 	function _thSortLink($sort, $label = null) {

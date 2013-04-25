@@ -465,133 +465,135 @@ function inputChoicesInit() {
 		$(this).clickInputChoice();
 	});
 }
-
-$.fn.inputList = function() {
-	if ($(this).data('input-list-init')) {
-		return $(this);
-	}
-	
-	var $container = $(this),
-		$list = $container.find('.input-list-item'),
-		$addLink = $('<a></a>', {
-			'href' : '#',
-			'html' : 'Add',
-			'class' : 'add-input-list-item add align-left'
-		});
-	
-	$list.bind('cloned', function (e, $cloned) {
-		addRemoveBox($cloned);
-		$list = $container.find('.input-list-item');
-	});
-
-	function addRemoveBox($listItem) {
-		var $id = $listItem.find('input[name*="id]"]').first();
-		if (!$id.length) {
-			return false;
-		}
-		var removeClass = 'input-list-remove',
-			$checkbox = $listItem.find('.' + removeClass + ' input[type=checkbox]'),
-			$content = $listItem.children(':not(.'+removeClass+')');
+(function($) {
+	$.fn.inputList = function() {
+		return this.each(function() {
+			var $list = $(this),
+				$listItems = $('.input-list-item', $list),
+				$addLink = $('<a class="btn btn-small" href="#">Add</a>');
 			
-		if (!$checkbox.length) {
-			var removeName = $id.attr('name').replace(/\[id\]/,'[remove]'),
-				removeBoxId = removeName.replace(/(\[([^\]]+)\])/g, '_$2'),
-				$checkbox = $('<input/>', {
-					'name' : removeName,
-					'type' : 'checkbox',
-					'value' : 1,
-					'id' : removeBoxId
-					
-				})
-				.appendTo($listItem)
-				.wrap($('<div></div>', {'class' : removeClass}))
-				.after($('<label></label>', {'for' : removeBoxId, 'html' : 'Remove'}));
-		}
-		$checkbox.change(function() {
-			if ($(this).attr('checked')) {
-				$(this).parent().addClass('active');
-				$listItem.addClass('remove').find(':input').filter(function() {
-					var name = $(this).attr('name');
-					return name != $checkbox.attr('name') && !(name.match(/\[id\]/));
-				}).attr('disabled',true);
-				$content.slideUp();
-			} else {
-				$(this).parent().removeClass('active');
-				$listItem.removeClass('remove').find(':input').attr('disabled',false);
-				$content.slideDown();
+			if ($(this).data('input-list-init')) {
+				return $(this);
 			}
-		}).attr('checked', false).change();
-	}
-	
-	$addLink.click(function(e) {
-			e.preventDefault();
-			$list.cloneNumbered().trigger('inputListAdd');
-		})
-		.appendTo($(this))
-		.wrap('<div class="layout-buttons"></div>');
-			
-	$list.filter(':visible').each(function() {
-		addRemoveBox($(this));
-		return $(this);
-	});
-	
-	$(this).data('input-list-init', true);
-	return $(this);
-};
 
-$.fn.renumberInput = function(newIdKey) {
-	if (!$(this).attr('name')) {
-		return $(this);
-	}
-	var reg = /\[(\d+)\]/,
-		name = $(this).attr('name'),
-		id = $(this).attr('id'),
-		idKeyMatch = name.match(reg),
-		idKeyP = idKeyMatch[0],
-		idKey = idKeyMatch[1];
-	$(this).attr('name', name.replace(idKeyP, "["+newIdKey+"]"));
-	if (id) {
-		var oldId = id,
-			$labels = $('label').filter(function() { return $(this).attr('for') == oldId;}),
-			newId = id.replace(idKey, newIdKey);
-		$(this).attr('id', newId);
-		$(this).next('label[for="'+oldId+'"]').attr('for',newId);
-		$(this).prev('label[for="'+oldId+'"]').attr('for',newId);
-	}
-	return $(this);
-};
-
-$.fn.cloneNumbered = function() {
-	if ($(this).data('cloning')) {
-		return $(this);
-	}
-	$(this).data('cloning', true);
-	var $ids = $(this).find('input[name*="[id]"]:enabled'),
-		$id = $ids.last(),
-		name = $id.attr('name');
-		
-	if ($id.length) {
-		var $entry = $(this).last(),
-			$cloned = $entry.clone().insertAfter($entry),
-			newIdKey = $ids.length;
-		$cloned.find(':text,textarea').val('').trigger('reset');
-		$cloned
-			.slideDown()
-			.data('added', true)
-			.find(':input').each(function() {
-				return $(this).renumberInput(newIdKey).removeAttr('disabled').removeAttr('checked');
+			function addRemoveBox($listItem) {
+				var $id = $(':input[name*="id]"]', $listItem).first();
+				if (!$id.length) {
+					return false;
+				}
+				var removeClass = 'input-list-remove',
+					$checkbox = $listItem.find('.' + removeClass + ' input[type=checkbox]'),
+					$content = $listItem.children(':not(.'+removeClass+')');
+					
+				if (!$checkbox.length) {
+					$listItem.wrapInner('<div class="span11"></div>');
+					var removeName = $id.attr('name').replace(/\[id\]/,'[remove]'),
+						removeBoxId = removeName.replace(/(\[([^\]]+)\])/g, '_$2'),
+						$checkbox = $('<input/>', {
+							'type' : 'checkbox',
+							'name' : removeName,
+							'value' : 1,
+							'id' : removeBoxId
+						}).attr('name', removeName).val(1).attr('id',removeBoxId);
+					console.log($checkbox.attr('id'));
+					$checkbox
+						.appendTo($listItem)
+						.wrap($('<div></div>', {'class' : removeClass + " span1"}))
+						.after($('<label></label>', {'html': 'Remove','for': removeBoxId}));
+				}
+				$checkbox.change(function() {
+					if ($(this).is(':checked')) {
+						$(this).parent().addClass('active');
+						$listItem.addClass('remove').find(':input').filter(function() {
+							var name = $(this).attr('name');
+							console.log($(this).attr('type'));
+							return name != $checkbox.attr('name') && (
+								!(name.match(/\[id\]/)) || $(this).is('select')
+							);
+						}).prop('disabled',true);
+						//$content.slideUp();
+					} else {
+						$(this).parent().removeClass('active');
+						$listItem.removeClass('remove').find(':input').prop('disabled',false);
+						$content.slideDown();
+					}
+				}).prop('checked', false).change();
+			}
+			$listItems.each(function() {
+				$(this).addClass('row-fluid');
+				return $(this);
+			}).bind('cloned', function (e, $cloned) {
+				addRemoveBox($cloned);
+				$listItems = $('.input-list-item', $list);
 			});
-		$cloned
-			.find(':input:visible')
-			.first()
-			.focus();
-		$(this).trigger('cloned', [$cloned]);
-		formLayoutInit();
-	}
-	$(this).data('cloning', false);
-	return $(this);
-};
- (function ($) {
+			$addLink.click(function(e) {
+					e.preventDefault();
+					$listItems.cloneNumbered().trigger('inputListAdd');
+				})
+				.appendTo($(this))
+				.wrap('<div class="layout-buttons"></div>');
+					
+			$listItems.filter(':visible').each(function() {
+				addRemoveBox($(this));
+				return $(this);
+			});
+			$list.data('input-list-init', true);
+			return $(this);
+		});
+	};
+
+	$.fn.renumberInput = function(newIdKey) {
+		if (!$(this).attr('name')) {
+			return $(this);
+		}
+		var reg = /\[(\d+)\]/,
+			name = $(this).attr('name'),
+			id = $(this).attr('id'),
+			idKeyMatch = name.match(reg),
+			idKeyP = idKeyMatch[0],
+			idKey = idKeyMatch[1];
+		$(this).attr('name', name.replace(idKeyP, "["+newIdKey+"]"));
+		if (id) {
+			var oldId = id,
+				$labels = $('label').filter(function() { return $(this).attr('for') == oldId;}),
+				newId = id.replace(idKey, newIdKey);
+			$(this).attr('id', newId);
+			$(this).next('label[for="'+oldId+'"]').attr('for',newId);
+			$(this).prev('label[for="'+oldId+'"]').attr('for',newId);
+		}
+		return $(this);
+	};
+
+	$.fn.cloneNumbered = function() {
+		if ($(this).data('cloning')) {
+			return $(this);
+		}
+		$(this).data('cloning', true);
+		var $ids = $(this).find(':input[name*="[id]"]:enabled'),
+			$id = $ids.last(),
+			name = $id.attr('name');
+			
+		if ($id.length) {
+			var $entry = $(this).last(),
+				$cloned = $entry.clone().insertAfter($entry),
+				newIdKey = $ids.length;
+			$cloned.find(':text,textarea').val('').trigger('reset');
+			$cloned
+				.slideDown()
+				.data('added', true)
+				.find(':input').each(function() {
+					return $(this).renumberInput(newIdKey).removeAttr('disabled').removeAttr('checked');
+				});
+			$cloned.find(':input:visible').first().focus();
+			$(this).trigger('cloned', [$cloned]);
+			formLayoutInit();
+		}
+		$(this).data('cloning', false);
+		return $(this);
+	};
+})(jQuery);
+
+(function($) {
 	var toggleCount = 1;
 	$.fn.formLayoutToggle = function() {
 		var $toggle = $(this),
@@ -603,8 +605,6 @@ $.fn.cloneNumbered = function() {
 		$toggle.addClass('toggle' + tc);
 		
 		function toggleOn() {
-			console.log('Toggling ' + tc + ': ' + $toggle.attr('class'));
-			
 			$content.showEnableChildren();
 			$offContent.hideDisableChildren();
 		}
@@ -933,9 +933,7 @@ function formLayoutToggleInit() {
 })(jQuery);
 
 function formLayoutInit() {
-	$('.input-list').each(function() {
-		$(this).inputList();
-	});
+	$('.input-list').inputList();
 	
 	$('.input-autocomplete').each(function() {
 		var loadOptions = {'action': 'select'};

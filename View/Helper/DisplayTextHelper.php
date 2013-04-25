@@ -24,11 +24,6 @@ class DisplayTextHelper extends AppHelper {
 		parent::__construct($View, $options);
 	}
 	
-	function beforeRender($viewFile) {
-		$this->Asset->css('display_texts');
-		parent::beforeRender($viewFile);
-	}
-
 	/**
 	 * Runs all functions on text
 	 $options accepts the following:

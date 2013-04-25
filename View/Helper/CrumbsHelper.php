@@ -2,7 +2,7 @@
 App::uses('InflectorPlus', 'Layout.Lib');App::uses('Prefix', 'Layout.Lib');
 App::uses('LayoutAppHelper', 'Layout.View/Helper');class CrumbsHelper extends LayoutAppHelper {
 	var $name = 'Crumbs';
-	var $helpers = array('Html', 'Iconic',);
+	var $helpers = array('Html', 'Layout.Iconic');
 	
 	public $hide = false;
 	public $title; //Title of the current page being view with crumbs
@@ -52,8 +52,8 @@ App::uses('LayoutAppHelper', 'Layout.View/Helper');class CrumbsHelper extends L
 		} else {
 			$crumb = array($title, $link, $options);
 		}
-		$crumbs = array($crumb);
-		return $this->userSetCrumbs(compact('crumbs'));	
+		$append = array($crumb);
+		return $this->userSetCrumbs(compact('append'));	
 	}
 	
 	function debug() {
@@ -249,7 +249,6 @@ App::uses('LayoutAppHelper', 'Layout.View/Helper');class CrumbsHelper extends L
 				$options = array('crumbs' => $options);
 			}
 		}
-		
 		if (!empty($options['crumbs']) || (isset($options['crumbs']) && $options['crumbs'] === false)) {
 			$crumbs = $options['crumbs'];
 		} else if ((!isset($this->{$type . 'Crumbs'}) || !empty($options['reset'])) && empty($options['skipDefault'])) {
@@ -257,7 +256,6 @@ App::uses('LayoutAppHelper', 'Layout.View/Helper');class CrumbsHelper extends L
 		} else {
 			$crumbs = $this->{$type . 'Crumbs'};
 		}
-		
 		if (!empty($options['prepend'])) {
 			$crumbs = $this->_mergeCrumbs($options['prepend'], $crumbs);
 		}

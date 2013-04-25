@@ -7,6 +7,8 @@
  **/
 class TableComponent extends Component {
 	var $controller;
+	var $components = array('Session');
+	
 	var $settings = array();
 	
 	function __construct(ComponentCollection $collection, $settings = array()) {
@@ -37,7 +39,6 @@ class TableComponent extends Component {
 		$result = null;
 		if (!empty($this->controller->request->data['TableEdit'])) {
 			$model = !empty($settings['model']) ? $settings['model'] : $this->controller->modelClass;
-			$pluralModel = Inflector::pluralize($model);
 			
 			$result = true;
 			$successCount = 0;
@@ -54,15 +55,15 @@ class TableComponent extends Component {
 				}
 				$result *= $success;
 			}
-			$msg = 'Successfully updated ' ;
-			$msg .= (($errorCount || $successCount > 1) ? ($successCount . ' ' . $pluralModel) : $model) . '.';
+			$flashType = 'success';
+			$msg = 'Successfully updated ' . $this->getHumanModel($model, $errorCount || $successCount>1);
+
 			if ($errorCount) {
-				$msg .= ' Could not update ' . $errorCount . ' ' . ($errorCount == 1 ? $model : $pluralModel);
+				$flashType = 'error';
+				$msg .= ". Could not update $errorCount " . $this->getHumanModel($model,$errorCount != 1);
 			}
+			$this->flash($msg, $flashType);
 			
-			if (!empty($this->controller->Session)) {
-				$this->controller->Session->setFlash($msg);
-			}
 			if ($result) {
 				$this->controller->redirect($this->controller->referer());
 			}
@@ -105,7 +106,7 @@ class TableComponent extends Component {
 		if (!empty($ids) && !empty($action)) {
 			$return = $this->withChecked($action, $ids, $options);
 			if (!empty($return['message'])) {
-				$this->controller->Session->setFlash($return['message']);
+				$this->flash($return['message'], $return['success']);
 			}
 			if (!empty($return['redirect'])) {
 				if ($return['redirect'] === true) {
@@ -117,6 +118,7 @@ class TableComponent extends Component {
 		}
 		return false;
 	}
+	
 	
 	function withChecked($action, $ids, $options = array()) {
 		$function = '_withChecked';
@@ -165,33 +167,60 @@ class TableComponent extends Component {
 					$options['redirect'][] = $id;
 				}
 			}
-			
 			if (!empty($options['delete'])) {
 				if ($options['delete'] === true) {
 					$options['delete'] = $options['conditions'];
 				}
 				$Model->order = array();
-				$result = $Model->deleteAll($options['delete']);
-				$options['verb'] = 'Deleted';
+				$options['result'] = $Model->deleteAll($options['delete']);
+				if (empty($options['verb'])) {
+					$options['verb'] = 'Deleted';
+				}
 			} else if (!empty($options['updateAll'])) {
-				$result = $Model->updateAll($options['updateAll'], $options['conditions']);
-				$options['verb'] = 'Updated';
+				$options['result'] = $Model->updateAll($options['updateAll'], $options['conditions']);
+				if (empty($options['verb'])) {
+					$options['verb'] = 'Updated';
+				}
 			}	
 			$options['count'] = $Model->getAffectedRows();
+		}
+		$success = null;
+		if (isset($options['result']) && (!isset($options['count']) || !empty($options['count']))) {
+			$success = $options['result'] !== false;
 		}
 		if (!empty($options['message'])) {
 			$message = $options['message'];
 		} else {
-			$message = (!empty($options['verb']) ? $options['verb'] : 'Adjusted') . ' ';
-			if (!empty($options['count'])) {
-				$message .= $options['count'] . ' ' . Inflector::pluralize($model);
-			} else {
-				$message .= $model;
-			}
+			$message = (!empty($options['verb']) ? $options['verb'] : 'Adjusted');
+			$message .= " {$options['count']} ".$this->getHumanModel($model, $options['count'] != 1);
 		}
 		if (!empty($options['redirect'])) {
 			$redirect = $options['redirect'];
 		}
-		return compact('redirect', 'message');
+		return compact('redirect', 'message', 'success');
 	}
+	
+	private function flash($msg, $type = 'info') {
+		if ($type === true) {
+			$type = 'success';
+		} else if ($type === false) {
+			$type = 'error';
+		} else if (empty($type)) {
+			$type = 'info';
+		}
+		
+		return $this->Session->setFlash(__($msg), 'default', array(
+			'class' => 'alert alert-' . $type
+		));
+	}
+	
+	private function getHumanModel($model, $plural = false) {
+		$table = Inflector::tableize($model);
+		$human = Inflector::humanize($table);
+		$humanSingle = Inflector::singularize($human);
+		
+		$humanModelPlural = Inflector::humanize(Inflector::tableize($model));
+		return $plural ? $humanModelPlural : Inflector::singularize($humanModelPlural);
+	}
+
 }

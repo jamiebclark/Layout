@@ -6,13 +6,14 @@ class AssetHelper extends AppHelper {
 			'Layout.style.css',
 			'Layout.bootstrap/bootstrap.min',
 			'Layout.bootstrap/bootstrap-responsive.min',
-			'Layout.bootstrap/datetimepicker',
+			'Layout.jquery/ui/ui-lightness/jquery-ui-1.8.20.custom',
+			//'Layout.bootstrap/datetimepicker',
 		),
 		'js' => array(
 			'//ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js',
 			'//ajax.googleapis.com/ajax/libs/jqueryui/1.10.2/jquery-ui.min.js',
 			'Layout.bootstrap/bootstrap.min',
-			'Layout.bootstrap/bootstrap-datetimepicker.min',
+			//'Layout.bootstrap/bootstrap-datetimepicker.min',
 			'Layout.script',
 		)
 	);

@@ -3,8 +3,9 @@
  * Layout Helper outputs some basic Html objects that help form a better organized view
  *
  **/
- 
-class FormLayoutHelper extends AppHelper {
+App::uses('LayoutAppHelper', 'Layout.View/Helper');
+
+class FormLayoutHelper extends LayoutAppHelper {
 	var $helpers = array('Asset','Html', 'Form', 'Layout', 'Iconic');
 	var $buttonIcons = array(
 		'add' => 'plus',
@@ -19,10 +20,21 @@ class FormLayoutHelper extends AppHelper {
 	
 	var $_inputCount = array();
 	
+	function __construct($View, $settings = array()) {
+		parent::__construct($View, $settings);
+
+		//Adds new suffixes to account for dateInput and timeInput
+		$this->Form->_fieldSuffixes = array_merge($this->Form->_fieldSuffixes, array('date', 'time'));
+	}
+	
 	function beforeRender($viewFile) {
 		parent::beforeRender($viewFile);
-		$this->Asset->js('Layout.form_layout');
-		$this->Asset->css('Layout.layout');
+		$this->Asset->js(array(
+			'Layout.form_layout',
+			'Layout.jquery/jquery.timepicker',
+			'Layout.jquery/datepair',
+		));
+		//$this->Asset->css('Layout.layout');
 	}
 	
 	public function newPassword($name, $options = array()) {
@@ -520,7 +532,7 @@ class FormLayoutHelper extends AppHelper {
 			'pass' => array(),
 		), $options);
 		extract($options);
-		$return = '';
+		$out = '';
 		if (is_array($listContent)) {
 			$total = count($listContent);
 			$type = 'array';
@@ -529,18 +541,18 @@ class FormLayoutHelper extends AppHelper {
 			$total = !empty($this->request->data[$model]) ? count($this->request->data[$model]) + 1 : $count;
 		}
 		if ($total < 0) {
-			return $return;
+			return $out;
 		}
 		for ($count = 0; $count < $total; $count++) {
-			$return .= $this->Html->div('input-list-item');
+			$row = '';
 			if ($type == 'array') {
-				$return .= $listContent[$count];
+				$row .= $listContent[$count];
 			} else if ($type == 'element') {
-				$return .= $this->element($listContent, compact('count') + $pass);
+				$row .= $this->_View->element($listContent, compact('count') + $pass);
 			} else if ($type == 'eval') {
-				eval('$return .= ' . $listContent . ';');
+				eval('$row .= ' . $listContent . ';');
 			}
-			$return .= "</div>\n";
+			$out .= $this->Html->div('input-list-item', $row);
 		}
 		if (!empty($legend)) {
 			$tag = 'fieldset';
@@ -550,9 +562,9 @@ class FormLayoutHelper extends AppHelper {
 			$titleTag = 'legend';
 		}
 		if (!empty($titleTag) && !empty($title)) {
-			$return = $this->Html->tag($titleTag, $title) . $return;
+			$out = $this->Html->tag($titleTag, $title) . $out;
 		}
-		return $this->Html->tag($tag, $return, array('class' => 'input-list ' . $class));
+		return $this->Html->tag($tag, $out, array('class' => 'input-list ' . $class));
 	}
 	
 	public function toggle($content, $offContent = null, $label, $options = array()) {
@@ -564,40 +576,62 @@ class FormLayoutHelper extends AppHelper {
 		), $options);
 		extract($options);
 		
-		$return = '';
+		$out = '';
 		$toggleId = $options['name'];
 		$toggleInput = $this->Form->input($name, array(
 			'type' => 'checkbox',
-			'label' => false,
+			'label' => $label,
 			'div' => false,
 			'id' => $toggleId,
 		) + compact('checked'));
-		$ellipses = '<span class="ell">...</span>';
-		$return .= $this->Html->div('toggle-input', $this->Html->tag('label', $toggleInput . $label, array('for' => $toggleId)) . $ellipses);
-		$return .= $this->Html->div('toggle-content', $content, array(
-			'style' => $checked ? null : 'display:none;',
-		));
-		
+		$out .= $this->Html->div('toggle-input', 
+			$this->Html->tag('label', $toggleInput, array('for' => $toggleId)));
+		if (!empty($content)) {
+			$out .= $this->Html->div('toggle-content', $content, array(
+				'style' => $checked ? null : 'display:none;',
+			));
+		}		
 		if (!empty($offContent)) {
-			$return .= $this->Html->div('toggle-off-content', $offContent, array(
+			$out .= $this->Html->div('toggle-off-content', $offContent, array(
 				'style' => !$checked ? null : 'display:none;',
 			));
 		}
-		return $this->Html->div('form-layout-toggle', $return);
+		return $this->Html->div('form-layout-toggle', $out);
 	}
 	
 	//Keeps track of re-using helper input elements, adding a counter to prevent two inputs with the same name
-	function __inputNameCount($name) {
+	private function inputNameCount($name) {
 		if (empty($this->_inputCount[$name])) {
 			$this->_inputCount[$name] = 0;
 		}
 		return $name . ($this->_inputCount[$name]++);
 	}
 	
+	function addressInput($options = array()) {
+		$model = Param::keyCheck($options, 'model', true);
+		$prefix = '';
+		if (!empty($model)) {
+			$prefix = "$model.";
+		}
+		$out = $this->inputRows(array(
+			array($prefix . 'addline1' => array('label' => 'Street Address')),
+			array($prefix . 'addline2' => array('label' => 'Apt. #')),
+			array($prefix . 'city', $prefix . 'state', $prefix . 'zip'),
+			array($prefix . 'country' => array('default' => 'US'))
+		), $options);
+		return $out;
+	}
+	
 	function inputRows($rows, $options = array()) {
 		$out = '';
 		foreach ($rows as $row) {
 			$out .= $this->inputRow($row, $options);
+		}
+		if (!empty($options['before'])) {
+			$out = $options['before'] . $out;
+		}
+		if (!empty($options['after'])) {
+			$out .= $options['after'];
 		}
 		return $out;
 	}
@@ -635,7 +669,7 @@ class FormLayoutHelper extends AppHelper {
 	
 	function inputChoices($inputs, $options = array()) {
 		$options = array_merge(array(
-			'name' => $this->__inputNameCount('input_choice'),
+			'name' => $this->inputNameCount('input_choice'),
 		), $options);
 		if (!isset($options['default'])) {
 			$options['default'] = isset($options['values'][0]) ? $options['values'][0] : 0;
@@ -687,8 +721,86 @@ class FormLayoutHelper extends AppHelper {
 	 * @param array $options Standard options for the form item
 	 *
 	 **/
+	function datePairInput($startFieldName, $endFieldName, $options = array()) {
+		$out = '';
+		$out .= $this->dateInput($startFieldName, $options);
+		$out .= $this->dateInput($endFieldName, $options);
+		return $this->Html->div('datepair', $out);
+	}
+	
+	private function getDateFieldValue($fieldName, $type = 'date') {
+		$value = $this->getFieldValue($fieldName, $type);
+		if (!empty($value)) {
+			if (is_array($value)) {
+				$value = implode(' ', $value);
+			}					
+			if ($type == 'date') {
+				$value = date('m/d/Y', strtotime($value));
+			}
+		}
+		return $value;
+	}
+	
+	private function getFieldValue($fieldName, $suffix = null) {
+		if (!empty($suffix)) {
+			$fieldName = $this->stripFieldSuffix($fieldName, $suffix);
+		}
+		if (strpos($fieldName, '.') === false) {
+			$fieldName = $this->getCurrentModel() . '.' . $fieldName;
+		}
+		return $this->Html->value($fieldName);
+	}
+	
+	private function stripFieldSuffix($fieldName, $suffix) {
+		if (preg_match('/\.'.$suffix.'$/', $fieldName)) {
+			$fieldName = substr($fieldName, 0, -1 * (strlen($suffix) + 1));
+		}
+		return $fieldName;
+	}
+	
 	function dateInput($fieldName, $options = array()) {
-		$class = 'dateBuild';
+		$options = array_merge(array(
+				'type' => 'text',
+				'placeholder' => 'mm/dd/yyyy',
+				'div' => 'control-group date-input',
+				'default' => $this->getDateFieldValue($fieldName),
+			), $this->addClass($options, 'date datepicker'));
+			
+		if ($control = Param::keyCheck($options, 'control', true)) {
+			$control = array_flip($control);
+			$after = '';
+			if (isset($control['today'])) {
+				$after .= $this->Html->link('Today', '#', array('class' => 'today'));
+			}
+			if (isset($control['clear'])) {
+				$after .= $this->Html->link('Clear', '#', array('class' => 'clear'));
+			}
+			$options = $this->addClass($options, $this->Html->div('control', $after), 'after');
+		}
+		return $this->Form->input($fieldName. ".date", $options);
+	}
+	
+	function timeInput($fieldName, $options = array()) {
+		$options = array_merge(array(
+			'type' => 'text',
+			'placeholder' => '0:00pm',
+			'div' => 'control-group time-input',
+			'default' => $this->getFieldValue($fieldName, 'time'),
+		), $this->addClass($options, 'time timepicker'));
+		return $this->Form->input($fieldName . '.time', $options);			
+	}
+	
+	function datetimeInput($fieldName, $options = array()) {
+		$out = '';
+		$dateOptions = $options;
+		$timeOptions = array_merge($options, array('label' => false, 'div' => false));
+		$dateOptions['after'] = $this->timeInput($fieldName, $timeOptions);
+		$out .= $this->dateInput($fieldName, $dateOptions);
+		return $this->Html->div('date-time-input', $out);	
+	}
+	
+	function dateInputOLD($fieldName, $options = array()) {
+		$class = 'date-input';
 		if (strpos($fieldName, '.') === false && !empty($this->request->params['models'])) {
 			$model = current($this->request->params['models']);
 			$fieldName = $model['className'] . '.' . $fieldName; 
@@ -719,6 +831,7 @@ class FormLayoutHelper extends AppHelper {
 				$value = null;
 			}
 		}
+		
 		$hasClass = false;
 		$dateTime = true;
 		if (!empty($options['datetime'])) {
@@ -1009,21 +1122,21 @@ class FormLayoutHelper extends AppHelper {
 	
 	function fakeInput($value, $options = array()) {
 		$options = array_merge(array(
-			'div' => 'input text',
+			'div' => 'control-group',
 			'label' => false,
 		), $options);
-		$options = $this->addClass($options, 'fakeInput');
+		$options = $this->addClass($options, 'uneditable-input');
 		
 		extract($options);
-		$return = '';
+		$out = '';
 		if (!empty($label)) {
-			$return .= $this->Html->tag('label', $label);
+			$out .= $this->Html->tag('label', $label, array('class' => 'control-label'));
 		}
-		$return .= $this->Html->div($class, $value);
+		$out .= $this->Html->div('controls', $this->Html->div($class, $value));
 		if (!empty($div)) {
-			$return = $this->Html->div($div, $return);
+			$out = $this->Html->div($div, $out);
 		}
-		return $return;
+		return $out;
 	}
 	
 	function _paramCheck($param, $val = null, $attrs = null) {

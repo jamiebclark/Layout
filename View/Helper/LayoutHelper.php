@@ -380,14 +380,9 @@ class LayoutHelper extends LayoutAppHelper {
 			'tag' => false,
 		), $attrs);
 
-		$resize = Param::keyCheck($attrs, 'resize', true, true);
 		$named = Param::keyCheck($attrs, 'named', true);
 		$url = Param::keyCheck($attrs, 'url', true);
 		$active = Param::keyCheck($attrs, 'active', true);
-		
-		if ($resize === false) {
-			$attrs = $this->addClass($attrs, 'no-resize');
-		}
 		
 		$useIcons = !empty($attrs['icons']);
 		
@@ -513,7 +508,11 @@ class LayoutHelper extends LayoutAppHelper {
 					$list[] = $this->Html->tag('span', $link, array('class' => 'btn'));
 				}
 			}
-			return $this->Html->div('btn-group', implode('', $list));
+			$class = 'btn-group';
+			if (!empty($attrs['class'])) {
+				$class .= ' ' . $attrs['class'];
+			}
+			return $this->Html->div($class, implode('', $list));
 		}
 		
 		if (Param::keyValCheck($attrs, 'titleList')) {
@@ -722,6 +721,8 @@ class LayoutHelper extends LayoutAppHelper {
 	 *
 	 **/
 	function headingActionMenu($title, $menu = null, $attrs = array()) {
+		return $this->adminMenu($menu, compact('title') + $attrs);
+	
 		$tag = Param::keyCheck($attrs, 'tag', true, 'h2');
 		$class = 'divider clearfix';
 		if (!empty($attrs['class'])) {
@@ -742,15 +743,14 @@ class LayoutHelper extends LayoutAppHelper {
 	}
 	
 	function adminMenu($menu = null, $attrs = array()) {
-		$attrs = array_merge(array(
-			'tag' => 'h2',
-			'class' => 'adminMenu divider',
-		), $attrs);
+		$navBarAttrs = array('class' => 'admin-menu');
 		$title = Param::keyCheck($attrs, 'prefix', true); //Legacy Term
 		if (empty($title)) {
 			$title = Param::keyCheck($attrs, 'title', true, 'Staff Only');
 		}
-		return $this->headingActionMenu($title, $menu, $attrs);
+		$menu = $this->actionMenu($menu, array_merge(array('div' => false, 'class' => 'pull-right'), $attrs));
+		return $this->navBar($menu, $title, $navBarAttrs);
+		//return $this->headingActionMenu($title, $menu, $attrs);
 	}
 	
 	function tableSortMenu($sortMenu = array(), $attrs = array()) {
@@ -826,6 +826,26 @@ class LayoutHelper extends LayoutAppHelper {
 		return $match;
 	}
 
+	function navBar($menuItems, $title = null, $attrs = array()) {
+		$out = '';
+		if (!empty($title)) {
+			if (is_array($title)) {
+				$title += array(array(), array(), array());
+				$out .= $this->Html->link($title[0], $title[1], $this->addClass($title[2], 'brand'));
+			} else {
+				$out .= $this->Html->tag('span', $title, array('class' => 'brand'));
+			}
+		}
+		if (!empty($menuItems)) {
+			$out .= is_array($menuItems) ? $this->nav($menuItems, $attrs) : $menuItems;
+		}
+		return $this->Html->div('navbar', $this->Html->div('navbar-inner', $out));
+	}
+	
+	function nav($menuItems = array(), $attrs = array()) {
+		return $this->menu($menuItems, $this->addClass(array_merge(array('tag'=>false), $attrs),'nav'));
+	}
+	
 	/**
 	 * Outputs an array of items in an unordered list
 	 *
