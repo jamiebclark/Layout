@@ -60,6 +60,7 @@ function initLayout() {
 	$.fn.tableCheckbox = function () {
 		return this.each(function() {
 			var $checkbox = $(this),
+				$row = $checkbox.closest('tr'),
 				shiftPress = false;
 			
 			function getIndex() {
@@ -104,7 +105,11 @@ function initLayout() {
 						start = reclick ? nextLastCheckedIndex : lastCheckedIndex,
 						stop = index,
 						markChecked = $(this).is(':checked');
-					
+					if (markChecked) {
+						$row.addClass('active');
+					} else {
+						$row.removeClass('active');
+					}
 					if (shiftPress) {
 						shiftClick(start, stop, markChecked);
 					}
@@ -128,39 +133,46 @@ function initLayout() {
 				url = $link.attr('href')
 				isAsc = $link.hasClass('asc'),
 				isDesc = $link.hasClass('desc'),
-				c = '',
-				label = $link.attr('label');
+				linkClass = '',
+				label = $link.html();
 			if (isAsc) {
-				c = 'asc';
+				linkClass = 'asc';
 			} else if (isDesc) {
-				c = 'desc';
+				linkClass = 'desc';
+			}
+			if (isAsc || isDesc) {
+				$link.addClass('selected');
 			}
 			if (!url) {
 				return '';
 			}
 			var $div = $('<div class="table-sort"></div>')
 				.append(function() {
-					var c = 'asc';
+					var linkClass = 'asc';
 					if (isAsc) {
-						c += ' selected';
+						linkClass += ' selected';
 					}
-					return $('<a>Ascending</a>').attr({
-						'href': url.replace('direction:desc','direction:asc'),
-						'class': c,
-						'title': 'Sort the table by "' + label + '" in Ascending order'
-					});
+					return $('<a>Ascending</a>')
+						.attr({
+							'href': url.replace('direction:desc','direction:asc'),
+							'class': linkClass,
+							'title': 'Sort the table by "' + label + '" in Ascending order'
+						})
+						.prepend($('<i class="icon-caret-up"></i>'));
 					
 				});
 			$div.append(function() {
-				var c = 'desc';
+				var linkClass = 'desc';
 				if (isDesc) {
-					c += ' selected';
+					linkClass += ' selected';
 				}
-				return $('<a>Descending</a>').attr({
-					'href': url.replace('direction:asc', 'direction:desc'),
-					'class': c,
-					'title': 'Sort the table by this column in Descending order'
-				});
+				return $('<a>Descending</a>')
+					.attr({
+						'href': url.replace('direction:asc', 'direction:desc'),
+						'class': linkClass,
+						'title': 'Sort the table by this column in Descending order'
+					})
+					.prepend($('<i class="icon-caret-down"></i>'));
 			});
 			return $div.before('<br/>').hide();
 		});
@@ -183,7 +195,7 @@ function initLayout() {
 
 $(document).ready(function() {
 	$('th a').tableSortLink();
-	$('input[name*=table_checkbox]').tableCheckbox();
+	$('input[name*="[table_checkbox]"]').tableCheckbox();
 	$('th input.check-all').click(function(e) {
 		var $check = $(this);
 		$('input[name*=table_checkbox]', $check.closest('table')).each(function() {

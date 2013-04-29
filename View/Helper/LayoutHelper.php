@@ -42,7 +42,7 @@ class LayoutHelper extends LayoutAppHelper {
 
 
 	function beforeRender($viewFile) {
-		//$this->Asset->css('Layout.layout');
+		$this->Asset->css('Layout.font-awesome');
 		//$this->Asset->js('Layout.layout');
 		parent::beforeRender($viewFile);
 	}
@@ -215,7 +215,11 @@ class LayoutHelper extends LayoutAppHelper {
 				)
 			);
 		} else {
-			$baseMenu = array(array('Add ' . $human, $urlBase + array('action' => 'add')));
+			$baseMenu = array(array(
+				'Add ' . $human, 
+				$urlBase + array('action' => 'add'),
+				array('icon' => 'add')
+			));
 		}
 		
 		$finalMenu = array();
@@ -753,37 +757,6 @@ class LayoutHelper extends LayoutAppHelper {
 		//return $this->headingActionMenu($title, $menu, $attrs);
 	}
 	
-	function tableSortMenu($sortMenu = array(), $attrs = array()) {
-		$menu = array($this->Html->div(null, 'Sort By'));
-		foreach ($sortMenu as $k => $sort) {
-			$sort += array(null, null, true);
-			list($title, $field, $direction) = $sort;
-			if (!$direction || $direction == 'desc' || $direction == 'DESC') {
-				$direction = 'desc';
-			} else {
-				$direction = 'asc';
-			}
-			if (
-				(!empty($this->request->params['named']['sort']) && $this->request->params['named']['sort'] == $field) && 
-				(!empty($this->request->params['named']['direction']) && $this->request->params['named']['direction'] == $direction)
-			) {
-				$selected = true;
-			} else {
-				$selected = false;
-			}
-			
-			$menu[] = array($title, array(
-				'sort' => $field,
-				'direction' => $direction
-				),
-				array('class' => $selected ? 'selected' : null)
-			);
-		}
-		return $this->menu($menu, array(
-			'class' => 'layoutTableSortMenu',
-		));
-	}
-	
 	/**
 	 * Returns a menu list with large icons above linked text, followed by an optional description
 	 *
@@ -801,7 +774,7 @@ class LayoutHelper extends LayoutAppHelper {
 		return $this->menu($menu, array('class' => 'large-icon-menu'));
 	}
 	
-	function __checkSelectItems($key, $link, $selectItems, $translate = array(), $linkPrefix = null, $paramPrefix = null) {
+	private function checkSelectItems($key, $link, $selectItems, $translate = array(), $linkPrefix = null, $paramPrefix = null) {
 		$match = true;
 		if (!is_array($selectItems) || Param::keyValCheck($selectItems, $key) !== null) {
 			if ($key == 'action' && !empty($this->request->params['prefix']) && strpos($link['action'], $this->request->params['prefix']) !== 0) {
@@ -818,12 +791,44 @@ class LayoutHelper extends LayoutAppHelper {
 				$translate[$key][$link[$key]] = array($translate[$key][$link[$key]]);
 			}
 			foreach ($translate[$key][$link[$key]] as $field) {
-				if ($this->__checkSelectItems($key, array($key => $field) + $link, $selectItems, null, $linkPrefix, $paramPrefix)) {
+				if ($this->checkSelectItems($key, array($key => $field) + $link, $selectItems, null, $linkPrefix, $paramPrefix)) {
 					return true;
 				}
 			}
 		}
 		return $match;
+	}
+
+	public function dropdown($title, $menu = array(), $options = array()) {
+		$options = array_merge(array(
+			'tag' => 'div',
+		));
+		$options = $this->addClass($options, 'dropdown');
+		extract($options);
+		
+		$out = '';
+		$title .= ' <i class="icon-caret-down"></i>';
+		$out .= $this->Html->link($title, '#', array(
+			'class' => 'dropdown-toggle',
+			'data-toggle' => 'dropdown',
+			'escape' => false
+		));
+		$out .= $this->nav($menu, array('class' => 'dropdown-menu'));
+		return $this->Html->tag($tag, $out, compact('class'));
+	}
+
+	function dropdownOld($text, $dropdown, $options = array()) {
+		$dropdownOptions = array('class' => 'layout-dropdown');
+		$boxOptions = array('class' => 'dropdown-box');
+		
+		$arrow = $this->Html->image('icn/16x16/bullet_arrow_down.png');
+		$out = $this->Html->link($arrow, '#', array('escape' => false, 'class' => 'arrow'));
+		if (is_array($dropdown)) {
+			$dropdown = $this->menu($dropdown, array('class' => 'link-list'));
+			$boxOptions = $this->addClass($boxOptions, 'list');
+		}
+		$out .= $this->Html->tag('span', $dropdown, $boxOptions);
+		return $text . $this->Html->tag('span', $out, $dropdownOptions);
 	}
 
 	function navBar($menuItems, $title = null, $attrs = array()) {
@@ -960,7 +965,7 @@ class LayoutHelper extends LayoutAppHelper {
 					$checkKeys = array('controller', 'action', 'prefix');
 					$match = true;
 					foreach ($checkKeys as $key) {
-						if (!($match = $this->__checkSelectItems(
+						if (!($match = $this->checkSelectItems(
 							$key, 
 							$link, 
 							$selectItems, 
@@ -1469,28 +1474,6 @@ class LayoutHelper extends LayoutAppHelper {
 		return $this->Html->tag($tag, $text, $options);
 	}
 	
-	function dropdown($text, $dropdown, $options = array()) {
-		$dropdownOptions = array('class' => 'layout-dropdown');
-		$boxOptions = array('class' => 'dropdown-box');
-		
-		$arrow = $this->Html->image('icn/16x16/bullet_arrow_down.png');
-		$out = $this->Html->link($arrow, '#', array('escape' => false, 'class' => 'arrow'));
-		if (is_array($dropdown)) {
-			$dropdown = $this->menu($dropdown, array('class' => 'link-list'));
-			$boxOptions = $this->addClass($boxOptions, 'list');
-		}
-		$out .= $this->Html->tag('span', $dropdown, $boxOptions);
-		return $text . $this->Html->tag('span', $out, $dropdownOptions);
-	}
-	
-	/**
-	 * Outputs a blank DIV that will fix CSS float errors
-	 *
-	 **/
-	function clearFix() {
-		return $this->Html->div('clearFix', '&nbsp;');
-	}
-	
 	function _getAction() {
 		$action = $this->request->params['action'];
 		if (!empty($this->request->params['prefix'])) {
@@ -1499,4 +1482,3 @@ class LayoutHelper extends LayoutAppHelper {
 		return $action;
 	}
 }
-?>

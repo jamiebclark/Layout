@@ -198,7 +198,35 @@ class TableHelper extends LayoutAppHelper {
 		return $this->Html->div('with-checked form-inline', $out);
 	}
 
-	
+	public function tableSortMenu($sortMenu = array(), $attrs = array()) {
+		$menu = array();
+		foreach ($sortMenu as $k => $sort) {
+			$sort += array(null, null, true);
+			list($title, $field, $direction) = $sort;
+			if (!$direction || $direction == 'desc' || $direction == 'DESC') {
+				$direction = 'desc';
+			} else {
+				$direction = 'asc';
+			}
+			if (
+				(!empty($this->request->params['named']['sort']) && $this->request->params['named']['sort'] == $field) && 
+				(!empty($this->request->params['named']['direction']) && $this->request->params['named']['direction'] == $direction)
+			) {
+				$selected = true;
+			} else {
+				$selected = false;
+			}
+			
+			$menu[] = array($title, array(
+				'sort' => $field,
+				'direction' => $direction
+				),
+				array('class' => $selected ? 'selected' : null)
+			);
+		}
+		return $this->Layout->dropdown('Sort Table', $menu, array('class' => 'table-sort'));
+	}
+
 	public function rowEnd($trOptions = array()) {
 		$this->getHeader = false;
 		$row = $this->row;

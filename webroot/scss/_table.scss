@@ -1,16 +1,22 @@
 @import "rounded";
 @import "shadow";
 
-tr.inactive {
-	&, td {
-		background-color: #CCC;
+tr {
+	&.inactive {
+		&, td {
+			background-color: #CCC;
+		}
+	}
+	&.active {
+		&, td {
+			background-color: blue;
+		}
 	}
 }
 
 
 $tableSortBgColor: #EEE;
 $tableSortBorderColor: #CCC;
-
 $tableSortRounded: .25em;
 
 .table-sort-links {
@@ -18,6 +24,7 @@ $tableSortRounded: .25em;
 	z-index: 500;
 	float: left;
 	margin-top: 1px;
+	
 	.sort-select {
 		padding: 5px;
 		padding-bottom: 4px;
@@ -25,37 +32,49 @@ $tableSortRounded: .25em;
 		position: relative;
 		z-index: 1000;
 		&.hover {
-			@include rounded-top($tableSortRounded);
+			border-radius: $tableSortRounded;
 			background-color: $tableSortBgColor;
 			border-color: $tableSortBorderColor;
-			border-bottom: 0;
+		}
+		&.selected {
+			color: orange;
+			text-decoration: underline;
 		}
 	}
 	
 	.table-sort {
 		padding: 5px 2px;
 		border: 1px solid $tableSortBorderColor;
-		
-		@include rounded-bottom($tableSortRounded);
-		@include rounded(top-right, $tableSortRounded);
+		border-radius: $tableSortRounded;
 		background-color: $tableSortBgColor;
+		
+		width: 120px;
+
 		position: absolute;
 		@include box-shadow();
+		z-index: 1001;
 		
 		a {
-			padding-right: 5px;
+			padding: 0 5px;
 			display: block;
 			font-weight: normal;
 			font-size: 10px;
+			text-align: left;
 			
-			@include rounded-all(2px);
+			border-radius: $tableSortRounded;
 			
 			&:hover {
 				background-color: white;
+				i {
+					text-decoration: none;
+				}
 			}
 			&.selected {
 				background-color: white;
 				font-weight: bold;
+			}
+			i {
+				margin-right: 6px;
 			}
 		}
 	}

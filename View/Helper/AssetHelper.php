@@ -4,8 +4,8 @@ class AssetHelper extends AppHelper {
 	var $helpers = array('Html');		var $_default = array(
 		'css' => array(
 			'Layout.style.css',
-			'Layout.bootstrap/bootstrap.min',
-			'Layout.bootstrap/bootstrap-responsive.min',
+			'Layout.bootstrap',
+			'Layout.bootstrap-responsive',
 			'Layout.jquery/ui/ui-lightness/jquery-ui-1.8.20.custom',
 			//'Layout.bootstrap/datetimepicker',
 		),

@@ -1,58 +1,3 @@
-function tableAjaxEditInit() {
-	$('.table-cell-edit').each(function() {
-		if (!$(this).is(':visible')) {
-			$(this).find('input,select').attr('disabled', true);
-		}
-		var $td = $(this).closest('td');
-		if (!$td.hasClass('table-checkbox')) {		
-			$td.css('width', $(this).closest('td').width());
-			
-			var tr = $(this).closest('tr');
-			tr.find('a[href*="edit"],a[class*="table-add-link"]').click(function(e) {
-				if (tr.toggleTableCellEdit(true)) {
-					e.preventDefault();
-				}
-				return $(this);
-			});
-		}
-		return $(this);
-	});
-	$('a.table-cell-edit-cancel').click(function(e) {
-		$(this).closest('tr').toggleTableCellEdit(false);
-		e.preventDefault();
-	});
-	
-	/*
-	$('table').each(function() {
-		var table = $(this);
-		if ($(this).find('.table-cell-edit').length) {
-			var $addTr = $('<tr></tr>');
-			var $rowCount = 0;
-			$(this).find('tr').each(function() {
-				if ($(this).find('.table-cell-edit').length) {
-					if (!$rowCount) {
-						$(this).find('td').each(function() {
-							var $td = $(this);
-							var $newTd = $('<td></td>');
-							if ($(this).find('.table-cell-edit').length) {
-								var $editCell = $td.find('.table-cell-edit').clone();
-								$editCell.show().find('input').attr('value', '');
-								$newTd.append($editCell);//$('<div class="table-cell-edit"></div>').append($editCell.contents()));
-							} else {
-								$newTd.html('&nbsp;');
-							}
-							$addTr.append($newTd);
-						});
-					}
-					$rowCount++;
-				}
-			});
-		}
-		table.append($addTr);
-	});
-	*/
-}
-
 (function($) {
 	var lastCheckedIndex = 0;
 	var nextLastCheckedIndex = 0;
@@ -132,7 +77,7 @@ function tableAjaxEditInit() {
 				isAsc = $link.hasClass('asc'),
 				isDesc = $link.hasClass('desc'),
 				c = '',
-				label = $link.attr('label');
+				label = $link.html();
 			if (isAsc) {
 				c = 'asc';
 			} else if (isDesc) {
@@ -147,11 +92,13 @@ function tableAjaxEditInit() {
 					if (isAsc) {
 						c += ' selected';
 					}
-					return $('<a>Ascending</a>').attr({
-						'href': url.replace('direction:desc','direction:asc'),
-						'class': c,
-						'title': 'Sort the table by "' + label + '" in Ascending order'
-					});
+					return $('<a>Ascending</a>')
+						.attr({
+							'href': url.replace('direction:desc','direction:asc'),
+							'class': c,
+							'title': 'Sorty the table by "' + label + '" in Ascending order'
+						})
+						.prepend($('<i class="icon-caret-up"></i>'));
 					
 				});
 			$div.append(function() {
@@ -159,11 +106,13 @@ function tableAjaxEditInit() {
 				if (isDesc) {
 					c += ' selected';
 				}
-				return $('<a>Descending</a>').attr({
-					'href': url.replace('direction:asc', 'direction:desc'),
-					'class': c,
-					'title': 'Sort the table by this column in Descending order'
-				});
+				return $('<a>Descending</a>')
+					.attr({
+						'href': url.replace('direction:asc', 'direction:desc'),
+						'class': c,
+						'title': 'Sort the table by this column in Descending order'
+					})
+					.prepend($('<i class="icon-caret-down"></i>'));
 			});
 			return $div.before('<br/>').hide();
 		});
@@ -207,14 +156,8 @@ function tableAjaxEditInit() {
 })(jQuery);
 
 $(document).ready(function() {
-	tableAjaxEditInit();
 	$('th a').tableSortLink();
-
 	$('input[name*=table_checkbox]').each(function () {
 		$(this).tableCheckbox();
-	});
-	
-	$(this).bind('ajaxComplete', function() {
-		tableAjaxEditInit();
 	});
 });
