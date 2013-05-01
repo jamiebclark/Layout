@@ -26,7 +26,23 @@
 	</title>
 	<?php
 		echo $this->Html->meta('icon');
+		
+		if (!empty($description_for_layout)) {
+			$description_for_layout = str_replace("\n", '', strip_tags($description_for_layout));
+			echo $this->Html->meta('description', $description_for_layout);
+		}
+		
+		if (!empty($image_for_layout)) {
+			echo $this->Html->tag('link', '', array(
+				'rel' => 'image_src',
+				'href' => $image_for_layout
+			));
+		}
 
+		if ($head = $this->fetch('head')) {
+			echo $head;
+		}
+		
 		echo $this->fetch('meta');
 		echo $this->Asset->output(true);
 	?>
@@ -39,6 +55,12 @@
 			</div>
 		<?php endif; ?>
 		<div id="content" class="container">
+			<?php 
+				if (!empty($pre_crumb)) {
+					echo $this->Html->div('pre-crumb container', $pre_crumb);
+				}
+			?>
+
 			<?php echo $this->Crumbs->output();?>
 			<?php echo $this->Session->flash(); ?>
 			<?php echo $this->Session->flash('auth', array(

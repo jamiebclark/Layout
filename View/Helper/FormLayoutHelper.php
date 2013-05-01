@@ -175,9 +175,16 @@ class FormLayoutHelper extends LayoutAppHelper {
 		);
 		$options = array_merge(array(
 			'label' => null,
-			'div' => 'input text input-autocomplete',
+			'div' => 'input-autocomplete',
 			'value' => null,
 		), $custom, $options);
+		
+		if (isset($options['input-append'])) {
+			$options = $this->addClass($options, 'input-append', 'div');
+			$options = $this->addClass($options, $options['input-append'], 'after');
+			unset($options['input-append']);
+		}
+		
 		extract($options);
 		$hasValue = !empty($value);
 
