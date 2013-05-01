@@ -56,23 +56,19 @@ class LayoutHelper extends LayoutAppHelper {
 		return $this->contentBoxOpen($title, $params) . $this->contentBoxClose($content);
 	}
 	function contentBoxOpen($title = null, $params = null) {
-		$class = 'contentBox';
+		$params = $this->addClass($params, 'content-box');
 		if (empty($title)) {
-			$class .= ' contentBoxBlank';
-		}
-		if ($paramClass = Param::keyCheck($params, 'class', true)) {
-			$class .= ' ' . $paramClass;
+			$params = $this->addClass($params, 'content-box-blank');
 		}
 		if (!empty($params['toggle'])) {
-			$class .= ' toggle';
+			$params = $this->addClass($params, 'toggle');
 			$params['url'] = '#';	//Setting toggle overwrites existing URL option
 			if ($params['toggle'] == -1) {
 				$toggleClose = true;
-				$class .= ' toggleClose';
+				$params = $this->addClass($params, 'toggle-close');
 			}
 		}
-		$render = $this->Html->div($class);
-		
+		$render = $this->Html->div($params['class']);
 		if (!empty($params['close'])) {
 			if (empty($params['actionMenu'])) {
 				$params['actionMenu'] = array(array(), array());
@@ -104,12 +100,12 @@ class LayoutHelper extends LayoutAppHelper {
 			$render .= $this->headingActionMenu($title, $actionMenu[0], $actionMenu[1]);
 		}
 		
-		$bodyClass = 'contentBoxBody';
+		$bodyClass = 'content-box-body';
 		$bodyOptions = array();
 		if (!empty($params['bodyClass'])) {
 			$bodyClass = $params['bodyClass'];
 		} else if (!empty($params['list'])) {
-			$bodyClass = 'contentBoxBodyList';
+			$bodyClass = 'content-box-body-list';
 		}
 		if (!empty($toggleClose)) {
 			$bodyOptions['style'] = 'display:none;';
@@ -752,7 +748,9 @@ class LayoutHelper extends LayoutAppHelper {
 		if (empty($title)) {
 			$title = Param::keyCheck($attrs, 'title', true, 'Staff Only');
 		}
-		$menu = $this->actionMenu($menu, array_merge(array('div' => false, 'class' => 'pull-right'), $attrs));
+		if (!empty($menu)) {
+			$menu = $this->actionMenu($menu, array_merge(array('div' => false, 'class' => 'pull-right'), $attrs));
+		}
 		return $this->navBar($menu, $title, $navBarAttrs);
 		//return $this->headingActionMenu($title, $menu, $attrs);
 	}
