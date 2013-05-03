@@ -19,6 +19,7 @@ class LayoutAppHelper extends AppHelper {
 			}
 		}
 	
+	debug('Loading');
 		if (CakePlugin::loaded('TwitterBootstrap')) {
 			$this->bootstrap = true;
 			foreach (array('Html', 'Form', 'Paginator') as $helper) {
@@ -31,6 +32,7 @@ class LayoutAppHelper extends AppHelper {
 				}
 				$this->helpers[$helper]['className'] = 'TwitterBootstrap.Bootstrap'.$helper;
 			}
+			debug($this->helpers);
 		}
 		parent::__construct($View, $settings);
 	}
