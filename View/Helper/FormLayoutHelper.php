@@ -179,12 +179,6 @@ class FormLayoutHelper extends LayoutAppHelper {
 			'value' => null,
 		), $custom, $options);
 		
-		if (isset($options['input-append'])) {
-			$options = $this->addClass($options, 'input-append', 'div');
-			$options = $this->addClass($options, $options['input-append'], 'after');
-			unset($options['input-append']);
-		}
-		
 		extract($options);
 		$hasValue = !empty($value);
 
@@ -245,6 +239,12 @@ class FormLayoutHelper extends LayoutAppHelper {
 			'div' => 'input',
 		), $options);
 		$options = $this->addClass($options, $options['type'], 'div');
+
+		if (isset($options['input-append'])) {
+			$options = $this->addClass($options, 'input-append', 'div');
+			$options = $this->addClass($options, $options['input-append'], 'after');
+			unset($options['input-append']);
+		}
 		
 		if ($search = Param::keyCheck($options, 'search', true)) {
 			if (!isset($options['form'])) {
@@ -1077,6 +1077,7 @@ class FormLayoutHelper extends LayoutAppHelper {
 		$button = $this->Form->button(
 			$this->Iconic->icon('magnifying_glass'), 
 			array(
+				'class' => 'btn',
 				'type' => 'submit',
 				'div' => false,
 			)
@@ -1089,9 +1090,9 @@ class FormLayoutHelper extends LayoutAppHelper {
 			'type' => 'text',
 		), $options, array(
 			'div' => 'search-box',
-			'between' => $this->Html->div('search-box-border') . $this->Html->div('search-box-container'),
-			'after' => "</div>\n" . $button . "</div>\n",
+			'input-append' => $button,
 		));
+		
 		$return = '';
 		if ($form) {
 			if (!is_array($form)) {
@@ -1104,7 +1105,7 @@ class FormLayoutHelper extends LayoutAppHelper {
 			$form += array(null, array());
 			$return .= $this->Form->create($form[0], $form[1]);
 		}
-		$return .= $this->Form->input($name, $options);
+		$return .= $this->input($name, $options);
 		if ($form) {
 			$return .= $this->Form->end();
 		}
