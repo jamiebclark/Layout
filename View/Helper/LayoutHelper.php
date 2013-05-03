@@ -829,8 +829,10 @@ class LayoutHelper extends LayoutAppHelper {
 					} else {
 						$row = $this->Html->link($rowTitle, $rowUrl, $rowOptions);
 					}
-				} else {
-					$rowClass = !empty($row) ? 'nav-header' : 'divider';
+				} else if (empty($row)) {
+					$rowClass = 'divider';
+				} else if (stripos($row, 'href') === false) {
+					$rowClass = 'nav-header';
 				}
 				$out .= $this->Html->tag('li', $row, array('class' => $rowClass));				
 			}
