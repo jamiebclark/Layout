@@ -49,15 +49,13 @@
 </head>
 <body>
 	<div id="container">
-		<?php if ($header = $this->fetch('header')): ?>
-			<div id="header">
-				<?php echo $this->Html->div('container no-print', $header); ?>
-			</div>
-		<?php endif; ?>
-		<div id="content" class="container">
+		<div id="header" class="no-print">
+			<?php echo $this->fetch('header'); ?>
+		</div>
+		<div id="content">
 			<?php 
 				if (!empty($pre_crumb)) {
-					echo $this->Html->div('pre-crumb container', $pre_crumb);
+					echo $this->Html->div('pre-crumb', $pre_crumb);
 				}
 			?>
 
@@ -69,12 +67,14 @@
 			));?>
 			<?php echo $this->Html->div('container', $this->fetch('content')); ?>
 		</div>
-		<?php if ($footer = $this->fetch('footer')): ?>
-			<div id="footer">
-				<?php echo $this->Html->div('container no-print', $footer); ?>
-			</div>
-		<?php endif; ?>
+		<div id="footer">
+			<?php 
+				echo $this->fetch('footer');
+				if (!empty($adminDisplay)) {
+					echo $this->element('sql_dump');
+				}
+			?>
+		</div>
 	</div>
-	<?php echo $this->element('sql_dump'); ?>
 </body>
 </html>

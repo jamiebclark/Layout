@@ -797,6 +797,49 @@ class LayoutHelper extends LayoutAppHelper {
 		return $match;
 	}
 
+	function dropdown($title, $menu, $options = array()) {
+		$options = array_merge(array(
+			'url' => '#',
+			'tag' => 'div',
+			'root' => true,
+		), $options);
+		$options = $this->addClass($options, $options['root'] ? 'dropdown' : 'dropdown-submenu');
+		extract($options);
+		
+		$urlOptions = array('escape' => false);
+		$title .= '<b class="caret"></b>';
+		if ($root) {
+			$urlOptions['data-toggle'] = 'dropdown';
+		}
+		$title = $this->Html->link($title, $url, $urlOptions);
+		
+		$out = '';
+		if (!empty($menu)) {
+			foreach ($menu as $row) {
+				$rowClass = null;
+				if (is_array($row)) {
+					list($rowTitle, $rowUrl, $rowOptions) = $row + array(null, null, null);
+					if ($children = Param::keyCheck($rowOptions, 'children', true)) {
+						$out .= $this->dropdown($rowTitle, $children, array(
+							'url' => $rowUrl,
+							'root' => false,
+							'tag' => 'li',
+						));
+						continue;
+					} else {
+						$row = $this->Html->link($rowTitle, $rowUrl, $rowOptions);
+					}
+				} else {
+					$rowClass = !empty($row) ? 'nav-header' : 'divider';
+				}
+				$out .= $this->Html->tag('li', $row, array('class' => $rowClass));				
+			}
+			$out = $this->Html->tag('ul', $out, array('class' => 'dropdown-menu'));
+		}
+		return $this->Html->tag($tag, $title . $out, compact('class'));		
+	}
+	
+	/*
 	public function dropdown($title, $menu = array(), $options = array()) {
 		$options = array_merge(array(
 			'tag' => 'div',
@@ -814,6 +857,7 @@ class LayoutHelper extends LayoutAppHelper {
 		$out .= $this->nav($menu, array('class' => 'dropdown-menu'));
 		return $this->Html->tag($tag, $out, compact('class'));
 	}
+	*/
 
 	function dropdownOld($text, $dropdown, $options = array()) {
 		$dropdownOptions = array('class' => 'layout-dropdown');

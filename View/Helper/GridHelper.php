@@ -21,7 +21,7 @@ class GridHelper extends AppHelper {
 	function open() {
 		$this->__reset();
 		$this->isOpen = true;
-		return $this->Html->div('grid');
+		return $this->Html->div('row-fluid');
 	}
 	
 	function close() {
@@ -77,7 +77,6 @@ class GridHelper extends AppHelper {
 			$return .= $this->open();
 		}
 		$return .= $this->Html->div($this->__parseClass($class, $options));
-		$return .= $this->Html->div('grid-inner');
 		$this->isColOpen = true;
 		return $return;
 	}
@@ -88,7 +87,7 @@ class GridHelper extends AppHelper {
 			$content = '';
 			$close = true;
 		}
-		$return = $content . "\n</div>\n</div>\n";
+		$return = $content . "\n</div>\n";
 		$this->isColOpen = false;
 
 		if ($close) {
@@ -118,6 +117,8 @@ class GridHelper extends AppHelper {
 	}
 	
 	function __getFractionClass($numerator, $denominator) {
+		return 'span' . floor($numerator / $denominator * 12);
+		
 		$fraction = $this->__reduce(array($numerator, $denominator));
 		$class = "{$this->colClassPrefix}{$fraction[0]}-{$fraction[1]}";
 		if (($this->colCount += ($numerator / $denominator)) >= 1) {
@@ -142,4 +143,3 @@ class GridHelper extends AppHelper {
 		$this->colCount = 0;
 	}
 }
-?>
