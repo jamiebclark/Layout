@@ -55,10 +55,11 @@ class LayoutHelper extends LayoutAppHelper {
 	function contentBox($title = null, $content = null, $params = null) {
 		return $this->contentBoxOpen($title, $params) . $this->contentBoxClose($content);
 	}
+	
 	function contentBoxOpen($title = null, $params = null) {
-		$params = $this->addClass($params, 'content-box');
+		$params = $this->addClass($params, 'contentbox');
 		if (empty($title)) {
-			$params = $this->addClass($params, 'content-box-blank');
+			$params = $this->addClass($params, 'contentbox-blank');
 		}
 		if (!empty($params['toggle'])) {
 			$params = $this->addClass($params, 'toggle');
@@ -97,15 +98,16 @@ class LayoutHelper extends LayoutAppHelper {
 		if (!empty($title) || !empty($actionMenu)) {
 			$actionMenu = array_merge((array)$actionMenu, array(null, null));
 			$actionMenu[1]['icons'] = true;
+			$actionMenu[1]['class'] = 'contentbox-heading';
 			$render .= $this->headingActionMenu($title, $actionMenu[0], $actionMenu[1]);
 		}
 		
-		$bodyClass = 'content-box-body';
+		$bodyClass = 'contentbox-body';
 		$bodyOptions = array();
 		if (!empty($params['bodyClass'])) {
 			$bodyClass = $params['bodyClass'];
 		} else if (!empty($params['list'])) {
-			$bodyClass = 'content-box-body-list';
+			$bodyClass = 'contentbox-body-list';
 		}
 		if (!empty($toggleClose)) {
 			$bodyOptions['style'] = 'display:none;';
@@ -422,7 +424,8 @@ class LayoutHelper extends LayoutAppHelper {
 					$skipUrlBuild = true;
 				} 
 				
-				if ($menuItem == 'duplicate') {
+				//TODO: Move duplicate link out of Layout
+				if (false && $menuItem == 'duplicate') {
 					$controller = !empty($newUrl['controller']) ? $newUrl['controller'] : $this->request->params['controller'];
 					$model = Inflector::singularize(Inflector::camelize($controller));
 					$menu[$key] = $this->Duplicate->iconLink($model, $id, array('array' => true, 'icons' => $useIcons));
@@ -587,58 +590,51 @@ class LayoutHelper extends LayoutAppHelper {
 		return $this->Html->tag($tag, $out, $wrapOptions);
 	}
 	*/
-	function media($content, $options = array()) {
+	function media($body = null, $options = array()) {
 		$options = array_merge(array(
-			'title' => '',
-			'objects' => null,
-			'left' => array(),
-			'right' => array(),
-			'url' => null,
 			'tag' => 'div',
+			'url' => false,
+			'link' => false,
+			'wrapTag' => 'span',
+			'left' => null,
+			'right' => null,
 		), $options);
+		$options = $this->addClass($options, 'media');
 		extract($options);
-		$out = '';
-		/*
-		if (!empty($thumb)) {
-			if (!is_array($thumb)) {
-				$thumb = array('src' => $thumb);
-			}
-			$objects[] = array_merge(array('type' => 'image', 'pull' => 'left'), $thumb);
+		if ($link === true) {
+			$link = $url;
+			$url = false;
 		}
-		foreach ($objects as $oType => $oOptions) {
-			$src = !is_array($oOptions) ? $oOptions : Param::keyCheck($oOptions, 'src', true);
-			$wrapTag = 'span';
-			$wrapOptions = array(
-				'class' => 'pull-' . Param::keyCheck($oOptions, 'pull', true, 'left'),
-			);
-			if (($oUrl = Param::keyCheck($oOptions, 'url', true)) || ($oUrl = $url)) {
-				$wrapOptions['href'] = is_array($oUrl) ? Router::url($oUrl) : $oUrl;
-				$wrapTag = 'a';
+		$out = '';	
+		debug($options);
+		foreach (array('left', 'right') as $pos) {
+			$object = '';
+			debug($pos);
+			if (!empty($options[$pos])) {
+				$isUrl = is_array($options[$pos]) || $options[$pos][0] != '<';
+
+				if ($isUrl) {
+					$object .= $this->Html->image($options[$pos], array('class' => 'media-object'));
+				} else {
+					$object .= $options[$pos];
+				}
+				if (!$link) {
+					$out .= $this->Html->link($thumb, $url, array('class' => "pull-$pos", 'escape' => false));
+				} else {
+					$out .= $this->Html->tag($wrapTag, $thumb, array('class' => "pull-$pos"));
+				}
 			}
-			if (empty($oOptions['type'])) {
-				$oOptions['type'] = is_numeric($oType) ? 'text' : $oType;
-			}
-			$oOptions = $this->addClass($oOptions, 'media-object');
-			if ($oOptions['type'] == 'image') {
-				$out .= $this->Html->image($src, $oOptions);
-			} else {
-				$out .= $this->Html->tag('span', $src, $oOptions);
-			}
-			debug(compact('wrapTag', 'wrapOptions'));
-			$out = $this->Html->tag($wrapTag, $out, $wrapOptions);
+			
 		}
-		*/
-		if (!empty($left)) {
-			//$out .= $this->Html->tag('span', $left
+		if (!empty($body)) {
+			$out .= $this->Html->tag($wrapTag, $body, array('class' => 'media-body'));
 		}
-		if (!empty($title)) {
-			if (!empty($url)) {
-				$title = $this->Html->link($title, $url, array('escape' => false));
-			}
-			$title = $this->Html->tag('h4', $title, array('class' => 'media-title'));
+		$outOptions = compact('class');
+		if ($link) {
+			return $this->Html->link($out, array('escape' => false) + $outOptions);
+		} else {
+			return $this->Html->tag($tag, $out, $outOptions);
 		}
-		$out .= $this->Html->div('media-body', $title . $content);
-		return $this->Html->tag($tag, $out, array('class' => 'media'));	
 	}
 	
 	function getAction($key, $useIcons = true) {
@@ -721,6 +717,8 @@ class LayoutHelper extends LayoutAppHelper {
 	 *
 	 **/
 	function headingActionMenu($title, $menu = null, $attrs = array()) {
+		return $this->navActionBar($menu, $title, $attrs);
+		
 		return $this->adminMenu($menu, compact('title') + $attrs);
 	
 		$tag = Param::keyCheck($attrs, 'tag', true, 'h2');
@@ -748,10 +746,7 @@ class LayoutHelper extends LayoutAppHelper {
 		if (empty($title)) {
 			$title = Param::keyCheck($attrs, 'title', true, 'Staff Only');
 		}
-		if (!empty($menu)) {
-			$menu = $this->actionMenu($menu, array_merge(array('div' => false, 'class' => 'pull-right'), $attrs));
-		}
-		return $this->navBar($menu, $title, $navBarAttrs);
+		return $this->navActionBar($menu, $title, $navBarAttrs);
 		//return $this->headingActionMenu($title, $menu, $attrs);
 	}
 	
@@ -802,14 +797,18 @@ class LayoutHelper extends LayoutAppHelper {
 			'url' => '#',
 			'tag' => 'div',
 			'root' => true,
+			'after' => '<b class="caret"></b>',
 		), $options);
 		$options = $this->addClass($options, $options['root'] ? 'dropdown' : 'dropdown-submenu');
 		extract($options);
 		
 		$urlOptions = array('escape' => false);
-		$title .= '<b class="caret"></b>';
+		if (!empty($after)) {
+			$title .= $after;
+		}
 		if ($root) {
 			$urlOptions['data-toggle'] = 'dropdown';
+			$urlOptions = $this->addClass($urlOptions, 'root');
 		}
 		$title = $this->Html->link($title, $url, $urlOptions);
 		
@@ -874,8 +873,24 @@ class LayoutHelper extends LayoutAppHelper {
 		$out .= $this->Html->tag('span', $dropdown, $boxOptions);
 		return $text . $this->Html->tag('span', $out, $dropdownOptions);
 	}
+	
+	/**
+	 * Outputs a navbar, but with menu items formatted for actionMenu
+	 *
+	 * @param array $menu The actionMenu menu items
+	 * @param string $title Title of navbar
+	 * @param array $attrs Options for navbar
+	 * @return string Navbar
+	 **/
+	function navActionBar($menu, $title, $attrs = array()) {
+		if (!empty($menu)) {
+			$menu = $this->actionMenu($menu, array_merge(array('div' => false, 'class' => 'pull-right'), $attrs));
+		}
+		return $this->navBar($menu, $title, $attrs);
+	}
 
 	function navBar($menuItems, $title = null, $attrs = array()) {
+		$attrs = $this->addClass($attrs, 'navbar');
 		$out = '';
 		if (!empty($title)) {
 			if (is_array($title)) {
@@ -888,7 +903,7 @@ class LayoutHelper extends LayoutAppHelper {
 		if (!empty($menuItems)) {
 			$out .= is_array($menuItems) ? $this->nav($menuItems, $attrs) : $menuItems;
 		}
-		return $this->Html->div('navbar', $this->Html->div('navbar-inner', $out));
+		return $this->Html->div($attrs['class'], $this->Html->div('navbar-inner', $out));
 	}
 	
 	function nav($menuItems = array(), $attrs = array()) {
@@ -903,7 +918,6 @@ class LayoutHelper extends LayoutAppHelper {
 		if (!is_array($menuItems)) {
 			$menuItems = array($menuItems);
 		}
-		
 		if (!empty($attrs['urlAdd'])) {
 			foreach ($menuItems as $k => $menuItem) {
 				if (is_array($menuItem) && !empty($menuItem[1]) && is_array($menuItem[1])) {

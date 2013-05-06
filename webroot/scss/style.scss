@@ -2,7 +2,97 @@
 @import "iconic";
 @import "table";
 @import "form-layout";
+@import "overflow-fix";
 @import "collapse_list";
+
+@import "bootstrap/variables";
+@import "bootstrap/mixins";
+
+// Media Box
+// ---------------------
+.media {
+	margin: 10px;
+	&, .bd {
+		@include overflow-fix;
+		display: block;
+	}
+	.img {
+		float:left; 
+		margin-right: 10px;
+		img {
+			display: block;
+		}
+		&.small {
+			img {
+				width: 40px;
+			}
+		}
+	}
+	.imgExt, .rght {
+		float:right; 
+		margin-left: 10px;
+	}
+	h1, h2, h3 {
+		margin: 0 0 0 0;
+		padding: 0;
+	}
+	p {
+		margin-bottom: .5em;
+	}
+	&.border, .border .media {
+		border: 1px solid #EEE;
+		@include rounded-all(.25em);
+		padding: 10px;
+	}
+}
+
+a.media {
+	color: #999;
+	padding: 10px;
+	border: 1px solid #CCC;
+	max-width: 760px;
+	&:hover {
+		color: #666;
+		border-color: #999;
+		text-decoration: none;
+	}
+	h2, h3 {
+		margin: 0;
+		padding: 0;
+	}
+	h2 {
+		font-size: 1.25em;
+		line-height: 1.25;
+	}
+	h3 {
+		font-size: 1em;
+	}
+	p {
+		font-weight: normal;
+	}
+}
+
+
+// Content Box
+// ----------------
+.contentbox {
+	border: 1px solid $navbarBorder;
+	margin-bottom: $baseLineHeight;
+	@include border-radius($baseBorderRadius);
+	
+	.contentbox-heading {
+		margin-bottom: 0 !important;
+		.navbar-inner {
+			border-top: 0;
+			border-left: 0;
+			border-right: 0;
+			@include border-radius(0);
+		}
+	}
+	.contentbox-body {
+		padding: 10px;
+	}
+}
 
 .clearfix {
 	@include clearfix;

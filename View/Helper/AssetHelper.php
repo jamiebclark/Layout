@@ -1,30 +1,51 @@
 <?php
-class AssetHelper extends AppHelper {
+App::uses('LayoutAppHelper', 'Layout.View/Helper');
+class AssetHelper extends LayoutAppHelper {
 	var $name = 'Asset';
-	var $helpers = array('Html');		var $_default = array(
-		'css' => array(
-			'Layout.style.css',
-			'Layout.bootstrap',
-			'Layout.bootstrap-responsive',
-			'Layout.jquery/ui/ui-lightness/jquery-ui-1.8.20.custom',
-			//'Layout.bootstrap/datetimepicker',
+	var $helpers = array('Html');	
+	//Assets to be loaded whenever helper is called, broken down by category
+	public $defaultAssets = array(
+		'jquery' => array(
+			'css' => array('Layout.jquery/ui/ui-lightness/jquery-ui-1.8.20.custom'),
+			'js' => array(
+				'//ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js',
+				'//ajax.googleapis.com/ajax/libs/jqueryui/1.10.2/jquery-ui.min.js'
+			),
 		),
-		'js' => array(
-			'//ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js',
-			'//ajax.googleapis.com/ajax/libs/jqueryui/1.10.2/jquery-ui.min.js',
-			'Layout.bootstrap/bootstrap.min',
-			//'Layout.bootstrap/bootstrap-datetimepicker.min',
-			'Layout.script',
+		'bootstrap' => array(
+			'css' => array('Layout.bootstrap', 'Layout.bootstrap-responsive'),
+			'js' => array('Layout.bootstrap/bootstrap.min'),
+		),
+		'default' => array(
+			'css' => array('Layout.style.css'),
+			'js' => array('Layout.script')
 		)
 	);
-	
+	//After constructor, all assets will be stored here
+	private $_defaultAssets = array();
+
+	private $_assetTypes = array('css', 'js');
 	private $_assets = array();
 	private $_usedAssets = array();
-	function __construct(View $view, $options = array()) {		parent::__construct($view, $options);
+
+	function __construct(View $view, $settings = array()) {
+		parent::__construct($view, $settings);
 		
+		foreach ($this->defaultAssets as $assetGroupKey => $assetGroup) {
+			if (isset($settings[$assetGroupKey])) {
+				foreach ($this->_assetTypes as $type) {
+					if (isset($settings[$assetGroupKey][$type])) {
+						$this->defaultAssets[$assetGroupKey][$type] = $settings[$assetGroupKey][$type];
+					}
+				}
+				unset($settings[$assetGroupKey]);
+			}
+		}
+		$this->_set($settings);
+		$this->setDefaultAssets();
 		foreach (array('css', 'js') as $type) {
-			if (!empty($this->_default[$type])) {
-				$this->$type($this->_default[$type]);
+			if (!empty($this->_defaultAssets[$type])) {
+				$this->$type($this->_defaultAssets[$type]);
 			}
 			if (!empty($options[$type])) {
 				$this->$type($options[$type]);
@@ -69,6 +90,14 @@ class AssetHelper extends AppHelper {
 		return $out;
 	}
 	
+	/**
+	 * Adds a file to the asset cache
+	 *
+	 * @param string $type  The type of asset (css or js)
+	 * @param array|string $files The path to the file or files to be added
+	 * @param array $configAll Settings to be passed to all file
+	 * @return boolean On success
+	 **/
 	protected function _addFile($type, $files, $configAll = array()) {
 		if (!is_array($files)) {
 			$files = array($files);
@@ -131,5 +160,19 @@ class AssetHelper extends AppHelper {
 		} else if ($type == 'block') {
 			$out = $this->Html->scriptBlock($file, $options);
 		}		return $out;
+	}
+
+	private function setDefaultAssets() {
+		$default = array('css' => array(), 'js' => array());
+		foreach ($this->defaultAssets as $assetGroup) {
+			foreach ($assetGroup as $type => $assets) {
+				if (is_array($assets)) {
+					$default[$type] = array_merge($default[$type], $assets);
+				} else {
+					$default[$type][] = $assets;
+				}
+			}
+		}
+		$this->_defaultAssets = $default;
 	}
 }

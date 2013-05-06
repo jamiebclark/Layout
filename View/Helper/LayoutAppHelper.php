@@ -1,7 +1,7 @@
 <?php
 class LayoutAppHelper extends AppHelper {
-
 	protected $bootstrap = false;
+	protected $localBootstrap = true;
 
 	var $defaultHelpers = array('Layout.Asset');
 	var $defaultCss = array('Layout.style');

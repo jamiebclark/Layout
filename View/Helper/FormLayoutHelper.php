@@ -657,10 +657,9 @@ class FormLayoutHelper extends LayoutAppHelper {
 				$inputOptions = array();
 			}
 			$spanClass = 'span' . floor($span / $rowCount);
-			$inputOptions = array_merge($inputOptions, array(
-				'div' => "control-group $spanClass",
-				'class' => $spanClass,
-			));
+			$inputOptions['div'] = "control-group $spanClass";
+			$inputOptions = $this->addClass($inputOptions, $spanClass);
+			
 			if ($placeholder) {
 				if (!empty($inputOptions['label'])) {
 					$inputOptions['placeholder'] = $inputOptions['label'];

@@ -26,3 +26,10 @@
 		width: 80px;
 	}
 }
+
+textarea, input {
+	&.code {
+		font-family: Courier, sans-serif;
+		font-size: 11px;
+	}
+}
