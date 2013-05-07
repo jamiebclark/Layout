@@ -606,22 +606,19 @@ class LayoutHelper extends LayoutAppHelper {
 			$url = false;
 		}
 		$out = '';	
-		debug($options);
 		foreach (array('left', 'right') as $pos) {
 			$object = '';
-			debug($pos);
 			if (!empty($options[$pos])) {
 				$isUrl = is_array($options[$pos]) || $options[$pos][0] != '<';
-
 				if ($isUrl) {
 					$object .= $this->Html->image($options[$pos], array('class' => 'media-object'));
 				} else {
 					$object .= $options[$pos];
 				}
 				if (!$link) {
-					$out .= $this->Html->link($thumb, $url, array('class' => "pull-$pos", 'escape' => false));
+					$out .= $this->Html->link($options[$pos], $url, array('class' => "pull-$pos", 'escape' => false));
 				} else {
-					$out .= $this->Html->tag($wrapTag, $thumb, array('class' => "pull-$pos"));
+					$out .= $this->Html->tag($wrapTag, $options[$pos], array('class' => "pull-$pos"));
 				}
 			}
 			
