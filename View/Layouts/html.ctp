@@ -26,19 +26,39 @@
 	</title>
 	<?php
 		echo $this->Html->meta('icon');
+		
+		if (!empty($description_for_layout)) {
+			$description_for_layout = str_replace("\n", '', strip_tags($description_for_layout));
+			echo $this->Html->meta('description', $description_for_layout);
+		}
+		
+		if (!empty($image_for_layout)) {
+			echo $this->Html->tag('link', '', array(
+				'rel' => 'image_src',
+				'href' => $image_for_layout
+			));
+		}
 
+		if ($head = $this->fetch('head')) {
+			echo $head;
+		}
+		
 		echo $this->fetch('meta');
 		echo $this->Asset->output(true);
 	?>
 </head>
 <body>
 	<div id="container">
-		<?php if ($header = $this->fetch('header')): ?>
-			<div id="header">
-				<?php echo $this->Html->div('container no-print', $header); ?>
-			</div>
-		<?php endif; ?>
-		<div id="content" class="container">
+		<div id="header" class="no-print">
+			<?php echo $this->fetch('header'); ?>
+		</div>
+		<div id="content">
+			<?php 
+				if (!empty($pre_crumb)) {
+					echo $this->Html->div('pre-crumb', $pre_crumb);
+				}
+			?>
+
 			<?php echo $this->Crumbs->output();?>
 			<?php echo $this->Session->flash(); ?>
 			<?php echo $this->Session->flash('auth', array(
@@ -47,12 +67,14 @@
 			));?>
 			<?php echo $this->Html->div('container', $this->fetch('content')); ?>
 		</div>
-		<?php if ($footer = $this->fetch('footer')): ?>
-			<div id="footer">
-				<?php echo $this->Html->div('container no-print', $footer); ?>
-			</div>
-		<?php endif; ?>
+		<div id="footer">
+			<?php 
+				echo $this->fetch('footer');
+				if (!empty($adminDisplay)) {
+					echo $this->element('sql_dump');
+				}
+			?>
+		</div>
 	</div>
-	<?php echo $this->element('sql_dump'); ?>
 </body>
 </html>
