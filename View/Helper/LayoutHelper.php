@@ -132,6 +132,9 @@ class LayoutHelper extends LayoutAppHelper {
 		//if (empty($this->Paginator)) {
 		//	return '';
 		//}
+		if (empty($this->request->params['paging'])) {
+			return '';
+		}
 		if ($this->bootstrap) {
 			return $this->Paginator->pagination();
 		}
@@ -358,15 +361,12 @@ class LayoutHelper extends LayoutAppHelper {
 	}
 	
 	function sideMenu($menu = null, $attrs = array()) {
-		$attrs = array_merge(array(
-			'tag' => 'div',
-			'class' => 'layoutSideMenu',
-		), $attrs);
 		if (!Param::keyValCheck($attrs, 'currentSelect')) {
 			$attrs['currentSelect'] = true;
 		}
+		$attrs = $this->addClass($attrs, 'nav-pills nav-stacked');
 
-		return $this->menu($menu, $attrs);
+		return $this->nav($menu, $attrs);
 	}
 	
 	/**
@@ -616,12 +616,13 @@ class LayoutHelper extends LayoutAppHelper {
 					$object .= $options[$pos];
 				}
 				if (!$link) {
-					$out .= $this->Html->link($options[$pos], $url, array('class' => "pull-$pos", 'escape' => false));
+					$out .= $this->Html->link($options[$pos], $url, array(
+						'class' => "pull-$pos", 'escape' => false));
 				} else {
-					$out .= $this->Html->tag($wrapTag, $options[$pos], array('class' => "pull-$pos"));
+					$out .= $this->Html->tag($wrapTag, $options[$pos], array(
+						'class' => "pull-$pos"));
 				}
 			}
-			
 		}
 		if (!empty($body)) {
 			$out .= $this->Html->tag($wrapTag, $body, array('class' => 'media-body'));
@@ -789,19 +790,28 @@ class LayoutHelper extends LayoutAppHelper {
 		return $match;
 	}
 
-	function dropdown($title, $menu, $options = array()) {
+	function dropdown($title = '', $menu = array(), $options = array()) {
+		$caret = '<b class="caret"></b>';
 		$options = array_merge(array(
 			'url' => '#',
 			'tag' => 'div',
 			'root' => true,
-			'after' => '<b class="caret"></b>',
+			'titleAfter' => $caret,
+			'urlClass' => '',
+			'after' => '',
+			'before' => '',			
 		), $options);
 		$options = $this->addClass($options, $options['root'] ? 'dropdown' : 'dropdown-submenu');
 		extract($options);
 		
-		$urlOptions = array('escape' => false);
-		if (!empty($after)) {
-			$title .= $after;
+		$urlOptions = array('escape' => false, 'class' => $urlClass);
+		if (empty($title)) {
+			$title = '<span class="caret"></span>&nbsp;';
+			$titleAfter = '';
+			$urlOptions = $this->addClass($urlOptions, 'dropdown-toggle');
+		}
+		if (!empty($titleAfter)) {
+			$title .= $titleAfter;
 		}
 		if ($root) {
 			$urlOptions['data-toggle'] = 'dropdown';
@@ -809,14 +819,14 @@ class LayoutHelper extends LayoutAppHelper {
 		}
 		$title = $this->Html->link($title, $url, $urlOptions);
 		
-		$out = '';
+		$ul = '';
 		if (!empty($menu)) {
 			foreach ($menu as $row) {
 				$rowClass = null;
 				if (is_array($row)) {
 					list($rowTitle, $rowUrl, $rowOptions) = $row + array(null, null, null);
 					if ($children = Param::keyCheck($rowOptions, 'children', true)) {
-						$out .= $this->dropdown($rowTitle, $children, array(
+						$ul .= $this->dropdown($rowTitle, $children, array(
 							'url' => $rowUrl,
 							'root' => false,
 							'tag' => 'li',
@@ -830,11 +840,19 @@ class LayoutHelper extends LayoutAppHelper {
 				} else if (stripos($row, 'href') === false) {
 					$rowClass = 'nav-header';
 				}
-				$out .= $this->Html->tag('li', $row, array('class' => $rowClass));				
+				$ul .= $this->Html->tag('li', $row, array('class' => $rowClass));				
 			}
-			$out = $this->Html->tag('ul', $out, array('class' => 'dropdown-menu'));
+			$ul = $this->Html->tag('ul', $ul, array('class' => 'dropdown-menu'));
 		}
-		return $this->Html->tag($tag, $title . $out, compact('class'));		
+		$out = '';
+		if (!empty($before)) {
+			$out .= $before;
+		}
+		$out .= $title . $ul;
+		if (!empty($after)) {
+			$out .= $after;
+		}
+		return $this->Html->tag($tag, $out, compact('class'));		
 	}
 	
 	/*
@@ -1043,7 +1061,7 @@ class LayoutHelper extends LayoutAppHelper {
 				if (!empty($attrs['currentSelect'])) {
 					if (preg_match('#href="([^"]*)"#', $menuItem, $matches)) {
 						if ($matches[1] == $this->request->url) {
-							$liAttrs = $this->addClass($liAttrs, 'selected');
+							$liAttrs = $this->addClass($liAttrs, 'active');
 						}
 					}
 				}

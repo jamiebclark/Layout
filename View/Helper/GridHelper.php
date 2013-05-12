@@ -18,10 +18,14 @@ class GridHelper extends AppHelper {
 		parent::beforeRender($viewFile);
 	}
 	
-	function open() {
+	function open($class = null, $content = null, $options = array()) {
 		$this->__reset();
 		$this->isOpen = true;
-		return $this->Html->div('row-fluid');
+		$out = $this->Html->div('row-fluid');
+		if (!empty($class)) {
+			$out .= $this->col($class, $content, $options);
+		}
+		return $out;
 	}
 	
 	function close() {

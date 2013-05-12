@@ -17,7 +17,7 @@ class AssetHelper extends LayoutAppHelper {
 			'js' => array('Layout.bootstrap/bootstrap.min'),
 		),
 		'default' => array(
-			'css' => array('Layout.style.css'),
+			'css' => array('Layout.style'),
 			'js' => array('Layout.script')
 		)
 	);

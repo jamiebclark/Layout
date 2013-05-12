@@ -5,6 +5,23 @@
 @import "rounded";
 @import "overflow-fix";
 
+// Calendar Colors
+// -------------------------------
+$calendarGrey: 				#CCC !default;
+$monthBackgroundColor:		$color1;
+
+$dateLinkHoverColor:		$color2 !default;
+$dateBorderColor:			#CCC !default;
+
+$dayHoverColor:				$color1 !default;
+$dayActiveColor:			$color3-light !default;
+
+$dayFontSize: 				1em !default;
+$dayHeight: 				2 * $dayFontSize !default;
+$dayWidth: 					2 * $dayFontSize !default;
+
+
+
 .calendar-date-box-wrap {
 	position: relative;
 	float: left;
@@ -15,11 +32,12 @@
 		left: -50%;
 	}
 }
+
 .calendar-date-box {
 	float: left;
 	margin: 1em 0;
 	width: 130px;
-	@include rounded-all(4px);
+	@include border-radius($baseBorderRadius);
 	
 	.month, .day, .year {
 		text-align: center;
@@ -29,10 +47,10 @@
 		clear: both;
 	}
 	.month, .day {
-		border: 1px solid #CCC;
+		border: 1px solid $dateBorderColor;
 	}
 	.month {
-		background-color: $color1;
+		background-color: $monthBackgroundColor;
 		border-bottom: 0;
 		color: white;
 
@@ -81,18 +99,28 @@
 			line-height: 20px;
 		}
 	}
+	&.grey {
+		&, .month, .day, .year {
+			border-color: $calendarGrey;
+			color: $calendarGrey;
+		}
+		.month {
+			background-color: $calendarGrey;
+			color: white;
+		}
+		.day {
+			@include gradient-reset(white);
+
+		}
+	}
 }
 a:hover {
 	.calendar-date-box {
 		.day, .month {
-			border-color: $color2;
+			border-color: $dateLinkHoverColor;
 		}
 	}
 }
-
-$dayFontSize: 1em;
-$dayHeight: 2 * $dayFontSize;
-$dayWidth: 2 * $dayFontSize;
 
 .weekLinks {
 	margin: .5em 0 .5em;
@@ -104,17 +132,17 @@ $dayWidth: 2 * $dayFontSize;
 		a {
 			@include clearfix;
 			display: block;
-			@include rounded-all(1em);
+			@include border-radius($borderRadiusLarge);
 			
 			&:hover {
-				background-color: $color1 !important;
+				background-color: $dayHoverColor !important;
 				font {
 					color: white;
 				}
 			}
 			
 			&.current {
-				background-color: $color3-light;
+				background-color: $dayActiveColor; 
 				font {
 					font-weight: bold!important;
 				}
