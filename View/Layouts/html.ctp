@@ -16,6 +16,12 @@
  * @license       MIT License (http://www.opensource.org/licenses/mit-license.php)
  */
 
+$flash = $this->Session->flash();
+$flash .= $this->Session->flash('auth', array(
+	'element' => 'alert',
+	'params' => array('plugin' => 'TwitterBootstrap')
+));
+ 
 ?>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml">
@@ -60,11 +66,11 @@
 			?>
 
 			<?php echo $this->Crumbs->output();?>
-			<?php echo $this->Session->flash(); ?>
-			<?php echo $this->Session->flash('auth', array(
-				'element' => 'alert',
-				'params' => array('plugin' => 'TwitterBootstrap')
-			));?>
+			<?php
+			if (!empty($flash)) {
+				echo $this->Html->div('container', $flash);
+			}
+			?>
 			<?php echo $this->Html->div('container', $this->fetch('content')); ?>
 		</div>
 		<div id="footer">

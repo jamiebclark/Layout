@@ -1,0 +1,31 @@
+$spriteWidth: 16px;
+$spriteHeight: 16px;
+$spritePrefix: '';
+
+@mixin spriteMap($prefix, $bgImg, $w, $h) {
+	$spriteWidth: $w;
+	$spriteHeight: $h;
+	$spritePrefix: $prefix;
+	[class^="#{$spritePrefix}-"], [class*=" #{$spritePrefix}-"] {
+		display: inline-block;
+		width: $spriteWidth;
+		height: $spriteHeight;
+		line-height: $spriteHeight;
+		vertical-align: middle;
+		background-image: url("#{$bgImg}");
+	}
+}
+
+@mixin sprite($class, $x, $y) {
+	.#{$spritePrefix}-#{$class} {
+		background-position: $spriteWidth * $x * -1 $spriteHeight * $y * -1;
+	}	
+}
+
+@include spriteMap(folder-icon, "../img/sprites/folder.png", 16px, 16px);
+@include sprite(folder, 0, 0);
+@include sprite(add,1,0);
+@include sprite(remove,2,0);
+@include sprite(go,3,0);
+@include sprite(up,4,0);
+@include sprite(elbow,5,0);

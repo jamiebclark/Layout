@@ -591,19 +591,19 @@ class FormLayoutHelper extends LayoutAppHelper {
 			'div' => false,
 			'id' => $toggleId,
 		) + compact('checked'));
-		$out .= $this->Html->div('toggle-input', 
+		$out .= $this->Html->div('input-toggle-control', 
 			$this->Html->tag('label', $toggleInput, array('for' => $toggleId)));
 		if (!empty($content)) {
-			$out .= $this->Html->div('toggle-content', $content, array(
+			$out .= $this->Html->div('input-toggle-content', $content, array(
 				'style' => $checked ? null : 'display:none;',
 			));
 		}		
 		if (!empty($offContent)) {
-			$out .= $this->Html->div('toggle-off-content', $offContent, array(
+			$out .= $this->Html->div('input-toggle-off-content', $offContent, array(
 				'style' => !$checked ? null : 'display:none;',
 			));
 		}
-		return $this->Html->div('form-layout-toggle', $out);
+		return $this->Html->div('input-toggle', $out);
 	}
 	
 	//Keeps track of re-using helper input elements, adding a counter to prevent two inputs with the same name

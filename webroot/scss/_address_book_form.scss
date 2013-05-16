@@ -1,0 +1,89 @@
+
+$inputPaddingTop: 4px;
+$inputPaddingLeft: 6px;
+
+$inputNameWidth: 100px;
+$inputNameWidthSmall: 40px;
+
+$ns: "input-name";
+
+@mixin setInputNameInputWidth($width) {
+	width: $width !important;
+	input, label {
+		padding: $inputPaddingTop, $inputPaddingLeft;
+		width: $width - 2 * $inputPaddingLeft;
+	}
+}
+
+.#{$ns}, .#{$ns}-options {
+	@extend %overflow;
+}
+.#{$ns} {
+	.#{$ns}-inner {
+		@extend %overflow;
+		div.controls {
+			margin: 0 !important;
+		}
+		> div {
+			float: left;
+			@include setInputNameInputWidth($inputNameWidth);
+			clear: none !important;
+			margin-right: .25em;
+			&.#{$ns}-small {
+				@include setInputNameInputWidth($inputNameWidthSmall);
+			}
+			&.required {
+				&:after {
+					content: '' !important;
+					margin: 0 !important;
+				}
+				label {
+					color: #660000;
+				}
+				input, select, textarea {
+					//border-color: $color1 !important;
+				}
+			}
+		}
+		label, input {
+			float: none;
+			display: block;
+		}
+		label {
+			text-align: left;
+			font-size: .9em;
+		}
+		input {
+			margin-right: .5em;
+		}
+	}
+}
+.form-horizontal {
+	.#{$ns}-inner, .#{$ns}-options {
+		margin-left: $horizontalComponentOffset;
+	}
+}
+
+.#{$ns}-options {
+	em {
+		float: left;
+		margin-right: .25em;
+	}
+}
+
+.input-multi-row {
+	@extend %overflow;
+	input, label {
+		width: auto !important;
+	}
+	label {
+		clear: none;
+		float: left;
+		text-align: left;
+		padding: $paddingSmall;
+		line-height: $baseLineHeight;
+		input {
+			margin: 4px !important;
+		}
+	}
+}

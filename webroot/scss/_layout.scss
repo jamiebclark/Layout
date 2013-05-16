@@ -130,24 +130,6 @@
 	}
 }
 	
-.totals-list {
-	ul, li {@include base-list}
-	dd, li, span {
-		font-size: 24px;
-		font {
-			font-size: 36px;
-			line-height: 1;
-		}
-	}
-	&.mid {
-		dd, li, span {
-			font-size: 14px;
-			font {
-				font-size: 24px;
-			}
-		}
-	}
-}
 
 .contentBox {
 	@include overflow-fix;

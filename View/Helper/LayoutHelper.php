@@ -350,14 +350,11 @@ class LayoutHelper extends LayoutAppHelper {
 	}
 	
 	function tabMenu($menu = null, $attrs = array()) {
-		$attrs = array_merge(array(
-			'tag' => 'div',
-			'class' => 'layoutTabMenu'
-		), $attrs);
+		$attrs = $this->addClass($attrs, 'nav nav-tabs');
 		if (!Param::keyValCheck($attrs, 'currentSelect')) {
 			$attrs['currentSelect'] = true;
 		}
-		return $this->menu($menu, $attrs);
+		return $this->nav($menu, $attrs);
 	}
 	
 	function sideMenu($menu = null, $attrs = array()) {
@@ -506,31 +503,35 @@ class LayoutHelper extends LayoutAppHelper {
 			foreach ($menu as &$link) {
 				if (is_array($link)) {
 					$link[2] = $this->addClass($link[2], 'btn');
+					if (!empty($attrs['vertical'])) {
+						if ($prefix = Prefix::get($link[1])) {
+							$link[0] .= ' ' . Inflector::humanize($prefix);
+						}
+						$link[0] .= ' ' . $link[2]['title'];
+					}
 					$list[] = $this->Html->link($link[0],$link[1],$link[2]);
 				} else {
 					$list[] = $this->Html->tag('span', $link, array('class' => 'btn'));
 				}
 			}
-			$class = 'btn-group';
+			$class = !empty($attrs['vertical']) ? 'btn-vertical' : 'btn-group';
 			if (!empty($attrs['class'])) {
 				$class .= ' ' . $attrs['class'];
 			}
 			return $this->Html->div($class, implode('', $list));
 		}
-		
 		if (Param::keyValCheck($attrs, 'titleList')) {
 			$tag = 'font';
-			$return = $this->Html->tag($tag, null, array('class' => $attrs['class']));
+			$out = '';
 			foreach ($menu as $menuItem) {
 				if (is_array($menuItem)) {
 					$menuItem += array(null, null, null, null);
-					$return .= $this->Html->link($menuItem[0], $menuItem[1], $menuItem[2], $menuItem[3]);
+					$out .= $this->Html->link($menuItem[0], $menuItem[1], $menuItem[2], $menuItem[3]);
 				} else {
-					$return .= $menuItem;
+					$out .= $menuItem;
 				}
 			}
-			$return .= "</$tag>\n";
-			return $return;
+			return $this->Html->tag($tag, $out, array('class' => $attrs['class']));
 		} else {
 			if (!empty($attrs['vertical'])) {
 				$attrs['class'] .= ' actionMenuVertical';
@@ -1166,6 +1167,11 @@ class LayoutHelper extends LayoutAppHelper {
 			$this->Table->rowEnd();
 		}
 		return $this->Table->output($options);
+	}
+	
+	function infoList($list = array(), $options = array()) {
+		$options = $this->addClass($options, 'dl-info dl-horizontal');
+		return $this->definitionList($list, $options);
 	}
 	
 	function resultDisplay($Result, $lines = array(), $options = array()) {

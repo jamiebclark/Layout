@@ -3,7 +3,6 @@
 @import "colors";
 @import "gradient";
 @import "rounded";
-@import "overflow-fix";
 
 // Calendar Colors
 // -------------------------------
@@ -272,7 +271,7 @@ a:hover {
 		padding-bottom: 10px;
 		margin-left: 5px;
 		
-		@include overflow-fix;
+		@extend %overflow;
 		
 		.day {
 			display: block;

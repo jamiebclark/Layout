@@ -1,10 +1,11 @@
 // Hover Content
 // ---------------------
-$arrowHeight:		 10px;
+$arrowHeight:			10px;
+$arrowColor:			white;
 
-$windowWidthWider: 660px;
-$windowWidthWide: 460px;
-$windowWidthSlim: 240px;
+$windowWidthWider: 		660px;
+$windowWidthWide: 		460px;
+$windowWidthSlim: 		240px;
 
 .hover-layout {
 	position: relative;
@@ -42,6 +43,9 @@ $windowWidthSlim: 240px;
 	}
 
 	.hover-arrow {
+		@include arrow(top, $arrowHeight, $arrowColor);
+		z-index: 50;
+		/*
 		height: $arrowHeight + 1;
 		background: transparent url("../img/arrow/window/white_grey_up.png") left top no-repeat;
 		position: absolute;
@@ -50,6 +54,7 @@ $windowWidthSlim: 240px;
 		right: 0;
 		z-index: 3;
 		margin: 0 20px;
+		*/
 	}
 	.hover-window {
 		margin: 0;
@@ -74,9 +79,12 @@ $windowWidthSlim: 240px;
 		top: auto;
 		bottom: 20px;
 		.hover-arrow {
+			@include arrow(bottom, $arrowHeight, $arrowColor);
+			/*
 			top: auto;
 			bottom: 0;
 			background-image: url("../img/arrow/window/white_grey_down.png");
+			*/
 		}
 		.hover-window {
 			margin-top: 0;
@@ -87,7 +95,8 @@ $windowWidthSlim: 240px;
 		left: auto;
 		right: 0;
 		.hover-arrow {
-			background-position: right top;
+			//background-position: right top;
+			@include arrow(left, $arrowHeight, $arrowColor);
 		}
 	}
 	
@@ -95,8 +104,11 @@ $windowWidthSlim: 240px;
 		top: auto;
 		bottom: auto;
 		.hover-arrow {
+			@include arrow(right, $arrowHeight, $arrowColor);
+			/*
 			background-image: none;
 			height: 0;
+			*/
 		}
 		.hover-window {
 			margin-top: 0;

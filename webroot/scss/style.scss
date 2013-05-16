@@ -3,15 +3,18 @@
 @import "bootstrap/variables";
 @import "bootstrap/mixins";
 
-//@import "mixins";
 @import "variables";
+@import "mixins";
+@import "templates";
 
+@import "address_book_form";
 @import "clearfix";
 @import "iconic";
 @import "table";
 @import "form-layout";
-@import "overflow-fix";
 @import "collapse_list";
+
+@import "sprites";
 
 @import "calendar"; 
 @import "hover";
@@ -30,12 +33,25 @@ h3, h4 {
 	}
 }
 
+.btn-vertical {
+	.btn {
+		display: block;
+		text-align: left;
+	}
+}
+
+.dl-info {
+	dd {
+		margin-bottom: $baseLineHeight;
+	}
+}
+
 // Media Box
 // ---------------------
 .media {
 	margin: 10px;
 	&, .bd {
-		@include overflow-fix;
+		@extends %overflow;
 		display: block;
 	}
 	.img {
@@ -54,9 +70,10 @@ h3, h4 {
 		float:right; 
 		margin-left: 10px;
 	}
-	h1, h2, h3 {
+	h1, h2, h3, h4 {
 		margin: 0 0 0 0;
 		padding: 0;
+		line-height: 1;
 	}
 	p {
 		margin-bottom: .5em;
