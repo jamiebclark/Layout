@@ -1,20 +1,22 @@
-
-$inputPaddingTop: 4px;
-$inputPaddingLeft: 6px;
-
-$inputNameWidth: 100px;
-$inputNameWidthSmall: 40px;
-
-$ns: "input-name";
-
-@mixin setInputNameInputWidth($width) {
-	width: $width !important;
-	input, label {
-		padding: $inputPaddingTop, $inputPaddingLeft;
-		width: $width - 2 * $inputPaddingLeft;
+.input-address {
+	@extends %overflow;
+	input {
+		margin-bottom: 0;
 	}
 }
 
+// Input Name
+// --------------------------------
+$inputNameWidth: 		100px;
+$inputNameWidthSmall: 	40px;
+$ns: 					"input-name";	//Namespace
+@mixin setInputNameInputWidth($width) {
+	width: $width !important;
+	input, label {
+		padding: $inputPaddingTop $inputPaddingLeft;
+		width: $width - 2 * $inputPaddingLeft;
+	}
+}
 .#{$ns}, .#{$ns}-options {
 	@extend %overflow;
 }
@@ -55,6 +57,7 @@ $ns: "input-name";
 		}
 		input {
 			margin-right: .5em;
+			@include inputFontSize($fontSizeLarge);
 		}
 	}
 }

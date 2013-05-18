@@ -47,6 +47,45 @@ class LayoutHelper extends LayoutAppHelper {
 		parent::beforeRender($viewFile);
 	}
 	
+	public function toggle($content, $offContent = null, $label, $options = array()) {
+		$out = $this->_toggleControl($label, $options);
+		//Toggle Content
+		if (!empty($content)) {
+			$out .= $this->_toggleContent($content, $checked);
+		}		
+		//Toggle Off-Content
+		if (!empty($offContent)) {
+			$out .= $this->_toggleContent($offContent, !$checked, 'toggle-off-content');
+		}
+		return $this->Html->div('toggle', $out);
+	}
+	
+	private function _toggleControl($label, $options = array()) {
+		$count = $this->toggleCount++;
+		$options = array_merge(array(
+			'checked' => null,
+			'name' => 'toggle' . $count,
+			'value' => 1,
+		), $options);
+		extract($options);
+		
+		//Toggle Control
+		$toggleInput = $this->Form->input($name, array(
+			'type' => 'checkbox',
+			'label' => $label,
+			'div' => false,
+		) + compact('checked'));
+		$out .= $this->Html->div('toggle-control', $toggleInput);
+	}
+	
+	private function _toggleContent($content, $checked, $class = null) {
+		if (!empty($class)) {
+			$class = 'toggle-content';
+		}
+		return $this->Html->div($class, $content, array('style' => $checked ? null : 'display:none'));
+	}
+	
+	
 	/**
 	 * CONTENT BOX
 	 * A basic box for displaying a section of information
@@ -62,25 +101,19 @@ class LayoutHelper extends LayoutAppHelper {
 			$params = $this->addClass($params, 'contentbox-blank');
 		}
 		if (!empty($params['toggle'])) {
+			$hasToggle = true;
 			$params = $this->addClass($params, 'toggle');
-			$params['url'] = '#';	//Setting toggle overwrites existing URL option
-			if ($params['toggle'] == -1) {
-				$toggleClose = true;
-				$params = $this->addClass($params, 'toggle-close');
-			}
+			$bodyClass
+			$params['url'] = false;	//Setting toggle overwrites existing URL option
+			$toggleChecked = ($params['toggle'] != -1);
 		}
 		$render = $this->Html->div($params['class']);
 		if (!empty($params['close'])) {
 			if (empty($params['actionMenu'])) {
 				$params['actionMenu'] = array(array(), array());
 			}
-			$params['actionMenu'][0][] = array(
-				$this->Iconic->icon('x'),
-				'#', 
-				array(
-					'escape' => false,
-					'onclick' => "$(this).closest('.contentBox').hide();return false;"
-				)
+			$params['actionMenu'][0][] = array($this->Iconic->icon('x'), '#', 
+				array('escape' => false, 'onclick' => "$(this).closest('.contentBox').hide();return false;")
 			);
 		}
 		$actionMenu = Param::keyCheck($params, 'actionMenu', true);
@@ -95,11 +128,14 @@ class LayoutHelper extends LayoutAppHelper {
 		if (!empty($icon)) {
 			$title = $this->Iconic->icon($icon) . ' ' . $title;
 		}
+		if (!empty($hasToggle)) {
+			$title = $this->_toggleControl($title, array('checked' => $toggleChecked));
+		}
 		if (!empty($title) || !empty($actionMenu)) {
 			$actionMenu = array_merge((array)$actionMenu, array(null, null));
 			$actionMenu[1]['icons'] = true;
 			$actionMenu[1]['class'] = 'contentbox-heading';
-			$render .= $this->headingActionMenu($title, $actionMenu[0], $actionMenu[1]);
+			$title = $this->headingActionMenu($title, $actionMenu[0], $actionMenu[1]);
 		}
 		
 		$bodyClass = 'contentbox-body';
@@ -109,9 +145,16 @@ class LayoutHelper extends LayoutAppHelper {
 		} else if (!empty($params['list'])) {
 			$bodyClass = 'contentbox-body-list';
 		}
+		if (!empty($hasToggle)) {
+			$bodyClass .= ' toggle-content';
+		}
 		if (!empty($toggleClose)) {
 			$bodyOptions['style'] = 'display:none;';
 		}
+		if (!empty($title)) {
+			$render .= $title;
+		}
+		
 		$render .= $this->Html->div($bodyClass, null, $bodyOptions);
 		return $render;
 	}

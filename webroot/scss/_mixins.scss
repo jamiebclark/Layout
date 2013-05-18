@@ -1,3 +1,10 @@
+@mixin inputFontSize($fontSize) {
+	$lineHeight: $fontSize + 4px;
+	font-size: $fontSize;
+	line-height: $lineHeight;
+	height: $lineHeight + 2 * 1 + 2 * $inputPaddingTop;
+}
+
 @function oppositeSide($side) {
 	@if $side == 'left' {
 		@return 'right';

@@ -23,7 +23,7 @@ class FormLayoutHelper extends LayoutAppHelper {
 	function __construct($View, $settings = array()) {
 		parent::__construct($View, $settings);
 
-		//Adds new suffixes to account for dateInput and timeInput
+		//Adds new suffixes to account for inputDate and timeInput
 		$this->Form->_fieldSuffixes = array_merge($this->Form->_fieldSuffixes, array('date', 'time'));
 	}
 	
@@ -574,37 +574,6 @@ class FormLayoutHelper extends LayoutAppHelper {
 		return $this->Html->tag($tag, $out, array('class' => 'input-list ' . $class));
 	}
 	
-	public function toggle($content, $offContent = null, $label, $options = array()) {
-		$count = $this->toggleCount++;
-		$options = array_merge(array(
-			'checked' => null,
-			'name' => 'form_layout_toggle' . $count,
-			'value' => 1,
-		), $options);
-		extract($options);
-		
-		$out = '';
-		$toggleId = $options['name'];
-		$toggleInput = $this->Form->input($name, array(
-			'type' => 'checkbox',
-			'label' => $label,
-			'div' => false,
-			'id' => $toggleId,
-		) + compact('checked'));
-		$out .= $this->Html->div('input-toggle-control', 
-			$this->Html->tag('label', $toggleInput, array('for' => $toggleId)));
-		if (!empty($content)) {
-			$out .= $this->Html->div('input-toggle-content', $content, array(
-				'style' => $checked ? null : 'display:none;',
-			));
-		}		
-		if (!empty($offContent)) {
-			$out .= $this->Html->div('input-toggle-off-content', $offContent, array(
-				'style' => !$checked ? null : 'display:none;',
-			));
-		}
-		return $this->Html->div('input-toggle', $out);
-	}
 	
 	//Keeps track of re-using helper input elements, adding a counter to prevent two inputs with the same name
 	private function inputNameCount($name) {
@@ -657,8 +626,8 @@ class FormLayoutHelper extends LayoutAppHelper {
 				$inputOptions = array();
 			}
 			$spanClass = 'span' . floor($span / $rowCount);
-			$inputOptions['div'] = "control-group $spanClass";
-			$inputOptions = $this->addClass($inputOptions, $spanClass);
+			$inputOptions = $this->addClass($inputOptions, $spanClass, 'div');
+			$inputOptions = $this->addClass($inputOptions, 'input-block-level');
 			
 			if ($placeholder) {
 				if (!empty($inputOptions['label'])) {
@@ -670,7 +639,8 @@ class FormLayoutHelper extends LayoutAppHelper {
 			}
 			$inputs[$fieldName] = $inputOptions;
 		}
-		return $this->Html->div('controls controls-row', $this->Form->inputs($inputs));
+		return $this->Html->div('row-fluid', $this->Form->inputs($inputs));
+		//return $this->Html->div('controls controls-row', $this->Form->inputs($inputs));
 	}
 	
 	function inputChoices($inputs, $options = array()) {
@@ -727,10 +697,10 @@ class FormLayoutHelper extends LayoutAppHelper {
 	 * @param array $options Standard options for the form item
 	 *
 	 **/
-	function datePairInput($startFieldName, $endFieldName, $options = array()) {
+	function inputDatePair($startFieldName, $endFieldName, $options = array()) {
 		$out = '';
-		$out .= $this->dateInput($startFieldName, $options);
-		$out .= $this->dateInput($endFieldName, $options);
+		$out .= $this->inputDate($startFieldName, $options);
+		$out .= $this->inputDate($endFieldName, $options);
 		return $this->Html->div('datepair', $out);
 	}
 	
@@ -764,11 +734,11 @@ class FormLayoutHelper extends LayoutAppHelper {
 		return $fieldName;
 	}
 	
-	function dateInput($fieldName, $options = array()) {
+	function inputDate($fieldName, $options = array()) {
 		$options = array_merge(array(
 				'type' => 'text',
 				'placeholder' => 'mm/dd/yyyy',
-				'div' => 'control-group date-input',
+				'div' => 'control-group input-date',
 				'default' => $this->getDateFieldValue($fieldName),
 			), $this->addClass($options, 'date datepicker'));
 			
@@ -796,13 +766,13 @@ class FormLayoutHelper extends LayoutAppHelper {
 		return $this->Form->input($fieldName . '.time', $options);			
 	}
 	
-	function datetimeInput($fieldName, $options = array()) {
+	function inputDatetime($fieldName, $options = array()) {
 		$out = '';
 		$dateOptions = $options;
 		$timeOptions = array_merge($options, array('label' => false, 'div' => false));
 		$dateOptions['after'] = $this->timeInput($fieldName, $timeOptions);
-		$out .= $this->dateInput($fieldName, $dateOptions);
-		return $this->Html->div('date-time-input', $out);	
+		$out .= $this->inputDate($fieldName, $dateOptions);
+		return $this->Html->div('input-datetime', $out);	
 	}
 	
 	function dateInputOLD($fieldName, $options = array()) {

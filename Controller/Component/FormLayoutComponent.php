@@ -29,7 +29,9 @@ class FormLayoutComponent extends Component {
 	}
 	
 	function removableData ($modelData, $model) {
-		$Model = $this->initModel($model);
+		if (!($Model = $this->initModel($model))) {
+			return null;
+		}
 		$primaryKey = $Model->primaryKey;
 		
 		$remove = false;
@@ -43,7 +45,7 @@ class FormLayoutComponent extends Component {
 				$removeId = $modelData[$primaryKey];
 			}
 		}
-		if (isset($removeId)) {
+		if (!empty($removeId)) {
 			$Model->delete($removeId);
 		}
 		if ($remove) {

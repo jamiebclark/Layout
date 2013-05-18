@@ -5,7 +5,10 @@
  **/App::uses('LayoutAppHelper', 'Layout.View/Helper');
 class AddressBookFormHelper extends LayoutAppHelper {
 	var $name = 'AddressBookForm';
-	var $helpers = array('Form');
+	var $helpers = array('Form', 'Layout.FormLayout');
+	
+	
+	private $numericCount = 0;
 	
 	function beforeRender($viewFile) {
 		$this->Asset->css('Layout.address_book_form');
@@ -25,6 +28,86 @@ class AddressBookFormHelper extends LayoutAppHelper {
 			),
 			'legend' => false,
 		));
+	}
+	
+	private function _numericField($fieldName, $isNumeric, $prefix = '') {
+		return $prefix . (($isNumeric) ? $this->numericCount++ : $fieldName);
+	}
+	
+	function inputAddress($model, $options = array()) {
+		$options = array_merge(array(
+			'prefix' => '',
+			'numerical' => false,
+			'numeric' => 0,			//If counting, the number to start counting on
+			'cityStateLine' => true,
+			'addline' => 2,
+			'addressPrefix' => '', //Prefixes the address columns, for instance, mail_addline1
+			'count' => null,
+		), $options);
+		extract($options);
+		if (empty($prefix)) {
+			$prefix = '';
+			if (!empty($model)) {
+				$prefix = $model . '.';
+			}
+		}
+		if (!empty($numerical)) {
+			$numeric = 0;
+		}
+		if (isset($count)) {
+			$prefix .= $count . '.';
+		}
+		$addressPrefix = $prefix . $addressPrefix;
+		
+		$out = '';
+		$inputRows = array();
+		//Being Output
+		if (!empty($userId)) {
+			$out .= $this->Form->hidden($this->_numericField('user_id', $numerical, $prefix), array('value' => $this->viewVars['loggedUserId']));
+		}
+
+		if (!empty($location)) {
+			$inputRows[] = array(
+				$this->_numericField('location', $numerical, $addressPrefix) => array('label' => 'Location')
+			);
+		}
+		if (!empty($location_name)) {
+			$inputRows[] = array(
+				$this->_numericField('location_name', $numerical, $addressPrefix) => array('label' => 'Location')
+			);
+		}
+		for ($i = 1; $i <= $addline; $i++) {
+			$label = 'Address ' . $i;
+			if ($addline == 2 && $i == 2) {
+				$label = 'Apt. or Suite#';
+			}
+			$inputRows[] = array(	
+				$addressPrefix . ($numerical ? $numeric++ : 'addline' . $i) => 
+					array('label' => $label, 'type' => 'text')
+			);
+		}
+		$inputRows[] = array(
+			$this->_numericField('city', $numerical, $addressPrefix) => array(
+				'label' => 'City',
+				'type' => 'text',
+			),
+			$this->_numericField('state', $numerical, $addressPrefix) => array(
+				'label' => 'State'
+			)
+		);
+		$inputRows[] = array(
+			$this->_numericField('zip', $numerical, $addressPrefix) => array(
+				'label' => 'Zip',
+				'type' => 'text',
+			),
+			$this->_numericField('country', $numerical, $addressPrefix) => array(
+				'default' => 'US', 
+				'label' => 'County'
+			),
+		);
+
+		$out .= $this->FormLayout->inputRows($inputRows, compact('fieldset', 'legend', 'span'));	
+		return $this->Html->div('input-address', $out);
 	}
 	
 	function inputName($model = 'User', $inputs = array(), $options = array()) {

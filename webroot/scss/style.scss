@@ -10,6 +10,7 @@
 @import "address_book_form";
 @import "clearfix";
 @import "iconic";
+@import "liquid-layout";
 @import "table";
 @import "form-layout";
 @import "collapse_list";
@@ -144,6 +145,59 @@ a.media {
 .clearfix {
 	@include clearfix;
 }
+
+// Toggle
+// ----------------------
+.toggle {
+	margin-bottom: $baseLineHeight / 2;
+	border: 1px solid $inputBorder;
+	fieldset {
+		background-color: transparent;
+		border: 0;
+		padding: $paddingLarge;
+	}
+}
+.toggle-control {
+	float: none;
+	clear: both;
+	position: relative;
+	label {
+		position: relative;
+		z-index: 2;
+		font-size: $fontSizeLarge;
+		font-weight: normal;
+		float: none;
+		display: block;
+		padding: $paddingLarge;
+		padding-left: 30px;
+		margin: 0;
+	}
+	.ell {
+		position: absolute;
+		display: block;
+		z-index: 1;
+		right: 6px;
+		bottom: 3px;
+		font-size: $fontSizeLarge;
+		color: $gray;
+		line-height: 1;
+	}
+	&:hover {
+		border-color: $linkColorHover;
+		background-color: #F8F8F8;
+		.ell {
+			color: $linkColorHover;
+		}
+	}
+			
+}
+.toggle-content, .toggle-off-content {
+	border-top: 1px solid #F8F8F8;
+	padding-top: .5em;
+	background-color: white;
+	padding: $paddingLarge;
+}
+
 
 @media print {
 	.no-print {

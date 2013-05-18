@@ -21,7 +21,9 @@ class GridHelper extends AppHelper {
 	function open($class = null, $content = null, $options = array()) {
 		$this->__reset();
 		$this->isOpen = true;
-		$out = $this->Html->div('row-fluid');
+		$out = '';
+		$out .= $this->_comment('Grid Open');
+		$out .= $this->Html->div('row-fluid');
 		if (!empty($class)) {
 			$out .= $this->col($class, $content, $options);
 		}
@@ -30,31 +32,32 @@ class GridHelper extends AppHelper {
 	
 	function close() {
 		$this->isOpen = false;
-		$return = '';
+		$out = '';
 		if ($this->isColOpen) {
-			$return .= $this->colClose();
+			$out .= $this->colClose();
 		}
-		$return .= "</div>\n";
-		return $return;
+		$out .= "</div>\n";
+		$out .= $this->_comment('Grid Closed');
+		return $out;
 	}
 	
 	function col($class, $content = null, $options = array()) {
 		if (!is_array($options)) {
 			$options = array('close' => $options);
 		}
-		$return = $this->colOpen($class, $options);
+		$out = $this->colOpen($class, $options);
 		if ($content !== null) {
-			$return .= $this->colClose($content);
+			$out .= $this->colClose($content);
 		}
 		if (!empty($options['close'])) {
-			$return .= $this->close();
+			$out .= $this->close();
 		}
-		return $return;
+		return $out;
 	}
 	
 	function cols($cols = array(), $close = false) {
 		$colCount = count($cols);
-		$return = '';
+		$out = '';
 		if (!empty($colCount)) {
 			foreach ($cols as $content) {
 				if (is_array($content)) {
@@ -66,23 +69,23 @@ class GridHelper extends AppHelper {
 					$colOptions = array('cols' => $colOptions);
 				}
 				$colOptions['totalCols'] = $colCount;
-				$return .= $this->col(null, $content, $colOptions);
+				$out .= $this->col(null, $content, $colOptions);
 			}
 		}
 		if ($close) {
-			$return .= $this->close();
+			$out .= $this->close();
 		}
-		return $return;
+		return $out;
 	}
 	
 	function colOpen($class, $options = array()) {
-		$return = '';
+		$out = '';
 		if (!$this->isOpen) {
-			$return .= $this->open();
+			$out .= $this->open();
 		}
-		$return .= $this->Html->div($this->__parseClass($class, $options));
+		$out .= $this->Html->div($this->__parseClass($class, $options));
 		$this->isColOpen = true;
-		return $return;
+		return $out;
 	}
 	
 	function colClose($content = '') {
@@ -91,22 +94,22 @@ class GridHelper extends AppHelper {
 			$content = '';
 			$close = true;
 		}
-		$return = $content . "\n</div>\n";
+		$out = $content . "\n</div>\n";
 		$this->isColOpen = false;
 
 		if ($close) {
-			$return .= $this->close();
+			$out .= $this->close();
 		}
-		return $return;
+		return $out;
 	}
 	
 	function colContinue($class, $content = null, $options = array()) {
-		$return = '';
+		$out = '';
 		if ($this->isColOpen) {
-			$return .= $this->colClose();
+			$out .= $this->colClose();
 		}
-		$return .= $this->col($class, $content, $options);
-		return $return;
+		$out .= $this->col($class, $content, $options);
+		return $out;
 	}
 	
 	function __parseClass($class, $options = array()) {
@@ -145,5 +148,9 @@ class GridHelper extends AppHelper {
 	
 	function __reset() {
 		$this->colCount = 0;
+	}
+
+	function _comment($text) {
+		return "<!-- $text --->";
 	}
 }
