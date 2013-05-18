@@ -103,7 +103,6 @@ class LayoutHelper extends LayoutAppHelper {
 		if (!empty($params['toggle'])) {
 			$hasToggle = true;
 			$params = $this->addClass($params, 'toggle');
-			$bodyClass
 			$params['url'] = false;	//Setting toggle overwrites existing URL option
 			$toggleChecked = ($params['toggle'] != -1);
 		}
