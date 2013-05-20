@@ -618,14 +618,26 @@ class FormLayoutHelper extends LayoutAppHelper {
 			'placeholder' => false,
 		), $options);
 		extract($options);
+		$spanTotal = $span;
 		$inputs = array('fieldset' => false);
-		$rowCount = count($row);
+		$rowTotal = count($row);
+		$rowCount = $spanCount = 0;
 		foreach ($row as $fieldName => $inputOptions) {
+			if (isset($inputOptions['span'])) {
+				$span = $inputOptions['span'];
+				unset($inputOptions['span']);
+			} else if ($spanCount < $spanTotal) {
+				$span = floor(($spanTotal - $spanCount) / ($rowTotal - $rowCount));
+			} else {
+				$span = 4;
+			}
+			$spanCount += $span;
+			
 			if (is_numeric($fieldName)) {
 				$fieldName = $inputOptions;
 				$inputOptions = array();
 			}
-			$spanClass = 'span' . floor($span / $rowCount);
+			$spanClass = 'span' . $span;
 			$inputOptions = $this->addClass($inputOptions, $spanClass, 'div');
 			$inputOptions = $this->addClass($inputOptions, 'input-block-level');
 			
@@ -638,6 +650,7 @@ class FormLayoutHelper extends LayoutAppHelper {
 				$inputOptions['label'] = false;
 			}
 			$inputs[$fieldName] = $inputOptions;
+			$rowCount++;
 		}
 		return $this->Html->div('row-fluid', $this->Form->inputs($inputs));
 		//return $this->Html->div('controls controls-row', $this->Form->inputs($inputs));

@@ -78,6 +78,9 @@ class AddressBookFormHelper extends LayoutAppHelper {
 		}
 		for ($i = 1; $i <= $addline; $i++) {
 			$label = 'Address ' . $i;
+			if ($i == 1) {
+				$label = 'Street Address';
+			}
 			if ($addline == 2 && $i == 2) {
 				$label = 'Apt. or Suite#';
 			}
@@ -105,8 +108,7 @@ class AddressBookFormHelper extends LayoutAppHelper {
 				'label' => 'County'
 			),
 		);
-
-		$out .= $this->FormLayout->inputRows($inputRows, compact('fieldset', 'legend', 'span'));	
+		$out .= $this->FormLayout->inputRows($inputRows, compact('fieldset', 'legend', 'span', 'placeholder'));	
 		return $this->Html->div('input-address', $out);
 	}
 	

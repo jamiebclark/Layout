@@ -565,6 +565,7 @@ function inputChoicesInit() {
 	};
 
 	$.fn.cloneNumbered = function() {
+		console.log('Cloning Numbered');
 		if ($(this).data('cloning')) {
 			return $(this);
 		}
@@ -572,7 +573,8 @@ function inputChoicesInit() {
 		var $ids = $(this).find(':input[name*="[id]"]:enabled'),
 			$id = $ids.last(),
 			name = $id.attr('name');
-			
+		console.log($(this).attr('class'));
+		console.log($ids.length);
 		if ($id.length) {
 			var $entry = $(this).last(),
 				$cloned = $entry.clone().insertAfter($entry),
@@ -592,49 +594,6 @@ function inputChoicesInit() {
 		return $(this);
 	};
 })(jQuery);
-
-(function($) {
-	var toggleCount = 1;
-	$.fn.inputToggle = function() {
-		return this.each(function() {
-			var $toggle = $(this),
-				$control = $toggle.find('.input-toggle-control input[type*=checkbox]').first(),
-				$content = $toggle.find('> .input-toggle-content'),
-				$offContent = $toggle.find('> .input-toggle-off-content');
-				tc = toggleCount++;
-			
-			$toggle.addClass('toggle' + tc);
-			
-			function toggleOn() {
-				$content.showEnableChildren();
-				$offContent.hideDisableChildren();
-			}
-			function toggleOff() {
-				$content.hideDisableChildren();
-				$offContent.showEnableChildren();
-			}
-			function toggleCheck() {
-				if ($control.is(':checked')) {
-					toggleOn();
-				} else {
-					toggleOff();
-				}
-			}
-				
-			$control.change(function() {
-				toggleCheck();
-			});
-			
-			toggleCheck();
-			return $(this);
-		});
-	};
-})(jQuery);
-
-function formLayoutToggleInit() {
-	$('.input-toggle').inputToggle();
-}
-
 
 //Input Auto Complete
 (function($) {

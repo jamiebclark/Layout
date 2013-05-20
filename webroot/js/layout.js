@@ -1,4 +1,45 @@
 (function($) {
+	var toggleCount = 1;
+	$.fn.inputToggle = function() {
+		return this.each(function() {
+			var $toggle = $(this),
+				$control = $toggle.find('.toggle-control input[type*=checkbox]').first(),
+				$content = $toggle.find('> .toggle-content'),
+				$offContent = $toggle.find('> .toggle-off-content');
+				tc = toggleCount++;
+			
+			$toggle.addClass('toggle' + tc);
+			
+			function toggleOn() {
+				$content.showEnableChildren();
+				$offContent.hideDisableChildren();
+			}
+			function toggleOff() {
+				$content.hideDisableChildren();
+				$offContent.showEnableChildren();
+			}
+			function toggleCheck() {
+				if ($control.is(':checked')) {
+					toggleOn();
+				} else {
+					toggleOff();
+				}
+			}
+				
+			$control.change(function() {
+				toggleCheck();
+			});
+			
+			toggleCheck();
+			return $(this);
+		});
+	};
+})(jQuery);
+function formLayoutToggleInit() {
+	$('.toggle').inputToggle();
+}
+
+(function($) {
 	$.fn.layoutDropdown = function() {
 		var $dropdown = $(this),
 			$arrow = $dropdown.find('> .arrow'),

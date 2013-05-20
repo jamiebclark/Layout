@@ -43,11 +43,16 @@ class LayoutHelper extends LayoutAppHelper {
 
 	function beforeRender($viewFile) {
 		$this->Asset->css('Layout.font-awesome');
-		//$this->Asset->js('Layout.layout');
+		$this->Asset->js('Layout.layout');
 		parent::beforeRender($viewFile);
 	}
 	
 	public function toggle($content, $offContent = null, $label, $options = array()) {
+		$options = array_merge(array(
+			'checked' => null,
+		), $options);
+		extract($options);
+		
 		$out = $this->_toggleControl($label, $options);
 		//Toggle Content
 		if (!empty($content)) {
@@ -75,11 +80,11 @@ class LayoutHelper extends LayoutAppHelper {
 			'label' => $label,
 			'div' => false,
 		) + compact('checked'));
-		$out .= $this->Html->div('toggle-control', $toggleInput);
+		return $this->Html->div('toggle-control', $toggleInput);
 	}
 	
 	private function _toggleContent($content, $checked, $class = null) {
-		if (!empty($class)) {
+		if (empty($class)) {
 			$class = 'toggle-content';
 		}
 		return $this->Html->div($class, $content, array('style' => $checked ? null : 'display:none'));
