@@ -59,6 +59,9 @@ class AddressBookFormHelper extends LayoutAppHelper {
 		}
 		$addressPrefix = $prefix . $addressPrefix;
 		
+		$states = !empty($this->_View->viewVars['states']) ? $this->_View->viewVars['states'] : array();
+		$countries = !empty($this->_View->viewVars['countries']) ? $this->_View->viewVars['countries'] : array();
+		
 		$out = '';
 		$inputRows = array();
 		//Being Output
@@ -71,22 +74,24 @@ class AddressBookFormHelper extends LayoutAppHelper {
 				$this->_numericField('location', $numerical, $addressPrefix) => array('label' => 'Location')
 			);
 		}
-		if (!empty($location_name)) {
+		if (!empty($locationName)) {
 			$inputRows[] = array(
 				$this->_numericField('location_name', $numerical, $addressPrefix) => array('label' => 'Location')
 			);
 		}
 		for ($i = 1; $i <= $addline; $i++) {
-			$label = 'Address ' . $i;
+			$aPlaceholder = 'Address ' . $i;
+			$aLabel = false;
 			if ($i == 1) {
-				$label = 'Street Address';
+				$aLabel = 'Street Address';
+				$aPlaceholder = null;
 			}
 			if ($addline == 2 && $i == 2) {
-				$label = 'Apt. or Suite#';
+				$aPlaceholder = 'Apt. or Suite#';
 			}
 			$inputRows[] = array(	
 				$addressPrefix . ($numerical ? $numeric++ : 'addline' . $i) => 
-					array('label' => $label, 'type' => 'text')
+					array('type' => 'text', 'label' => $aLabel, 'placeholder' => $aPlaceholder)
 			);
 		}
 		$inputRows[] = array(
@@ -95,7 +100,8 @@ class AddressBookFormHelper extends LayoutAppHelper {
 				'type' => 'text',
 			),
 			$this->_numericField('state', $numerical, $addressPrefix) => array(
-				'label' => 'State'
+				'label' => 'State',
+				'options' => $states,
 			)
 		);
 		$inputRows[] = array(
@@ -105,7 +111,8 @@ class AddressBookFormHelper extends LayoutAppHelper {
 			),
 			$this->_numericField('country', $numerical, $addressPrefix) => array(
 				'default' => 'US', 
-				'label' => 'County'
+				'label' => 'County',
+				'options' => $countries,
 			),
 		);
 		$out .= $this->FormLayout->inputRows($inputRows, compact('fieldset', 'legend', 'span', 'placeholder'));	

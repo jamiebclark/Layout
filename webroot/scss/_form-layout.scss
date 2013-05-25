@@ -1,23 +1,174 @@
 @import "ui-timepicker";
 
-.input-datetime {
-	.datepicker {
-		width: 80px;
+// Templates
+// -------------
+%number-input {
+	width: $inputSlimWidth;
+	text-align: right;
+}
+%input-container {
+	overflow: hidden;
+	border: 1px solid $inputBorder;
+	@include border-radius($baseBorderRadius);
+	margin-bottom: $baseLineHeight / 2;
+}
+
+// Custom Inputs
+// ---------------
+.input-cash, .input-number, input[type="number"] {
+	@extend %number-input;
+}
+.input-year {
+	width: $inputSlimWidth;
+}
+.input-copy {
+	&:hover {
+		cursor: pointer;
 	}
-	.timepicker {
-		width: 80px;
+	background-color: white;
+}
+
+// Date / Time Inputs
+// ---------------------
+$inputDateWidth: 	$inputSlimWidth;
+$inputTimeWidth: 	60px;
+.datepicker {
+	width: $inputDateWidth;
+}
+.timepicker {
+	width: $inputTimeWidth;
+}
+.datepair {
+	@include clearfix;
+	.input-date, .input-time {
+		float: left;
+		label {
+			color: #CCC;
+		}
+	}
+}
+.datepair-between, .datepair .control-date-all-day {
+	float: left;
+	padding: $baseLineHeight 10px 0 10px;
+	line-height: $baseLineHeight + 2 * $inputPaddingTop + 2;
+}
+.input-date-control {
+	display: inline-block;
+	vertical-align: top;
+	.btn {
+		padding: $inputPaddingTop 4px;
+	}
+	.iconic {
+		font-size: $baseFontSize;
+	}
+}
+.input-datetime {
+	.controls {
+		display: inline-block;
+	}
+}
+.form-horizontal {
+	.datepair {
+		.input-date, .input-time {
+			label {
+				width: auto;
+				margin: 0;
+				line-height: $baseLineHeight;
+				padding: #{$inputPaddingTop + 1} $inputPaddingLeft;
+			} 
+			.controls {
+				margin-left: 0;
+				float: left;
+			}
+		}
+	}
+	.datepair-between {
+		display: none;
+	} 
+	.control-date-all-day {
+		padding-top: 0;
+		padding-bottom: 0;
+		.controls {
+			margin: 0;
+		}
 	}
 }
 
+// Input Choices
+// ----------------------
+$inputChoiceActiveColor: 		$btnPrimaryBackground !default;
+$inputChoiceActiveTextColor: 	white !default;
+$inputContainerControlBgColor:	#EEE;
+
+.input-choices {
+	@extend %input-container;
+}
+.input-choice-active {
+	.input-choice-control {
+		background-color: $inputChoiceActiveColor;
+		color: $inputChoiceActiveTextColor;
+	}
+}
+.input-choice-hover {
+	.input-choice-control {
+		text-decoration: underline;
+	}
+}
+.input-choice-control {
+	padding: $paddingSmall;
+	background-color: $inputContainerControlBgColor;
+}
+.input-choice-content {
+	padding: $paddingLarge;
+}
+
+.input-choice-input {
+	label {
+		font-size: $fontSizeLarge;
+		font-weight: normal;
+		float: none;
+		display: block;
+		padding: $paddingLarge;
+		padding-left: 30px;
+		margin: 0;
+	}
+}
+
+
+// Input List
+// ---------------------
+.input-list {
+	@extend %input-container;
+}
+.input-list-title, .input-list-control {
+	padding: $paddingSmall;
+}
+.input-list-inner {
+	padding: $paddingLarge;
+}
+.input-list-control {
+	background-color: $inputContainerControlBgColor;
+}
 .input-list-item {
 	&.remove {
 		background-color: #EEE;
-	}
-	.input-list-remove {
-		text-align: center;
-		label {
-			font-size: 9px;
+		.input-list-item-inner {
+			overflow: hidden;
+			@include opacity(25);
+			height: 4px;
+			div, a, span {
+				display: none;
+			}
 		}
+	}
+	.control-group {
+		margin-bottom: 0;
+	}
+}
+.input-list-item-remove {
+	text-align: center;
+	label {
+		font-size: 9px;
 	}
 }
 

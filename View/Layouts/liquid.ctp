@@ -37,6 +37,36 @@ if ($hasRight) {
 		</div>
 	<?php endif; ?>
 </div>
+<script type="text/javascript">
+(function($) {
+	$.fn.liquidLayout = function() {
+		return this.each(function() {
+			var $layout = $(this),
+				maxHeight = 0,
+				$cols = $('.liquid-layout-content,.liquid-layout-left,.liquid-layout-right', $layout);
+			$cols.each(function() {
+				var h = $('.liquid-layout-inner',$(this)).height();
+				if (h > maxHeight) {
+					maxHeight = h;
+				}
+			}).each(function() {
+				$(this).height(maxHeight);
+			});
+		});
+	};
+})(jQuery);
+$(window)
+	.load(function() {
+		$('.liquid-layout').liquidLayout();
+	})
+	.resize(function() {
+		$('.liquid-layout').liquidLayout();
+	});
+$(document).ajaxComplete(function() {
+	$('.liquid-layout').liquidLayout();
+});
+</script>
+
 <?php
 /*
 $leftSpan = 2;

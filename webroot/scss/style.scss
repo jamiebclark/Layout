@@ -47,6 +47,10 @@ h3, h4 {
 	}
 }
 
+.list-blank {
+	@extend %blanklist;
+}
+
 // Media Box
 // ---------------------
 .media {
@@ -112,6 +116,17 @@ a.media {
 	}
 }
 
+// Menu Lists
+// ----------------
+.layout-id-menu {
+	display: block !important;
+	.btn {
+		font-size: $fontSizeSmall;
+		padding: $paddingSmall;
+	}
+}
+		
+
 
 // Content Box
 // ----------------
@@ -148,7 +163,7 @@ a.media {
 
 // Toggle
 // ----------------------
-.toggle {
+.layout-toggle {
 	margin-bottom: $baseLineHeight / 2;
 	border: 1px solid $inputBorder;
 	fieldset {
@@ -157,7 +172,7 @@ a.media {
 		padding: $paddingLarge;
 	}
 }
-.toggle-control {
+.layout-toggle-control {
 	float: none;
 	clear: both;
 	position: relative;
@@ -191,7 +206,7 @@ a.media {
 	}
 			
 }
-.toggle-content, .toggle-off-content {
+.layout-toggle-content {
 	border-top: 1px solid #F8F8F8;
 	padding-top: .5em;
 	background-color: white;

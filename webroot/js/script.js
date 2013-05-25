@@ -1,3 +1,7 @@
+function documentReady(actions) {
+	$(document).ready(actions).ajaxComplete(actions);
+}
+
 (function($) {
 	$.fn.datepick = function () {
 		return this.each(function() {
@@ -46,11 +50,10 @@
 		});
 	};
 })(jQuery);
-
-function initLayout() {
+documentReady(function() {
 	$('.datepicker').datepick();
 	$('.timepicker').timepick();
-}
+});
 
 //Table
 (function($) {
@@ -203,9 +206,6 @@ $(document).ready(function() {
 		});
 	});
 });
-$(document)
-	.ready(function() {initLayout();})
-	.ajaxComplete(function() {initLayout();});
 	
 // Hover
 (function($) {
@@ -289,10 +289,8 @@ $(document)
 		});
 	};
 })(jQuery);
-$(document).ready(function() {
-	$('.hover-layout').hoverContent();	
-});
-$(document).ajaxComplete(function() {
+
+documentReady(function() {
 	$('.hover-layout').hoverContent();	
 });
 

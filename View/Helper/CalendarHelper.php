@@ -24,6 +24,12 @@ class CalendarHelper extends AppHelper {
 			'after' => '',
 		), $options);
 		$options = $this->addClass($options, 'calendar-date-box');
+		$linkOptions = array('escape' => false);
+		
+		if (isset($options['media'])) {
+			$options = $this->addClass($options, 'media-object');
+			$linkOptions = $this->addClass($linkOptions, 'pull-left');
+		}
 		
 		$dateRange = !empty($stop);
 		
@@ -69,7 +75,7 @@ class CalendarHelper extends AppHelper {
 			$out = $this->Html->div('calendar-date-box-wrap', $out);
 		}
 		if (!empty($options['url'])) {
-			$out = $this->Html->link($out, $options['url'], array('escape' => false));
+			$out = $this->Html->link($out, $options['url'], $linkOptions);
 		}
 		return $out;
 	}

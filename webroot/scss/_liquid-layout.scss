@@ -1,10 +1,14 @@
 
-$liquidLeftColumn: 200px;
-$liquidRightColumn: 300px;
-$liquidOuterPadding: 0;
-$liquidFullScreen: 960px;
+$liquidLeftColumn: 			200px;
+$liquidRightColumn: 		300px;
+$liquidOuterPadding: 		0;
+$liquidFullScreen: 			960px;
+$liquidBorderColor: 		#F8F8F8;
 
-$ns: "liquid-layout";	//namespace
+$liquidSidePadding:			10px;
+$liquidSideMargin:			5px;
+
+$ns: 						"liquid-layout";	//namespace
 .#{$ns} {
 	position: relative;
 	width: 100%;
@@ -45,14 +49,18 @@ $ns: "liquid-layout";	//namespace
 	}
 	&.has-left {
 		.#{$ns}-content {
-			margin-left: $liquidLeftColumn + $liquidOuterPadding;
+			margin-left: $liquidLeftColumn + $liquidOuterPadding + $liquidSideMargin;
 			min-width: $liquidFullScreen - $liquidLeftColumn - $liquidOuterPadding;
+			padding-left: $liquidSidePadding;
+			border-left: 1px solid $liquidBorderColor;
 		}
 	}
 	&.has-right {
 		.#{$ns}-content {
-			margin-right: $liquidRightColumn + $liquidOuterPadding;
+			margin-right: $liquidRightColumn + $liquidOuterPadding + $liquidSideMargin;
 			min-width: $liquidFullScreen - $liquidRightColumn - $liquidOuterPadding;
+			padding-right: $liquidSidePadding;
+			border-right: 1px solid $liquidBorderColor;
 		}
 	}
 	&.has-left.has-right {

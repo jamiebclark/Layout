@@ -1,5 +1,139 @@
-var dateRangeDiffs = new Array();
+//Basic functions	
+(function($) {
+	$.fn.hideDisableChildren = function() {
+		if ($(this).is(':visible')) {
+			$(this).slideUp();
+		}
+		$(this).find(':input')
+			.filter(function() {
+				return !$(this).data('hide-disabled-set');
+			})
+			.each(function() {
+				$(this)
+					.data('stored-disabled', $(this).prop('disabled'))
+					.data('hide-disabled-set', true)
+					.prop('disabled', true);
+			});
+		return $(this);
+	};
+	$.fn.showEnableChildren = function(focusFirst) {
+		if ($(this).is(':hidden')) {
+			$(this).slideDown();
+		}
+		var $openInputs = $(this).find(':input').each(function() {
+			var setDisabled = false;
+			if ($(this).data('stored-disabled')) {
+				setDisabled = $(this).data('stored-disabled');
+			}
+			$(this).data('hide-disabled-set', false).prop('disabled', setDisabled);
+		});
+		
+		if (focusFirst) {
+			$openInputs.first().select();
+		}
+		return $(this);
+	};
+})(jQuery);
 
+// Input Date
+(function($) {
+	$.fn.inputDateAllDay = function() {
+		return this.each(function() {
+			var $input = $(this),
+				$parent = $input.closest('.control-date-all-day').parent().closest('div'),
+				$timeInputs = $('input[name*="time"]', $parent);
+
+			if (!$input.data('all-day-init')) {
+				function click() {
+					var timeCount = 0;
+					$timeInputs.each(function() {
+						$(this).data('stored-val', $(this).val()).hide();
+						if (timeCount++ == 0) {
+							$(this).val("12:00am");
+						} else {
+							$(this).val("11:59pm");
+						}
+					});
+				}
+				function unclick() {
+					$timeInputs.each(function() {
+						$(this).val($(this).data('stored-val')).show();
+					});
+				}
+				function update() {
+					if ($input.is(':checked')) {
+						click();
+					} else {
+						unclick();
+					}
+				}
+				
+				$input.click(function(e) {
+					update();
+				});
+				update();
+			}
+			$input.data('all-day-init', true);
+		});
+	};
+	$.fn.inputDate = function() {
+		return this.each(function () {
+			var $holder = $(this),
+				$inputs = $('.date,.time', $holder).filter(function() {
+					return !$(this).data('input-date-init');
+				}),
+				$dates = $inputs.filter(function() { return $(this).hasClass('date');}),
+				$times = $inputs.filter(function() { return $(this).hasClass('time');}),
+				$controls = $('.input-date-control a', $holder);
+			function set(val) {
+				if ($dates) {
+					$dates.datepicker('setDate', val);
+				}
+				if ($times) {
+					$times.timepicker('setTime', val);
+				}
+			}
+			function setToday() {
+				return set(new Date());
+			}
+			function setClear() {
+				return set(null);
+			}
+			$holder
+				.on('today', function() {
+					setToday();
+				})
+				.on('clear', function() {
+					setClear();
+				});
+			$inputs.each(function() {
+				$(this).data('input-date-init', true);
+			});
+			$controls.each(function() {
+				$(this).click(function(e) {
+					e.preventDefault();
+					if ($(this).hasClass('input-date-today')) {
+						console.log('Today');
+						console.log([$dates.length, $times.length]);
+						setToday();
+					} else if ($(this).hasClass('input-date-clear')) {
+						console.log('Clear');
+						setClear();
+					}
+				});
+			});
+			
+		});
+	};
+})(jQuery);
+
+documentReady(function() {
+	$('.input-date-all-day').inputDateAllDay();
+	$('.input-date,.input-time').inputDate();
+});
+
+
+var dateRangeDiffs = new Array();
 (function($) {
 	//Constants
 	var calHover = false;
@@ -415,62 +549,65 @@ jQuery.fn.multiSelectInit = function() {
 	});
 };
 
-$.fn.hideDisableChildren = function() {
-	if ($(this).is(':visible')) {
-		$(this).slideUp();
-	}
-	$(this).find(':input').each(function() {
-		console.log('Disable: ' + $(this).attr('id'));
-		this.disabled = 'disabled';
-	});
-	return $(this);
-};
-
-$.fn.showEnableChildren = function(focusFirst) {
-	if ($(this).is(':hidden')) {
-		$(this).slideDown();
-	}
-	var $openInputs = $(this).find(':input').each(function() {
-		this.disabled = false;
-	});
-	
-	if (focusFirst) {
-		$openInputs.first().select();
-	}
-	return $(this);
-};
-
-$.fn.clickInputChoice = function(clicked) {
-	var $val = $(this).attr('value');
-	var checkVal;
-	$(this).closest('div[class="input-choices"]').find('div.input-choice').each(function() {
-		checkVal = $(this).prev().find('input').attr('value');
-		if (checkVal == $val) {
-			$(this).showEnableChildren(clicked);
-		} else {
-			$(this).hideDisableChildren();
-		}
-	});
-	return $(this);
-};
-
 var dropdownDelay = 500;
 var dropdownTimeout;
 var dropdownInput;
 
-function inputChoicesInit() {
-	$('.input-choices .input-choice-input input').click(function() {
-		$(this).clickInputChoice(true);
-	}).filter(':checked').first().each(function() {
-		$(this).clickInputChoice();
-	});
-}
+(function($) {
+	$.fn.inputChoices = function() {
+		return this.each(function() {
+			var $list = $(this),
+				$choices = $('.input-choice', $list),
+				$controls = $('.input-choice-control input', $choices),
+				$contents = $('.input-choice-content', $choices),
+				$checkedControl = $(':checked', $controls);
+			if (!$list.data('input-choice-init')) {
+				function select() {
+					if (!$checkedControl.length) {
+						$checkedControl = $controls.first();
+					}
+					var $choice = $checkedControl.closest('.input-choice');
+					$choices.each(function() {
+						$(this).removeClass('input-choice-active');
+					});
+					$choice.addClass('input-choice-active');
+					$contents
+						.filter(function() {
+							return !$(this).closest('.input-choice').hasClass('input-choice-active');
+						})
+						.each(function() {
+							$(this).hideDisableChildren();
+						});
+					$('.input-choice-content', $choice).showEnableChildren();
+
+				}
+				$controls.each(function() {
+					$(this)
+						.hover(function() {
+								$(this).toggleClass('input-choice-hover');
+							})
+						.click(function(e) {
+							$checkedControl = $(this);
+							select();
+						});
+				});
+				select();
+				$list.data('input-choice-init', true);
+			}
+		});
+	};
+})(jQuery);
+documentReady(function() {
+	$('.input-choices').inputChoices();
+});
+
 (function($) {
 	$.fn.inputList = function() {
 		return this.each(function() {
 			var $list = $(this),
 				$listItems = $('.input-list-item', $list),
-				$addLink = $('<a class="btn btn-small" href="#">Add</a>');
+				$addLink = $('<a class="btn btn-small" href="#">Add</a>'),
+				$control = $('.input-list-control', $list);
 			
 			if ($(this).data('input-list-init')) {
 				return $(this);
@@ -481,12 +618,12 @@ function inputChoicesInit() {
 				if (!$id.length) {
 					return false;
 				}
-				var removeClass = 'input-list-remove',
+				var removeClass = 'input-list-item-remove',
 					$checkbox = $listItem.find('.' + removeClass + ' input[type=checkbox]'),
 					$content = $listItem.children(':not(.'+removeClass+')');
 					
 				if (!$checkbox.length) {
-					$listItem.wrapInner('<div class="span11"></div>');
+					$listItem.wrapInner('<div class="span11 input-list-item-inner"></div>');
 					var removeName = $id.attr('name').replace(/\[id\]/,'[remove]'),
 						removeBoxId = removeName.replace(/(\[([^\]]+)\])/g, '_$2'),
 						$checkbox = $('<input/>', {
@@ -495,7 +632,6 @@ function inputChoicesInit() {
 							'value' : 1,
 							'id' : removeBoxId
 						}).attr('name', removeName).val(1).attr('id',removeBoxId);
-					console.log($checkbox.attr('id'));
 					$checkbox
 						.appendTo($listItem)
 						.wrap($('<div></div>', {'class' : removeClass + " span1"}))
@@ -506,7 +642,6 @@ function inputChoicesInit() {
 						$(this).parent().addClass('active');
 						$listItem.addClass('remove').find(':input').filter(function() {
 							var name = $(this).attr('name');
-							console.log($(this).attr('type'));
 							return name != $checkbox.attr('name') && (
 								!(name.match(/\[id\]/)) || $(this).is('select')
 							);
@@ -529,9 +664,7 @@ function inputChoicesInit() {
 			$addLink.click(function(e) {
 					e.preventDefault();
 					$listItems.cloneNumbered().trigger('inputListAdd');
-				})
-				.appendTo($(this))
-				.wrap('<div class="layout-buttons"></div>');
+				}).appendTo($control);
 					
 			$listItems.filter(':visible').each(function() {
 				addRemoveBox($(this));
@@ -558,6 +691,8 @@ function inputChoicesInit() {
 				$labels = $('label').filter(function() { return $(this).attr('for') == oldId;}),
 				newId = id.replace(idKey, newIdKey);
 			$(this).attr('id', newId);
+			$(this).parent('label[for="'+oldId+'"]').attr('for', newId);
+			$(this).closest('.control-group').find('label[for="'+oldId+'"]').attr('for',newId);
 			$(this).next('label[for="'+oldId+'"]').attr('for',newId);
 			$(this).prev('label[for="'+oldId+'"]').attr('for',newId);
 		}
@@ -565,7 +700,6 @@ function inputChoicesInit() {
 	};
 
 	$.fn.cloneNumbered = function() {
-		console.log('Cloning Numbered');
 		if ($(this).data('cloning')) {
 			return $(this);
 		}
@@ -573,24 +707,24 @@ function inputChoicesInit() {
 		var $ids = $(this).find(':input[name*="[id]"]:enabled'),
 			$id = $ids.last(),
 			name = $id.attr('name');
-		console.log($(this).attr('class'));
-		console.log($ids.length);
 		if ($id.length) {
 			var $entry = $(this).last(),
 				$cloned = $entry.clone().insertAfter($entry),
 				newIdKey = $ids.length;
+			$cloned.find('input').removeClass('hasDatepicker');
 			$cloned.find(':text,textarea').val('').trigger('reset');
 			$cloned
 				.slideDown()
 				.data('added', true)
 				.find(':input').each(function() {
-					return $(this).renumberInput(newIdKey).removeAttr('disabled').removeAttr('checked');
+					return $(this).renumberInput(newIdKey).removeAttr('disabled');//.removeAttr('checked');
 				});
 			$cloned.find(':input:visible').first().focus();
 			$(this).trigger('cloned', [$cloned]);
 			formLayoutInit();
 		}
 		$(this).data('cloning', false);
+		$(document).trigger('ajaxComplete');
 		return $(this);
 	};
 })(jQuery);
@@ -941,14 +1075,11 @@ function formLayoutInit() {
 }
 
 $(document).ajaxComplete(function() {
-	inputChoicesInit();
 	formLayoutInit();
 });
 
 $(document).ready(function() {
 	formLayoutInit();
-	inputChoicesInit();
-	formLayoutToggleInit();
 	$(this).find('.multi-select').multiSelectInit();
 	$(this).find('select[name*="input_select"]').change(function() {
 		$(this).closest('div').find('input').first().attr('value', $(this).attr('value')).change();

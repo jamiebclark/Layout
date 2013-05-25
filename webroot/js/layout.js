@@ -1,11 +1,12 @@
+//Input Toggle
 (function($) {
 	var toggleCount = 1;
-	$.fn.inputToggle = function() {
+	$.fn.layoutToggle = function() {
 		return this.each(function() {
 			var $toggle = $(this),
-				$control = $toggle.find('.toggle-control input[type*=checkbox]').first(),
-				$content = $toggle.find('> .toggle-content'),
-				$offContent = $toggle.find('> .toggle-off-content');
+				$control = $toggle.find('.layout-toggle-control input[type*=checkbox]').first(),
+				$content = $toggle.find('> .layout-toggle-content'),
+				$offContent = $toggle.find('> .layout-toggle-off');
 				tc = toggleCount++;
 			
 			$toggle.addClass('toggle' + tc);
@@ -35,9 +36,6 @@
 		});
 	};
 })(jQuery);
-function formLayoutToggleInit() {
-	$('.toggle').inputToggle();
-}
 
 (function($) {
 	$.fn.layoutDropdown = function() {
@@ -178,10 +176,12 @@ function formLayoutToggleInit() {
 $(document).ajaxComplete(function() {
 	$('.hover-layout').each(function() {$(this).hoverContent()});
 	$('.layout-dropdown').each(function() {$(this).layoutDropdown();});
+	$('.layout-toggle').layoutToggle();
 });
 
 $(document).ready(function() {
 	$('.layout-dropdown').each(function() {$(this).layoutDropdown();});
+	$('.layout-toggle').layoutToggle();
 	
 	$('.contentBox.toggle').contentBoxToggle(false, true).each(function() {
 		$(this).find('h2 a').first().click(function() {
@@ -206,21 +206,5 @@ $(document).ready(function() {
 		}
 		e.preventDefault();
 	});
-	
-	$('.hover-layout').each(function() {$(this).hoverContent()});	
-	
-	$('.layoutActionMenu').not('.no-resize').each(function() {
-		//Makes sure parent TD tightly wraps around the menu
-		var $td = $(this).parent('td').removeAttr('width'),
-			w = 0,
-			$ul = $(this).find('> ul'),
-			$lis = $ul.find('> li');
-		if ($td.length) {
-			$lis.each(function() {
-				w += $(this).outerWidth() + 5;
-			});
-			w = Math.ceil(w / $lis.length) * $lis.length;
-			$td.width(w).css({'padding-left':0,'padding-right':0});		
-		}
-	});
+	$('.hover-layout').each(function() {$(this).hoverContent()});
 });

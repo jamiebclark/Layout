@@ -14,7 +14,6 @@ $(function() {
 		if ($this.hasClass('start') || $this.hasClass('end')) {
 			$this.on('changeDate change', doDatepair);
 		}
-
 	});
 
 	$('.datepair input.time').each(function() {

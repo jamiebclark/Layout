@@ -60,9 +60,9 @@ class LayoutHelper extends LayoutAppHelper {
 		}		
 		//Toggle Off-Content
 		if (!empty($offContent)) {
-			$out .= $this->_toggleContent($offContent, !$checked, 'toggle-off-content');
+			$out .= $this->_toggleContent($offContent, !$checked, 'layout-toggle-off');
 		}
-		return $this->Html->div('toggle', $out);
+		return $this->Html->div('layout-toggle', $out);
 	}
 	
 	private function _toggleControl($label, $options = array()) {
@@ -80,12 +80,13 @@ class LayoutHelper extends LayoutAppHelper {
 			'label' => $label,
 			'div' => false,
 		) + compact('checked'));
-		return $this->Html->div('toggle-control', $toggleInput);
+		return $this->Html->div('layout-toggle-control', $toggleInput);
 	}
 	
-	private function _toggleContent($content, $checked, $class = null) {
-		if (empty($class)) {
-			$class = 'toggle-content';
+	private function _toggleContent($content, $checked, $addClass = null) {
+		$class = 'layout-toggle-content';
+		if (!empty($addClass)) {
+			$class .= ' ' . $addClass;
 		}
 		return $this->Html->div($class, $content, array('style' => $checked ? null : 'display:none'));
 	}
@@ -107,7 +108,7 @@ class LayoutHelper extends LayoutAppHelper {
 		}
 		if (!empty($params['toggle'])) {
 			$hasToggle = true;
-			$params = $this->addClass($params, 'toggle');
+			$params = $this->addClass($params, 'layout-toggle');
 			$params['url'] = false;	//Setting toggle overwrites existing URL option
 			$toggleChecked = ($params['toggle'] != -1);
 		}
@@ -150,7 +151,7 @@ class LayoutHelper extends LayoutAppHelper {
 			$bodyClass = 'contentbox-body-list';
 		}
 		if (!empty($hasToggle)) {
-			$bodyClass .= ' toggle-content';
+			$bodyClass .= ' layout-toggle-content';
 		}
 		if (!empty($toggleClose)) {
 			$bodyOptions['style'] = 'display:none;';
@@ -417,7 +418,7 @@ class LayoutHelper extends LayoutAppHelper {
 	 * Menu for displaying index actions
 	 *
 	 **/
-	function actionMenu($menu = null, $attrs = array()) {
+	function actionMenu($actions = null, $attrs = array()) {
 		$attrs = array_merge(array(
 			'tag' => 'div',
 			'class' => 'layout-action-menu inline',
@@ -426,6 +427,8 @@ class LayoutHelper extends LayoutAppHelper {
 			'tag' => false,
 		), $attrs);
 
+		$menu = $actions;
+		
 		$named = Param::keyCheck($attrs, 'named', true);
 		$url = Param::keyCheck($attrs, 'url', true);
 		$active = Param::keyCheck($attrs, 'active', true);
@@ -442,8 +445,8 @@ class LayoutHelper extends LayoutAppHelper {
 			}
 		}
 		
-		if (!empty($menu)) {
-			foreach ($menu as $key => $value) {
+		if (!empty($actions)) {
+			foreach ($actions as $key => $value) {
 				if (is_numeric($key)) {
 					list($menuItem, $config) = array($value, array());
 				} else {
@@ -472,7 +475,7 @@ class LayoutHelper extends LayoutAppHelper {
 				if (false && $menuItem == 'duplicate') {
 					$controller = !empty($newUrl['controller']) ? $newUrl['controller'] : $this->request->params['controller'];
 					$model = Inflector::singularize(Inflector::camelize($controller));
-					$menu[$key] = $this->Duplicate->iconLink($model, $id, array('array' => true, 'icons' => $useIcons));
+					//$menu[$key] = $this->Duplicate->iconLink($model, $id, array('array' => true, 'icons' => $useIcons));
 				} else if ($menuItem == 'active') {
 					$menu[$key] = $this->activateLink($id, !empty($active), array('icons' => $useIcons) + $config);
 				} else if (!empty($url) && in_array($menuItem, $this->autoActions)) {
@@ -720,7 +723,7 @@ class LayoutHelper extends LayoutAppHelper {
 				} else if ($item == 'delete') {
 					$item = array('Remove', 'delete');
 				} else if ($item == 'duplicate') {
-					$item = $this->Duplicate->iconLink($model, $id, array('icons' => $useIcons, 'fullText' => true));
+					//$item = $this->Duplicate->iconLink($model, $id, array('icons' => $useIcons, 'fullText' => true));
 				} else if ($item == 'active') {
 					$item = $this->activateLink($id, !empty($active), array('icons' => $useIcons, 'fullText' => true));
 				} else if ($item == 'spam') {
@@ -754,8 +757,7 @@ class LayoutHelper extends LayoutAppHelper {
 			}
 			$menu[] = $item;
 		}
-		
-		return $this->menu($menu, array('class' => 'layout-profile-menu h-menu'));
+		return $this->actionMenu($menu, array('class' => 'layout-id-menu'));
 	}
 	
 	/**
@@ -787,12 +789,12 @@ class LayoutHelper extends LayoutAppHelper {
 	}
 	
 	function adminMenu($menu = null, $attrs = array()) {
-		$navBarAttrs = array('class' => 'admin-menu');
+		$attrs = $this->addClass($attrs, 'admin-menu');
 		$title = Param::keyCheck($attrs, 'prefix', true); //Legacy Term
 		if (empty($title)) {
 			$title = Param::keyCheck($attrs, 'title', true, 'Staff Only');
 		}
-		return $this->navActionBar($menu, $title, $navBarAttrs);
+		return $this->navActionBar($menu, $title, $attrs);
 		//return $this->headingActionMenu($title, $menu, $attrs);
 	}
 	
@@ -940,14 +942,15 @@ class LayoutHelper extends LayoutAppHelper {
 	/**
 	 * Outputs a navbar, but with menu items formatted for actionMenu
 	 *
-	 * @param array $menu The actionMenu menu items
+	 * @param array $actions The actionMenu menu items
 	 * @param string $title Title of navbar
 	 * @param array $attrs Options for navbar
 	 * @return string Navbar
 	 **/
-	function navActionBar($menu, $title, $attrs = array()) {
-		if (!empty($menu)) {
-			$menu = $this->actionMenu($menu, array_merge(array('div' => false, 'class' => 'pull-right'), $attrs));
+	function navActionBar($actions, $title, $attrs = array()) {
+		$menu = array();
+		if (!empty($actions)) {
+			$menu = $this->actionMenu($actions, array_merge(array('div' => false, 'class' => 'pull-right'), $attrs));
 		}
 		return $this->navBar($menu, $title, $attrs);
 	}

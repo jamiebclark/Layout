@@ -130,25 +130,27 @@ class DisplayTextHelper extends AppHelper {
 		return $return;
 	}
 	
-	//Prints a list of commands for use
+	/**
+	 * Generates a table of formatting commands and their result
+	 *
+	 **/
 	function cheatSheet() {
-		$return = $this->Html->tag('h2', 'Text Formatting Cheat Sheet');
+		$out = $this->Html->tag('h2', 'Text Formatting Cheat Sheet');
 		if (!empty($this->constants)) {
-			$return .= $this->Html->tag('h3', 'Constants');
-			$return .= 'These constants will be updated from year to year. Using them will keep text automatically updated.';
+			$out .= $this->Html->tag('h3', 'Constants');
+			$out .= 'These constants will be updated from year to year. Using them will keep text automatically updated.';
 			$rows = array();
 			foreach ($this->constants as $constant => $value) {
-				$rows[] = array(array('<strong>' . $constant . '</strong>', array('class' => 'code')),$value);
+				$rows[] = array($this->Html->tag('code', $constant),$value);
 			}
-			$return .= $this->Html->tag('table');
-			$return .= $this->Html->tableHeaders(array('You type:', 'It displays:'));
-			$return .= $this->Html->tableCells($rows, array('class' => 'altrow'));
-			$return .= "</table>\n";
-			$return .= '<hr/>';
+			$table = $this->Html->tableHeaders(array('You type:', 'It displays:'));
+			$table .= $this->Html->tableCells($rows, array('class' => 'altrow'));
+			$out .= $this->Html->tag('table', $table);
+			$out .= '<hr/>';
 		}
 		
 		
-		$return .= $this->Html->tag('h3', 'Style Shortcuts');
+		$out .= $this->Html->tag('h3', 'Style Shortcuts');
 		$format = array(
 			'=Heading 1=',
 			'==Heading 2==',
@@ -164,14 +166,13 @@ class DisplayTextHelper extends AppHelper {
 		);
 		$rows = array();
 		foreach ($format as $line) {
-			$rows[] = array(array(nl2br($line), array('class' => 'code')), $this->smartFormat($line));
+			$rows[] = array($this->Html->tag('pre', $line), $this->smartFormat($line));
 		}
-		$return .= $this->Html->tag('table');
-		$return .= $this->Html->tableHeaders(array('You type:', 'It displays:'));
-		$return .= $this->Html->tableCells($rows, array('class' => 'altrow'));
-		$return .= "</table>\n";
+		$table = $this->Html->tableHeaders(array('You type:', 'It displays:'));
+		$table .= $this->Html->tableCells($rows, array('class' => 'altrow'));
+		$out .= $this->Html->tag('table', $table);
 		
-		return $this->Html->div('cheatSheet', $return, array('style' => 'clear:both'));
+		return $this->Html->div('displaytext-cheatsheet', $out);
 	}
 	
 	/**
