@@ -65,7 +65,10 @@ $flash .= $this->Session->flash('auth', array(
 				}
 			?>
 
-			<?php echo $this->Crumbs->output();?>
+			<div class="container">
+				<?php echo $this->Crumbs->output();?>
+			</div>
+			
 			<?php
 			if (!empty($flash)) {
 				echo $this->Html->div('container', $flash);

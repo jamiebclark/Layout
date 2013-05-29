@@ -8,11 +8,13 @@
 class FormLayoutComponent extends Component {
 	
 	function startup(Controller $controller) {
+		//debug($controller->request->data);
 		if(!empty($controller->request->data)) {			$controller->request->data = $this->scanDataFunction(
 				array('removableData','deconstructData'), 
 				$controller->request->data
 			);
-		}		return true;
+		}
+		//debug($controller->request->data);		return true;
 	}
 
 	private function initModel($model) {
@@ -30,7 +32,7 @@ class FormLayoutComponent extends Component {
 	
 	function removableData ($modelData, $model) {
 		if (!($Model = $this->initModel($model))) {
-			return null;
+			return $modelData;
 		}
 		$primaryKey = $Model->primaryKey;
 		

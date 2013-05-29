@@ -42,7 +42,6 @@ App::uses('LayoutAppHelper', 'Layout.View/Helper');class CrumbsHelper extends L
 		foreach ($vars as $type => $vars) {
 			$this->_setCrumbType($type, $vars);
 		}
-		
 		$this->addVars($settings);
 	}
 	
