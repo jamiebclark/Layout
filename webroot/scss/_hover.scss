@@ -1,11 +1,14 @@
 // Hover Content
 // ---------------------
-$arrowHeight:			10px;
-$arrowColor:			white;
+$hoverWindowBorderColor:		#999;
+$hoverWindowWidthWider: 		660px;
+$hoverWindowWidthWide: 			460px;
+$hoverWindowWidthSlim: 			240px;
 
-$windowWidthWider: 		660px;
-$windowWidthWide: 		460px;
-$windowWidthSlim: 		240px;
+$hoverArrowHeight:				10px;
+$hoverArrowColor:				white;//$hoverWindowBorderColor;
+$hoverArrowBorder:				1px;
+
 
 .hover-layout {
 	position: relative;
@@ -25,7 +28,25 @@ $windowWidthSlim: 		240px;
 	background-color: white;
 	@include box-shadow($shadowPadding, $shadowPadding, $shadowRadius, $shadowColor);
 	border-radius: $borderRadiusSmall;
-	color: #999;
+	color: $hoverWindowBorderColor;
+}
+@mixin arrowBorder($side) {
+	$adjust: top;
+	@if ($side == top or $side == bottom) {
+		$adjust: 'left';
+	}
+	.hover-arrow, .hover-arrow-border {
+		@include arrow($side, $hoverArrowHeight, $hoverArrowColor);
+		height: $hoverArrowHeight;
+		z-index: 50;
+		#{$adjust}: $baseLineHeight;
+	}
+	.hover-arrow-border {
+		@include arrow($side, $hoverArrowHeight + $hoverArrowBorder, $hoverWindowBorderColor);
+		height: $hoverArrowHeight;
+		#{$adjust}: $baseLineHeight - $hoverArrowBorder;
+		z-index: 49;
+	}
 }
 
 .hover-content {
@@ -42,23 +63,11 @@ $windowWidthSlim: 		240px;
 		margin: 0;
 	}
 
-	.hover-arrow {
-		@include arrow(top, $arrowHeight, $arrowColor);
-		z-index: 50;
-		/*
-		height: $arrowHeight + 1;
-		background: transparent url("../img/arrow/window/white_grey_up.png") left top no-repeat;
-		position: absolute;
-		top: 0;
-		left: 0;
-		right: 0;
-		z-index: 3;
-		margin: 0 20px;
-		*/
-	}
+	@include arrowBorder(top);
+		
 	.hover-window {
 		margin: 0;
-		margin-top: $arrowHeight;
+		margin-top: $hoverArrowHeight;
 		position: reltiave;
 		z-index: 2;
 	}
@@ -66,50 +75,34 @@ $windowWidthSlim: 		240px;
 		width: auto;
 	}
 	&.width-wider {
-		width: $windowWidthWider;
+		width: $hoverWindowWidthWider;
 	}
 	&.width-wide {
-		width: $windowWidthWide;
+		width: $hoverWindowWidthWide;
 	}
 	&.width-slim {
-		width: $windowWidthSlim;
+		width: $hoverWindowWidthSlim;
 	}
 
 	&.position-down {
 		top: auto;
 		bottom: 20px;
-		.hover-arrow {
-			@include arrow(bottom, $arrowHeight, $arrowColor);
-			/*
-			top: auto;
-			bottom: 0;
-			background-image: url("../img/arrow/window/white_grey_down.png");
-			*/
-		}
+		@include arrowBorder(bottom);
 		.hover-window {
 			margin-top: 0;
-			margin-bottom: $arrowHeight;
+			margin-bottom: $hoverArrowHeight;
 		}
 	}
 	&.position-right {
 		left: auto;
 		right: 0;
-		.hover-arrow {
-			//background-position: right top;
-			@include arrow(left, $arrowHeight, $arrowColor);
-		}
+		@include arrowBorder(left);
 	}
 	
 	&.hover-left {
 		top: auto;
 		bottom: auto;
-		.hover-arrow {
-			@include arrow(right, $arrowHeight, $arrowColor);
-			/*
-			background-image: none;
-			height: 0;
-			*/
-		}
+		@include arrowBorder(right);
 		.hover-window {
 			margin-top: 0;
 		}

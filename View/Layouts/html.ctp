@@ -65,8 +65,10 @@ $flash .= $this->Session->flash('auth', array(
 				}
 			?>
 
-			<div class="container">
-				<?php echo $this->Crumbs->output();?>
+			<div id="breadcrumb">
+				<div class="container">
+					<?php echo $this->Crumbs->output();?>
+				</div>
 			</div>
 			
 			<?php

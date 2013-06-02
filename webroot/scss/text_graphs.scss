@@ -1,0 +1,122 @@
+@import "bootstrap/variables";
+@import "bootstrap/mixins";
+
+.pie-icon {
+	vertical-align: middle;
+	img {
+		vertical-align: middle;
+	}
+	&.complete, &.incomplete {
+		a {
+			display: block;
+			float: left;
+			text-align: center;
+			vertical-align: middle;
+			width: 20px;
+			height: 20px;
+			padding: 0px;
+			
+			&:hover {
+				img {
+					@include opacity(0);
+				}
+			}
+			background: transparent url("/img/icn/progress_pie/100.png") center center no-repeat;
+		}
+	}
+	&.complete {
+		a:hover {
+			background-image: url("/img/icn/progress_pie/0.png");
+		}
+	}
+}
+
+.bar-graph {
+	font {
+		font-family: Courier;
+		&.good {
+			color: $successBackground;
+			background-color: $successBackground;
+		}
+		&.bad {
+			color: $errorBackground;
+			background-color: $errorBackground;
+		}
+	}
+}
+
+$barHeight: 		1.5em;
+$barRadius: 		.25em;
+
+.div-bar-graph {
+	height: $barHeight;
+	.bg, .amt {
+		height: 100%;
+	}
+	.bg {
+		position: relative;
+		@include gradient-vertical(#DDD, #FFF);
+		border: 1px solid #CCC;
+		font {
+			color: #666;
+		}
+	}
+	
+	.amt {
+		float: left;
+		position: absolute;
+		left: -1px;
+		top: -1px;
+		@include gradient-vertical($blue, darken($blue, 10%));
+		border: 1px solid darken($blue,15%);
+		@include border-left-radius($barRadius);
+		overflow: hidden;
+	}
+
+	.bg, &.complete .amt, a:hover .amt {
+		@include border-radius($barRadius);
+		width: 100% !important;
+	}
+	font {
+		display: block;
+		font-size: 1em;
+		font-weight: bold;
+		position: absolute;
+		right: 0;
+		text-shadow: 1px 1px 4px white;
+	}
+
+	&.incomplete {
+		a:hover {
+			.bg {
+				@include gradient-vertical($green, darken($green, 10%));
+				border-color: darken($green, 15%);
+			}
+		}
+	}		
+	&.complete {
+		a:hover {
+			.bg {
+				border-color: #666;
+			}
+		}
+		font {
+			color: white;
+			text-shadow: none;
+		}
+
+	}
+	a:hover, &.blank-complete {
+		.amt {
+			display: none;
+		}
+	}
+	a:hover {
+		cursor: pointer;
+		font {
+			display: none;
+		}
+	}
+	width: 100%;
+	border: 1px solid #EFEFEF;
+}

@@ -206,7 +206,50 @@ $(document).ready(function() {
 		});
 	});
 });
-	
+
+// AJAX Modal Loading Window 
+(function($) {
+	$.fn.ajaxModal = function() {
+		return this.each(function() {
+			var $a = $(this),
+				url = $a.attr('href'),
+				title = $a.attr('data-modal-title'),
+				$ajaxWindow = $('#ajax-modal'),
+				$ajaxWindowHeader = $('.modal-header', $ajaxWindow),
+				$ajaxWindowBody = $('.modal-body', $ajaxWindow);
+			if (!$ajaxWindow.length) {
+				$ajaxWindow = $('<div></div>', {
+					'id': 'ajax-modal',
+					'class': 'modal hide fade modal-wide'
+				});
+				var $ajaxWindowHeader = $('<div class="modal-header"></div>')
+						.appendTo($ajaxWindow),
+					$ajaxWindowBody = $('<div class="modal-body"></div>')
+						.appendTo($ajaxWindow);
+				$ajaxWindowHeader.append($('<button></button>', {
+					'type': 'button',
+					'class': 'close',
+					'data-dismiss': 'modal',
+					'aria-hidden': 'true',
+					'html': '&times;'
+				}));
+			}
+			if (!title) {
+				title = 'Window';
+			}
+			$ajaxWindowHeader.append('<h3>' + title + '</h3>');
+			$a.click(function(e) {
+				e.preventDefault();
+				$ajaxWindowBody.load(url);
+				$ajaxWindow.modal('show');
+			});
+		});
+	};
+})(jQuery);
+$(document).ready(function() {
+	$('.ajax-modal').ajaxModal();
+});
+
 // Hover
 (function($) {
 	var hoverCount = 0;

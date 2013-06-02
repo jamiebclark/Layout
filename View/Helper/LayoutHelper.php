@@ -43,7 +43,7 @@ class LayoutHelper extends LayoutAppHelper {
 
 	function beforeRender($viewFile) {
 		$this->Asset->css('Layout.font-awesome');
-		$this->Asset->js('Layout.layout');
+	//	$this->Asset->js('Layout.layout');
 		parent::beforeRender($viewFile);
 	}
 	
@@ -331,7 +331,7 @@ class LayoutHelper extends LayoutAppHelper {
 	
 	function neighbors($prev = null, $next = null, $up = null, $options = array()) {
 		$return = '';
-		$class = 'neighbors';
+		$class = 'neighbors row-fluid';
 		
 		if (is_array($prev)) {
 			$prevOptions = $prev;
@@ -350,21 +350,20 @@ class LayoutHelper extends LayoutAppHelper {
 			}
 		}
 
-		if (!empty($up)) {
-			$class .= ' has-up';
-		}
-		
 		$neighborChecks = array(
 			array('arrow_left', $prev, 'prev'),
 			array('arrow_up', $up, 'up'),
 			array('arrow_right', $next, 'next'),
 		);
-		foreach ($neighborChecks as $neighborCheck) {
+		$offset = 0;
+		$span = 4;
+		foreach ($neighborChecks as $k => $neighborCheck) {
 			list($icon, $link, $addClass) = $neighborCheck;
-			$icon = $this->Iconic->icon($icon);
 			if (empty($link)) {
+				$offset++;
 				continue;
 			}
+			$icon = $this->Iconic->icon($icon);
 			if (is_array($link)) {
 				if (!empty($options['model']) && isset($link[$options['model']])) {
 					$displayField = !empty($options['displayField']) ? $options['displayField'] : 'title';
@@ -379,7 +378,12 @@ class LayoutHelper extends LayoutAppHelper {
 			} else {
 				$link = "$icon $link";
 			}
-			$return .= $this->Html->div('neighbor ' . $addClass, $link);
+			$neighborClass = "neighbors-$addClass span$span";
+			if (!empty($offset)) {
+				$neighborClass .= ' offset' . ($span * $offset);
+			}
+			$return .= $this->Html->div($neighborClass, $link);
+			$offset = 0;
 		}
 		
 		if (!empty($return)) {
@@ -1537,6 +1541,8 @@ class LayoutHelper extends LayoutAppHelper {
 		$close = "</span>\n";
 		$close .= $this->Html->div(null, null, $contentAttrs);
 		$close .= $this->Html->div('hover-arrow', '&nbsp;');
+		$close .= $this->Html->div('hover-arrow-border', '&nbsp;');
+
 		$close .= $this->Html->div('hover-window', $hoverContent);
 		$close .= "</div>\n";	//hover-content
 		$close .= "</span>\n";	//hover-layout

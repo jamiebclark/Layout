@@ -338,7 +338,7 @@ class IconicHelper extends AppHelper {
 	
 	function beforeRender($page) {
 		parent::beforeRender($page);
-		$this->Asset->css('Layout.iconic');
+		//$this->Asset->css('Layout.iconic');
 	}
 	
 	function menu($list = array(), $options = array()) {

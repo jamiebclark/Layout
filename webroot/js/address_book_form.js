@@ -5,16 +5,15 @@
 		return this.each(function() {
 			var $nameInput = $(this),
 				$nameInner = $('.input-name-inner', $nameInput);
-				$nameOptions = $('<div class="input-name-options input-multi-row"></div>')
-				.insertAfter($nameInner)
-				.prepend($('<em>Additional:</em>'));
-				
-			$nameInput
-				.find('input')
-				.filter(function() {
-					return !($(this).closest('div').hasClass('required'));
-				})
-				.each(function() {
+				$nameOptions = $('<div class="input-name-options input-multi-row"></div>'),
+				$inputs = $nameInput
+					.find('input')
+					.filter(function() {
+						return !($(this).closest('div.input').hasClass('required'));
+					});
+			if ($inputs.length) {
+				$nameOptions.insertAfter($nameInner).prepend($('<em>Additional:</em>'));
+				$inputs.each(function() {
 					nameInputCheckCount++;
 					var $input = $(this),
 						$inputHolder = $(this).closest('div.input'),
@@ -52,7 +51,8 @@
 						}
 						return $(this);					
 					}).prependTo($label);
-				});			
+				});
+			}
 		});
 	};
 })(jQuery);

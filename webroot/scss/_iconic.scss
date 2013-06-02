@@ -1,45 +1,47 @@
 @import "font-face";
-@include font-face(IconicFill, iconic_fill, IconicFil, san-serif);
+@include font-face(IconicFill, iconic_fill, IconicFill, san-serif);
 //@include font-face(IconicStroke, iconic_stroke);
 
-.iconic-list {
-	overflow: hidden;
-	zoom: 1;
-}
-.iconic-list, .iconic-list ul, .iconic-list li {
-	background-color: transparent !important;
-	margin: 0 !important;
-	padding: 0 !important;
-	list-style-type: none !important;
-	border: 0 !important;
-}
-.iconic-list ul, .iconic-list li, .iconic-list a{
-	display: block;
-	float: left;
-}
-.iconic-list li {
-	margin-right: .25em !important;
-}
-.iconic-list a {
-	width: 1em;
-	line-height: 1em;
-	padding: .1em;
-	margin-right: .25em;
-	text-align: center;
-	vertical-align: middle;
-	border: 1px solid black;
-	border-radius: 1em;
-	text-decoration: none;
-	
-	color: white;
-	font-weight: normal;
-}
-.iconic-list a:hover {
-	background-color: white;
-}
+$iconicListFontSize:		14px;
+$iconicListPadding:			2px;
+$iconicListSize:			$iconicListFontSize + 2 * $iconicListPadding;
 
-a:hover .iconic {
-	cursor: pointer;
+.iconic-list {
+	@extend %overflow;
+	&, ul, li { 
+		background-color: transparent !important;
+		margin: 0 !important;
+		padding: 0 !important;
+		list-style-type: none !important;
+		border: 0 !important;
+	}
+	ul, li, a {
+		display: block;
+		float: left; 
+	}
+	li {
+		margin-right: 2px !important;
+	}
+	a {
+		font-size: $iconicListFontSize;
+		width: $iconicListSize;
+		line-height: $iconicListSize;
+		
+		margin-right: 4px;
+		text-align: center;
+		vertical-align: middle;
+		border: 1px solid $linkColor;
+		border-radius: $iconicListSize;
+		text-decoration: none;
+		
+		font-weight: normal;
+		&:hover {
+			background-color: white;
+			.iconic {
+				cursor: pointer;
+			}
+		}
+	}
 }
 
 .iconic { 

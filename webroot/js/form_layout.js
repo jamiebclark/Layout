@@ -87,10 +87,10 @@
 				$controls = $('.input-date-control a', $holder);
 			function set(val) {
 				if ($dates) {
-					$dates.datepicker('setDate', val);
+					$dates.datepicker('setDate', val).change();
 				}
 				if ($times) {
-					$times.timepicker('setTime', val);
+					$times.timepicker('setTime', val).change();
 				}
 			}
 			function setToday() {
@@ -127,7 +127,7 @@
 	};
 })(jQuery);
 
-documentReady(function() {
+$(document).ready(function() {
 	$('.input-date-all-day').inputDateAllDay();
 	$('.input-date,.input-time').inputDate();
 });

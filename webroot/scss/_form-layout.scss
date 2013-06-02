@@ -13,6 +13,28 @@
 	margin-bottom: $baseLineHeight / 2;
 }
 
+.form-large {
+	select,
+	textarea,
+	input[type="text"],
+	input[type="password"],
+	input[type="datetime"],
+	input[type="datetime-local"],
+	input[type="date"],
+	input[type="month"],
+	input[type="time"],
+	input[type="week"],
+	input[type="number"],
+	input[type="email"],
+	input[type="url"],
+	input[type="search"],
+	input[type="tel"],
+	input[type="color"],
+	.uneditable-input {
+		@include inputFontSize($fontSizeLarge);
+	}
+}
+
 // Custom Inputs
 // ---------------
 .input-cash, .input-number, input[type="number"] {
@@ -184,3 +206,15 @@ textarea, input {
 		font-size: 11px;
 	}
 }
+
+// Modal
+$modalWidthWide: 760px;
+$modalWidthSlim: 360px;
+@mixin modalWidth($class, $w) {
+	.modal.#{$class} {
+		width: $w;
+		margin-left: -1 * $w / 2;
+	}
+}
+@include modalWidth(modal-wide, $modalWidthWide);
+@include modalWidth(modal-slim, $modalWidthSlim);

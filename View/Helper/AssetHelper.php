@@ -6,10 +6,10 @@ class AssetHelper extends LayoutAppHelper {
 	//Assets to be loaded whenever helper is called, broken down by category
 	public $defaultAssets = array(
 		'jquery' => array(
-			'css' => array('Layout.jquery/ui/ui-lightness/jquery-ui-1.8.20.custom'),
+			'css' => array('Layout.jquery/ui/ui-lightness/jquery-ui-1.10.3.custom.min'),
 			'js' => array(
-				'//ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js',
-				'//ajax.googleapis.com/ajax/libs/jqueryui/1.10.2/jquery-ui.min.js'
+				'//ajax.googleapis.com/ajax/libs/jquery/1.10.0/jquery.min.js',
+				'//ajax.googleapis.com/ajax/libs/jqueryui/1.10.3/jquery-ui.min.js'
 			),
 		),
 		'bootstrap' => array(

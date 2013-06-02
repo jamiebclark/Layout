@@ -245,6 +245,16 @@ class FormLayoutHelper extends LayoutAppHelper {
 		return $out;
 	}
 	
+	private function _buttonInner($name, $options = array()) {
+		$options = array_merge(array(
+			'div' => false,
+			'escape' => false,
+			'type' => 'submit',
+		), $options);
+		$options = $this->addClass($options, 'btn');
+		return $this->Form->button($name, $options);
+	}
+	
 	public function input($name, $options = array()) {
 		$beforeInput = '';
 		$afterInput = '';
@@ -273,6 +283,15 @@ class FormLayoutHelper extends LayoutAppHelper {
 				$options['placeholder'] = '0.00';
 				$options['step'] = 'any';
 			break;
+			case 'date':
+				$input = $this->inputDate($name, $options);
+			break;
+			case 'datetime':
+				$input = $this->inputDatetime($name, $options);
+			break;
+			case 'time':
+				$input = $this->inputTime($name, $options);
+			break;
 			case 'float':
 				$options['type'] = 'number';
 				$options = $this->addClass($options, 'input-number');
@@ -293,10 +312,10 @@ class FormLayoutHelper extends LayoutAppHelper {
 			break;
 		}
 		
-		if (isset($options['input-append'])) {
+		if (isset($options['inputAppend'])) {
 			$options = $this->addClass($options, 'input-append', 'div');
-			$options = $this->addClass($options, $options['input-append'], 'after');
-			unset($options['input-append']);
+			$options = $this->addClass($options, $this->_buttonInner($options['inputAppend']), 'after');
+			unset($options['inputAppend']);
 		}
 		
 		if ($search = Param::keyCheck($options, 'search', true)) {
@@ -350,8 +369,10 @@ class FormLayoutHelper extends LayoutAppHelper {
 			$options['after'] .= $this->submit($submit[0], $submit[1]);
 			$options = $this->addClass($options, 'contain-button', 'div');
 		}
-		
-		return $beforeInput . $this->Form->input($name, $options) . $afterInput;
+		if (empty($input)) {
+			$input = $this->Form->input($name, $options);
+		}
+		return $beforeInput . $input . $afterInput;
 	}
 	
 	public function inputAutoCompleteSelect($searchField = 'title', $idField = 'id', $url = null, $options = array()) {
@@ -864,8 +885,10 @@ class FormLayoutHelper extends LayoutAppHelper {
 		));
 	}
 	
-	private function getDateFieldValue($fieldName, $type = 'date') {
-		$value = $this->getFieldValue($fieldName, $type);
+	private function getDateFieldValue($fieldName, $type = 'date', $value = null) {
+		if (empty($value)) {
+			$value = $this->getFieldValue($fieldName, $type);
+		}
 		if (!empty($value)) {
 			if (is_array($value)) {
 				$value = implode(' ', $value);
@@ -896,14 +919,16 @@ class FormLayoutHelper extends LayoutAppHelper {
 	
 	function inputDate($fieldName, $options = array()) {
 		$options = array_merge(array(
-				'type' => 'text',
 				'placeholder' => 'mm/dd/yyyy',
 				'div' => 'control-group input-date',
 				'default' => $this->getDateFieldValue($fieldName),
 				//'prepend' => '<i class="icon-calendar"></i>',
 				'control' => array('today', 'clear'),
 			), $this->addClass($options, 'date datepicker'));
-			
+		$options['type'] = 'text';
+		if (!empty($options['value'])) {
+			$options['value'] = $this->getDateFieldValue($fieldName, 'date', $options['value']);
+		}
 		if ($control = Param::keyCheck($options, 'control', true)) {
 			$control = array_flip($control);
 			$after = '';
@@ -936,12 +961,12 @@ class FormLayoutHelper extends LayoutAppHelper {
 	
 	function inputTime($fieldName, $options = array()) {
 		$options = array_merge(array(
-			'type' => 'text',
 			'placeholder' => '0:00pm',
 			'div' => 'control-group input-time',
 			'default' => $this->getFieldValue($fieldName, 'time'),
 			//'prepend' => '<i class="icon-time"></i>',
 		), $this->addClass($options, 'time timepicker'));
+		$options['type'] = 'text';
 		return $this->input($fieldName . '.time', $options);			
 	}
 	
