@@ -61,6 +61,16 @@ h3, h4 {
 	margin-bottom: $baseLineHeight;
 }
 
+// Lists
+// ------------------------
+.heading-action-menu {
+	.btn-group {
+		float: right;
+		margin-top: 0 !important;
+	}
+}
+
+
 // Media Box
 // ---------------------
 .media {

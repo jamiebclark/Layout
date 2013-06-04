@@ -50,6 +50,7 @@ function documentReady(actions) {
 		});
 	};
 })(jQuery);
+
 documentReady(function() {
 	$('.datepicker').datepick();
 	$('.timepicker').timepick();
@@ -194,17 +195,70 @@ documentReady(function() {
 		);
 		return $(this);
 	};
+	
+	$.fn.layoutTable  = function() {
+		return this.each(function() {
+			var $table = $(this),
+				$form = $table.closest('form'),
+				$tableCheckboxes = $('input[name*="[table_checkbox]"]', $table).tableCheckbox(),
+				$formCheckboxes = $('input[name*="[table_checkbox]"]', $form),
+				$checkedCheckboxes = $(':checked', $tableCheckboxes),
+				$checkAllCheckboxes = $('th input.check-all', $form),
+				$withChecked = $('.table-with-checked', $form);
+			
+			function setCheckedCheckboxes() {
+				$checkedCheckboxes = $formCheckboxes.filter(function() { return $(this).is(':checked');});
+			}
+			
+			function checkAll($checkboxes, setCheck) {
+				if (setCheck !== false) {
+					var setCheck = true;
+				}
+				$checkboxes.each(function() {
+					$(this).prop('checked', !setCheck).click();
+				});
+			}
+			
+			function updateWithChecked() {
+				var $withCheckedInfo = $('.table-with-checked-info', $withChecked);
+				if ($checkedCheckboxes.length) {
+					$withChecked.addClass('fixed');
+				} else {
+					$withChecked.removeClass('fixed');
+				}
+				if (!$withCheckedInfo.length) {
+					$withCheckedInfo = $('<div class="table-with-checked-info"></div>').prependTo($withChecked);
+				}
+				$withCheckedInfo.html($checkedCheckboxes.length + ' Checked ');
+				var allChecked = ($checkedCheckboxes.length == $formCheckboxes.length);
+				$withCheckedInfo.append($('<a></a>', {
+					'href': '#',
+					'html': allChecked ? 'Uncheck All' : 'Check All',
+					'click': function(e) {
+						e.preventDefault();
+						checkAll($formCheckboxes, !allChecked);
+					}
+				}));
+			}
+			
+			$checkAllCheckboxes.click(function(e) {
+				checkAll($tableCheckboxes, $(this).is(':checked'));
+			});
+			
+			$tableCheckboxes.click(function(e) {
+				setCheckedCheckboxes();
+				if ($withChecked.length == 1) {
+					updateWithChecked();
+				}
+			});
+			return $table;
+		});
+	};
 })(jQuery);
 
 $(document).ready(function() {
 	$('th a').tableSortLink();
-	$('input[name*="[table_checkbox]"]').tableCheckbox();
-	$('th input.check-all').click(function(e) {
-		var $check = $(this);
-		$('input[name*=table_checkbox]', $check.closest('table')).each(function() {
-			$(this).prop('checked', $check.is(':checked'));
-		});
-	});
+	$('.layout-table').layoutTable();
 });
 
 // AJAX Modal Loading Window 

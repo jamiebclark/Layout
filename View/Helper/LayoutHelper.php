@@ -769,6 +769,7 @@ class LayoutHelper extends LayoutAppHelper {
 	 *
 	 **/
 	function headingActionMenu($title, $menu = null, $attrs = array()) {
+		$attrs = $this->addClass($attrs, 'heading-action-menu');
 		return $this->navActionBar($menu, $title, $attrs);
 		
 		return $this->adminMenu($menu, compact('title') + $attrs);
@@ -953,14 +954,16 @@ class LayoutHelper extends LayoutAppHelper {
 	 **/
 	function navActionBar($actions, $title, $attrs = array()) {
 		$menu = array();
+		$actionAttrs = array('div' => false, 'class' => 'pull-right') + $attrs;
 		if (!empty($actions)) {
-			$menu = $this->actionMenu($actions, array_merge(array('div' => false, 'class' => 'pull-right'), $attrs));
+			$menu = $this->actionMenu($actions, $actionAttrs);
 		}
 		return $this->navBar($menu, $title, $attrs);
 	}
 
 	function navBar($menuItems, $title = null, $attrs = array()) {
 		$attrs = $this->addClass($attrs, 'navbar');
+		$class = Param::keyCheck($attrs, 'class', true);
 		$out = '';
 		if (!empty($title)) {
 			if (is_array($title)) {
@@ -973,7 +976,7 @@ class LayoutHelper extends LayoutAppHelper {
 		if (!empty($menuItems)) {
 			$out .= is_array($menuItems) ? $this->nav($menuItems, $attrs) : $menuItems;
 		}
-		return $this->Html->div($attrs['class'], $this->Html->div('navbar-inner', $out));
+		return $this->Html->div($class, $this->Html->div('navbar-inner', $out));
 	}
 	
 	function nav($menuItems = array(), $attrs = array()) {

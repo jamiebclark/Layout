@@ -1,23 +1,41 @@
-@import "rounded";
 @import "shadow";
+
+$rowInactiveColor: 		$gray;
+$rowActiveColor:		$infoBackground;
+
+$tableSortBgColor: 		$grayLighter;
+$tableSortBorderColor: 	$gray;
+$tableSortRounded: 		$baseBorderRadius;
 
 tr {
 	&.inactive {
 		&, td {
-			background-color: #CCC;
+			background-color: $rowInactiveColor;
 		}
 	}
 	&.active {
 		&, td {
-			background-color: blue;
+			background-color: $rowActiveColor;
 		}
 	}
 }
 
 
-$tableSortBgColor: #EEE;
-$tableSortBorderColor: #CCC;
-$tableSortRounded: .25em;
+.table-with-checked {
+	padding: $paddingSmall;
+	&.fixed {
+		position: fixed;
+		right: 0;
+		left: 0;
+		bottom: 0;
+		background-color: $grayLighter;
+		border-top: 1px solid $tableBorder;
+		z-index: 5000;
+	}
+}
+.table-with-checked-info {
+	float: right;
+}
 
 .table-sort-links {
 	position: relative;

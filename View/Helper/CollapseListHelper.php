@@ -38,15 +38,15 @@ class CollapseListHelper extends AppHelper {
 			'form' => null,
 			'draggable' => false,
 		), $options);
+		$options = $this->addClass($options, 'collapse-list');
+		if (!empty($options['draggable'])) {
+			$options = $this->addClass($options, 'draggable');
+		}
 		if (empty($options['model'])) {
 			$options['model'] = InflectorPlus::modelize($this->request->params['controller']);
 		}
 		extract($options);
 		$root = !$sub;
-		$rootWrapClass = 'collapse-list';
-		if ($draggable) {
-			$rootWrapClass .= ' draggable';
-		}
 		
 		if ($root) {
 			$this->listItemCount = 0;
@@ -55,8 +55,7 @@ class CollapseListHelper extends AppHelper {
 			unset($options['form']);
 			unset($options['draggable']);
 		}
-		
-		$out = $this->Html->tag('ul', null, array('class' => 'cl'));
+		$out = '';
 		foreach ($result as $row) {
 			$hasChildren = !empty($row['children']);
 			$isActive = $activeField ? $row[$model][$activeField] == true : null;
@@ -64,18 +63,13 @@ class CollapseListHelper extends AppHelper {
 			$title = $row[$model][$displayField];
 			$id = $row[$model][$primaryKey];
 			
-			$liOptions = array(
-				'class' => 'cl',
-				'id' => 'cl-' . $id,
-			);
+			$liOptions = array('class' => 'collapse-list-item', 'id' => 'cl-' . $id);
 			if (!$hasChildren) {
 				$liOptions = $this->addClass($liOptions, 'childless');
 			}
 			
-			$out .= $this->Html->tag('li', null, $liOptions);
-			
 			//Title
-			$titleClass = 'cl-t';
+			$titleClass = 'collapse-list-item-title';
 			$titleLinkClass = '';
 			$isSelected = false;
 			if ($selected == $id) {
@@ -121,10 +115,10 @@ class CollapseListHelper extends AppHelper {
 			}
 			
 			if (!empty($checkbox)) {
-				$title = $this->Html->tag('label', $title, array('class' => 'cl-tl'));
+				$title = $this->Html->tag('label', $title, array('class' => "collapse-list-item-title-label"));
 			}
 			
-			$out .= $title;
+			$li = $title;
 
 			//Body
 			$body = '';
@@ -133,22 +127,22 @@ class CollapseListHelper extends AppHelper {
 			} else if (!empty($infoTableResult)) {
 				$body .= $this->Layout->infoTableResult($row, $infoTableResult);
 			}
-			$out .= $this->Html->tag('span', $body, array('class' => 'cl-body'));
+			$li .= $this->Html->tag('span', $body, array('class' => 'collapse-list-item-body'));
 			
 			//Children
 			if ($hasChildren) {
-				$out .= $this->output($row['children'], array('sub' => $sub + 1) + $options);
+				$li .= $this->output($row['children'], array('sub' => $sub + 1) + $options);
 			}
-			$out .= "</li>\n";
+			$out .= $this->Html->tag('li', $li, $liOptions);
 			$this->listItemCount++;
 		}
-		$out .= "</ul>\n";
+		$out = $this->Html->tag('ul', $out, array('class' => 'collapse-list-list'));
 		
 		if ($root) {
 			if (!empty($checkbox)) {
 				$this->Table->hasForm = true;
 			}
-			$out = $this->Html->div($rootWrapClass, $out);
+			$out = $this->Html->div($class, $out);
 			if (!empty($withChecked)) {
 				$out .= $this->Table->withChecked($withChecked);
 			}

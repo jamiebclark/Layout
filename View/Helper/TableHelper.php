@@ -195,7 +195,7 @@ class TableHelper extends LayoutAppHelper {
 			$return .= $content;
 		}
 		$out .= $this->Form->submit('Go', array('name' => 'with_checked','div' => false));
-		return $this->Html->div('with-checked form-inline', $out);
+		return $this->Html->div('table-with-checked form-inline', $out);
 	}
 
 	public function tableSortMenu($sortMenu = array(), $attrs = array()) {
@@ -363,7 +363,7 @@ class TableHelper extends LayoutAppHelper {
 			'hasForm' => false,
 			'formAddRow' => array(),
 			'getHeader' => true,
-			'checkboxCount' => 0,
+//			'checkboxCount' => 0,
 			'currentCheckboxId' => null,
 			'columnCount' => 0,
 			'tdCount' => 0,
@@ -407,7 +407,7 @@ class TableHelper extends LayoutAppHelper {
 				'tableCells' => array(),
 			), (array) $options
 		);
-		$options = $this->addClass($options, 'table');
+		$options = $this->addClass($options, 'table layout-table');
 		$options['tableCells'] = array_merge(array(
 			'oddTrOptions' => array('class' => 'altrow'),
 			'evenTrOptions' => null,
