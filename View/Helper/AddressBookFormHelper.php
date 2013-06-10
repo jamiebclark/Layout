@@ -159,7 +159,7 @@ class AddressBookFormHelper extends LayoutAppHelper {
 			if (Param::keyCheck($options, 'default', true)) {
 				$div .= ' default';
 			}
-			if (Param::keyCheck($options, 'required', true)) {
+			if (Param::keyCheck($options, 'required', true) || (isset($options['required']) && $options['required'] === true)) {
 				$div .= ' required';
 			}
 			$options['div'] = $div;

@@ -8,7 +8,7 @@
 class FormLayoutComponent extends Component {
 	var $controller;
 	
-	function startup(Controller $controller) {
+	function initialize(Controller $controller) {
 		//debug($controller->request->data);
 		$this->controller = $controller;
 		$this->parseData();
@@ -73,7 +73,7 @@ class FormLayoutComponent extends Component {
 			if (is_array($val)) {				$dateVal = '';				if (isset($val['time']) || isset($val['date'])) {
 					$format = '';					if (isset($val['date'])) {						$dateVal .= $val['date'];
 						$format = 'Y-m-d';					}					if (isset($val['time'])) {						$dateVal .= (!empty($dateVal) ? ' ' : '') . $val['time'];
-						$format .= ' g:i:s';					}					$modelData[$key] = date($format, strtotime($dateVal));				}			}		}		return $modelData;	}	
+						$format .= ' H:i:s';					}					$modelData[$key] = !empty($dateVal) ? date($format, strtotime($dateVal)) : null;				}			}		}		return $modelData;	}	
 /**
  * Finds model data within a data array and passes it to user-specified functions
  * 
@@ -82,14 +82,23 @@ class FormLayoutComponent extends Component {
  * @param string $passModel The model to check
  * @return array Updated data array
  **/
-	private function parseDataFunction($fn, $data, $passModel = false) {
+	private function parseDataFunction($fn, $passData, $passModel = false) {
 		if (is_array($fn)) {
 			foreach ($fn as $subFn) {
-				$data = $this->parseDataFunction($subFn, $data, $passModel);
+				$passData = $this->parseDataFunction($subFn, $passData, $passModel);
 			}
-			return $data;
+			return $passData;
 		}
-		$data = !empty($passModel) ? array($passModel => $data) : $data;
+		$data =& $passData;
+		if (!empty($passModel)) {
+			$models = explode('.', $passModel);
+			foreach ($models as $subModel) {
+				if (empty($data[$subModel])) {
+					return $passData;
+				}
+				$data =& $data[$subModel];
+			}
+		}
 		foreach ($data as $model => $modelData) {
 			if (is_array($modelData)) {
 				if (is_numeric($model)) {
@@ -112,7 +121,11 @@ class FormLayoutComponent extends Component {
 				}
 			}
 		}
-		$return = !empty($passModel) ? $data[$passModel] : $data;
+		
+		return $passData;
+		
+		$return = $data;
+		//$return = !empty($passModel) ? $data[$passModel] : $data;
 		return $return;
 	}
 }

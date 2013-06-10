@@ -541,7 +541,7 @@ class FormLayoutHelper extends LayoutAppHelper {
 
 	public function submitPrimary($text = null, $attrs = array()) {
 		$attrs = $this->addClass($attrs, 'btn-primary btn-large');
-		return $this->submit($text, $attrs);
+		return $this->Html->div('form-actions', $this->submit($text, $attrs));
 	}
 	
 	public function buttonWrapper($return, $attrs = array(), $tagAttrs = array()) {
@@ -757,6 +757,7 @@ class FormLayoutHelper extends LayoutAppHelper {
 		if (!isset($options['default'])) {
 			$options['default'] = isset($options['values'][0]) ? $options['values'][0] : 0;
 		}
+		$options = $this->addClass($options, 'input-choices');
 		extract($options);
 				
 		$return = "\n";
@@ -784,7 +785,7 @@ class FormLayoutHelper extends LayoutAppHelper {
 			$return .= $this->Html->div('input-choice', $row);
 			$count++;
 		}
-		$return = $this->Html->div('input-choices', $return) . "\n";
+		$return = $this->Html->div($class, $return) . "\n";
 		
 		if (!empty($legend)) {
 			$return = $this->Layout->fieldset($legend, $return);
@@ -967,6 +968,12 @@ class FormLayoutHelper extends LayoutAppHelper {
 			//'prepend' => '<i class="icon-time"></i>',
 		), $this->addClass($options, 'time timepicker'));
 		$options['type'] = 'text';
+		$formatFields = array('default', 'value');
+		foreach ($formatFields as $field) {
+			if (isset($options[$field])) {
+				$options[$field] = date('H:i:s', strtotime($options[$field]));
+			}
+		}
 		return $this->input($fieldName . '.time', $options);			
 	}
 	

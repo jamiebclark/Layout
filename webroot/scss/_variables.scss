@@ -5,10 +5,26 @@ $sides:					top, right, bottom, left;
 $shadowPadding: 		5px !default;
 $shadowRadius: 			5px !default;
 $shadowColor: 			#DDD !default;
+$shadow:				$shadowPadding $shadowPadding $shadowRadius $shadowColor !default;
 
 $inputPaddingTop: 		4px !default;
 $inputPaddingLeft: 		6px !default;
-
 $inputBorderInner: 		$grayLighter !default;
-
 $inputSlimWidth:		80px;
+
+// Window 
+// ------------------
+$windowBorderColor:				#999 !default;
+$windowBackgroundColor:			#FFF !default;
+
+// Hover Content
+// ---------------------
+$hoverWindowBorderColor:		$windowBorderColor !default;
+$hoverWindowWidthWider: 		660px;
+$hoverWindowWidthWide: 			460px;
+$hoverWindowWidthSlim: 			240px;
+
+$hoverArrowHeight:				10px;
+$hoverArrowColor:				white;//$hoverWindowBorderColor;
+$hoverArrowBorder:				1px;
+

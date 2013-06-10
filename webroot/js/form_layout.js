@@ -113,11 +113,8 @@
 				$(this).click(function(e) {
 					e.preventDefault();
 					if ($(this).hasClass('input-date-today')) {
-						console.log('Today');
-						console.log([$dates.length, $times.length]);
 						setToday();
 					} else if ($(this).hasClass('input-date-clear')) {
-						console.log('Clear');
 						setClear();
 					}
 				});
@@ -599,7 +596,6 @@ var dropdownInput;
 })(jQuery);
 
 documentReady(function() {
-	console.log('Input Choice Init');
 	$('.input-choices').inputChoices();
 });
 
@@ -723,7 +719,7 @@ documentReady(function() {
 				});
 			$cloned.find(':input:visible').first().focus();
 			$(this).trigger('cloned', [$cloned]);
-			formLayoutInit();
+			//formLayoutInit();
 		}
 		$(this).data('cloning', false);
 		$(document).trigger('ajaxComplete');
@@ -1092,7 +1088,7 @@ $(document).ready(function() {
 		);
 		return $(this);
 	};
-	
+
 	$.fn.selectCollapse = function() {
 		return this.each(function() {
 			var $select = $(this),
@@ -1101,13 +1097,14 @@ $(document).ready(function() {
 				$ul = $('<ul></ul>').appendTo($div),
 				$mask = $('<div class="select-collapse-mask"></div>'),
 				$lastLi = false,
+				$modalParent = $select.closest('.modal'),
 				bulletRepeat = ' - ',
 				childIndex = 0,
 				lastChildIndex = 0;
-			console.log('Select Collapse Init');
+				
 			function setLink($a) {
-				$div.find('.selected').removeClass('selected');
-				var $li = $a.closest('span.option').addClass('selected').closest('li');
+				$div.find('.active').removeClass('active');
+				var $li = $a.closest('span.select-collapse-option').addClass('active').closest('li');
 				collapseAll();
 				expandUp($li);
 				set($a.data('val'));
@@ -1119,24 +1116,17 @@ $(document).ready(function() {
 			}
 			
 			function toggle() {
+				console.log($select.data('expanded') ? 'Hiding' : 'Showing');
 				return $select.data('expanded') ? hide() : show();
 			}
 			
 			function show() {
-				var selected = $select.find(':selected').val();
 				$select.data('expanded', true).attr('disabled', 'disabled');
-				var pos = $select.offset();
-				var h = $select.outerHeight();
-				var w = $select.outerWidth();
-				
-				$div.show().css({
-					'top' : pos.top + h,
-					'left' : pos.left,
-					'width' : w
-				});
-				
-				$div.find('.expanded > ul').show();
-				
+				var pos = $select.offset(),
+					h = $select.outerHeight(),
+					w = $select.outerWidth();
+				$div.show().css({'top' : pos.top + h, 'left' : pos.left, 'width' : w});
+				$('.expanded > ul', $div).show();
 				return true;
 			}
 			
@@ -1148,11 +1138,9 @@ $(document).ready(function() {
 			
 			function expand($li, recursive) {
 				var recursive = typeof recursive !== 'undefined' ? recursive : true;
-				$li.addClass('expanded').find('.bullet').first().html('-');
+				$li.addClass('expanded').find('.select-collapse-bullet').first().html('-');
 				var $ul = $li.find('ul').first();
-				console.log('Expanding LI. Found UL length: ' + $ul.length);
 				if ($ul.is(':hidden')) {
-					console.log('UL was hidden. Showing it');
 					$ul.slideDown();
 				}
 				if (recursive) {
@@ -1168,7 +1156,7 @@ $(document).ready(function() {
 			
 			function collapse($li, recursive) {
 				var recursive = typeof recursive !== 'undefined' ? recursive : true;
-				$li.removeClass('expanded').find('.bullet').first().html('+');
+				$li.removeClass('expanded').find('.select-collapse-bullet').first().html('+');
 				var $ul = $li.find('ul').first();
 				if (!$ul.is(':hidden')) {
 					$ul.slideUp();
@@ -1188,9 +1176,12 @@ $(document).ready(function() {
 			if (!$select.data('collapse-init')) {
 				$div.appendTo($('body'));
 				$mask.appendTo($('body'));
-				var pos = $select.offset();
-				var h = $select.outerHeight();
-				var w = $select.outerWidth();
+				
+				var pos = $select.offset(),
+					h = $select.outerHeight(),
+					w = $select.outerWidth(),
+					$selectedA = false;
+					
 				$mask.css({
 					'position' : 'absolute',
 					'top' : pos.top,
@@ -1206,7 +1197,6 @@ $(document).ready(function() {
 				
 				$(document).click(function() {
 					if (!$select.data('hovering') && !$mask.data('hovering') && !$div.data('hovering')) {
-						console.log('Hiding');
 						hide();
 					}
 				});
@@ -1215,7 +1205,6 @@ $(document).ready(function() {
 					.click(function(e) {
 						e.stopPropagation();
 						e.preventDefault();
-						console.log('Clicked');
 						toggle();
 					});
 				
@@ -1224,7 +1213,10 @@ $(document).ready(function() {
 				$options.each(function() {
 					var $option = $(this),
 						$li = $('<li></li>').addClass('no-child'),
-						$a = $('<a href="#"></a>').appendTo($li).wrap('<span class="option"></span>').data('val', $option.val()),
+						$a = $('<a class="select-collapse-link" href="#"></a>')
+							.appendTo($li)
+							.wrap('<span class="select-collapse-option"></span>')
+							.data('val', $option.val()),
 						title = $option.html(),
 						titlePre = title.match(/^[^A-Za-z0-9]*/);
 					if (titlePre) {
@@ -1238,7 +1230,7 @@ $(document).ready(function() {
 					}
 					if (childIndex > lastChildIndex && $lastLi) {
 						$ul = $('<ul></ul>').appendTo($lastLi);
-						$lastLi.removeClass('no-child').find('a').first().before($('<a class="bullet" href="#">+</a>')
+						$lastLi.removeClass('no-child').find('a').first().before($('<a class="select-collapse-bullet" href="#">+</a>')
 							.click(function(e) {
 								e.preventDefault();
 								var $li = $(this).closest('li');
@@ -1258,6 +1250,10 @@ $(document).ready(function() {
 					lastChildIndex = childIndex;
 					$li.appendTo($ul);
 					$a.html(title);
+				
+					if ($option.is(':selected')) {
+						$selectedA = $a;
+					}
 					
 					if ($option.attr('disabled')) {
 						$a.addClass('disabled').click(function(e) {e.preventDefault();});
@@ -1269,13 +1265,27 @@ $(document).ready(function() {
 					}
 					$lastLi = $li;
 				});
+				
+				if ($selectedA.length) {
+					setLink($selectedA);
+				}
+
+				$(window).scroll(function() {
+					if ($select.data('expanded')) {
+						show();	//Re-positions
+					}
+				});
+				$modalParent.on('hide', function() {
+					hide();
+				});
+				
 				$select.data('collapse-init', true);
+				
 			}
 			return $(this);
 		});
 	};	
 })(jQuery);
-$(document).ready(function() {
-	console.log('Select Collapse Scan');
+documentReady(function() {
 	$('select.select-collapse').selectCollapse();
 });

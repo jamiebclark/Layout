@@ -1,15 +1,3 @@
-// Hover Content
-// ---------------------
-$hoverWindowBorderColor:		#999;
-$hoverWindowWidthWider: 		660px;
-$hoverWindowWidthWide: 			460px;
-$hoverWindowWidthSlim: 			240px;
-
-$hoverArrowHeight:				10px;
-$hoverArrowColor:				white;//$hoverWindowBorderColor;
-$hoverArrowBorder:				1px;
-
-
 .hover-layout {
 	position: relative;
 	&.hovering {

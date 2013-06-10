@@ -114,6 +114,11 @@ $inputTimeWidth: 	60px;
 			margin: 0;
 		}
 	}
+	.input-datetime {
+		.controls {
+			display: block;
+		}
+	}
 }
 
 // Input Choices

@@ -232,7 +232,7 @@ class LayoutHelper extends LayoutAppHelper {
 	function headerMenu($menu = null, $attrs = array()) {
 		$attrs = array_merge(array(
 			'tag' => false,
-			'class' => 'nav nav-pills'
+			'class' => 'nav nav-pills nav-layout-header'
 		), (array) $attrs);
 		return $this->menu($menu, $attrs);
 	}
@@ -1009,12 +1009,20 @@ class LayoutHelper extends LayoutAppHelper {
 		$menuCount = count($menuItems);
 		foreach ($menuItems as $k => $menuItem) {
 			$liAttrs = array();
+			if (isset($attrs['active']) && is_numeric($attrs['active']) && $attrs['active'] == $k) {
+				$liAttrs = $this->addClass($liAttrs, $currentSelectClass);
+			}
+			
 			//Allows for passing just an array to be read as a link
 			if (is_array($menuItem) && isset($menuItem[0]) && isset($menuItem[1])) {
 				list($content, $link, $options, $confirm) = $menuItem + array('', array(), array(), null);
 				$options = array_merge((array) $options, $urlOptions);
 				//Checks current parameters to see if it matches the given URL
 				//Can pass currentSelect as an array of what items to match array('action', 'controller')
+				
+				if (Param::keyCheck($options, 'active', true)) {
+					$liAttrs = $this->addClass($liAttrs, $currentSelectClass);
+				}
 				
 				if (
 					!isset($options['icon']) && 

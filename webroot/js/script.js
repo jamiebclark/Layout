@@ -3,6 +3,51 @@ function documentReady(actions) {
 }
 
 (function($) {
+	var toggleCount = 1;
+	$.fn.layoutToggle = function() {
+		return this.each(function() {
+			var $toggle = $(this),
+				$control = $toggle.find('.layout-toggle-control input[type*=checkbox]').first(),
+				$content = $toggle.find('> .layout-toggle-content'),
+				$offContent = $toggle.find('> .layout-toggle-off');
+				tc = toggleCount++;
+			
+			$toggle.addClass('toggle' + tc);
+			
+			function toggleOn() {
+				$content.showEnableChildren();
+				$offContent.hideDisableChildren();
+			}
+			function toggleOff() {
+				$content.hideDisableChildren();
+				$offContent.showEnableChildren();
+			}
+			function toggleCheck() {
+				if ($control.is(':checked')) {
+					toggleOn();
+				} else {
+					toggleOff();
+				}
+			}
+			
+			if (!$toggle.data('layout-toggle-init')) {
+				$control.change(function() {
+					toggleCheck();
+				});
+				toggleCheck();
+				$toggle.data('layout-toggle-init');
+			}
+			return $toggle;
+		});
+	};
+})(jQuery);
+
+documentReady(function() {
+	$('.layout-toggle').layoutToggle();
+});
+
+
+(function($) {
 	$.fn.datepick = function () {
 		return this.each(function() {
 			var $input = $(this).datepicker(),
@@ -279,6 +324,8 @@ $(document).ready(function() {
 				var $ajaxWindowHeader = $('<div class="modal-header"></div>')
 						.appendTo($ajaxWindow),
 					$ajaxWindowBody = $('<div class="modal-body"></div>')
+						.appendTo($ajaxWindow),
+					$ajaxWindowFooter = $('<div class="modal-footer"></div>')
 						.appendTo($ajaxWindow);
 				$ajaxWindowHeader.append($('<button></button>', {
 					'type': 'button',
@@ -287,16 +334,46 @@ $(document).ready(function() {
 					'aria-hidden': 'true',
 					'html': '&times;'
 				}));
+				$('<a></a>', {
+					'html': 'Close',
+					'href' : '#',
+					'class' : 'btn',
+					'click': function(e) {
+						e.preventDefault();
+						$ajaxWindow.modal('hide');
+					}
+				}).appendTo($ajaxWindowFooter);
+				
+				$('<a></a>', {
+					'html': 'Update',
+					'href': '#',
+					'class': 'btn btn-primary',
+					'click': function(e) {
+						e.preventDefault();
+						$('form', $ajaxWindowBody).first().submit();
+					}
+				}).appendTo($ajaxWindowFooter);
 			}
-			if (!title) {
-				title = 'Window';
+			if (!$a.data('ajax-modal-init')) {
+				if (!title) {
+					title = 'Window';
+				}
+				$ajaxWindowHeader.append('<h3>' + title + '</h3>');
+				$a.click(function(e) {
+					e.preventDefault();
+					$ajaxWindowBody.load(url, function() {
+						var $footer = $('.modal-footer', $ajaxWindow),
+							$form = $('.modal-body form', $ajaxWindow);
+						if (!$form.length) {
+							$footer.hide();
+						} else {
+							$footer.show();
+						}
+					});
+					$ajaxWindow.modal('show');
+				});
+				$a.data('ajax-modal-init', true);
 			}
-			$ajaxWindowHeader.append('<h3>' + title + '</h3>');
-			$a.click(function(e) {
-				e.preventDefault();
-				$ajaxWindowBody.load(url);
-				$ajaxWindow.modal('show');
-			});
 		});
 	};
 })(jQuery);
