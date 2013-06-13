@@ -385,6 +385,10 @@ class DisplayTextHelper extends AppHelper {
 	}
 	
 	function cash($number, $round = null) {
+		$number = html_entity_decode($number);
+		if (empty($number)) {
+			$number = 0;
+		}
 		return '$' . number_format($number, $round !== false && ($round || $number == round($number)) ? 0 : 2);
 	}
 	
