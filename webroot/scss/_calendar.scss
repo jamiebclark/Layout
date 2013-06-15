@@ -1,78 +1,97 @@
 @import "lists";
 @import "clearfix";
 @import "colors";
-@import "gradient";
-@import "rounded";
 
 // Calendar Colors
 // -------------------------------
 $calendarGrey: 				#CCC !default;
-$monthBackgroundColor:		$color1;
 
 $dateLinkHoverColor:		$color2 !default;
-$dateBorderColor:			#CCC !default;
 
 $dayHoverColor:				$color1 !default;
 $dayActiveColor:			$color3-light !default;
 
-$dayFontSize: 				1em !default;
-$dayHeight: 				2 * $dayFontSize !default;
-$dayWidth: 					2 * $dayFontSize !default;
+$daySize: 					1em !default;
+$dayHeight: 				2 * $daySize !default;
+$dayWidth: 					2 * $daySize !default;
 
 
+// Calendar Date
+// -----------------------------------
+$calendardateBorderColor:		#CCC !default;
 
-.calendar-date-box-wrap {
+$calendardateMonthSize:			30px !default;
+$calendardateMonthSmallSize:	20px !default;
+$calendardateMonthBackground:	$color1 !default;
+$calendardateMonthColor:		white !default;
+$calendardateMonthHeight:		40px !default;
+
+$calendardateDaySize:			80px !default;
+$calendardateDaySmallSize:		40px !default;
+$calendardateDayBackground1:	#FFF;	
+$calendardateDayBackground2:	#EEE;
+$calendardateDayColor:			inherit !default;
+$calendardateDayHeight:			90px !default;
+
+$calendardateYearSize:			20px !default;
+$calendardateYearBackground:	transparent !default;
+$calendardateYearColor:			inherit !default;
+$calendardateYearHeight:		30px !default;
+
+$calendardateWidth:				$calendardateMonthHeight + $calendardateDayHeight;
+
+.calendardate-wrap {
+	clear: both;
 	position: relative;
 	float: left;
 	left: 50%;
-	.calendar-date-box {
+	.calendardate {
 		position: relative;
 		float: left;
 		left: -50%;
 	}
 }
 
-.calendar-date-box {
+.calendardate-month, .calendardate-day, .calendardate-year {
+	text-align: center;
+	font-weight: 700;
 	float: left;
-	margin: 1em 0;
-	width: 130px;
+	width: 100%;
+	clear: both;
+}
+.calendardate-month, .calendardate-day {
+	border: 1px solid $calendardateBorderColor;
+}
+.calendardate-month {
+	background-color: $calendardateMonthBackground;
+	border-bottom: 0;
+	color: $calendardateMonthColor;
+	line-height: $calendardateMonthHeight;
+	font-size: $calendardateMonthSize;
+	&.multi {
+		font-size: $calendardateMonthSmallSize;
+	}
+}
+.calendardate-day {
+	@include gradient-vertical($calendardateDayBackground1, $calendardateDayBackground2);
+	border-top: 0;
+	line-height: $calendardateDayHeight;
+	font-size: $calendardateDaySize;
+	&.multi {
+		font-size: $calendardateDaySmallSize;
+	}
+}
+.calendardate-year {
+	color: $calendardateYearColor;
+	font-size: $calendardateYearSize;
+	line-height: $calendardateYearHeight;
+	background: $calendardateYearBackground;
+}
+.calendardate {
+	float: left;
+	margin: $baseLineHeight 0;
+	width: $calendardateWidth;
 	@include border-radius($baseBorderRadius);
-	
-	.month, .day, .year {
-		text-align: center;
-		font-weight: 700;
-		float: left;
-		width: 100%;
-		clear: both;
-	}
-	.month, .day {
-		border: 1px solid $dateBorderColor;
-	}
-	.month {
-		background-color: $monthBackgroundColor;
-		border-bottom: 0;
-		color: white;
-
-		line-height: 40px;
-		font-size: 30px;
-		&.multi {
-			font-size: 20px;
-		}
-	}
-	.day {
-		@include gradient-vertical(#FFF, #EEE);
-		border-top: 0;
-
-		line-height: 90px;
-		font-size: 80px;
-		&.multi {
-			font-size: 40px;
-		}
-	}
-	.year {
-		font-size: 20px;
-		line-height: 30px;
-	}
 	
 	span {
 		float: left;
@@ -82,40 +101,40 @@ $dayWidth: 					2 * $dayFontSize !default;
 	}
 	&.small {
 		width: 60px;
-		.month {
+		.calendardate-month {
 			line-height: 20px;
 			font-size: 14px;
 		}
-		.day {
+		.calendardate-day {
 			line-height: 40px;
 			font-size: 25px;
 			.multi {
 				font-size: 20px;
 			}
 		}
-		.year {
+		.calendardate-year {
 			font-size: 12px;
 			line-height: 20px;
 		}
 	}
 	&.grey {
-		&, .month, .day, .year {
+		&, .calendardate-month, .calendardate-day, .calendardate-year {
 			border-color: $calendarGrey;
 			color: $calendarGrey;
 		}
-		.month {
+		.calendardate-month {
 			background-color: $calendarGrey;
 			color: white;
 		}
-		.day {
-			@include gradient-reset(white);
+		.calendardate-day {
+			@include gradient-vertical(#FFF,#FFF);
 
 		}
 	}
 }
 a:hover {
-	.calendar-date-box {
-		.day, .month {
+	.calendardate {
+		.calendardate-day, .calendardate-month {
 			border-color: $dateLinkHoverColor;
 		}
 	}
@@ -152,7 +171,7 @@ a:hover {
 			float: left;
 			width: $dayWidth;
 			line-height: $dayHeight;
-			font-size: $dayFontSize;
+			font-size: $daySize;
 			font-weight: normal;
 			color: #666;
 			text-align: center;
@@ -168,7 +187,7 @@ a:hover {
 	}
 	.head {
 		text-align: center;
-		font-size: $dayFontSize;
+		font-size: $daySize;
 		font-weight: bold;
 		background-color: $color3;
 		height: $dayHeight;
@@ -202,7 +221,7 @@ a:hover {
 			left: 0;
 		}
 		.monthNav {
-			font-size: $dayFontSize;
+			font-size: $daySize;
 			font-weight: bold;
 			color: white;
 			text-decoration: none;

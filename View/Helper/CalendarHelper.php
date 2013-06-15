@@ -23,7 +23,7 @@ class CalendarHelper extends AppHelper {
 			'class' => '',
 			'after' => '',
 		), $options);
-		$options = $this->addClass($options, 'calendar-date-box');
+		$options = $this->addClass($options, 'calendardate');
 		$linkOptions = array('escape' => false);
 		
 		if (isset($options['media'])) {
@@ -63,16 +63,16 @@ class CalendarHelper extends AppHelper {
 		}
 		
 		$out = '';
-		$out .= $this->Html->div('month' . ($monthMatch ? '' : ' multi'), $month);
-		$out .= $this->Html->div('day' . ($dayMatch ? '' : ' multi'), $day);
+		$out .= $this->Html->div('calendardate-month' . ($monthMatch ? '' : ' multi'), $month);
+		$out .= $this->Html->div('calendardate-day' . ($dayMatch ? '' : ' multi'), $day);
 		if ($year != $yC || $stopStamp < $now) {
-			$out .= $this->Html->div('year' . ($yearMatch ? '' : ' multi'), $year);
+			$out .= $this->Html->div('calendardate-year' . ($yearMatch ? '' : ' multi'), $year);
 		}
 		
 		$out = $this->Html->div($options['class'], $out . $options['after']);
 		
 		if (!empty($options['center'])) {
-			$out = $this->Html->div('calendar-date-box-wrap', $out);
+			$out = $this->Html->div('calendardate-wrap', $out);
 		}
 		if (!empty($options['url'])) {
 			$out = $this->Html->link($out, $options['url'], $linkOptions);

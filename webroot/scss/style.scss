@@ -117,7 +117,7 @@ h3, h4 {
 	}
 	&.border, .border .media {
 		border: 1px solid #EEE;
-		@include rounded-all(.25em);
+		@include border-radius($baseBorderRadius);
 		padding: 10px;
 	}
 }
@@ -163,6 +163,7 @@ a.media {
 // Content Box
 // ----------------
 .contentbox {
+	clear: both;
 	border: 1px solid $navbarBorder;
 	margin-bottom: $baseLineHeight;
 	@include border-radius($baseBorderRadius);

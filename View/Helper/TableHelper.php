@@ -228,6 +228,9 @@ class TableHelper extends LayoutAppHelper {
 	}
 
 	public function rowEnd($trOptions = array()) {
+		if (!empty($trOptions) && !is_array($trOptions)) {
+			$trOptions = array('class' => $trOptions);
+		}
 		$this->getHeader = false;
 		$row = $this->row;
 		$this->trOptions[$this->trCount] = $trOptions;

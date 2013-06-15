@@ -755,8 +755,9 @@ class LayoutHelper extends LayoutAppHelper {
 					$item[2]['icon'] = $item[1]['action'];
 				}
 				$icon = Param::keyCheck($item[2], 'icon', true);
-				
-				$item[0] = $this->Iconic->icon($icon) . ' ' . $item[0];
+				if ($icon = $this->Iconic->icon($icon)) {
+					$item[0] = Param::falseCheck($options, 'text') ? $icon : "$icon {$item[0]}";
+				}
 				$item[2]['escape'] = false;
 			}
 			$menu[] = $item;

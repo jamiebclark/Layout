@@ -93,7 +93,7 @@ class FormLayoutComponent extends Component {
 		if (!empty($passModel)) {
 			$models = explode('.', $passModel);
 			foreach ($models as $subModel) {
-				if (empty($data[$subModel])) {
+				if (empty($data[$subModel]) || !is_array($data[$subModel])) {
 					return $passData;
 				}
 				$data =& $data[$subModel];

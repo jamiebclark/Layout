@@ -1,12 +1,12 @@
 <?php
-class CollapseListHelper extends AppHelper {
+App::uses('LayoutAppHelper', 'Layout.View/Helper');
+class CollapseListHelper extends LayoutAppHelper {
 	var $name = 'CollapseList';
 	var $helpers = array(
-		'Asset',
-		'Layout',
+		'Layout.Asset',
+		'Layout.Layout',
 		'Html',
-		'Table',
-		'Popup',
+		'Layout.Table',
 	);
 	
 	var $listItemCount = 0;
