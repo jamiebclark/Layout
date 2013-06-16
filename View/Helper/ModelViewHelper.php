@@ -83,7 +83,7 @@ class ModelViewHelper extends LayoutAppHelper {
 			$modelName = $settings['model'];
 		} else if (!empty($this->modelName)) {
 			$modelName = $this->modelName;
-		} else if ($this->name != 'Model') {
+		} else if ($this->name != 'ModelView') {
 			$modelName = $this->name;
 		} else {
 			$modelName = $this->getViewModel();
