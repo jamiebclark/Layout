@@ -79,7 +79,7 @@ class ImageHelper extends LayoutAppHelper {
 			'isFile' => true,
 			'defaultFile' => $this->defaultFile,
 		), $options);
-		if (isset($options['externalServer'])) {
+		if (!empty($options['externalServer'])) {
 			unset($options['root']);
 			$options['isFile'] = false;
 		}
@@ -91,7 +91,7 @@ class ImageHelper extends LayoutAppHelper {
 			}
 		}
 		if ($options['isFile']) {
-			$fullpath = $this->path($file, array('isFile' => false));
+			$fullpath = $this->path($file, array('isFile' => false, 'root' => $this->root) + $options);
 			if (!is_file($fullpath)) {
 				$file = null;
 			}
