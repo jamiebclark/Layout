@@ -11,11 +11,11 @@ class ModelViewHelper extends LayoutAppHelper {
 	
 	var $defaultHelpers = array(
 		'Html', 
-		'Image', 
 		'Layout.AddressBook',
 		'Layout.Asset', 
 		'Layout.DisplayText',
 		'Layout.Iconic',
+		'Layout.Image', 
 		'Layout.Layout',
 	);
 	
