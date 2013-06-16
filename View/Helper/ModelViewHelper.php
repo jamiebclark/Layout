@@ -94,7 +94,10 @@ class ModelViewHelper extends LayoutAppHelper {
 	}
 	
 	protected function getViewModel() {
-		return array_shift(array_keys($this->request->params['models']));
+		if (!empty($this->request->params['models'])) {
+			return array_shift(array_keys($this->request->params['models']));
+		}
+		return null;
 	}
 	
 /**
