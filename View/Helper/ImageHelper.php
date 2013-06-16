@@ -10,7 +10,7 @@ class ImageHelper extends LayoutAppHelper {
 	var $root = true;
 
 	//Optional external server path
-	var $externalServer = 'http://souperbowl.org/img/';
+	var $externalServer;
 	
 	//The path from images to the specific image type directory
 	var $base = false;
@@ -29,6 +29,9 @@ class ImageHelper extends LayoutAppHelper {
 		if ($this->root === true) {
 			$this->root = IMAGES;
 		}
+		if (!empty($settings['externalServer'])) {
+			$this->externalServer = $settings['externalServer'];
+		}			
 	}
 
 	/** 
