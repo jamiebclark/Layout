@@ -1,5 +1,7 @@
 <?php
 App::uses('LayoutAppHelper', 'Layout.View/Helper');
+App::uses('InflectorPlus', 'Layout.Lib');
+
 /**
  * Used to quickly format information used in Model results for output
  *
