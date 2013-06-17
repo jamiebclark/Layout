@@ -137,7 +137,7 @@ class ModelViewHelper extends LayoutAppHelper {
 		return $id;
 	}
 	
-	// Adds an act
+	// Adds an action to the action menu
 	function setAutoAction($action, $options = array()) {
 		if (is_array($action)) {
 			foreach ($action as $key => $val) {
