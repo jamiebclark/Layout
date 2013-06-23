@@ -37,6 +37,7 @@ class ModelViewHelper extends LayoutAppHelper {
 	var $imageDir;
 	var $thumbDir = 'profiles/';	//Base directory where thumbnails are stored
 	var $defaultDir = 'mid';		//Default sub-directory of thumbnail
+	var $defaultMediaDir = 'small';	//Default sub-directory of an image used in a media HTML object
 
 	//Whether the urls should be formatted to include slugs: array('controller','action', 'id' => $id, 'slug' => $slug)
 	// Should be set up in Config/router first
@@ -72,6 +73,10 @@ class ModelViewHelper extends LayoutAppHelper {
 		'spam', 'clock',
 		'active'
 	);
+	
+	// The fields passed to each getAutoAction function
+	var $autoActionFields = array('id', 'url', 'active');
+
 
 	function __construct(View $view, $settings = array()) {
 		$helpers = $this->defaultHelpers;
@@ -93,6 +98,8 @@ class ModelViewHelper extends LayoutAppHelper {
 		if (!empty($modelName)) {
 			$this->setModel($modelName);
 		}
+		
+		$this->setAutoActions();
 	}
 	
 	protected function getViewModel() {
@@ -137,7 +144,16 @@ class ModelViewHelper extends LayoutAppHelper {
 		return $id;
 	}
 	
-	// Adds an action to the action menu
+	
+/**
+ * Extendable function to allow child ModelViewHelpers to add new auto actions
+ *
+ **/
+	protected function setAutoActions() {
+		return true;
+	}
+
+// Adds an action to the action menu
 	function setAutoAction($action, $options = array()) {
 		if (is_array($action)) {
 			foreach ($action as $key => $val) {
@@ -156,7 +172,9 @@ class ModelViewHelper extends LayoutAppHelper {
 	}
 	
 	function getAutoAction($action, $id, $options = array()) {
-		$baseUrl = array('controller' => $this->controller, $id) + compact('action');
+		$baseUrl = !empty($options['url']) ? $options['url'] : array();
+		$baseUrl += array('controller' => $this->controller, $id);
+		$baseUrl['action'] = $action;
 		$menuItem = $action;
 		
 		if (in_array($action, array('up', 'down', 'top', 'bottom'))) {
@@ -167,15 +185,17 @@ class ModelViewHelper extends LayoutAppHelper {
 		if ($action == 'delete') {
 			$menuItem = array('Delete', $baseUrl, array('title' => 'Delete ' . $this->modelHuman), "Delete this {$this->modelHuman}?");
 		} else if ($action == 'active') {
-			$isActive = !empty($options['active']);
+			$isActive = !empty($options['active']) || !empty($options['result']['active']);
 			$title = $isActive ? 'Deactivate' : 'Activate';
 			$cmd = $isActive ? 'inactive' : 'active';
-			$menuItem = array($title, array($cmd => $id), compact('title') + array('icon' => $cmd));
+			$menuItem = array($title, array($cmd => $id) + $options['url'], compact('title') + array('icon' => $cmd));
 		} else if ($this->isAutoAction($action)) {
 			$actionOptions = isset($this->autoActions[$action]) ? $this->autoActions[$action] : array();
 			$title = Inflector::humanize($action);
 			$itemOptions = compact('title');
-			
+			if (!empty($actionOptions['addUrl'])) {
+				$baseUrl = $actionOptions['addUrl'] + $baseUrl;
+			}
 			if (isset($actionOptions['function'])) {
 				$fn = $actionOptions['function'];
 				$menuItem = $fn($id, $options);
@@ -196,19 +216,26 @@ class ModelViewHelper extends LayoutAppHelper {
 		return isset($this->autoActions[$action]) || in_array($action, $this->autoActions);
 	}
 	
-	function actionMenu($actions = null, $attrs = array()) {
+	function actionMenu($actions = null, $result = array(), $attrs = null) {
+		if (!isset($attrs)) {
+			$attrs = $result;
+		}
 		$attrs = array_merge(array(
 			'icons' => true,	// Displays an icon if found for each action
-			'text' => false,		// Displays the link text for each action
+			'text' => false,	// Displays the link text for each action
+			'active' => null,
+			'id' => null,
+			'url' => null,
+			'vertical' => false,
 		), $attrs);
 		$attrs = $this->addClass($attrs, 'action-menu inline');
-		if (!($url = Param::keyCheck($attrs, 'url', true)) && !empty($attrs['id'])) {
-			$url = $this->url(array('id' => $attrs['id']));
+		if ($attrs['vertical']) {
+			$attrs['text'] = true;
 		}
-		
-		$active = Param::keyCheck($attrs, 'active', true);
+		if (empty($attrs['url']) && !empty($result['id'])) {
+			$attrs['url'] = $this->url(array('id' => $result['id']));
+		}
 		$menu = array();
-		
 		$useIcons = !empty($attrs['icons']);
 		
 		if (!empty($attrs['autoActions'])) {
@@ -220,16 +247,22 @@ class ModelViewHelper extends LayoutAppHelper {
 					$action = $config;
 					$config = array();
 				}
-				$config += compact('active');
-				if (empty($config['url'])) {
-					$config['url'] = $url;
+				foreach ($this->autoActionFields as $field) {
+					if (isset($attrs[$field]) && !isset($config[$field])) {
+						$config[$field] = $attrs[$field];
+					}
 				}
 				if (!empty($config['urlAdd'])) {
 					$config['url'] = $config['urlAdd'] + $config['url'];
 				}
-				$id = !empty($attrs['id']) ? $attrs['id'] : $this->getUrlId($config['url']);
+				$config += compact('result');
+				
+				$id = !empty($result['id']) ? $result['id'] : $this->getUrlId($config['url']);
 				if ($this->isAutoAction($action)) {
 					$menuItem = $this->getAutoAction($action, $id, $config);
+					if ($menuItem === false) {
+						continue;
+					}
 				} else {
 					$menuItem = $action;
 					if (is_array($menuItem)) {
@@ -246,7 +279,7 @@ class ModelViewHelper extends LayoutAppHelper {
 				}
 				if (is_array($menuItem)) {
 					list($linkTitle, $linkUrl, $linkOptions, $linkPost) = $menuItem + array(null, null, null, null);
-					if (!isset($linkUrl[0])) {
+					if ($linkUrl['controller'] == $this->controller && !isset($linkUrl[0])) {
 						$linkUrl[0] = $id;
 					}
 					$linkOptions = $this->addClass($linkOptions, 'btn');
@@ -259,6 +292,7 @@ class ModelViewHelper extends LayoutAppHelper {
 						}
 						unset($linkOptions['icon']);
 					}
+					/*
 					if (!empty($attrs['vertical'])) {
 						if (!empty($attrs['text'])) {
 							if ($prefix = Prefix::get($linkUrl)) {
@@ -267,6 +301,7 @@ class ModelViewHelper extends LayoutAppHelper {
 							$linkTitle .= ' ' . $linkOptions['title'];
 						}
 					}
+					*/
 					$menu[] = $this->Html->link($linkTitle, $linkUrl, $linkOptions, $linkPost);
 				} else {
 					$menu[] = $this->Html->tag('span', $menuItem, array('class' => 'btn'));
@@ -332,7 +367,7 @@ class ModelViewHelper extends LayoutAppHelper {
 	function media($result, $options = array()) {
 		$options = array_merge(array(
 			'tag' => 'div',			//Tag wrapper
-			'dir' => 'small',		//Thumbnail directory
+			'dir' => $this->defaultMediaDir,		//Thumbnail directory
 			'thumb' => array(),		//Thumbnail options
 			'url' => null,	
 			'contentTag' => 'p',
@@ -396,13 +431,13 @@ class ModelViewHelper extends LayoutAppHelper {
 			$bd .= $after;
 		}
 		
-		if (!empty($idMenu)) {
-			if (!empty($idMenu[0]) && is_array($idMenu[0])) {
-				list($idMenu, $idMenuOptions) = $idMenu;
+		if (!empty($actionMenu)) {
+			if (!empty($actionMenu[0]) && is_array($actionMenu[0])) {
+				list($actionMenu, $actionMenuOptions) = $actionMenu;
 			} else {
-				$idMenuOptions = array();
+				$actionMenuOptions = array();
 			}
-			$bd .= $this->Layout->idMenu($result[$this->primaryKey], $idMenu, $idMenuOptions);
+			$bd .= $this->Layout->actionMenu($actionMenu, $result + $actionMenuOptions);
 		}
 		$out .= $this->Html->tag('div', $bd, array('class' => 'media-body')) . "\n";
 		return $this->Html->tag($tag, $out, array('class' => $class));
@@ -435,15 +470,17 @@ class ModelViewHelper extends LayoutAppHelper {
 	}	
 
 	function url($Result, $options = array()) {
-		$url = array('controller' => $this->controller,	'action' => 'view');
+		$controller = !empty($options['controller']) ? $options['controller'] : $this->controller;
+		$action = !empty($options['action']) ? $options['action'] : 'view';
+		$url = compact('controller', 'action');
+	
+		$id = is_numeric($Result) ? $Result : $Result[$this->primaryKey];
+		$title = (is_numeric($Result) || empty($Result[$this->displayField])) ? null : $Result[$this->displayField];
 		
-		if ($this->sluggable) {
-			$url += array(
-				'id' => $Result[$this->primaryKey],
-				'slug' => Inflector::slug($Result[$this->displayField]),
-			);
+		if ($this->sluggable && !empty($title)) {
+			$url += array('id' => $id, 'slug' => $title);
 		} else {
-			$url[] = $Result[$this->primaryKey];
+			$url[] = $id;
 		}
 		
 		if (!empty($options['urlAdd'])) {
@@ -503,12 +540,16 @@ class ModelViewHelper extends LayoutAppHelper {
 		} else if (!empty($Result[$this->primaryKey])) {
 			$modelId = $Result[$this->primaryKey];
 		} 
+		if (!empty($options['media']) && !isset($options['dir'])) {
+			$options['dir'] = $this->defaultMediaDir;
+		}
 		$options = array_merge(array(
 			'dir' => $this->defaultDir,
 			'alt' => $this->urlTitle($Result),
 			'base' => $this->thumbDir,
 			'defaultFile' => '0.jpg',
 		), (array) $options);
+		
 		return !empty($modelId) ? $this->_idReplace($options, $modelId) : $options;
 	}
 	

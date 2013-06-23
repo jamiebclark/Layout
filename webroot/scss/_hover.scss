@@ -9,15 +9,35 @@
 	}
 }
 
+$hoverWindowPadding: 10px;
+$hoverWindowBorder: #CCC;
 .hover-window {
 	position: absolute;
-	padding: 10px;
-	border: 1px solid #CCC;
-	background-color: white;
+	padding: $hoverWindowPadding;
+	border: 1px solid $hoverWindowBorder;
+	@include gradient-vertical(#FFF,#EEE);
 	@include box-shadow($shadowPadding, $shadowPadding, $shadowRadius, $shadowColor);
 	border-radius: $borderRadiusSmall;
 	color: $hoverWindowBorderColor;
 }
+.hover-window-title,.hover-window-title-control {
+	font-size: $baseFontSize;
+	line-height: $baseLineHeight;
+	padding: 4px $hoverWindowPadding;
+	margin: -#{$hoverWindowPadding};
+	margin-bottom: 4px;
+}
+.hover-window-title {
+	border-bottom: 1px solid lighten($hoverWindowBorder, 10%);
+}
+.hover-window-title-control {
+	display: block;
+	float: right;
+	a {
+		margin-left: 4px;
+	}
+}
+
 @mixin arrowBorder($side) {
 	$adjust: top;
 	@if ($side == top or $side == bottom) {

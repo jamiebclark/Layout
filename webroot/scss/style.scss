@@ -18,7 +18,9 @@
 @import "sprites";
 
 @import "calendar"; 
-@import "hover";
+@import "hover"; 
+
+
 
 // Page Styling
 // -----------------
@@ -107,7 +109,7 @@ h3, h4 {
 		float:right; 
 		margin-left: 10px;
 	}
-	h1, h2, h3, h4 {
+	h1, h2, h3, h4, h5 {
 		margin: 0 0 0 0;
 		padding: 0;
 		line-height: 1;

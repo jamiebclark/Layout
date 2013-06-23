@@ -220,13 +220,15 @@ class FormLayoutHelper extends LayoutAppHelper {
 			$options = $this->addClass($options, $addDiv, 'div');
 		}
 		if (!empty($redirectUrl)) {
-			$redirect_url = is_array($redirectUrl) ? Router::url($redirectUrl) . '/' : $redirectUrl;
+			$redirectUrl = is_array($redirectUrl) ? Router::url($redirectUrl) . '/' : $redirectUrl;
 		}
 		$return .= $this->input($prefix . $searchField, array_merge($options, array(
 			'type' => 'text',
 			'before' => $idInput,
 			'between' => $displayInput,
-		) + compact('url', 'value', 'redirect_url')));
+			'data-url' => $url,
+			'data-redirect-url' => $redirectUrl,
+		) + compact('value')));
 		return $return;
 	}
 	

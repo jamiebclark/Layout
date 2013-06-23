@@ -35,19 +35,13 @@
 					}).change(function() {
 						if ($(this).is(':checked')) {
 							$inputHolder.show();
-
-							console.log('Old Value: ' + $input.val());
-
 							if ($input.data('stored-value')) {
 								$input.val($input.data('stored-value'));
 							}
-							console.log('New Value: ' + $input.val());
 							$input.focus().select();
 						} else {
 							$inputHolder.hide();
-							console.log('Old Value: ' + $input.val());
 							$input.data('stored-value', $input.val()).val('');
-							console.log('New Value: ' + $input.val());
 						}
 						return $(this);					
 					}).prependTo($label);

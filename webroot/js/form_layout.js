@@ -743,12 +743,12 @@ documentReady(function() {
 		};
 		var options = $.extend(defaults, options);
 		
-		if (!$(this).closest('.dropdown-holder').length) {
-			$(this).wrap($('<div class="dropdown-holder"></div>'));
+		if (!$(this).closest('.layout-dropdown-holder').length) {
+			$(this).wrap($('<div class="layout-dropdown-holder"></div>'));
 		}
 		var $parent = $(this),
 			$dropdown = $('<' + options.tag + '></' + options.tag + '>'),
-			$wrap = $parent.closest('.dropdown-holder'),
+			$wrap = $parent.closest('.layout-dropdown-holder'),
 			offset = $parent.offset(),
 			dropOffset = $wrap.offset(),
 			defaultVals = new Array(),
@@ -781,7 +781,7 @@ documentReady(function() {
 		}
 		
 		$dropdown
-			.addClass('dropdown')
+			.addClass('layout-dropdown hover-window')
 			.appendTo($('body'))
 			.hide()
 			.bind({
@@ -844,7 +844,7 @@ documentReady(function() {
 					} else {
 						loadOptions.dataType = 'html';
 					}
-					
+					console.log(loadOptions.url);
 					if (loadOptions.url && loadOptions.url != lastUrl) {
 						lastUrl = loadOptions.url;
 						var request = $.ajax(loadOptions)
@@ -904,16 +904,15 @@ documentReady(function() {
 		if ($(this).data('autocomplete-init') && !options.reset) {
 			return $(this);
 		}
-		
 		var $this = $(this),
-			$text = $this.find('input[type*=text]').attr('autocomplete', 'off'),
+			$input = $this.find('input[type*=text]').attr('autocomplete', 'off'),
 			$hidden = $this.find('input[type*=' + options.store + ']'),
 			$display = $this.find('div.display'),
-			url = $text.attr('url'),
-			redirectUrl = $text.attr('redirect_url'),
+			url = $input.data('url'),
+			redirectUrl = $input.data('redirect-url'),
 			isJson = (url.indexOf('json') > 0),
 			$defaultVals = $this.find('select.default-vals').first(),
-			$dropdown = $text.dropdown({
+			$dropdown = $input.dropdown({
 				'tag': isJson ? 'ul' : 'div',
 				'itemTag': isJson ? 'li' : 'div',
 				'emptyMessage': 'Begin typing to load results',
@@ -948,7 +947,7 @@ documentReady(function() {
 		function showDisplay() {
 			if ($display.length) {
 				$display.show();
-				$text.hide().attr('disabled', true);
+				$input.hide().attr('disabled', true);
 				$hidden.attr('disabled', false);
 			} else {
 				showText();
@@ -956,7 +955,7 @@ documentReady(function() {
 		}
 		function showText() {
 			$display.hide();
-			$text.show().attr('disabled', false);
+			$input.show().attr('disabled', false);
 			$hidden.attr('disabled', true);
 		}
 		
@@ -977,12 +976,12 @@ documentReady(function() {
 			.click(function(e) {
 				e.preventDefault();
 				showText();
-				$text.select();
+				$input.select();
 			});
 		
 		//Init Values
-		if (options.action == 'select' && $hidden.val() && $text.val()) {
-			clickDisplay($hidden.val(), $text.val());
+		if (options.action == 'select' && $hidden.val() && $input.val()) {
+			clickDisplay($hidden.val(), $input.val());
 		} else if ($hidden.val()) {
 			if ($display.html() == '') {
 				$display.html('Value Set');
@@ -992,14 +991,14 @@ documentReady(function() {
 			showText();
 		}
 		
-		$text.keyup(function() {
+		$input.keyup(function() {
 			if (timeout) {
 				clearTimeout(timeout);
 			}
 			timeout = setTimeout(function() {
 				$dropdown.trigger('loading', [{
 					dataType: isJson ? 'json' : 'html',
-					url: (url + (url.indexOf('?') > 0 ? '&' : '?') + options.searchTerm + '=' + $text.attr('value'))
+					url: (url + (url.indexOf('?') > 0 ? '&' : '?') + options.searchTerm + '=' + $input.val())
 				}]);
 			}, options.timeoutWait);
 		}).focus(function() {
@@ -1017,8 +1016,8 @@ documentReady(function() {
 		}
 		*/
 		
-		$(this).data('autocomplete-init', true);
-		return $(this);
+		$this.data('autocomplete-init', true);
+		return $this;
 	};
 })(jQuery);
 
@@ -1064,8 +1063,8 @@ documentReady(function () {
 				loadOptions.action = 'redirect';
 			}
 			$(this).formAutoComplete(loadOptions);
-			if ($(this).find('.dropdown-holder').length) {
-				$vals.appendTo($(this).find('> .dropdown-holder'));
+			if ($(this).find('.layout-dropdown-holder').length) {
+				$vals.appendTo($(this).find('> .layout-dropdown-holder'));
 			}
 		}
 	});
@@ -1097,6 +1096,7 @@ $(document).ready(function() {
 				$ul = $('<ul></ul>').appendTo($div),
 				$mask = $('<div class="select-collapse-mask"></div>'),
 				$lastLi = false,
+				$scrollables = $select.parents().add($(window)),
 				$modalParent = $select.closest('.modal'),
 				bulletRepeat = ' - ',
 				childIndex = 0,
@@ -1110,32 +1110,33 @@ $(document).ready(function() {
 				set($a.data('val'));
 				hide();
 			}
-			
 			function set(val) {
 				$select.val(val);
 			}
-			
 			function toggle() {
-				console.log($select.data('expanded') ? 'Hiding' : 'Showing');
 				return $select.data('expanded') ? hide() : show();
 			}
-			
 			function show() {
 				$select.data('expanded', true).attr('disabled', 'disabled');
 				var pos = $select.offset(),
 					h = $select.outerHeight(),
-					w = $select.outerWidth();
-				$div.show().css({'top' : pos.top + h, 'left' : pos.left, 'width' : w});
+					w = $select.outerWidth(),
+					zIndex = $select.zIndex();
+					
+				$div.show().css({
+					'top' : pos.top + h, 
+					'left' : pos.left, 
+					'width' : w,
+					'z-index' : zIndex + 1
+				});
 				$('.expanded > ul', $div).show();
 				return true;
 			}
-			
 			function hide() {
 				$select.data('expanded', false).removeAttr('disabled');
 				$div.hide();
 				return true;
 			}
-			
 			function expand($li, recursive) {
 				var recursive = typeof recursive !== 'undefined' ? recursive : true;
 				$li.addClass('expanded').find('.select-collapse-bullet').first().html('-');
@@ -1147,13 +1148,11 @@ $(document).ready(function() {
 					expandUp($li, false);
 				}
 			}
-			
 			function expandUp($li) {
 				$li.parentsUntil('.select-collapse-window', 'li').each(function() {
 					expand($(this), false);
 				});
 			}
-			
 			function collapse($li, recursive) {
 				var recursive = typeof recursive !== 'undefined' ? recursive : true;
 				$li.removeClass('expanded').find('.select-collapse-bullet').first().html('+');
@@ -1270,10 +1269,12 @@ $(document).ready(function() {
 					setLink($selectedA);
 				}
 
-				$(window).scroll(function() {
-					if ($select.data('expanded')) {
-						show();	//Re-positions
-					}
+				$scrollables.each(function() {
+					$(this).scroll(function() {
+						if ($select.data('expanded')) {
+							show();	//Re-positions
+						}
+					});
 				});
 				$modalParent.on('hide', function() {
 					hide();

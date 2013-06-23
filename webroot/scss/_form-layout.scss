@@ -213,6 +213,7 @@ textarea, input {
 }
 
 // Modal
+// -------------------------
 $modalWidthWide: 760px;
 $modalWidthSlim: 360px;
 @mixin modalWidth($class, $w) {
@@ -223,3 +224,39 @@ $modalWidthSlim: 360px;
 }
 @include modalWidth(modal-wide, $modalWidthWide);
 @include modalWidth(modal-slim, $modalWidthSlim);
+
+// Dropdowns and Autocompletes
+// ---------------------------------
+.layout-dropdown-holder {
+	position: relative;
+	@include clearfix;
+	float: left;
+}
+.layout-dropdown {
+	text-align: left;
+	&, ul {
+		@extend %blanklist;
+	}
+	position: absolute;
+	z-index: 4000;
+	padding: 0 !important;
+	display: block;
+	a {
+		display: block;
+		padding: .5em;
+		font-weight: normal;
+		text-decoration: none !important;
+		&:hover {
+			background-color: $linkColorHover;
+			color: white !important;
+		}
+	}
+	.media {
+		margin: 0;
+		border-left: 0;
+		border-right: 0;
+		img.media-object {
+			width: 40px;
+		}
+	}
+}

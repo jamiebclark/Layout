@@ -28,7 +28,6 @@
 			}
 			
 			if (!$toggle.data('layout-toggle-init')) {
-				console.log('Layout Toggle Init');
 				$control.change(function() {
 					toggleCheck();
 				});
