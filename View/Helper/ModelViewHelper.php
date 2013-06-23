@@ -356,6 +356,21 @@ class ModelViewHelper extends LayoutAppHelper {
 		}
 		return $link;
 	}
+	
+	function title($result, $options = array()) {
+		$options = array_merge(array(
+			'tag' => 'h2',
+		), $options);
+		extract($options);
+		$out = '';
+		if (!empty($this->displayField) && !empty($result[$this->displayField])) {
+			$out = $result[$this->displayField];
+			if (!empty($tag)) {
+				$out = $this->Html->tag($tag, $out, compact('class'));
+			}
+		}
+		return $out;
+	}
 
 /**
  * If a descriptionField is set, formats the next and wraps it in a tag
