@@ -26,7 +26,8 @@ class ModelViewHelper extends LayoutAppHelper {
 	//As long as modelName is set, these should be taken care of
 	var $controller;				//Controller to redirect
 	var $primaryKey = 'id';
-	var $displayField = 'title';	//What to display after link
+	var $displayField = 'title';	//displayField from Model
+	var $descriptionField = null;	//field that is the body description
 	var $cssClass;
 	var $modelAlias;
 	var $modelHuman;
@@ -356,6 +357,23 @@ class ModelViewHelper extends LayoutAppHelper {
 		return $link;
 	}
 
+/**
+ * If a descriptionField is set, formats the next and wraps it in a tag
+ *
+ **/
+	function description($result, $options = array()) {
+		$options = array_merge(array(
+			'tag' => 'div',
+			'class' => 'lead',
+		), $options);
+		extract($options);
+		$out = '';
+		if (!empty($this->descriptionField) && !empty($result[$this->descriptionField])) {
+			$out = nl2br($result[$this->descriptionField]);
+			$out = $this->Html->tag($tag, $out, compact('class'));
+		}
+		return $out;
+	}
 	
 	
 	/**
