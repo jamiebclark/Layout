@@ -38,6 +38,7 @@ class ModelViewHelper extends LayoutAppHelper {
 	var $thumbDir = 'profiles/';	//Base directory where thumbnails are stored
 	var $defaultDir = 'mid';		//Default sub-directory of thumbnail
 	var $defaultMediaDir = 'small';	//Default sub-directory of an image used in a media HTML object
+	var $defaultImageFile = '0.jpg';
 
 	//Whether the urls should be formatted to include slugs: array('controller','action', 'id' => $id, 'slug' => $slug)
 	// Should be set up in Config/router first
@@ -384,7 +385,6 @@ class ModelViewHelper extends LayoutAppHelper {
 		if (empty($url) && $url !== false) {
 			$url = $this->url($result);
 		}
-		
 		$out = '';
 		//Thumb
 		if (isset($thumb) && $thumb === false) {
@@ -514,9 +514,10 @@ class ModelViewHelper extends LayoutAppHelper {
 		if (isset($options['alt'])) {
 			$options['alt'] = strip_tags($options['alt']);
 		}
-		$out = $this->Image->thumb($Result, $options);
-		if (!empty($hasMedia) && !empty($url)) {
-			$out = $this->Html->link($out, $url, array('escape' => false, 'class' => 'pull-left'));
+		if ($out = $this->Image->thumb($Result, $options)) {
+			if (!empty($hasMedia) && !empty($url)) {
+				$out = $this->Html->link($out, $url, array('escape' => false, 'class' => 'pull-left'));
+			}
 		}
 		return $out;
 	}
@@ -547,7 +548,7 @@ class ModelViewHelper extends LayoutAppHelper {
 			'dir' => $this->defaultDir,
 			'alt' => $this->urlTitle($Result),
 			'base' => $this->thumbDir,
-			'defaultFile' => '0.jpg',
+			'defaultFile' => $this->defaultImageFile,
 		), (array) $options);
 		
 		return !empty($modelId) ? $this->_idReplace($options, $modelId) : $options;
