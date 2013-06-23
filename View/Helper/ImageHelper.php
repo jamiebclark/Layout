@@ -96,8 +96,12 @@ class ImageHelper extends LayoutAppHelper {
 				$file = null;
 			}
 		}
-		if (empty($file) && !empty($options['defaultFile'])) {
-			$file = $options['defaultFile'];
+		if (empty($file)) {
+			if (!empty($options['defaultFile'])) {
+				$file = $options['defaultFile'];
+			} else {
+				return null;
+			}
 		}		
 		
 		$dirs[] = $file;
