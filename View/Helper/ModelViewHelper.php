@@ -400,24 +400,37 @@ class ModelViewHelper extends LayoutAppHelper {
 	 **/
 	function media($result, $options = array()) {
 		$options = array_merge(array(
-			'tag' => 'div',			//Tag wrapper
+			'tag' => 'div',							//Tag wrapper
 			'dir' => $this->defaultMediaDir,		//Thumbnail directory
-			'thumb' => array(),		//Thumbnail options
+			'thumb' => array(),						//Thumbnail options
 			'url' => null,	
 			'contentTag' => 'p',
 			'right' => '',
 			'idMenu' => false,
 			'body' => '',
 			'titleTag' => 'h4',
+			'link' => false,
 		), $options);
 		$options = $this->addClass($options, 'media');
 		if (!empty($options['dir'])) {
 			$options = $this->addClass($options, 'media-' . $options['dir']);
 		}
 		extract($options);
+		$returnOptions = compact('class');
+		
 		if (empty($url) && $url !== false) {
 			$url = $this->url($result);
 		}
+		if ($link) {
+			if ($link === true) {
+				$link = $url;
+			}
+			$tag = 'a';
+			$url = false;
+			$returnOptions['escape'] = false;
+			$returnOptions['href'] = Router::url($link);
+		}
+		
 		$out = '';
 		//Thumb
 		if (isset($thumb) && $thumb === false) {
@@ -473,7 +486,7 @@ class ModelViewHelper extends LayoutAppHelper {
 			$bd .= $this->Layout->actionMenu($actionMenu, $result + $actionMenuOptions);
 		}
 		$out .= $this->Html->tag('div', $bd, array('class' => 'media-body')) . "\n";
-		return $this->Html->tag($tag, $out, array('class' => $class));
+		return $this->Html->tag($tag, $out, $returnOptions);
 	}
 	
 	function mediaList($results, $options = array()) {
@@ -545,7 +558,7 @@ class ModelViewHelper extends LayoutAppHelper {
 			}
 		}
 		if (isset($options['alt'])) {
-			$options['alt'] = strip_tags($options['alt']);
+			$options['alt'] = str_replace('"', "'", strip_tags($options['alt']));
 		}
 		if ($out = $this->Image->thumb($Result, $options)) {
 			if (!empty($hasMedia) && !empty($url)) {
@@ -583,6 +596,10 @@ class ModelViewHelper extends LayoutAppHelper {
 			'base' => $this->thumbDir,
 			'defaultFile' => $this->defaultImageFile,
 		), (array) $options);
+		
+		if (!empty($options['dir'])) {
+			$options = $this->addClass($options, 'thumbnail-' . $options['dir']);
+		}
 		
 		return !empty($modelId) ? $this->_idReplace($options, $modelId) : $options;
 	}

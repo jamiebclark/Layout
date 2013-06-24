@@ -506,7 +506,7 @@ $iconicListSize:			$iconicListFontSize + 2 * $iconicListPadding;
 		content:'\2600';
 	}
 
-.media .img .iconic {
+.media .img .iconic, .media .media-object.iconic {
 	font-size: 80px;
 	padding: .1em;
 	line-height: normal;

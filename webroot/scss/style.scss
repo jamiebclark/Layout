@@ -10,11 +10,12 @@
 @import "address_book_form";
 @import "clearfix";
 @import "iconic";
+
 @import "liquid-layout";
 @import "table";
 @import "form-layout";
 @import "collapse_list";
-
+@import "thumbnails";
 @import "sprites";
 
 @import "calendar"; 
@@ -89,6 +90,9 @@ h3, h4 {
 // ---------------------
 .media {
 	margin: 10px;
+	.media-body {
+		display: block;
+	}
 	&, .bd {
 		@extends %overflow;
 		display: block;

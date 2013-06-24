@@ -1,0 +1,15 @@
+@mixin setThumbnailSize($type, $size) {
+	.thumbnail-#{$type} {
+		width: $size;
+		&.media-object.iconic {
+			line-height: $size;
+			font-size: $size;
+			vertical-align: middle;
+			text-align: center;
+		}
+	}
+}
+@include setThumbnailSize(tiny, $thumbnailTiny);
+@include setThumbnailSize(small, $thumbnailSmall);
+@include setThumbnailSize(mid, $thumbnailMid);
+@include setThumbnailSize(large, $thumbnailLarge);
