@@ -845,7 +845,7 @@ class FormLayoutHelper extends LayoutAppHelper {
 	}
 	
 	function inputDatetimePair($startFieldName, $endFieldName, $options = array()) {
-		if (!Param::falseCheck($options, 'label')) {
+		if (empty($options['label']) && !Param::falseCheck($options, 'label')) {
 			$options['label'] = $this->getLabelText($startFieldName);
 		}
 		if (!empty($options['allDay']) || !empty($options['isAllDay'])) {
@@ -955,7 +955,7 @@ class FormLayoutHelper extends LayoutAppHelper {
 			$after = $this->Html->div('input-date-control', $this->Html->div('btn-group', $after));
 			$options = $this->addClass($options, $after, 'after');
 		}
-		if (!isset($options['label']) || $options['label'] !== false) {
+		if (!isset($options['label']) || (empty($options['label']) && $options['label'] !== false)) {
 			$options['label'] = $this->getLabelText($fieldName);
 		}
 		return $this->input($fieldName. ".date", $options);

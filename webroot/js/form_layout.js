@@ -86,10 +86,10 @@
 				$times = $inputs.filter(function() { return $(this).hasClass('time');}),
 				$controls = $('.input-date-control a', $holder);
 			function set(val) {
-				if ($dates) {
+				if ($dates.length) {
 					$dates.datepicker('setDate', val).change();
 				}
-				if ($times) {
+				if ($times.length) {
 					$times.timepicker('setTime', val).change();
 				}
 			}
@@ -557,7 +557,7 @@ var dropdownInput;
 				$choices = $('.input-choice', $list),
 				$controls = $('.input-choice-control input', $choices),
 				$contents = $('.input-choice-content', $choices),
-				$checkedControl = $(':checked', $controls);
+				$checkedControl = $controls.filter(':checked');
 			if (!$list.data('input-choice-init')) {
 				function select() {
 					if (!$checkedControl.length) {
