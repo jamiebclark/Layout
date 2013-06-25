@@ -844,7 +844,6 @@ documentReady(function() {
 					} else {
 						loadOptions.dataType = 'html';
 					}
-					console.log(loadOptions.url);
 					if (loadOptions.url && loadOptions.url != lastUrl) {
 						lastUrl = loadOptions.url;
 						var request = $.ajax(loadOptions)
@@ -1117,6 +1116,7 @@ $(document).ready(function() {
 				return $select.data('expanded') ? hide() : show();
 			}
 			function show() {
+				positionMask();
 				$select.data('expanded', true).attr('disabled', 'disabled');
 				var pos = $select.offset(),
 					h = $select.outerHeight(),
@@ -1133,6 +1133,7 @@ $(document).ready(function() {
 				return true;
 			}
 			function hide() {
+				positionMask();
 				$select.data('expanded', false).removeAttr('disabled');
 				$div.hide();
 				return true;
@@ -1172,15 +1173,16 @@ $(document).ready(function() {
 				});
 			}
 			
-			if (!$select.data('collapse-init')) {
-				$div.appendTo($('body'));
-				$mask.appendTo($('body'));
-				
-				var pos = $select.offset(),
-					h = $select.outerHeight(),
-					w = $select.outerWidth(),
-					$selectedA = false;
-					
+			function positionMask() {
+				if ($select.is(':visible')) {
+					var pos = $select.offset(),
+						h = $select.outerHeight(),
+						w = $select.outerWidth();
+				} else {
+					var pos = {top: 0, left: 0},
+						w = 0,
+						h = 0;
+				}
 				$mask.css({
 					'position' : 'absolute',
 					'top' : pos.top,
@@ -1189,8 +1191,16 @@ $(document).ready(function() {
 					'bottom' : pos.top + h,
 					'width' : w,
 					'height' : h
-				})
-					.selectCollapseHoverTrack()
+				});
+			}
+			
+			if (!$select.data('collapse-init')) {
+				$div.appendTo($('body'));
+				$mask.appendTo($('body'));
+				positionMask();
+				var $selectedA = false;
+				
+				$mask.selectCollapseHoverTrack()
 					.hover(function() {$(this).css('cursor','pointer');})
 					.click(function() {toggle();});
 				
@@ -1271,6 +1281,9 @@ $(document).ready(function() {
 
 				$scrollables.each(function() {
 					$(this).scroll(function() {
+						if ($select.length) {
+							positionMask();
+						}
 						if ($select.data('expanded')) {
 							show();	//Re-positions
 						}
@@ -1278,6 +1291,8 @@ $(document).ready(function() {
 				});
 				$modalParent.on('hide', function() {
 					hide();
+				}).on('shown', function() {
+					positionMask();
 				});
 				
 				$select.data('collapse-init', true);
