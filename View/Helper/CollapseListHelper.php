@@ -5,6 +5,7 @@ class CollapseListHelper extends LayoutAppHelper {
 	var $helpers = array(
 		'Layout.Asset',
 		'Layout.Layout',
+		'Layout.ModelView',
 		'Html',
 		'Layout.Table',
 	);
@@ -23,7 +24,7 @@ class CollapseListHelper extends LayoutAppHelper {
 			'model' => null,
 			'displayField' => 'title',
 			'primaryKey' => 'id',
-			'titleTag' => 'h2',
+			'titleTag' => 'h4',
 			'titleUrl' => array('action' => 'view'),
 			'titleElement' => null,
 			'titleEval' => null,
@@ -31,12 +32,13 @@ class CollapseListHelper extends LayoutAppHelper {
 			'infoTableResult' => null,
 			'eval' => null,
 			'actionMenu' => null,
-			'selected' => false,
+			'selected' => false,		//ID of the row to be highlighted
 			'autoSelected' => true,
 			'activeField' => false,
 			'withChecked' => false,
 			'form' => null,
 			'draggable' => false,
+			'ModelView' => null,
 		), $options);
 		$options = $this->addClass($options, 'collapse-list');
 		if (!empty($options['draggable'])) {
@@ -45,6 +47,11 @@ class CollapseListHelper extends LayoutAppHelper {
 		if (empty($options['model'])) {
 			$options['model'] = InflectorPlus::modelize($this->request->params['controller']);
 		}
+		if (empty($options['ModelView'])) {
+			$options['ModelView'] =& $this->ModelView;
+			$options['ModelView']->setModel($options['model']);
+		}
+		
 		extract($options);
 		$root = !$sub;
 		
@@ -98,20 +105,15 @@ class CollapseListHelper extends LayoutAppHelper {
 			if (!empty($checkbox)) {
 				$title = $this->Table->tableCheckbox($id) . $title;
 			}
+			$title = $this->Html->tag($titleTag, $title, array('class' => $titleClass));
+			
 			if (is_array($actionMenu)) {
 				$actionMenu += array(array(), array());
-				$title = $this->Layout->headingActionMenu(
-					$title, 
-					$actionMenu[0], 
-					array(
-						'class' => $titleClass,
-						'tag' => $titleTag,
-						'url' => $url,
-						'active' => $isActive,
-					) + $actionMenu[1]
-				);
-			} else {
-				$title = $this->Html->tag($titleTag, $title, array('class' => $titleClass));
+				$title = $ModelView->actionMenu($actionMenu[0], $row[$model], array(
+					'active' => $isActive,
+					'url' => $url,
+					'class' => 'pull-right',
+				) + $actionMenu[1]) . $title;
 			}
 			
 			if (!empty($checkbox)) {

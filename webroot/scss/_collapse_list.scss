@@ -52,7 +52,7 @@ li.#{$ns}-item {
 	}
 }
 .#{$ns}-item-title {
-	min-height: $baseLineHeight;
+	min-height: $toggleSize + 2 * $togglePadding;
 	margin: 0;
 	margin-bottom: 0 !important;
 	padding: $collapseItemPaddingTop $collapseItemPaddingLeft;

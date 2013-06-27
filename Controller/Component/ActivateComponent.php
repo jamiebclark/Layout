@@ -41,14 +41,14 @@ class ActivateComponent extends Component {
 		parent::__construct($collection, $settings);
 	}
 
-	function initialize(&$controller) {
+	function startup(&$controller) {
 		$this->controller =& $controller;
 		$model = !empty($controller->modelClass) ? $controller->modelClass : null;
 		
 		$this->settings['model'] = $model;
 		$this->settings['humanName'] = Inflector::humanize($model);
 		
-		if (empty($this->settings['userType']) || $this->controller->_loggedUserType($this->settings['userType'])) {
+		if (!method_exists($this->controller, '_beforeActivate') || $this->controller->_beforeActivate()) {
 			$this->paramCheck();
 		}
 	}

@@ -2,12 +2,18 @@
 
 $rowInactiveColor: 		$gray;
 $rowActiveColor:		$infoBackground;
+$rowHoverColor:			#F8F8F8;
 
 $tableSortBgColor: 		$grayLighter;
 $tableSortBorderColor: 	$gray;
 $tableSortRounded: 		$baseBorderRadius;
 
 tr {
+	&.row-hover {
+		&, td {
+			background-color: $rowHoverColor;
+		}
+	}
 	&.inactive {
 		&, td {
 			background-color: $rowInactiveColor;

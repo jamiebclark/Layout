@@ -3,6 +3,10 @@ class LayoutAppHelper extends AppHelper {
 	protected $bootstrap = false;
 	protected $localBootstrap = true;
 
+	protected $_tagAttributes = array(
+		'id','class','style','title',
+	);
+	
 	var $defaultHelpers = array('Layout.Asset');
 	var $defaultCss = array('Layout.style');
 	var $defaultJs = array('Layout.script');
@@ -32,6 +36,9 @@ class LayoutAppHelper extends AppHelper {
 				$this->helpers[$helper]['className'] = 'TwitterBootstrap.Bootstrap'.$helper;
 			}
 		}
+		
+		$this->_tagAttributes = array_combine($this->_tagAttributes, $this->_tagAttributes);
+		
 		parent::__construct($View, $settings);
 	}
 	
@@ -50,5 +57,9 @@ class LayoutAppHelper extends AppHelper {
 	function getCurrentModel() {
 		$models = array_keys($this->request->models);
 		return $models[0];
+	}
+	
+	function isTagAttribute($tag) {
+		return isset($this->_tagAttributes[$tag]);
 	}
 }

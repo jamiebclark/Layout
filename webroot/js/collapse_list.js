@@ -7,12 +7,13 @@
 				$lists = $('ul.collapse-list-list', $collapseList),
 				$rootList = $lists.first(),
 				$rootItems = $rootList.find('> li'),
-				$selected = $('.selected', $titles).first(),
+				$selected = $titles.filter('.selected').first(),
 				itemCount = 0,
 				isDraggable = $collapseList.hasClass('draggable'),
 				collapseTimeout = false,
+				hash = window.location.hash ? window.location.hash.substring(1) : false,
 				$body = $('html,body');
-				
+
 			function selectListItem(id) {
 				var qName = 'collapse-list-queue';
 				
@@ -26,10 +27,11 @@
 						$titles.removeClass('selected');
 						next();
 					});
-				
+				console.log($selected.length);
 				if (id) {
 					$selected = $rootList.find('#' + id + ' .collapse-list-item-title').first();
 				}
+				console.log($selected.length);
 				if ($selected.length) {
 					$collapseList
 						.queue(qName, function(next) {
@@ -207,14 +209,15 @@
 				$(this).data('init', true);
 			});
 			
-			if (!$(this).data('init')) {
-				$(this).bind('update', function() {
+			if (!$collapseList.data('init')) {
+				$collapseList.bind('update', function() {
 					updateList($rootList, true);
 				});
-				selectListItem();
+				selectListItem(hash);
+				$collapseList.tableCheckboxes();
 			}
 
-			return $(this).data('init', true);
+			return $collapseList.data('init', true);
 		});
 	};
 })(jQuery);

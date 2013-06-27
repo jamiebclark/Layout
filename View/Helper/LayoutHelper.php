@@ -772,26 +772,6 @@ class LayoutHelper extends LayoutAppHelper {
 	function headingActionMenu($title, $menu = null, $attrs = array()) {
 		$attrs = $this->addClass($attrs, 'heading-action-menu');
 		return $this->navActionBar($menu, $title, $attrs);
-		
-		return $this->adminMenu($menu, compact('title') + $attrs);
-	
-		$tag = Param::keyCheck($attrs, 'tag', true, 'h2');
-		$class = 'divider clearfix';
-		if (!empty($attrs['class'])) {
-			$class .= ' ' . $attrs['class'];
-			unset($attrs['class']);
-		}
-		if (empty($title)) {
-			$title = Param::keyCheck($attrs, 'title', true);
-		}
-		$output = '';
-		if (!empty($title)) {
-			$output .= $title;
-		}
-		if (!empty($menu)) {
-			$output = $this->actionMenu($menu, $attrs + array('icons' => true)) . $output;
-		}
-		return $this->Html->tag($tag, $output, compact('class'));
 	}
 	
 	function adminMenu($menu = null, $attrs = array()) {
@@ -801,7 +781,6 @@ class LayoutHelper extends LayoutAppHelper {
 			$title = Param::keyCheck($attrs, 'title', true, 'Staff Only');
 		}
 		return $this->navActionBar($menu, $title, $attrs);
-		//return $this->headingActionMenu($title, $menu, $attrs);
 	}
 	
 	/**

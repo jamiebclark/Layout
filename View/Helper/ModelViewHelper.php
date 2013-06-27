@@ -73,7 +73,7 @@ class ModelViewHelper extends LayoutAppHelper {
 		'index', 'edit', 'delete', 'view', 'add', 
 		'move_up', 'move_down', 'move_top', 'move_bottom', 'settings',
 		'spam', 'clock',
-		'active'
+		'active' => array('activate' => true),
 	);
 	
 	// The fields passed to each getAutoAction function
@@ -173,6 +173,25 @@ class ModelViewHelper extends LayoutAppHelper {
 		}
 	}
 	
+	function linkActive($id, $action, $actionOptions, $options = array()) {
+		$options = array_merge(array(
+			'title' => array('Activate', 'Deactivate'),
+			'param' => array('active', 'inactive'),
+			'icon' => 'active',
+			'field' => $action,
+		), (array) $options);
+		$field = $options['field'];
+		$active = !empty($actionOptions[$field]) || !empty($actionOptions['result'][$field]);
+		foreach ($options as $k => $v) {
+			if (is_array($v)) {
+				$options[$k] = $v[$active];
+			}
+		}
+		extract($options);
+		$class = $active ? 'active' : null;
+		return array($title, array($param => $id), compact('title', 'icon', 'class'));
+	}
+	
 	function getAutoAction($action, $id, $options = array()) {
 		$baseUrl = !empty($options['url']) ? $options['url'] : array();
 		$baseUrl += array('controller' => $this->controller, $id);
@@ -186,22 +205,33 @@ class ModelViewHelper extends LayoutAppHelper {
 		
 		if ($action == 'delete') {
 			$menuItem = array('Delete', $baseUrl, array('title' => 'Delete ' . $this->modelHuman), "Delete this {$this->modelHuman}?");
-		} else if ($action == 'active') {
-			$isActive = !empty($options['active']) || !empty($options['result']['active']);
-			$title = $isActive ? 'Deactivate' : 'Activate';
-			$cmd = $isActive ? 'inactive' : 'active';
-			$menuItem = array($title, array($cmd => $id) + $options['url'], compact('title') + array('icon' => $cmd));
 		} else if ($this->isAutoAction($action)) {
 			$actionOptions = isset($this->autoActions[$action]) ? $this->autoActions[$action] : array();
 			$title = Inflector::humanize($action);
 			$itemOptions = compact('title');
-			if (!empty($actionOptions['addUrl'])) {
-				$baseUrl = $actionOptions['addUrl'] + $baseUrl;
+			foreach ($options as $key => $val) {
+				if ($this->isTagAttribute($key)) {
+					$itemOptions[$key] = $val;
+				}
 			}
 			if (isset($actionOptions['function'])) {
 				$fn = $actionOptions['function'];
 				$menuItem = $fn($id, $options);
+			} else if (!empty($actionOptions['activate'])) {
+				$menuItem = $this->linkActive($id, $action, $options, $actionOptions['activate']);
 			} else {
+				if (!empty($actionOptions['url'])) {
+					$baseUrl = $actionOptions['url'];
+				}
+				if (isset($actionOptions['idField'])) {
+					$baseUrl[$actionOptions['idField']] = $id;
+				}
+				if (isset($actionOptions['urlOptions'])) {
+					$itemOptions = $actionOptions['urlOptions'] + $itemOptions;
+				}
+				if (!empty($actionOptions['addUrl'])) {
+					$baseUrl = $actionOptions['addUrl'] + $baseUrl;
+				}
 				$menuItem = array($title, $baseUrl, $itemOptions);
 			}
 		}
@@ -281,7 +311,7 @@ class ModelViewHelper extends LayoutAppHelper {
 				}
 				if (is_array($menuItem)) {
 					list($linkTitle, $linkUrl, $linkOptions, $linkPost) = $menuItem + array(null, null, null, null);
-					if ($linkUrl['controller'] == $this->controller && !isset($linkUrl[0])) {
+					if (empty($linkUrl['controller']) || $linkUrl['controller'] == $this->controller && !isset($linkUrl[0])) {
 						$linkUrl[0] = $id;
 					}
 					$linkOptions = $this->addClass($linkOptions, 'btn');

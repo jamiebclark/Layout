@@ -168,6 +168,11 @@ documentReady(function() {
 					}
 					return $(this);
 				});
+			$row.hover(function() {
+				$(this).toggleClass('row-hover');
+			}).click(function(e) {
+				$checkbox.click();
+			});
 			return $(this);
 		});
 	};
@@ -241,11 +246,11 @@ documentReady(function() {
 		return $(this);
 	};
 	
-	$.fn.layoutTable  = function() {
+	$.fn.tableCheckboxes  = function() {
 		return this.each(function() {
 			var $table = $(this),
 				$form = $table.closest('form'),
-				$tableCheckboxes = $('input[name*="[table_checkbox]"]', $table).tableCheckbox(),
+				$tableCheckboxes = $('input[name*="[table_checkbox]"]', $table),
 				$formCheckboxes = $('input[name*="[table_checkbox]"]', $form),
 				$checkedCheckboxes = $(':checked', $tableCheckboxes),
 				$checkAllCheckboxes = $('th input.check-all', $form),
@@ -303,7 +308,8 @@ documentReady(function() {
 
 $(document).ready(function() {
 	$('th a').tableSortLink();
-	$('.layout-table').layoutTable();
+	$('.layout-table,.table-checkboxes').tableCheckboxes();
+	$('input[name*="[table_checkbox]"]').tableCheckbox();
 });
 
 // AJAX Modal Loading Window 
