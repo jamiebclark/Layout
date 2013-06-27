@@ -605,10 +605,98 @@ class ModelViewHelper extends LayoutAppHelper {
 		}
 		return $return;
 	}
+
+	function thumbnail($result, $options = array()) {
+		$result = $this->_getResult($result);
+		$options = array_merge(array(
+			'dir' => 'mid',
+			'tag' => 'div',
+			'caption' => false,
+			'url' => true,
+		), $options);
+		$options = $this->addClass($options, 'thumbnail');
+		extract($options);
+		if ($url === true) {
+			$url = $this->url($result);
+		}
+		if (!empty($urlAdd)) {
+			$url = $urlAdd + $url;
+		}
+		$out = $this->thumb($result, compact('dir', 'url'));
+		if ($caption === true) {
+			$out .= $this->thumbnailCaption($result, $options);
+		}
+		return $this->Html->tag($tag, $out, compact('class'));
+	}
+	
+	function thumbnailCaption($result, $options = array()) {
+		$caption = '';
+		if (!empty($result['title'])) {
+			$caption .= $this->title($result, array('tag' => 'h3'));
+		}
+		if (!empty($result['description'])) {
+			$caption .= $this->Html->div('description', $result['description']);
+		}
+		if (!empty($options['after'])) {
+			$caption .= $options['after'];
+		}
+		if (!empty($caption)) {
+			$caption = $this->Html->div('caption', $caption);
+		}
+		return $caption;	
+	}
+	
+	function thumbnails($results, $options = array()) {
+		$options = array_merge(array(
+			'id' => null,
+			'span' => null,
+			'urlAdd' => null,
+		), $options);
+		$options = $this->addClass($options, 'photo-thumbnails');
+		extract($options);
+		$wrapClass = $class;
+		unset($options['class']);
+		
+		$out = '';
+		$class = !empty($span) ? "span$span" : null;
+
+		if (!empty($span) && empty($sub)) {
+			$cols = round (12 / $span);
+			$col = 0;
+			$count = count($photos) - 1;
+			$row = array();
+			foreach ($results as $k => $result) {
+				$row[] = $result;
+				if (++$col >= $cols || $k == $count) {
+					$out .= $this->thumbnails($row, array('sub' => true) + $options);
+					$row = array();
+					$col = 0;
+				}
+			}
+		} else {
+			foreach ($results as $result) {
+				$result = $this->_getResult($result);
+				$thumbOptions = $options;
+				if ($result['id'] == $id) {
+					$thumbOptions = $this->addClass($thumbOptions, 'active');
+				}
+				$out .= $this->Html->tag('li', 
+					$this->thumbnail($result, $thumbOptions),
+					compact('class')
+				);
+			}
+			$out = $this->Html->tag('ul', $out, array('class' => 'thumbnails'));
+		}
+		$paginate = $this->Layout->paginateNav();
+		if (empty($sub)) {
+			$out = $paginate . $this->Html->div($wrapClass, $out) . $paginate;
+		}
+		return $out;
+	}
 	
 	
 	/**
-	 * Sets the basic options to pass on to Photo helper to create a profile thumbnail
+	 * Sets the basic options to pass on to Image helper to create a profile thumbnail
 	 *
 	 **/
 	protected function thumbOptions($Result, $options = array()) {
@@ -657,5 +745,9 @@ class ModelViewHelper extends LayoutAppHelper {
 			$title = '<em>' . $this->blankTitle . '</em>';
 		}
 		return $title;
+	}
+	
+	private function _getResult($result) {
+		return !empty($result[$this->modelName]) ? $result[$this->modelName] : $result;
 	}
 }
