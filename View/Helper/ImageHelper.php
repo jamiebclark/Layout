@@ -63,13 +63,6 @@ class ImageHelper extends LayoutAppHelper {
 	 * @return string path to image
 	 **/	
 	function path($file, $options = array()) {
-		if (is_array($file)) {
-			if (isset($file[$this->imageField])) {
-				$file = $file[$this->imageField];
-			} else {
-				$file = null;
-			}
-		}
 		$options = array_merge(array(
 			'root' => $this->root,
 			'externalServer' => $this->externalServer,
@@ -78,10 +71,18 @@ class ImageHelper extends LayoutAppHelper {
 			'ds' => DS,
 			'isFile' => true,
 			'defaultFile' => $this->defaultFile,
+			'imageField' => $this->imageField,
 		), $options);
 		if (!empty($options['externalServer'])) {
 			unset($options['root']);
 			$options['isFile'] = false;
+		}
+		if (is_array($file)) {
+			if (isset($file[$options['imageField']])) {
+				$file = $file[$options['imageField']];
+			} else {
+				$file = null;
+			}
 		}
 		$paths = array('root', 'externalServer', 'base', 'dir');
 		$dirs = array();
