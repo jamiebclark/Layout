@@ -360,7 +360,7 @@ class ModelViewHelper extends LayoutAppHelper {
 			unset($options['prefix']);
 		}
 		
-		$title = !empty($Result[$this->displayField]) ? $Result[$this->displayField] : '<em>No Title</em>';
+		$title = $this->title($Result, array('tag' => false));
 		if (!empty($options['img'])) {
 			$imgOptions = array();
 			if ($options['img'] !== true) {
@@ -390,16 +390,17 @@ class ModelViewHelper extends LayoutAppHelper {
 	function title($result, $options = array()) {
 		$options = array_merge(array(
 			'tag' => 'h2',
+			'text' => '',
+			'default' => '<em>No Title</em>',
 		), $options);
 		extract($options);
-		$out = '';
-		if (!empty($this->displayField) && !empty($result[$this->displayField])) {
-			$out = $result[$this->displayField];
-			if (!empty($tag)) {
-				$out = $this->Html->tag($tag, $out, compact('class'));
-			}
+		if (empty($text) && !empty($this->displayField) && !empty($result[$this->displayField])) {
+			$text = $result[$this->displayField];
 		}
-		return $out;
+		if (!empty($tag)) {
+			$text = $this->Html->tag($tag, $out, compact('class'));
+		}
+		return $text;
 	}
 
 /**

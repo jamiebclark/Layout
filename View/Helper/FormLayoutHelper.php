@@ -609,7 +609,6 @@ class FormLayoutHelper extends LayoutAppHelper {
 	);
 	
 	*/
-	
 	public function inputList($listContent = '', $options = array()) {
 		$options = array_merge(array(
 			'model' => InflectorPlus::modelize($this->request->params['controller']),
@@ -627,8 +626,11 @@ class FormLayoutHelper extends LayoutAppHelper {
 			$total = count($listContent);
 			$type = 'array';
 		} else {
-			//Adds an extra blank one
-			$total = !empty($this->request->data[$model]) ? count($this->request->data[$model]) + 1 : $count;
+			if ($data = $this->getModelData($model)) {
+				$total = count($data) + 1; //Adds an extra blank one
+			} else {
+				$total = $count;
+			}
 		}
 		if ($total < 0) {
 			return $out;
@@ -731,7 +733,7 @@ class FormLayoutHelper extends LayoutAppHelper {
 				$span = 4;
 			}
 			$spanCount += $span;
-			$spanClass = 'span' . $span;
+			$spanClass = 'control-group span' . $span;
 			$inputOptions = $this->addClass($inputOptions, $spanClass, 'div');
 			$inputOptions = $this->addClass($inputOptions, 'input-block-level');
 			if ($placeholder) {
@@ -857,7 +859,7 @@ class FormLayoutHelper extends LayoutAppHelper {
 		}
 		
 		$out  = $this->inputDatetime($startFieldName, array('label' => 'From') + $options);
-		$out .= $this->Html->div('datepair-between', ' - ');
+		//$out .= $this->Html->div('datepair-between', ' - ');
 		$out .= $this->inputDatetime($endFieldName, array('flip' => true, 'label' => 'To') + $options);
 		return $this->fakeInput($out, array(
 			'div' => 'datepair datepair-time',
@@ -879,7 +881,7 @@ class FormLayoutHelper extends LayoutAppHelper {
 			$options['label'] = $this->getLabelText($startFieldName);
 		}
 		$out  = $this->inputDate($startFieldName, array('label' => 'From') + $options);
-		$out .= $this->Html->div('datepair-between', ' - ');
+		//$out .= $this->Html->div('datepair-between', ' - ');
 		$out .= $this->inputDate($endFieldName, array('label' => 'To') + $options);
 		return $this->fakeInput($out, array(
 			'div' => 'datepair',
@@ -1430,5 +1432,25 @@ class FormLayoutHelper extends LayoutAppHelper {
 			$text = __(Inflector::humanize(Inflector::underscore($text)));
 		}	
 		return $text;
+	}
+
+	private function getModelData($model) {
+		$models = explode('.', $model);
+		$data =& $this->request->data;
+		foreach ($models as $subModel) {
+			if (isset($data[$subModel])) {
+				$data =& $data[$subModel];
+				continue;
+			} else if (isset($data[0])) {
+				foreach ($data as $subData) {
+					if (isset($subData[$subModel])) {
+						$data =& $subData[$subModel];
+						continue 2;
+					}
+				}
+			}
+			return null;
+		}
+		return $data;
 	}
 }

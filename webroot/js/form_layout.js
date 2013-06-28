@@ -603,14 +603,16 @@ documentReady(function() {
 	$.fn.inputList = function() {
 		return this.each(function() {
 			var $list = $(this),
-				$listItems = $('.input-list-item', $list),
-				$addLink = $('<a class="btn btn-small" href="#">Add</a>'),
-				$control = $('.input-list-control', $list);
-			
+				$listItems = $('> .input-list-inner > .input-list-item', $list),
+				$control = $('> .input-list-control', $list),
+				$addLink = $('a', $control);
+
 			if ($(this).data('input-list-init')) {
 				return $(this);
 			}
+			console.log($control.length);
 
+			
 			function addRemoveBox($listItem) {
 				var $id = $(':input[name*="id]"]', $listItem).first();
 				if (!$id.length) {
@@ -657,12 +659,16 @@ documentReady(function() {
 				return $(this);
 			}).bind('cloned', function (e, $cloned) {
 				addRemoveBox($cloned);
-				$listItems = $('.input-list-item', $list);
+				$listItems = $('> .input-list-inner > .input-list-item', $list);
 			});
+			if (!$addLink.length) {
+				$addLink = $('<a class="btn btn-small" href="#">Add</a>').appendTo($control);
+			}
 			$addLink.click(function(e) {
-					e.preventDefault();
-					$listItems.cloneNumbered().trigger('inputListAdd');
-				}).appendTo($control);
+				console.log('Add Link Clicked: ' + $listItems.length);
+				e.preventDefault();
+				$listItems.cloneNumbered().trigger('inputListAdd');
+			});
 					
 			$listItems.filter(':visible').each(function() {
 				addRemoveBox($(this));
@@ -673,38 +679,90 @@ documentReady(function() {
 		});
 	};
 
-	$.fn.renumberInput = function(newIdKey) {
+	$.fn.renumberInput = function(newIdKey, keyIndex) {
+		if (typeof keyIndex === "undefined") {
+			var keyIndex = -1;
+		}
 		if (!$(this).attr('name')) {
 			return $(this);
 		}
-		var reg = /\[(\d+)\]/,
-			name = $(this).attr('name'),
-			id = $(this).attr('id'),
-			idKeyMatch = name.match(reg),
-			idKeyP = idKeyMatch[0],
-			idKey = idKeyMatch[1];
-		$(this).attr('name', name.replace(idKeyP, "["+newIdKey+"]"));
+		var	name = $(this).attr('name'),
+			id = $(this).attr('id');
+			
+		if (keyIndex != -1) {
+			var key = getNameKey(name, keyIndex),
+				idKeyP = "[" + key.key + "]",
+				idKey = key.key,
+				newNameStart = name.substr(0,key.index),
+				newNameEnd = name.substr(name.indexOf("[", newNameStart.length + idKeyP.length));
+			$(this).attr('name', newNameStart + "["+newIdKey+"]" + newNameEnd);
+		} else {
+			var reg = /\[(\d+)\]/,
+				idKeyMatch = name.match(reg),
+				idKeyP = idKeyMatch[0],
+				idKey = idKeyMatch[1];
+			$(this).attr('name', name.replace(idKeyP, "["+newIdKey+"]"));
+		}
+		
 		if (id) {
 			var oldId = id,
 				$labels = $('label').filter(function() { return $(this).attr('for') == oldId;}),
 				newId = id.replace(idKey, newIdKey);
 			$(this).attr('id', newId);
+			
+			$(this).closest('form').find('label[for="'+oldId+'"]').attr('for',newId);
+			/*
 			$(this).parent('label[for="'+oldId+'"]').attr('for', newId);
 			$(this).closest('.control-group').find('label[for="'+oldId+'"]').attr('for',newId);
 			$(this).next('label[for="'+oldId+'"]').attr('for',newId);
 			$(this).prev('label[for="'+oldId+'"]').attr('for',newId);
+			*/
 		}
 		return $(this);
 	};
 
+	function getNameKey(name, startIndex, forward) {
+		if (typeof forward === 'undefined') {
+			var forward = true;
+		}
+		var i = startIndex, k = '', endIndex;
+		if (forward) {
+			while (name.charAt(i) != '[') {
+				i++;
+			}
+			while (name.charAt(++i) != ']') {
+				k += name.charAt(i);
+			}
+			endIndex = i;
+		} else {
+			while (name.charAt(i) != ']') {
+				i--;
+			}
+			while (name.charAt(--i) != '[') {
+				k = name.charAt(i) + k;
+			}
+			endIndex = startIndex;
+			startIndex = i;
+		}
+		return {index: startIndex, key: k, endIndex: endIndex};	
+	}
+	
 	$.fn.cloneNumbered = function() {
 		if ($(this).data('cloning')) {
 			return $(this);
 		}
 		$(this).data('cloning', true);
 		var $ids = $(this).find(':input[name*="[id]"]:enabled'),
-			$id = $ids.last(),
+			$idFirst = $ids.first(),
+			idName = $idFirst.attr('name'),
+			nameLength = idName.length,
+			key = getNameKey(idName, idName.indexOf("[id]"), false);
+		$ids = $ids.filter(function() {
+			return $(this).attr('name').length < nameLength + 2;	//Filters out sub-ids
+		});
+		var	$id = $ids.last(),
 			name = $id.attr('name');
+			
 		if ($id.length) {
 			var $entry = $(this).last(),
 				$cloned = $entry.clone().insertAfter($entry),
@@ -715,7 +773,7 @@ documentReady(function() {
 				.slideDown()
 				.data('added', true)
 				.find(':input').each(function() {
-					return $(this).renumberInput(newIdKey).removeAttr('disabled');//.removeAttr('checked');
+					return $(this).renumberInput(newIdKey, key.index).removeAttr('disabled');//.removeAttr('checked');
 				});
 			$cloned.find(':input:visible').first().focus();
 			$(this).trigger('cloned', [$cloned]);
@@ -1127,7 +1185,7 @@ $(document).ready(function() {
 					'top' : pos.top + h, 
 					'left' : pos.left, 
 					'width' : w,
-					'z-index' : zIndex + 1
+				//	'z-index' : zIndex + 1
 				});
 				$('.expanded > ul', $div).show();
 				return true;

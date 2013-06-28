@@ -296,6 +296,9 @@ $zindexSelectCollapse:					$zindexSelectCollapseMask + 10;
 
 .select-collapse-mask {
 	z-index: $zindexSelectCollapseMask;
+	&.expanded {
+		z-index: $zindexSelectCollapseMask + 1;
+	}
 }
 .select-collapse-window { 
 	border: 1px solid $windowBorderColor;
