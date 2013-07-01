@@ -19,6 +19,7 @@ class CollapseListHelper extends LayoutAppHelper {
 	}
 
 	function output($result, $options = array()) {
+		$this->Table->reset();
 		$options = array_merge(array(
 			'sub' => 0,
 			'model' => null,

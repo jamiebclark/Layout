@@ -117,6 +117,12 @@ class DisplayTextHelper extends AppHelper {
 	}
 	
 	function quote($quote, $author = null, $options = array()) {
+		$text = $this->text($quote);
+		if (!empty($author)) {
+			$text .= $this->Html->tag('small', $author);
+		}
+		return $this->Html->tag('blockquote', $text, array('class' => 'layout-quote'));
+		/*
 		$return = '';
 		$return .= $this->Html->tag('blockquote');
 		$return .= $this->Iconic->icon('left_quote', array('class' => 'left-quote'));
@@ -127,6 +133,7 @@ class DisplayTextHelper extends AppHelper {
 			$return .= $this->Html->div('quote-author', $author);
 		}
 		$return = $this->Html->div('quote', $return);
+		*/
 		return $return;
 	}
 	

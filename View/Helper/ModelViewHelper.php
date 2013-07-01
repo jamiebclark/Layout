@@ -17,6 +17,7 @@ class ModelViewHelper extends LayoutAppHelper {
 		'Layout.Iconic',
 		'Layout.Image', 
 		'Layout.Layout',
+		'Text',
 	);
 	
 	var $modelName;
@@ -359,8 +360,13 @@ class ModelViewHelper extends LayoutAppHelper {
 			}
 			unset($options['prefix']);
 		}
-		
-		$title = $this->title($Result, array('tag' => false));
+		$titleOptions = array('tag' => false);
+		foreach (array('truncate') as $field) {
+			if (isset($options[$field])) {
+				$titleOptions[$field] = $options[$field];
+			}
+		}
+		$title = $this->title($Result, $titleOptions);
 		if (!empty($options['img'])) {
 			$imgOptions = array();
 			if ($options['img'] !== true) {
@@ -392,13 +398,21 @@ class ModelViewHelper extends LayoutAppHelper {
 			'tag' => 'h2',
 			'text' => '',
 			'default' => '<em>No Title</em>',
+			'after' => '',
+			'before' => '',
+			'truncate' => false,
 		), $options);
+		$options = $this->addClass($options, strtolower($this->name) . '-title');
 		extract($options);
 		if (empty($text) && !empty($this->displayField) && !empty($result[$this->displayField])) {
 			$text = $result[$this->displayField];
 		}
+		if (!empty($truncate)) {
+			$text = $this->Text->truncate($text, $truncate);
+		}
+		$text = $before . $text . $after;
 		if (!empty($tag)) {
-			$text = $this->Html->tag($tag, $out, compact('class'));
+			$text = $this->Html->tag($tag, $text, compact('class'));
 		}
 		return $text;
 	}

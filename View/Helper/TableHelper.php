@@ -184,7 +184,7 @@ class TableHelper extends LayoutAppHelper {
 				}
 				$withChecked[$action] = $label;
 			}
-			$out .= $this->Form->input(null, array(
+			$out .= $this->Form->input('checked_action', array(
 				'type' => 'select',
 				'options' => $withChecked,
 				'label' => 'With Checked:',
