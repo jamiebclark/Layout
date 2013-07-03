@@ -474,3 +474,48 @@ documentReady(function() {
 	$('.hover-layout').hoverContent();	
 });
 
+//Scroll-fix
+(function($) {
+	$.fn.scrollfix = function() {
+		return this.each(function() {
+			function fix() {
+				var top = $(window).scrollTop();
+				if (containerBottom && (top + height) > containerBottom ) {
+					top = containerBottom - height;
+				}	
+				$scroll.css({
+					'width': width,
+					'position': 'absolute',
+					'top': top
+				});
+			}
+			function unfix() {
+				$scroll.css({'position': 'static'});
+			}
+			if (!$(this).data('scroll-init')) {
+				var $scroll = $(this),
+					height = $scroll.outerHeight(),
+					width = $scroll.outerWidth(),
+					pos = $scroll.position(),
+					top = pos.top,
+					$container = $scroll.closest('.row'),
+					containerBottom;
+				if ($container.length) {
+					var containerPos = $container.position();
+					containerBottom = containerPos.top + $container.height();
+				}
+				$(window).scroll(function() {
+					if ($(window).scrollTop() > top) {
+						fix();
+					} else {
+						unfix();
+					}
+				});
+				$(this).data('scroll-init', true);
+			}
+		});
+	};
+})(jQuery);
+documentReady(function() {
+	$('.scrollfix').scrollfix();
+});

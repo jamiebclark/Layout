@@ -266,7 +266,7 @@ class ModelViewHelper extends LayoutAppHelper {
 			$attrs['text'] = true;
 		}
 		if (empty($attrs['url']) && !empty($result['id'])) {
-			$attrs['url'] = $this->url(array('id' => $result['id']));
+			$attrs['url'] = $this->url($result);
 		}
 		$menu = array();
 		$useIcons = !empty($attrs['icons']);
@@ -426,11 +426,9 @@ class ModelViewHelper extends LayoutAppHelper {
 			'tag' => 'div',
 			'class' => 'lead',
 		), $options);
-		extract($options);
 		$out = '';
 		if (!empty($this->descriptionField) && !empty($result[$this->descriptionField])) {
-			$out = nl2br($result[$this->descriptionField]);
-			$out = $this->Html->tag($tag, $out, compact('class'));
+			$out = $this->DisplayText->text($result[$this->descriptionField], $options);
 		}
 		return $out;
 	}
@@ -444,6 +442,8 @@ class ModelViewHelper extends LayoutAppHelper {
 	 * @return string Media HTML element
 	 **/
 	function media($result, $options = array()) {
+		$modelResult = $this->_getResult($result);
+		
 		$options = array_merge(array(
 			'tag' => 'div',							//Tag wrapper
 			'dir' => $this->defaultMediaDir,		//Thumbnail directory
@@ -464,7 +464,7 @@ class ModelViewHelper extends LayoutAppHelper {
 		$returnOptions = compact('class');
 		
 		if (empty($url) && $url !== false) {
-			$url = $this->url($result);
+			$url = $this->url($modelResult);
 		}
 		if ($link) {
 			if ($link === true) {
@@ -493,7 +493,7 @@ class ModelViewHelper extends LayoutAppHelper {
 		}
 
 		if (!empty($remove)) {
-			$right .= $this->__removeLink(null, $result, !empty($options['remove']) ? $options['remove'] : null);
+			$right .= $this->__removeLink(null, $modelResult, !empty($options['remove']) ? $options['remove'] : null);
 		}
 
 		if (!empty($right)) {
@@ -502,9 +502,9 @@ class ModelViewHelper extends LayoutAppHelper {
 
 		//Body
 		if (!empty($url)) {
-			$title = $this->link($result, compact('url'));
+			$title = $this->link($modelResult, compact('url'));
 		} else {
-			$title = $result[$this->displayField];
+			$title = $modelResult[$this->displayField];
 		}
 		
 		if (!empty($titleTag)) {
@@ -515,7 +515,7 @@ class ModelViewHelper extends LayoutAppHelper {
 		$bd = $title;
 		foreach ($this->_addressBookFunctions as $func) {
 			if (!empty($$func)) {
-				$bd .= $this->AddressBook->$func($result, array('tag' => $contentTag));
+				$bd .= $this->AddressBook->$func($modelResult, array('tag' => $contentTag));
 			}
 		}
 		if (!empty($after)) {
@@ -528,7 +528,7 @@ class ModelViewHelper extends LayoutAppHelper {
 			} else {
 				$actionMenuOptions = array();
 			}
-			$bd .= $this->Layout->actionMenu($actionMenu, $result + $actionMenuOptions);
+			$bd .= $this->Layout->actionMenu($actionMenu, $modelResult + $actionMenuOptions);
 		}
 		$out .= $this->Html->tag('div', $bd, array('class' => 'media-body')) . "\n";
 		return $this->Html->tag($tag, $out, $returnOptions);
@@ -541,9 +541,6 @@ class ModelViewHelper extends LayoutAppHelper {
 		
 		$out = '';
 		foreach ($results as $result) {
-			if (isset($result[$this->modelName])) {
-				$result = $result[$this->modelName];
-			}
 			$out .= $this->media($result, array('tag' => 'li') + $options);
 		}
 		return $this->Html->tag('ul', $out, compact('class'));
@@ -587,11 +584,12 @@ class ModelViewHelper extends LayoutAppHelper {
 		return $url;
 	}
 	
-	function thumb($Result, $options = array()) {
-		if (Param::keyCheck($options, 'url') === true && !empty($Result)) {
-			$options['url'] = $this->url($Result);
+	function thumb($result, $options = array()) {
+		$result = $this->_getResult($result);
+		if (Param::keyCheck($options, 'url') === true && !empty($result)) {
+			$options['url'] = $this->url($result);
 		}
-		$options = $this->thumbOptions($Result, $options);
+		$options = $this->thumbOptions($result, $options);
 		if (!empty($options['media'])) {
 			$hasMedia = true;
 			$options = $this->addClass($options, 'media-object');
@@ -605,7 +603,7 @@ class ModelViewHelper extends LayoutAppHelper {
 		if (isset($options['alt'])) {
 			$options['alt'] = str_replace('"', "'", strip_tags($options['alt']));
 		}
-		if ($out = $this->Image->thumb($Result, $options)) {
+		if ($out = $this->Image->thumb($result, $options)) {
 			if (!empty($hasMedia) && !empty($url)) {
 				$out = $this->Html->link($out, $url, array('escape' => false, 'class' => 'pull-left'));
 			}
@@ -762,7 +760,7 @@ class ModelViewHelper extends LayoutAppHelper {
 		return $title;
 	}
 	
-	private function _getResult($result) {
+	protected function _getResult($result) {
 		return !empty($result[$this->modelName]) ? $result[$this->modelName] : $result;
 	}
 }

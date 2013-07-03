@@ -152,7 +152,7 @@ class DisplayTextHelper extends AppHelper {
 			}
 			$table = $this->Html->tableHeaders(array('You type:', 'It displays:'));
 			$table .= $this->Html->tableCells($rows, array('class' => 'altrow'));
-			$out .= $this->Html->tag('table', $table);
+			$out .= $this->Html->tag('table', $table, array('class' => 'displaytext-cheatsheet-constants'));
 			$out .= '<hr/>';
 		}
 		
@@ -177,7 +177,7 @@ class DisplayTextHelper extends AppHelper {
 		}
 		$table = $this->Html->tableHeaders(array('You type:', 'It displays:'));
 		$table .= $this->Html->tableCells($rows, array('class' => 'altrow'));
-		$out .= $this->Html->tag('table', $table);
+		$out .= $this->Html->tag('table', $table, array('class' => 'displaytext-cheatsheet-shortcuts'));
 		
 		return $this->Html->div('displaytext-cheatsheet', $out);
 	}

@@ -35,6 +35,11 @@
 	}
 }
 
+.form-inactive {
+	background: $inactiveBackground;
+	color: $inactiveColor;
+}
+
 // Custom Inputs
 // ---------------
 .input-cash, .input-number, input[type="number"] {

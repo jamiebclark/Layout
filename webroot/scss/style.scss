@@ -11,6 +11,7 @@
 @import "clearfix";
 @import "iconic";
 
+@import "display-text";
 @import "liquid-layout";
 @import "table";
 @import "form-layout";
@@ -52,6 +53,13 @@ h3, h4 {
 
 .list-blank {
 	@extend %blanklist;
+}
+
+div.lead {
+	li {
+		line-height: 1.5 * $baseLineHeight;
+		margin-bottom: $baseLineHeight / 4;
+	} 
 }
 
 #breadcrumb {

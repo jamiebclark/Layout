@@ -4,3 +4,12 @@
 	}
 	margin-bottom: $baseLineHeight;
 }
+.displaytext-cheatsheet {
+	table {
+		width: 100%;
+		td {
+			width: 50%;
+			padding: $paddingLarge;
+		}
+	}
+}
