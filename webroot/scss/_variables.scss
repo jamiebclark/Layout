@@ -10,7 +10,7 @@ $shadow:				$shadowPadding $shadowPadding $shadowRadius $shadowColor !default;
 $inputPaddingTop: 		4px !default;
 $inputPaddingLeft: 		6px !default;
 $inputBorderInner: 		$grayLighter !default;
-$inputSlimWidth:		80px;
+$inputSlimWidth:		80px !default;
 
 $inactiveColor:				#999 !default;
 $inactiveBackground: 		$grayLighter !default;
@@ -23,17 +23,17 @@ $windowBackgroundColor:			#FFF !default;
 // Hover Content
 // ---------------------
 $hoverWindowBorderColor:		$windowBorderColor !default;
-$hoverWindowWidthWider: 		660px;
-$hoverWindowWidthWide: 			460px;
-$hoverWindowWidthSlim: 			240px;
+$hoverWindowWidthWider: 		660px !default;
+$hoverWindowWidthWide: 			460px !default;
+$hoverWindowWidthSlim: 			240px !default;
 
-$hoverArrowHeight:				10px;
-$hoverArrowColor:				white;//$hoverWindowBorderColor;
-$hoverArrowBorder:				1px;
+$hoverArrowHeight:				10px !default;
+$hoverArrowColor:				white !default;//$hoverWindowBorderColor;
+$hoverArrowBorder:				1px !default;
 
 // Thumbnails
 // ------------------------
-$thumbnailTiny:			$baseLineHeight;
-$thumbnailSmall:		80px;
-$thumbnailMid:			120px;
-$thumbnailLarge:		240px;
+$thumbnailTiny:			$baseLineHeight !default;
+$thumbnailSmall:		80px !default;
+$thumbnailMid:			120px !default;
+$thumbnailLarge:		240px !default;
