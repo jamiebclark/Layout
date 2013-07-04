@@ -749,6 +749,21 @@ class ModelViewHelper extends LayoutAppHelper {
 		return !empty($modelId) ? $this->_idReplace($options, $modelId) : $options;
 	}
 	
+	function neighbors($neighbors) {
+		$fields = array('prev', 'next', 'up' => 'parent');
+		$prev = $next = $up = null;
+		foreach ($fields as $neighborField => $resultField) {
+			if (is_numeric($neighborField)) {
+				$neighborField = $resultField;
+			}
+			if (!empty($neighbors[$resultField])) {
+				$result = $this->_getResult($neighbors[$resultField]);
+				$$neighborField = array($this->title($result, array('tag' => false)), $this->url($result));
+			}
+		}
+		return $this->Layout->neighbors($prev, $next, $up);
+	}
+	
 	/**
 	 * Replaces any instance of the string with the actual profile's ID
 	 * If value is an array, it applies to all values and any arrays found inside

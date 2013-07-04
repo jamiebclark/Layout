@@ -24,7 +24,7 @@ App::uses('LayoutAppHelper', 'Layout.View/Helper');class CrumbsHelper extends L
 		
 		- User-added Crumbs
 	*/
-	var $crumbTypes = array('base', 'default', 'parent', 'controller', 'action', 'userSet');
+	var $crumbTypes = array('base', 'default', 'parent', 'controller', 'path', 'action', 'userSet');
 	var $legacyTypes = array('default');
 	
 	var $_crumbs = array();
@@ -158,8 +158,10 @@ App::uses('LayoutAppHelper', 'Layout.View/Helper');class CrumbsHelper extends L
 				}
 				$setCrumbs = $this->_mergeCrumbs($setCrumbs, $addCrumb);
 			}
-		}			
+		}
+		
 		$crumbs = $this->_mergeCrumbs($home, $setCrumbs, $crumbs);
+
 		if (!empty($crumbs) && $crumbs != $home) {
 			$out = array();
 			$lastKey = count($crumbs) - 1;
@@ -283,13 +285,29 @@ App::uses('LayoutAppHelper', 'Layout.View/Helper');class CrumbsHelper extends L
 			$crumbs = array(
 				array(InflectorPlus::humanize($urlBase['controller']), array('action' => 'index') + $urlBase)
 			);
+		} else if ($type == 'path') {
+			$urlBase = !empty($options['urlBase']) ? $options['urlBase'] : $this->_getUrlBase($options);
+			$action = $urlBase['action'];
+			if (!empty($this->_View->viewVars['path']) && $modelInfo = $this->getModelInfo()) {
+				extract($modelInfo);	//model, primaryKey, displayField
+				$path = $this->_View->viewVars['path'];
+				$result = $this->_getResult($model);
+				$crumbs = array();
+				foreach ($path as $row) {
+					$row = $row[$model];
+					$title = $row[$displayField];
+					$id = $row[$primaryKey];
+					if ($id != $result[$model][$primaryKey]) {
+						$crumbs[] = array($title, array('action' => 'view', $id) + $urlBase);
+					}
+				}
+			}
 		} else if ($type == 'action') {
 			$urlBase = !empty($options['urlBase']) ? $options['urlBase'] : $this->_getUrlBase($options);
 			$action = $urlBase['action'];
 			if ($modelInfo = $this->getModelInfo()) {
 				extract($modelInfo);	//model, primaryKey, displayField
 				$result = $this->_getResult($model);
-				
 				if (!empty($result) && !empty($result[$model][$primaryKey])) {
 					if ($action == 'view' && !empty($this->title)) {
 						$title = $this->title;
