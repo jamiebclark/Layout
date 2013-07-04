@@ -1,51 +1,51 @@
 /*Layout Colors*/
-$blue:#00b6de;
-$light-blue:#60cae4;
-$yellow:#ffd204;
-$orange:#f26532;
+$blue:				#00b6de !default;
+$light-blue:		#60cae4 !default;
+$yellow:			#ffd204 !default;
+$orange:			#f26532 !default;
 
-$green:#C1D72D;//b2bb1c;
-$light-green:#c1d72e;
+$green:				#C1D72D !default;//b2bb1c !default;
+$light-green:		#c1d72e !default;
 
-$brown:#e0c298;
-$light-brown:#e0c298;
+$brown:				#e0c298 !default;
+$light-brown:		#e0c298 !default;
 
 
-$color1:$orange;
-$color2:$blue;
-$color3:$green;
-$color4:$yellow;
+$color1:			$orange !default;
+$color2:			$blue !default;
+$color3:			$green !default;
+$color4:			$yellow !default;
 
-$color1-light:#f7ded5; //lighten($color1, 40%);
-$color2-light:#F1FBFF; //#cbecf3; 
-$color3-light:#eef2d4; //lighten($color3, 40%);
-$color4-light:#f7efcc; //lighten($color4, 40%);
-//desaturate(lighten($color2, 50%),80%);
+$color1-light:		#f7ded5 !default; //lighten($color1, 40%) !default;
+$color2-light:		#F1FBFF !default; //#cbecf3 !default; 
+$color3-light:		#eef2d4 !default; //lighten($color3, 40%) !default;
+$color4-light:		#f7efcc !default; //lighten($color4, 40%) !default;
+//desaturate(lighten($color2, 50%),80%) !default;
 
-$title-color1:$orange;
-$title-color2:$blue;
-$title-color3:#666;
-$title-color4:#AAA;
+$title-color1:		$orange !default;
+$title-color2:		$blue !default;
+$title-color3:		#666 !default;
+$title-color4:		#AAA !default;
 
-$link-color1:darken($blue, 20%);
-$link-color2:$orange;
-$link-color3:$yellow;
+$link-color1:		darken($blue, 20%) !default;
+$link-color2:		$orange !default;
+$link-color3:		$yellow !default;
 
-$text-color:#444;
+$text-color:		#444 !default;
 
-$bg-color1:lighten($color1, 40%);
-$bg-color2:lighten($color2, 50%);
-$bg-color3:lighten($color3, 40%);
-$bg-color4:lighten($color4, 40%);
+$bg-color1:			lighten($color1, 40%) !default;
+$bg-color2:			lighten($color2, 50%) !default;
+$bg-color3:			lighten($color3, 40%) !default;
+$bg-color4:			lighten($color4, 40%) !default;
 
-$highlight-color1:$blue;
+$highlight-color1:	$blue !default;
 
-$positive-bg: green;
-$positive-border: green;
-$warning-bg: yellow;
-$warning-border: yellow;
-$error-bg: red;
-$error-border: red;
+$positive-bg: 		green !default;
+$positive-border: 	green !default;
+$warning-bg: 		yellow !default;
+$warning-border: 	yellow !default;
+$error-bg: 			red !default;
+$error-border: 		red !default;
 
 
 @mixin link-color($color) {
