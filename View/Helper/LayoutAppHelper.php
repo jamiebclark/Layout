@@ -8,8 +8,8 @@ class LayoutAppHelper extends AppHelper {
 	);
 	
 	var $defaultHelpers = array('Layout.Asset');
-	var $defaultCss = array('Layout.style');
-	var $defaultJs = array('Layout.script');
+	var $defaultCss = array();
+	var $defaultJs = array();
 	
 	function __construct(View $View, $settings = array()) {
 		foreach ($this->defaultHelpers as $helper => $config) {

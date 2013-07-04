@@ -626,6 +626,7 @@ class ModelViewHelper extends LayoutAppHelper {
 			'tag' => 'div',
 			'caption' => false,
 			'url' => true,
+			'link' => false,
 		), $options);
 		$options = $this->addClass($options, 'thumbnail');
 		extract($options);
@@ -635,19 +636,31 @@ class ModelViewHelper extends LayoutAppHelper {
 		if (!empty($urlAdd)) {
 			$url = $urlAdd + $url;
 		}
-		$out = $this->thumb($result, compact('dir', 'url'));
-		if ($caption === true) {
+		if ($link) {
+			$link = $url;
+			$url = false;
+		}
+		
+		$out = $this->thumb($result, compact('dir', 'url') + array('dirClass' => false));
+		if (!empty($caption)) {
 			$out .= $this->thumbnailCaption($result, $options);
 		}
-		return $this->Html->tag($tag, $out, compact('class'));
+		$thumbnailOptions = compact('class');
+		
+		if ($link) {
+			return $this->Html->link($out, $link, $thumbnailOptions + array('escape' => false));
+		} else {
+			return $this->Html->tag($tag, $out, $thumbnailOptions);
+		}
 	}
 	
 	function thumbnailCaption($result, $options = array()) {
 		$caption = '';
-		if (!empty($result['title'])) {
+		$useCaption = !empty($options['caption']) ? $options['caption'] : true;
+		if (!empty($result['title']) && ($useCaption === true || $useCaption == 'title')) {
 			$caption .= $this->title($result, array('tag' => 'h3'));
 		}
-		if (!empty($result['description'])) {
+		if (!empty($result['description']) && ($useCaption === true || $useCaption == 'description')) {
 			$caption .= $this->Html->div('description', $result['description']);
 		}
 		if (!empty($options['after'])) {
@@ -676,7 +689,7 @@ class ModelViewHelper extends LayoutAppHelper {
 		if (!empty($span) && empty($sub)) {
 			$cols = round (12 / $span);
 			$col = 0;
-			$count = count($photos) - 1;
+			$count = count($results) - 1;
 			$row = array();
 			foreach ($results as $k => $result) {
 				$row[] = $result;
@@ -726,9 +739,10 @@ class ModelViewHelper extends LayoutAppHelper {
 			'alt' => $this->urlTitle($Result),
 			'base' => $this->thumbDir,
 			'defaultFile' => $this->defaultImageFile,
+			'dirClass' => true,
 		), (array) $options);
 		
-		if (!empty($options['dir'])) {
+		if (!empty($options['dir']) && !empty($options['dirClass'])) {
 			$options = $this->addClass($options, 'thumbnail-' . $options['dir']);
 		}
 		
