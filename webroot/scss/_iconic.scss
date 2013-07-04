@@ -1,10 +1,6 @@
 @import "font-face";
-@include font-face(IconicFill, iconic_fill, IconicFill, san-serif);
+@include font-face(IconicFill, iconic_fill, IconicFill, san-serif, $fontDir);
 //@include font-face(IconicStroke, iconic_stroke);
-
-$iconicListFontSize:		14px;
-$iconicListPadding:			2px;
-$iconicListSize:			$iconicListFontSize + 2 * $iconicListPadding;
 
 .iconic-list {
 	@extend %overflow;
