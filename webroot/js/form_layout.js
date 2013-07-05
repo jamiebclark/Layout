@@ -1289,6 +1289,9 @@ $(document).ready(function() {
 					if (titlePre) {
 						titlePre = titlePre[0];
 						title = title.substring(titlePre.length);
+						if (titlePre.substr(0,1) == '_') {
+							bulletRepeat = '_';
+						}
 						childIndex = titlePre.split(bulletRepeat).length - 1;
 						var bulletIndexLength = childIndex * bulletRepeat.length;
 						if (bulletIndexLength < titlePre.length) {
