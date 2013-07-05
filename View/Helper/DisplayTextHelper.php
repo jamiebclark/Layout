@@ -4,7 +4,8 @@
  *
  **/
 App::import('Lib', 'Layout.TextCleanup');
-class DisplayTextHelper extends AppHelper {
+App::uses('LayoutAppHelper', 'Layout.View/Helper');
+class DisplayTextHelper extends LayoutAppHelper {
 	var $helpers = array(
 		'Layout.Asset',
 		'Layout.Grid',

@@ -35,6 +35,33 @@
 	};
 })(jQuery);
 
+(function($) {
+	$.fn.inputFormActivate = function() {
+		return this.each(function() {
+			var $input = $(this),
+				$form = $input.closest('form'),
+				inactiveClass = 'form-inactive';
+			if (!$input.data('form-activate-init')) {
+				function updateForm() {
+					if ($input.is(':checked')) {
+						$form.removeClass(inactiveClass);
+					} else {
+						$form.addClass(inactiveClass);
+					}
+				}
+				$input.click(function(e) {
+					updateForm();
+				});
+				updateForm();
+				$input.data('form-activate-init');
+			}
+		});
+	};
+})(jQuery);
+documentReady(function() {
+	$(':input[class*="form-activate"]').inputFormActivate();
+});
+
 // Input Date
 (function($) {
 	$.fn.inputDateAllDay = function() {
