@@ -546,15 +546,12 @@ class ModelViewHelper extends LayoutAppHelper {
 		return $this->Html->tag('ul', $out, compact('class'));
 	}
 	
-	function linkList($Result, $options = array()) {
+	function linkList($Result, $linkOptions = array(), $listOptions = array()) {
 		$list = array();
 		foreach ($Result as $row) {
-			if (isset($row[$this->name])) {
-				$row = $row[$this->name];
-			}
-			$list[] = $this->link($row, $options);
+			$list[] = $this->link($this->_getResult($row), $linkOptions);
 		}
-		return $this->Html->tag('ul', '<li>' . implode('</li><li>', $list) . '</li>');	
+		return $this->Html->tag('ul', '<li>' . implode('</li><li>', $list) . '</li>', $listOptions);	
 	}	
 
 	function url($Result, $options = array()) {

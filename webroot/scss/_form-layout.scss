@@ -1,5 +1,12 @@
 @import "ui-timepicker";
 
+// Basic Style
+// ----------------------
+.help-block, .help-inline {
+	font-style: italic;
+	lighten($textColor, 25%);
+}
+
 // Templates
 // -------------
 %number-input {
