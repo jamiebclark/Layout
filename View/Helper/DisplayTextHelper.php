@@ -207,6 +207,7 @@ class DisplayTextHelper extends LayoutAppHelper {
 	}
 	
 	function smartFormat($str) {
+		$webroot = substr($this->_View->webroot,0,-1);
 		$regx = array(
 			//Heading Items
 			'/^[=]{4}[\s]*(.*?)([\r\n]|[\n\r]|[\r]|[\n]|[=]{4})/m'				=>  "<h4>$1</h4>",
@@ -229,10 +230,13 @@ class DisplayTextHelper extends LayoutAppHelper {
 			'/<[o|u]li>/'									=>	'<li>',
 			'/<\/[o|u]li>/'									=>	"</li>\r\n",
 			
+			'/\[(\/[^\s]+)\]/'									=>	'<a href="' . $webroot . '$1">$1</a>',
+			'/\[(\/[^\s]+)[\s]([^\]]+)\]/'						=>	'<a href="' . $webroot . '$1">$2</a>',
 			'/\[([http|\/|\.][^\s]+)\]/'						=>	'<a href="$1">$1</a>',
 			'/\[([http|\/|\.][^\s]+)[\s]([^\]]+)\]/'			=>	'<a href="$1">$2</a>',
-			'/\{([http|\/|\.][^\s]+)[\s]([^\}]+)\}/'			=>	'<a href="$1">$2</a>',
+			//'/\{([http|\/|\.][^\s]+)[\s]([^\}]+)\}/'			=>	'<a href="$1">$2</a>',
 		);
+
 		/*
 		if($this->global_links) {
 			//Makes sure there are no local links if set
