@@ -201,7 +201,7 @@ class TableHelper extends LayoutAppHelper {
 	public function tableSortMenu($sortMenu = array(), $options = array()) {
 		$options = $this->addClass($options, 'table-sort btn');
 		$menu = array();
-		$text = 'Sort Table';
+		$text = 'Sort Result';
 		$named = !empty($this->request->params['named']) ? $this->request->params['named'] : array();
 		
 		foreach ($sortMenu as $k => $sortOptions) {
@@ -392,19 +392,39 @@ class TableHelper extends LayoutAppHelper {
 		}
 	}
 	
+	// Creates the navigation options for the table, including the pagination and sorting options
+	// If wrap is set to true, it return an array of the top and bottom navigation menus
+	function tableNav($options = array(), $wrap = false) {
+		$return = $wrap ? array('','') : '';
+		$out = '';
+		if (!empty($options['sort'])) {
+			$out .= $this->tableSortMenu($options['sort'], array('class' => 'pull-right'));
+		}
+		if (!empty($options['paginate'])) {
+			$out .= $this->Layout->paginateNav();
+		}
+		if (!empty($out)) {
+			if ($wrap) {
+				//Returns both top and bottom
+				$return = array(
+					$this->Html->div('table-nav table-nav-top', $out),
+					$this->Html->div('table-nav table-nav-bottom', $out),
+				);
+			} else {
+				$return = $this->Html->div('table-nav', $out);
+			}
+		}
+		return $return;	
+	}
+	
 	function _table($headers = null, $rows = null, $options = array()) {
 		$return = $tableNav = '';
 		
-		if ($sort = Param::keyValCheck($options, 'sort', true)) {
-			$tableNav .= $this->tableSortMenu($sort, array('class' => 'pull-right'));
-		}
-		if (Param::keyValCheck($options, 'paginate', true)) {
-			$tableNav .= $this->Layout->paginateNav();
-		}
-		
-		if (!empty($tableNav)) {
-			$return .= $this->Html->div('table-nav table-nav-top', $tableNav);
-		}
+		list($tableNavTop, $tableNavBottom) = $this->tableNav($options, true);
+		unset($options['sort']);
+		unset($options['paginate']);
+
+		$return .= $tableNavTop;
 		
 		if (empty($rows) && ($empty = Param::keyCheck($options, 'empty', true))) {
 			return $empty;
