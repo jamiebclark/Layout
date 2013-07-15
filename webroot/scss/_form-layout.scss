@@ -4,7 +4,7 @@
 // ----------------------
 .help-block, .help-inline {
 	font-style: italic;
-	lighten($textColor, 25%);
+	color: lighten($textColor, 25%);
 }
 
 // Templates

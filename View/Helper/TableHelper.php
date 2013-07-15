@@ -34,7 +34,7 @@ class TableHelper extends LayoutAppHelper {
 	private $formAddRow = array();
 	
 	function beforeRender($viewFile) {
-		$this->Asset->css('Layout.layout');
+		//$this->Asset->css('Layout.layout');
 		$this->defaultModel = InflectorPlus::modelize($this->request->params['controller']);
 		return parent::beforeRender($viewFile);
 	}
@@ -198,33 +198,32 @@ class TableHelper extends LayoutAppHelper {
 		return $this->Html->div('table-with-checked form-inline', $out);
 	}
 
-	public function tableSortMenu($sortMenu = array(), $attrs = array()) {
+	public function tableSortMenu($sortMenu = array(), $options = array()) {
+		$options = $this->addClass($options, 'table-sort btn');
 		$menu = array();
-		foreach ($sortMenu as $k => $sort) {
-			$sort += array(null, null, true);
-			list($title, $field, $direction) = $sort;
+		$text = 'Sort Table';
+		$named = !empty($this->request->params['named']) ? $this->request->params['named'] : array();
+		
+		foreach ($sortMenu as $k => $sortOptions) {
+			$sortOptions += array(null, null, true);
+			list($title, $sort, $direction) = $sortOptions;
 			if (!$direction || $direction == 'desc' || $direction == 'DESC') {
 				$direction = 'desc';
 			} else {
 				$direction = 'asc';
 			}
 			if (
-				(!empty($this->request->params['named']['sort']) && $this->request->params['named']['sort'] == $field) && 
-				(!empty($this->request->params['named']['direction']) && $this->request->params['named']['direction'] == $direction)
+				(!empty($named['sort']) && $named['sort'] == $sort) && 
+				(!empty($named['direction']) && $named['direction'] == $direction)
 			) {
-				$selected = true;
+				$text = "Sorting: $title";
+				$active = true;
 			} else {
-				$selected = false;
+				$active = false;
 			}
-			
-			$menu[] = array($title, array(
-				'sort' => $field,
-				'direction' => $direction
-				),
-				array('class' => $selected ? 'selected' : null)
-			);
+			$menu[] = array($title, compact('sort', 'direction'), compact('active'));
 		}
-		return $this->Layout->dropdown('Sort Table', $menu, array('class' => 'table-sort'));
+		return $this->Layout->dropdown($text, $menu, $options);
 	}
 
 	public function rowEnd($trOptions = array()) {
@@ -394,10 +393,17 @@ class TableHelper extends LayoutAppHelper {
 	}
 	
 	function _table($headers = null, $rows = null, $options = array()) {
+		$return = $tableNav = '';
+		
+		if ($sort = Param::keyValCheck($options, 'sort', true)) {
+			$tableNav .= $this->tableSortMenu($sort, array('class' => 'pull-right'));
+		}
 		if (Param::keyValCheck($options, 'paginate', true)) {
-			$paginateNav = $this->Layout->paginateNav();
-		} else {
-			$paginateNav = '';
+			$tableNav .= $this->Layout->paginateNav();
+		}
+		
+		if (!empty($tableNav)) {
+			$return .= $this->Html->div('table-nav table-nav-top', $tableNav);
 		}
 		
 		if (empty($rows) && ($empty = Param::keyCheck($options, 'empty', true))) {
@@ -421,7 +427,6 @@ class TableHelper extends LayoutAppHelper {
 		$tableCellOptions = Param::keyCheck($options, 'tableCells', true, array());
 		$div = Param::keyCheck($options, 'div', true);
 		
-		$return = $paginateNav;
 		if (!empty($options['before'])) {
 			$return .= $options['before'];
 			unset($options['before']);
@@ -468,7 +473,11 @@ class TableHelper extends LayoutAppHelper {
 			}
 			$return .= $this->Html->tag('table', implode("\n", $rowsOut), $options) . "\n";
 		}
-		$return .= $after . $paginateNav;
+		$return .= $after;
+		if (!empty($tableNav)) {
+			$return .= $this->Html->div('table-nav table-nav-bottom', $tableNav);
+		}
+	
 		if ($div) {
 			$return = $this->Html->div($div, $return);
 		}

@@ -690,6 +690,7 @@ class LayoutHelper extends LayoutAppHelper {
 		}
 	}
 	
+	// Finds the icon related to the action stored in actionIcons
 	function getAction($key, $useIcons = true) {
 		if ($useIcons) {
 			$icon = !empty($this->actionIcons[$key]) ? $this->actionIcons[$key] : $key;
@@ -826,7 +827,7 @@ class LayoutHelper extends LayoutAppHelper {
 	}
 
 	function dropdown($title = '', $menu = array(), $options = array()) {
-		$caret = '<b class="caret"></b>';
+		$caret = ' <b class="caret"></b>';
 		$options = array_merge(array(
 			'url' => '#',
 			'tag' => 'div',
@@ -868,6 +869,9 @@ class LayoutHelper extends LayoutAppHelper {
 						));
 						continue;
 					} else {
+						if (Param::keyCheck($rowOptions, 'active', true)) {
+							$rowClass = 'active';
+						}
 						$row = $this->Html->link($rowTitle, $rowUrl, $rowOptions);
 					}
 				} else if (empty($row)) {

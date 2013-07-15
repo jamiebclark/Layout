@@ -13,11 +13,6 @@ class GridHelper extends AppHelper {
 	var $isOpen = false;
 	var $isColOpen = false;
 	
-	function beforeRender($viewFile) {
-		$this->Asset->css('Layout.layout');
-		parent::beforeRender($viewFile);
-	}
-	
 	function open($class = null, $content = null, $options = array()) {
 		$this->__reset();
 		$this->isOpen = true;

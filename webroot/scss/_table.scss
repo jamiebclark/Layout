@@ -1,27 +1,21 @@
 @import "shadow";
-
-$rowInactiveColor: 		$gray;
-$rowActiveColor:		$infoBackground;
-$rowHoverColor:			#F8F8F8;
-
-$tableSortBgColor: 		$grayLighter;
-$tableSortBorderColor: 	$gray;
-$tableSortRounded: 		$baseBorderRadius;
-
 tr {
 	&.row-hover {
 		&, td {
-			background-color: $rowHoverColor;
+			background-color: $rowHoverBackground;
 		}
 	}
-	&.inactive {
+	&.inactive, &.row-inactive {
 		&, td {
-			background-color: $rowInactiveColor;
+			background-color: $rowInactiveBackground;
+			&, a {
+				color: $rowInactiveColor;
+			}
 		}
 	}
-	&.active {
+	&.active, &.row-active {
 		&, td {
-			background-color: $rowActiveColor;
+			background-color: $rowActiveBackground;
 		}
 	}
 }
@@ -41,6 +35,26 @@ tr {
 }
 .table-with-checked-info {
 	float: right;
+}
+
+.table-nav {
+	@include clearfix();
+	min-height: $baseLineHeight;
+	margin: $baseLineHeight 0;
+	padding: $baseLineHeight / 2;
+	background-color: $grayLightest;	
+	
+	> div {
+		margin: 0;
+	}
+	&.table-nav-top {
+		margin-bottom: 0;
+		@include border-top-radius($baseBorderRadius);
+	}
+	&.table-nav-bottom {
+		margin-top: 0;
+		@include border-bottom-radius($baseBorderRadius);
+	}
 }
 
 .table-sort-links {

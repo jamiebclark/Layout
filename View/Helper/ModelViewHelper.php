@@ -177,7 +177,7 @@ class ModelViewHelper extends LayoutAppHelper {
 	function linkActive($id, $action, $actionOptions, $options = array()) {
 		$options = array_merge(array(
 			'title' => array('Activate', 'Deactivate'),
-			'param' => array('active', 'inactive'),
+			'param' => array('activate', 'deactivate'),
 			'icon' => 'active',
 			'field' => $action,
 		), (array) $options);

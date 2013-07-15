@@ -1,19 +1,23 @@
-$sides:					top, right, bottom, left;
+$sides:							top, right, bottom, left;
+
+// Colors
+// ---------------------
+$grayLightest: 					#F8F8F8 !default;
 
 // Variables
 // ---------------------
-$shadowPadding: 		5px !default;
-$shadowRadius: 			5px !default;
-$shadowColor: 			#DDD !default;
-$shadow:				$shadowPadding $shadowPadding $shadowRadius $shadowColor !default;
+$shadowPadding: 				5px !default;
+$shadowRadius: 					5px !default;
+$shadowColor: 					#DDD !default;
+$shadow:						$shadowPadding $shadowPadding $shadowRadius $shadowColor !default;
 
-$inputPaddingTop: 		4px !default;
-$inputPaddingLeft: 		6px !default;
-$inputBorderInner: 		$grayLighter !default;
-$inputSlimWidth:		80px !default;
+$inputPaddingTop: 				4px !default;
+$inputPaddingLeft: 				6px !default;
+$inputBorderInner: 				$grayLighter !default;
+$inputSlimWidth:				80px !default;
 
-$inactiveColor:				#999 !default;
-$inactiveBackground: 		$grayLighter !default;
+$inactiveColor:					#999 !default;
+$inactiveBackground: 			$grayLighter !default;
 
 // Window 
 // ------------------
@@ -33,15 +37,25 @@ $hoverArrowBorder:				1px !default;
 
 // Thumbnails
 // ------------------------
-$thumbnailTiny:			$baseLineHeight !default;
-$thumbnailSmall:		80px !default;
-$thumbnailMid:			120px !default;
-$thumbnailLarge:		240px !default;
+$thumbnailTiny:					$baseLineHeight !default;
+$thumbnailSmall:				80px !default;
+$thumbnailMid:					120px !default;
+$thumbnailLarge:				240px !default;
 
 // Iconic
 // ------------------------
-$fontDir: 					"" !default;
-$iconicListFontSize:		14px !default;
-$iconicListPadding:			2px !default;
-$iconicListSize:			$iconicListFontSize + 2 * $iconicListPadding !default;
+$fontDir: 						"" !default;
+$iconicListFontSize:			14px !default;
+$iconicListPadding:				2px !default;
+$iconicListSize:				$iconicListFontSize + 2 * $iconicListPadding !default;
 
+// Table
+// -----------------------------
+$rowInactiveColor: 				$gray !default;
+$rowInactiveBackground:			#CCC !default;
+$rowActiveBackground:			$infoBackground !default;
+$rowHoverBackground:			#F8F8F8 !default;
+
+$tableSortBgColor: 				$grayLighter !default;
+$tableSortBorderColor: 			$gray !default;
+$tableSortRounded: 				$baseBorderRadius !default;

@@ -10,7 +10,7 @@ class CalendarHelper extends AppHelper {
 		'Time'
 	);
 		
-	function beforeRender($viewFile) {		$this->Asset->css('Layout.layout');
+	function beforeRender($viewFile) {		//$this->Asset->css('Layout.layout');
 		//$this->Asset->js('event');
 		parent::beforeRender($viewFile);	}
 	
