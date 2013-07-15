@@ -6,7 +6,7 @@ class DateValidateBehavior extends ModelBehavior {
 	function beforeValidate(&$Model) {
 		$this->validated = true;
 		$this->__dateValidateCheck($Model);
-		return true;
+		return parent::beforeValidate($Model);
 	}
 
 	function beforeSave(&$Model) {
@@ -51,7 +51,6 @@ class DateValidateBehavior extends ModelBehavior {
 		} else {
 			$data =& $Model->data;
 		}
-		
 		$schema = $Model->schema();
 		foreach ($schema as $key => $field) {
 			if (!empty($data[$key])) {
