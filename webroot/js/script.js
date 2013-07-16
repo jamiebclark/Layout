@@ -130,13 +130,23 @@ documentReady(function() {
 					$chk = $('input[name="data[table_checkbox][' + i + ']"]');
 					if ($chk.length) {
 						if (markChecked) {
-							$chk.attr('checked', true);
+							$chk.prop('checked', true);
 						} else {
-							$chk.removeAttr('checked');
+							$chk.removeProp('checked');
 						}
+						$chk.trigger('afterClick');
 					}
 				}
 			}
+			
+			function afterClick() {
+				if ($checkbox.is(':checked')) {
+					$row.addClass('active');
+				} else {
+					$row.removeClass('active');
+				}
+			}
+			
 			$(document)
 				.keydown(function(e) {
 					shiftPress = (e.keyCode == 16);
@@ -154,11 +164,6 @@ documentReady(function() {
 						start = reclick ? nextLastCheckedIndex : lastCheckedIndex,
 						stop = index,
 						markChecked = $(this).is(':checked');
-					if (markChecked) {
-						$row.addClass('active');
-					} else {
-						$row.removeClass('active');
-					}
 					if (shiftPress) {
 						shiftClick(start, stop, markChecked);
 					}
@@ -166,7 +171,12 @@ documentReady(function() {
 						nextLastCheckedIndex = lastCheckedIndex;
 						lastCheckedIndex = index;
 					}
+					afterClick();
+					e.stopPropagation();
 					return $(this);
+				})
+				.on('afterClick', function() {
+					afterClick();
 				});
 			$row.hover(function() {
 				$(this).toggleClass('row-hover');

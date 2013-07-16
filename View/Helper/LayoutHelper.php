@@ -1556,7 +1556,7 @@ class LayoutHelper extends LayoutAppHelper {
 			$falseOptions = array('text' => $falseOptions);
 		}
 		$trueOptions = array_merge(array(
-			'class' => 'positive',
+			'class' => 'label label-success',
 			'text' => 'Yes',
 			'tag' => 'font',
 		), $trueOptions);
@@ -1578,7 +1578,7 @@ class LayoutHelper extends LayoutAppHelper {
 		$falseOptions = array_merge(
 			$trueOptions, 
 			array(
-				'class' => 'negative',
+				'class' => 'label label-important',
 				'text' => 'No',
 			),
 			$falseOptions
@@ -1597,7 +1597,7 @@ class LayoutHelper extends LayoutAppHelper {
 		}
 		
 		if (!empty($options['url'])) {
-			$text = $this->Html->link($text, $options['url'], array('class' => $options['class']));
+			return $this->Html->link($text, $options['url'], array('class' => $options['class']));
 			unset($options['url']);
 		}
 		
