@@ -493,10 +493,7 @@ class TableHelper extends LayoutAppHelper {
 			}
 			$return .= $this->Html->tag('table', implode("\n", $rowsOut), $options) . "\n";
 		}
-		$return .= $after;
-		if (!empty($tableNav)) {
-			$return .= $this->Html->div('table-nav table-nav-bottom', $tableNav);
-		}
+		$return .= $after . $tableNavBottom;
 	
 		if ($div) {
 			$return = $this->Html->div($div, $return);
