@@ -18,6 +18,12 @@ tr {
 			background-color: $rowActiveBackground;
 		}
 	}
+	&.row-total {
+		td {
+			font-weight: bold;
+			border-top: 1px solid black;
+		}
+	}
 }
 
 
