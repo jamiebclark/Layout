@@ -1384,12 +1384,10 @@ class FormLayoutHelper extends LayoutAppHelper {
 	}
 	
 	private function cleanupUrl($url) {
-		if (is_array($url)) {
-			$url = Router::url($url);
-		}
-		if (substr($url,-1) != '/') {
+		if (!is_array($url) && substr($url,-1) != '/') {
 			$url .= '/';
-		}		
+		}
+		$url = Router::url($url);
 		return $url;
 	}
 	
