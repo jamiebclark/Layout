@@ -12,8 +12,8 @@ class FormLayoutComponent extends Component {
 		//debug($controller->request->data);
 		$this->controller = $controller;
 		$this->parseData();
-
-		//debug($controller->request->data);		return true;
+		$this->parseHabtmIds();		
+		return true;
 	}
 
 	public function parseData($passModel = null) {
@@ -23,6 +23,37 @@ class FormLayoutComponent extends Component {
 				$this->controller->request->data,
 				$passModel
 			);
+		}
+	}
+	
+/**
+ * Instead of forcing a data array form:
+ *		OLD WAY: array('SubModel' => array('SubModel' => array(id1, id2, id3))), 
+ * You can instead format your HABTM data the way you would hasMany: 
+ * 		NEW WAY: array('SubModel' => array('id' => id1))
+ * This allows the form input to automatically detect the default value based on a database find('all') call
+ **/
+	private function parseHabtmIds() {
+		if (!empty($this->controller->request->data) && !empty($this->controller->modelClass)) {
+			$data =& $this->controller->request->data;
+			$Model = $this->initModel($this->controller->modelClass);
+			if (!empty($Model->hasAndBelongsToMany)) {
+				foreach ($Model->hasAndBelongsToMany as $subModel => $subModelAttrs) {
+					if (isset($data[$subModel])) {
+						$SubModel = $this->initModel($subModel);
+						$ids = !empty($data[$subModel][$subModel]) ? $data[$subModel][$subModel] : array();
+						unset($data[$subModel][$subModel]);
+						if (!empty($data[$subModel])) {
+							foreach ($data[$subModel] as $key => $val) {
+								if (isset($val[$SubModel->primaryKey])) {
+									$ids[] = $val[$SubModel->primaryKey];
+								}
+							}
+						}
+						$data[$subModel][$subModel] = $ids;
+					}
+				}
+			}
 		}
 	}
 	
@@ -91,25 +122,34 @@ class FormLayoutComponent extends Component {
 		}
 		$data =& $passData;
 		if (!empty($passModel)) {
+			//return $this->parseDataFunction($fn, $passData, $passModel));
+			$data = array($passModel => $data);
+			/*
 			$models = explode('.', $passModel);
 			foreach ($models as $subModel) {
+				debug($subModel);
 				if (empty($data[$subModel]) || !is_array($data[$subModel])) {
 					return $passData;
 				}
-				$data =& $data[$subModel];
+				//$data =& $data[$subModel];
 			}
+			*/
 		}
 		foreach ($data as $model => $modelData) {
 			if (is_array($modelData)) {
+				/*
 				if (is_numeric($model)) {
 					if ($return = $this->parseDataFunction($fn, $modelData, $model)) {
 						$data[$model] = $return;
 					} else {
 						unset($data[$model]);
 					}
-				} else if (isset($modelData[0])) {
+				} else 
+				*/
+				if (isset($modelData[0])) {	//hasMany values
 					foreach ($modelData as $k => $subModelData) {
-						if ($return = $this->parseDataFunction($fn, $subModelData, $model)) {
+						$return = $this->parseDataFunction($fn, $subModelData, $model);
+						if ($return) {
 							$data[$model][$k] = $return;
 						} else {
 							unset($data[$model][$k]);
@@ -121,11 +161,9 @@ class FormLayoutComponent extends Component {
 				}
 			}
 		}
-		
-		return $passData;
-		
-		$return = $data;
-		//$return = !empty($passModel) ? $data[$passModel] : $data;
+		//return $passData;
+//		$return = $data;
+		$return = !empty($passModel) ? $data[$passModel] : $data;
 		return $return;
 	}
 }
