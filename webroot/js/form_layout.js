@@ -660,6 +660,7 @@ documentReady(function() {
 							'id' : removeBoxId
 						}).attr('name', removeName).val(1).attr('id',removeBoxId);
 					$checkbox
+						.attr('tabindex', -1)
 						.appendTo($listItem)
 						.wrap($('<div></div>', {'class' : removeClass + " span1"}))
 						.after($('<label></label>', {'html': 'Remove','for': removeBoxId}));
@@ -689,7 +690,7 @@ documentReady(function() {
 				$listItems = $('> .input-list-inner > .input-list-item', $list);
 			});
 			if (!$addLink.length) {
-				$addLink = $('<a class="btn btn-small" href="#">Add</a>').appendTo($control);
+				$addLink = $('<a class="btn btn-small" href="#" tabindex="-1">Add</a>').appendTo($control);
 			}
 			$addLink.click(function(e) {
 				console.log('Add Link Clicked: ' + $listItems.length);
@@ -1193,6 +1194,7 @@ $(document).ready(function() {
 				expandUp($li);
 				set($a.data('val'));
 				hide();
+				$select.focus();
 			}
 			function set(val) {
 				$select.val(val);
@@ -1347,11 +1349,9 @@ $(document).ready(function() {
 					lastChildIndex = childIndex;
 					$li.appendTo($ul);
 					$a.html(title);
-				
 					if ($option.is(':selected')) {
 						$selectedA = $a;
 					}
-					
 					if ($option.attr('disabled')) {
 						$a.addClass('disabled').click(function(e) {e.preventDefault();});
 					} else {
@@ -1362,11 +1362,9 @@ $(document).ready(function() {
 					}
 					$lastLi = $li;
 				});
-				
 				if ($selectedA.length) {
 					setLink($selectedA);
 				}
-
 				$scrollables.each(function() {
 					$(this).scroll(function() {
 						if ($select.length) {
@@ -1382,9 +1380,7 @@ $(document).ready(function() {
 				}).on('shown', function() {
 					positionMask();
 				});
-				
 				$select.data('collapse-init', true);
-				
 			}
 			return $(this);
 		});
