@@ -43,7 +43,7 @@ class ImageHelper extends LayoutAppHelper {
 	 * @return string HTML-safe path to image
 	 **/
 	function src($file, $options = array()) {
-		$src = $this->path($file, array('root' => false, 'ds' => '/') + $options);
+		$src = $this->path($file, array('useRoot' => false, 'ds' => '/') + $options);
 		if (!$this->cache) {
 			$src .= '?u=' . date('Ymdhis');
 		}
@@ -65,6 +65,7 @@ class ImageHelper extends LayoutAppHelper {
 	function path($file, $options = array()) {
 		$options = array_merge(array(
 			'root' => $this->root,
+			'useRoot' => true,
 			'externalServer' => $this->externalServer,
 			'base' => $this->base,
 			'dir' => $this->dir,
@@ -74,8 +75,12 @@ class ImageHelper extends LayoutAppHelper {
 			'imageField' => $this->imageField,
 		), $options);
 		if (!empty($options['externalServer'])) {
-			unset($options['root']);
+			$options['useRoot'] = false;
 			$options['isFile'] = false;
+			if (!empty($options['plugin'])) {
+				$options['externalServer'] .= Inflector::singularize(Inflector::tableize($options['plugin']));
+				unset($options['plugin']);
+			}
 		}
 		if (is_array($file)) {
 			if (isset($file[$options['imageField']])) {
@@ -85,6 +90,10 @@ class ImageHelper extends LayoutAppHelper {
 			}
 		}
 		$paths = array('root', 'externalServer', 'base', 'dir');
+		//Removes Root if we're skipping it
+		if ($options['useRoot'] === false) {
+			array_shift($paths);
+		}
 		$dirs = array();
 		foreach ($paths as $path) {
 			if (!empty($options[$path])) {
@@ -92,7 +101,7 @@ class ImageHelper extends LayoutAppHelper {
 			}
 		}
 		if ($options['isFile']) {
-			$fullpath = $this->path($file, array('isFile' => false, 'root' => $this->root) + $options);
+			$fullpath = $this->path($file, array('isFile' => false, 'useRoot' => true) + $options);
 			if (!is_file($fullpath)) {
 				$file = null;
 			}
@@ -104,10 +113,11 @@ class ImageHelper extends LayoutAppHelper {
 				return null;
 			}
 		}		
-		
 		$dirs[] = $file;
 		$path = $this->joinDirs($dirs, $options['ds']);
-		
+		if (!empty($options['plugin']) && empty($options['useRoot'])) {
+			$path = $options['plugin'] . '.' . $path;
+		}
 		return $path;
 	}
 	

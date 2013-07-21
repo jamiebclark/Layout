@@ -32,6 +32,8 @@ class ModelViewHelper extends LayoutAppHelper {
 	var $cssClass;
 	var $modelAlias;
 	var $modelHuman;
+	
+	var $plugin;
 
 	
 	var $fileField = 'filename';
@@ -118,7 +120,14 @@ class ModelViewHelper extends LayoutAppHelper {
  **/
 	public function setModel($modelName) {
 		$this->modelName = $modelName;
-		$Model =& ClassRegistry::init($this->modelName);
+		$loadModel = $this->modelName;
+		if (!empty($this->plugin)) {
+			$loadModel = "{$this->plugin}.$loadModel";
+		}
+		$Model =& ClassRegistry::init($loadModel, true);
+		if (empty($Model)) {
+			throw new Exception("Could not load ModelViewHelper for model <em>$loadModel</em>");
+		}
 		$this->primaryKey = $Model->primaryKey;
 		$this->displayField = $Model->displayField;
 		$this->controller = Inflector::tableize($this->modelName);
@@ -571,6 +580,10 @@ class ModelViewHelper extends LayoutAppHelper {
 		if (!empty($options['urlAdd'])) {
 			$url = array_merge($url, $options['urlAdd']);
 		}
+		if (!empty($this->plugin)) {
+			$options['plugin'] = strtolower($this->plugin);
+		}
+		
 		if (isset($options['prefix'])) {
 			if (!empty($options['prefix'])) {
 				$url[$options['prefix']] = true;
@@ -737,6 +750,7 @@ class ModelViewHelper extends LayoutAppHelper {
 			'base' => $this->thumbDir,
 			'defaultFile' => $this->defaultImageFile,
 			'dirClass' => true,
+			'plugin' => $this->plugin,
 		), (array) $options);
 		
 		if (!empty($options['dir']) && !empty($options['dirClass'])) {

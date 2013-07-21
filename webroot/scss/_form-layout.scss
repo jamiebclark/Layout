@@ -192,6 +192,10 @@ $inputContainerControlBgColor:	#EEE;
 	background-color: $inputContainerControlBgColor;
 }
 .input-list-item {
+	border-bottom: 1px dotted #F8F8F8;
+	&:last {
+		border-bottom: 0;
+	}
 	&.remove {
 		background-color: #EEE;
 		.input-list-item-inner {
