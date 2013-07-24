@@ -32,8 +32,7 @@ class ModelViewHelper extends LayoutAppHelper {
 	var $cssClass;
 	var $modelAlias;
 	var $modelHuman;
-	
-	var $plugin;
+	var $modelPlugin;
 
 	
 	var $fileField = 'filename';
@@ -103,7 +102,6 @@ class ModelViewHelper extends LayoutAppHelper {
 		if (!empty($modelName)) {
 			$this->setModel($modelName);
 		}
-		
 		$this->setAutoActions();
 	}
 	
@@ -121,8 +119,8 @@ class ModelViewHelper extends LayoutAppHelper {
 	public function setModel($modelName) {
 		$this->modelName = $modelName;
 		$loadModel = $this->modelName;
-		if (!empty($this->plugin)) {
-			$loadModel = "{$this->plugin}.$loadModel";
+		if (!empty($this->modelPlugin)) {
+			$loadModel = "{$this->modelPlugin}.$loadModel";
 		}
 		$Model =& ClassRegistry::init($loadModel, true);
 		if (empty($Model)) {
@@ -517,7 +515,7 @@ class ModelViewHelper extends LayoutAppHelper {
 		}
 		
 		if (!empty($titleTag)) {
-			$title = $this->Html->tag($titleTag, $title, array('class' => 'media-title'));
+			$title = $this->Html->tag($titleTag, $title, array('class' => 'media-title ' . $this->cssClass));
 		} else {
 			$title .= "<br/>\n";
 		}
@@ -580,8 +578,8 @@ class ModelViewHelper extends LayoutAppHelper {
 		if (!empty($options['urlAdd'])) {
 			$url = array_merge($url, $options['urlAdd']);
 		}
-		if (!empty($this->plugin)) {
-			$options['plugin'] = strtolower($this->plugin);
+		if (!empty($this->modelPlugin)) {
+			$options['plugin'] = strtolower($this->modelPlugin);
 		}
 		
 		if (isset($options['prefix'])) {
@@ -750,7 +748,7 @@ class ModelViewHelper extends LayoutAppHelper {
 			'base' => $this->thumbDir,
 			'defaultFile' => $this->defaultImageFile,
 			'dirClass' => true,
-			'plugin' => $this->plugin,
+			'plugin' => $this->modelPlugin,
 		), (array) $options);
 		
 		if (!empty($options['dir']) && !empty($options['dirClass'])) {
