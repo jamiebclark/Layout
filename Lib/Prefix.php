@@ -47,4 +47,3 @@ class Prefix {
 		return $action;
 	}
 }
-?>

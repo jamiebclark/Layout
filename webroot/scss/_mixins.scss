@@ -45,5 +45,9 @@
 	} @else {
 		top: $baseLineHeight;
 	}
+}
 
+@mixin background-opacity($color, $opacity) {
+	background: $color; // The fallback
+	background: rgba($color, $opacity);
 }
