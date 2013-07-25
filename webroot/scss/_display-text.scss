@@ -1,8 +1,12 @@
-.quote {
-	blockquote {
-		margin: 0;
+.layout-quote {
+	> a {
+		text-decoration: none;
+		color: $textColor;
+		&:hover {
+			text-decoration: underline;
+			color: $linkColorHover;
+		}
 	}
-	margin-bottom: $baseLineHeight;
 }
 .displaytext-cheatsheet {
 	table {

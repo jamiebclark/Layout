@@ -119,23 +119,14 @@ class DisplayTextHelper extends LayoutAppHelper {
 	
 	function quote($quote, $author = null, $options = array()) {
 		$text = $this->text($quote);
+		$options = $this->addClass($options, 'layout-quote');
 		if (!empty($author)) {
 			$text .= $this->Html->tag('small', $author);
 		}
-		return $this->Html->tag('blockquote', $text, array('class' => 'layout-quote'));
-		/*
-		$return = '';
-		$return .= $this->Html->tag('blockquote');
-		$return .= $this->Iconic->icon('left_quote', array('class' => 'left-quote'));
-		$return .= $this->text($quote);
-		$return .= $this->Iconic->icon('right_quote', array('class' => 'right-quote'));
-		$return .= "</blockquote>\n";
-		if (!empty($author)) {
-			$return .= $this->Html->div('quote-author', $author);
+		if (isset($options['url'])) {
+			$text = $this->Html->link($text, $options['url'], array('escape' => false));
 		}
-		$return = $this->Html->div('quote', $return);
-		*/
-		return $return;
+		return $this->Html->tag('blockquote', $text, array('class' => $options['class']));
 	}
 	
 	/**

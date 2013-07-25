@@ -36,28 +36,33 @@ class FormLayoutComponent extends Component {
 	private function parseHabtmIds() {
 		if (!empty($this->controller->request->data) && !empty($this->controller->modelClass)) {
 			$data =& $this->controller->request->data;
-			$Model = $this->initModel($this->controller->modelClass);
+			$Model =& $this->initModel($this->controller->modelClass);
 			if (!empty($Model->hasAndBelongsToMany)) {
 				foreach ($Model->hasAndBelongsToMany as $subModel => $subModelAttrs) {
 					if (isset($data[$subModel])) {
-						$SubModel = $this->initModel($subModel);
+						//$SubModel = $this->initModel($subModel);
+						$SubModel =& $Model->{$subModel};
 						$ids = !empty($data[$subModel][$subModel]) ? $data[$subModel][$subModel] : array();
 						unset($data[$subModel][$subModel]);
 						if (!empty($data[$subModel])) {
 							foreach ($data[$subModel] as $key => $val) {
-								if (isset($val[$SubModel->primaryKey])) {
-									$ids[] = $val[$SubModel->primaryKey];
+								if (is_array($val)) {
+									if (isset($val[$SubModel->primaryKey])) {
+										$ids[] = $val[$SubModel->primaryKey];
+									}
+								} else {
+									$ids[] = $val;
 								}
 							}
 						}
-						$data[$subModel][$subModel] = $ids;
+						$data[$subModel] = !empty($ids) ? array($subModel => $ids) : array();	
 					}
 				}
 			}
 		}
 	}
 	
-	private function initModel($model) {
+	private function &initModel($model) {
 		$init = ClassRegistry::init($model, true);
 		if (!$init) {
 			$plugins = CakePlugin::loaded();
