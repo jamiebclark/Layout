@@ -43,7 +43,7 @@ class AssetHelper extends LayoutAppHelper {
 		}
 		$this->_set($settings);
 		$this->setDefaultAssets();
-		foreach (array('css', 'js') as $type) {
+		foreach ($this->_assetTypes as $type) {
 			if (!empty($this->_defaultAssets[$type])) {
 				$this->$type($this->_defaultAssets[$type]);
 			}
@@ -111,6 +111,9 @@ class AssetHelper extends LayoutAppHelper {
 			if (is_numeric($file)) {
 				$file = $config;
 				$config = array();
+			}
+			if ($file === false) {
+				continue;
 			}
 			$config = array_merge($configAll, $config);
 			if (!empty($config['prepend'])) {

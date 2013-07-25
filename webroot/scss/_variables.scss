@@ -1,8 +1,21 @@
+$isLayoutExtended:				false !default;		// If you are extending the layout style rather than including it, set this to true
+
 $sides:							top, right, bottom, left;
 
 // Colors
 // ---------------------
 $grayLightest: 					#F8F8F8 !default;
+
+// Directories
+$fontDir: 						false !default;
+@if ($fontDir == false) {
+	@if ($isLayoutExtended == true){
+		$fontDir:						"../files/fonts/";
+	} @else {
+		$fontDir:						"../layout/files/fonts/";
+	}
+}
+	
 
 // Variables
 // ---------------------
@@ -44,7 +57,6 @@ $thumbnailLarge:				240px !default;
 
 // Iconic
 // ------------------------
-$fontDir: 						"" !default;
 $iconicListFontSize:			14px !default;
 $iconicListPadding:				2px !default;
 $iconicListSize:				$iconicListFontSize + 2 * $iconicListPadding !default;

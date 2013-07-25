@@ -1,6 +1,6 @@
 @mixin font-face($style-name, $file, $family, $category, $dir: '')
   @if $dir == ''
-    $dir: "../files/fonts/"
+    $dir: $fontDir
   @font-face
     font-family: "#{$style-name}"
     $filepath: $dir + $family + "/" + $file
