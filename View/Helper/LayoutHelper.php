@@ -832,7 +832,7 @@ class LayoutHelper extends LayoutAppHelper {
 			'url' => '#',
 			'tag' => 'div',
 			'root' => true,
-			'titleAfter' => $caret,
+			'titleAfter' => null, //$caret,
 			'urlClass' => '',
 			'after' => '',
 			'before' => '',			

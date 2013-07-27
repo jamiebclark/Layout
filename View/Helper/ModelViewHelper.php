@@ -401,6 +401,7 @@ class ModelViewHelper extends LayoutAppHelper {
 	}
 	
 	function title($result, $options = array()) {
+		$result = $this->_getResult($result);
 		$options = array_merge(array(
 			'tag' => 'h2',
 			'text' => '',
@@ -408,6 +409,7 @@ class ModelViewHelper extends LayoutAppHelper {
 			'after' => '',
 			'before' => '',
 			'truncate' => false,
+			'url' => false,
 		), $options);
 		$options = $this->addClass($options, strtolower($this->name) . '-title');
 		extract($options);
@@ -418,6 +420,12 @@ class ModelViewHelper extends LayoutAppHelper {
 			$text = $this->Text->truncate($text, $truncate);
 		}
 		$text = $before . $text . $after;
+		if (!empty($url)) {
+			if ($url === true) {
+				$url = $this->url($result);
+			}
+			$text = $this->Html->link($text, $url, array('escape' => false));
+		}
 		if (!empty($tag)) {
 			$text = $this->Html->tag($tag, $text, compact('class'));
 		}
@@ -477,6 +485,9 @@ class ModelViewHelper extends LayoutAppHelper {
 			if ($link === true) {
 				$link = $url;
 			}
+			if ($tag == 'li') {
+				$wrapTag = 'li';
+			}
 			$tag = 'a';
 			$url = false;
 			$returnOptions['escape'] = false;
@@ -508,6 +519,7 @@ class ModelViewHelper extends LayoutAppHelper {
 		}
 
 		//Body
+		/*
 		if (!empty($url)) {
 			$title = $this->link($modelResult, compact('url'));
 		} else {
@@ -520,6 +532,13 @@ class ModelViewHelper extends LayoutAppHelper {
 			$title .= "<br/>\n";
 		}
 		$bd = $title;
+		*/
+		$bd = $this->title($result, array(
+			'class' => 'media-title ' . $this->cssClass,
+			'tag' => $titleTag,
+			'url' => $url,
+		));
+	
 		foreach ($this->_addressBookFunctions as $func) {
 			if (!empty($$func)) {
 				$bd .= $this->AddressBook->$func($modelResult, array('tag' => $contentTag));
@@ -538,19 +557,26 @@ class ModelViewHelper extends LayoutAppHelper {
 			$bd .= $this->Layout->actionMenu($actionMenu, $modelResult + $actionMenuOptions);
 		}
 		$out .= $this->Html->tag('div', $bd, array('class' => 'media-body')) . "\n";
-		return $this->Html->tag($tag, $out, $returnOptions);
+		$out = $this->Html->tag($tag, $out, $returnOptions);
+		if (!empty($wrapTag)) {
+			$out = $this->Html->tag($wrapTag, $out);
+		}
+		return $out;
 	}
 	
-	function mediaList($results, $options = array()) {
-		$options = $this->addClass($options, 'media-list');
-		$class = $options['class'];
-		unset($options['class']);
+	function mediaList($results, $options = array(), $listOptions = array()) {
+		$listOptions = $this->addClass($listOptions, 'media-list');
 		
 		$out = '';
 		foreach ($results as $result) {
-			$out .= $this->media($result, array('tag' => 'li') + $options);
+			$passOptions = $options;
+			$id = !empty($result[$this->modelAlias][$this->primaryKey]) ? $result[$this->modelAlias][$this->primaryKey] : null;
+			if (!empty($listOptions['active']) && $listOptions['active'] == $id) {
+				$passOptions = $this->addClass($passOptions, 'active');
+			}
+			$out .= $this->media($result, array('tag' => 'li') + $passOptions);
 		}
-		return $this->Html->tag('ul', $out, compact('class'));
+		return $this->Html->tag('ul', $out, $listOptions);
 	}
 	
 	function linkList($Result, $linkOptions = array(), $listOptions = array()) {

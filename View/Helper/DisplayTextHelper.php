@@ -360,18 +360,18 @@ class DisplayTextHelper extends LayoutAppHelper {
 	* @return string Fragment
 	* @access public
 	*/
-	function fragment($text, $length, $ellipsis = '...') {
-		if (is_array($ellipsis)) {
-			$options = array_merge(array(
-				'ellipsis' => '...',
-				'moreText' => 'More',
-			), $ellipsis);
-			
-			extract($options);
-			
-			if (!empty($url)) {
-				$ellipsis .= ' ' . $this->Html->link($moreText, $url);
-			}
+	function fragment($text, $length, $options = array()) {
+		if (!is_array($options)) {
+			$options = array('ellipsis' => $options);
+		}
+		$options = array_merge(array(
+			'ellipsis' => '...',
+			'moreText' => 'More',
+			'url' => false,
+		), $options);
+		extract($options);
+		if ($url) {
+			$ellipsis .= ' ' . $this->Html->link($moreText, $url);
 		}
 		
 		$soft = $length - 5;

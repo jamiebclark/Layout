@@ -87,7 +87,9 @@ $calendardateWidth:				$calendardateMonthHeight + $calendardateDayHeight;
 	line-height: $calendardateYearHeight;
 	background: $calendardateYearBackground;
 }
+
 .calendardate {
+
 	float: left;
 	margin: $baseLineHeight 0;
 	width: $calendardateWidth;
@@ -98,6 +100,9 @@ $calendardateWidth:				$calendardateMonthHeight + $calendardateDayHeight;
 		display: block;
 		text-align: center;
 		width: 50%;
+	}
+	&.pull-right {
+		float: right;
 	}
 	&.small {
 		width: 60px;

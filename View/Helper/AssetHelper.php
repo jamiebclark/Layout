@@ -28,6 +28,7 @@ class AssetHelper extends LayoutAppHelper {
 	private $_assets = array();
 	private $_usedAssets = array();
 
+	
 	function __construct(View $view, $settings = array()) {
 		parent::__construct($view, $settings);
 		

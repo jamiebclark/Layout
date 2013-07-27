@@ -21,6 +21,7 @@ $flash .= $this->Session->flash('auth', array(
 	'element' => 'alert',
 	'params' => array('plugin' => 'TwitterBootstrap')
 ));
+
  
 ?>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
@@ -72,11 +73,15 @@ $flash .= $this->Session->flash('auth', array(
 			</div>
 			
 			<?php
+			$content = '';
 			if (!empty($flash)) {
-				echo $this->Html->div('container', $flash);
+				$content .= $this->Html->div('container', $flash);
 			}
+			$content .= $this->Html->div('container', $this->fetch('content')); 
+			echo $content;
+			//TODO: Test Liquid Layout
+			//echo $this->element('Layout.liquid_content', compact('content'));
 			?>
-			<?php echo $this->Html->div('container', $this->fetch('content')); ?>
 		</div>
 		<div id="footer">
 			<?php 
