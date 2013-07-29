@@ -1,0 +1,7 @@
+.content-page {
+	background-color: white;
+	border: 1px solid #CCC;
+	@include box-shadow(5px 5px 5px #CCC);
+	padding: 20px;
+	margin: 20px;
+}

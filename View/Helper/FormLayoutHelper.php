@@ -646,15 +646,6 @@ class FormLayoutHelper extends LayoutAppHelper {
 			}
 			$out .= $this->Html->div('input-list-item', $row);
 		}
-		/*
-		if (!empty($legend)) {
-			$tag = 'fieldset';
-			$title = $legend;
-		}
-		if ($tag == 'fieldset') {
-			$titleTag = 'legend';
-		}
-		*/
 		$out  = $this->Html->div('input-list-inner', $out);
 		if (!empty($titleTag) && !empty($title)) {
 			$out = $this->Html->tag($titleTag, $title, array('class' => 'input-list-title')) . $out;
@@ -877,7 +868,7 @@ class FormLayoutHelper extends LayoutAppHelper {
 	 *
 	 **/
 	function inputDatePair($startFieldName, $endFieldName, $options = array()) {
-		if (empty($options['label'])) {
+		if (!isset($options['label'])) {
 			$options['label'] = $this->getLabelText($startFieldName);
 		}
 		$out  = $this->inputDate($startFieldName, array('label' => 'From') + $options);

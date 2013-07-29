@@ -464,6 +464,7 @@ class ModelViewHelper extends LayoutAppHelper {
 			'dir' => $this->defaultMediaDir,		//Thumbnail directory
 			'thumb' => array(),						//Thumbnail options
 			'url' => null,	
+			'urlAdd' => null,
 			'contentTag' => 'p',
 			'right' => '',
 			'idMenu' => false,
@@ -480,6 +481,9 @@ class ModelViewHelper extends LayoutAppHelper {
 		
 		if (empty($url) && $url !== false) {
 			$url = $this->url($modelResult);
+		}
+		if (!empty($urlAdd)) {
+			$url = $urlAdd + $url;
 		}
 		if ($link) {
 			if ($link === true) {

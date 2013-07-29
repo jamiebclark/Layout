@@ -826,20 +826,20 @@ class LayoutHelper extends LayoutAppHelper {
 		return $match;
 	}
 
-	function dropdown($title = '', $menu = array(), $options = array()) {
+	function dropdown($title = '', $menu = array(), $userOptions = array()) {
 		$caret = ' <b class="caret"></b>';
 		$options = array_merge(array(
 			'url' => '#',
 			'tag' => 'div',
 			'root' => true,
-			'titleAfter' => null, //$caret,
+			'titleAfter' => $caret,
 			'urlClass' => '',
 			'after' => '',
 			'before' => '',			
-		), $options);
+		), $userOptions);
 		$options = $this->addClass($options, $options['root'] ? 'dropdown' : 'dropdown-submenu');
 		extract($options);
-		
+
 		$urlOptions = array('escape' => false, 'class' => $urlClass);
 		if (empty($title)) {
 			$title = '<span class="caret"></span>&nbsp;';
@@ -866,7 +866,7 @@ class LayoutHelper extends LayoutAppHelper {
 							'url' => $rowUrl,
 							'root' => false,
 							'tag' => 'li',
-						));
+						) + $userOptions);
 						continue;
 					} else {
 						if (Param::keyCheck($rowOptions, 'active', true)) {

@@ -11,6 +11,7 @@
 @import "clearfix";
 @import "iconic";
 
+@import "content";
 @import "display-text";
 @import "liquid-layout";
 @import "table";
@@ -176,18 +177,6 @@ a.media {
 
 // Content Box
 // ----------------
-$contentBoxBackground:			transparent !default;
-$contentBoxShadow:				0 !default;
-$contentBoxBorderColor: 		$navbarBorder !default;
-$contentBoxBorderRadius: 		$baseBorderRadius !default;
-$contentBoxBorder: 				1px solid $contentBoxBorderColor !default;
-$contentBoxHeadingPadding:		$paddingSmall !default;
-$contentBoxHeadingBackground:	inherit !default;
-$contentBoxHeadingFont:			inherit !default;
-$contentBoxHeadingSize:			inherit !default;
-$contentBoxDividerBorder:		1px solid #D4D4D4 !default;
-$contentBoxBodyPadding: 		10px !default;
-
 .contentbox {
 	clear: both;
 	border: $contentBoxBorder;
