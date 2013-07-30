@@ -10,9 +10,9 @@ $grayLightest: 					#F8F8F8 !default;
 $fontDir: 						false !default;
 @if ($fontDir == false) {
 	@if ($isLayoutExtended == true){
-		$fontDir:						"../files/fonts/";
-	} @else {
 		$fontDir:						"../layout/files/fonts/";
+	} @else {
+		$fontDir:						"../files/fonts/";
 	}
 }
 	
