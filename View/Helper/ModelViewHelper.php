@@ -661,11 +661,13 @@ class ModelViewHelper extends LayoutAppHelper {
 		$result = $this->_getResult($result);
 		$options = array_merge(array(
 			'dir' => 'mid',
-			'tag' => 'div',
-			'caption' => false,
-			'url' => true,
-			'link' => false,
-			'empty' => false,
+			'tag' => 'div',		
+			'image' => true,		// Display the image
+			'caption' => false,		// Display a caption
+			'url' => true,			// Link thumbnail to something
+			'link' => false,		// Make the entire thumbnail a link
+			'empty' => false,		// How to handle a not found image
+			'captionTitleTag' => 'h3',
 		), $options);
 		$options = $this->addClass($options, 'thumbnail');
 		extract($options);
@@ -680,8 +682,10 @@ class ModelViewHelper extends LayoutAppHelper {
 			$options['url'] = false;
 			$url = false;
 		}
-		
-		$out = $this->thumb($result, compact('dir', 'url') + array('dirClass' => false));
+		$out = '';
+		if ($image) {
+			$out .= $this->thumb($result, compact('dir', 'url') + array('dirClass' => false));
+		}
 		if (empty($out)) {
 			if ($empty === false) {
 				return '';
@@ -704,9 +708,10 @@ class ModelViewHelper extends LayoutAppHelper {
 	
 	function thumbnailCaption($result, $options = array()) {
 		$caption = '';
+		$tag = !empty($options['captionTitleTag']) ? $options['captionTitleTag'] : 'h3';
 		$useCaption = !empty($options['caption']) ? $options['caption'] : true;
 		if (!empty($result['title']) && ($useCaption === true || $useCaption == 'title')) {
-			$caption .= $this->title($result, array('tag' => 'h3', 'url' => $options['url']));
+			$caption .= $this->title($result, compact('tag') + array('url' => $options['url']));
 		}
 		if (!empty($result['description']) && ($useCaption === true || $useCaption == 'description')) {
 			$caption .= $this->Html->div('description', $result['description']);
