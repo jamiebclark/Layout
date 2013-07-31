@@ -665,6 +665,7 @@ class ModelViewHelper extends LayoutAppHelper {
 			'caption' => false,
 			'url' => true,
 			'link' => false,
+			'empty' => false,
 		), $options);
 		$options = $this->addClass($options, 'thumbnail');
 		extract($options);
@@ -676,10 +677,19 @@ class ModelViewHelper extends LayoutAppHelper {
 		}
 		if ($link) {
 			$link = $url;
+			$options['url'] = false;
 			$url = false;
 		}
 		
 		$out = $this->thumb($result, compact('dir', 'url') + array('dirClass' => false));
+		if (empty($out)) {
+			if ($empty === false) {
+				return '';
+			} else if ($empty && empty($catpion)) {
+				$caption = true;
+				$options = compact('caption') + $options;
+			}
+		}
 		if (!empty($caption)) {
 			$out .= $this->thumbnailCaption($result, $options);
 		}
@@ -696,7 +706,7 @@ class ModelViewHelper extends LayoutAppHelper {
 		$caption = '';
 		$useCaption = !empty($options['caption']) ? $options['caption'] : true;
 		if (!empty($result['title']) && ($useCaption === true || $useCaption == 'title')) {
-			$caption .= $this->title($result, array('tag' => 'h3'));
+			$caption .= $this->title($result, array('tag' => 'h3', 'url' => $options['url']));
 		}
 		if (!empty($result['description']) && ($useCaption === true || $useCaption == 'description')) {
 			$caption .= $this->Html->div('description', $result['description']);
