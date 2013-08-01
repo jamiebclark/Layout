@@ -7,6 +7,9 @@
 			vertical-align: middle;
 			text-align: center;
 		}
+		&.thumbnail-text {
+			line-height: $size;
+		}
 	}
 }
 @include setThumbnailSize(tiny, $thumbnailTiny);
@@ -21,5 +24,22 @@
 		h1, h2, h3, h4 {
 			line-height: normal;
 		}
+	}
+}
+.thumbnail-text {
+	float: left;
+	padding: 0;
+	margin: 0;
+	display: block;
+	vertical-align: middle;
+	text-align: center;
+	color: $thumbnailTextColor;
+	border: 1px solid $thumbnailBorder;
+	background: $thumbnailTextBackground;
+}
+a:hover {
+	.thumbnail-text {
+		color: $thumbnailTextHover;
+		border-color: $thumbnailBorderHover;
 	}
 }

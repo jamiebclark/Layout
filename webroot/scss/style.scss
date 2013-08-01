@@ -101,6 +101,7 @@ div.lead {
 	margin: 10px;
 	.media-body {
 		display: block;
+		text-align: left;
 	}
 	&, .bd {
 		@extends %overflow;

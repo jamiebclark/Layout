@@ -472,7 +472,7 @@ class ModelViewHelper extends LayoutAppHelper {
 			'titleTag' => 'h4',
 			'link' => false,
 		), $options);
-		$options = $this->addClass($options, 'media');
+		$options = $this->addClass($options, 'media media-' . strtolower($this->modelName));
 		if (!empty($options['dir'])) {
 			$options = $this->addClass($options, 'media-' . $options['dir']);
 		}
@@ -641,7 +641,14 @@ class ModelViewHelper extends LayoutAppHelper {
 		if (isset($options['alt'])) {
 			$options['alt'] = str_replace('"', "'", strip_tags($options['alt']));
 		}
-		if ($out = $this->Image->thumb($result, $options)) {
+		
+		if (!empty($options['text']) || !empty($this->thumbText)) {
+			$out = $this->thumbText($result, $options);
+		} else {
+			$out = $this->Image->thumb($result, $options);
+		}
+		
+		if (!empty($out)) {
 			if (!empty($hasMedia) && !empty($url)) {
 				$out = $this->Html->link($out, $url, array('escape' => false, 'class' => 'pull-left'));
 			}
@@ -657,6 +664,16 @@ class ModelViewHelper extends LayoutAppHelper {
 		return $return;
 	}
 
+	function thumbText($result, $options = array()) {
+		$text = 'True';
+		if (!empty($options['text']) && $options['text'] !== true) {
+			$text = $options['text'];
+		}
+		$options = $this->addClass($options, 'thumbnail-text');
+		$out = $this->Html->tag('span', $text, $this->keyFilter($options, array('style', 'class', 'id')));
+		return $out;
+	}
+	
 	function thumbnail($result, $options = array()) {
 		$result = $this->_getResult($result);
 		$options = array_merge(array(
@@ -845,5 +862,23 @@ class ModelViewHelper extends LayoutAppHelper {
 	
 	protected function _getResult($result) {
 		return !empty($result[$this->modelName]) ? $result[$this->modelName] : $result;
+	}
+	
+	/**
+	 * Filters out any keys from an array not found in key array
+	 *
+	 * @var Array $array Array to check for keys
+	 * @var Array $keys Keys to make sure exist in $array
+	 *
+	 * @return Array Filtered $array
+	 **/
+	protected function keyFilter($array, $keys) {
+		$keys = array_flip($keys);
+		foreach ($array as $key => $value) {
+			if (!isset($keys[$key])) {
+				unset($array[$key]);
+			}
+		}
+		return $array;
 	}
 }
