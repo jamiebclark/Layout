@@ -971,7 +971,14 @@ class LayoutHelper extends LayoutAppHelper {
 	 * Outputs an array of items in an unordered list
 	 *
 	 **/
-	function menu($menuItems = null, $attrs = null) {
+	function menu($menuItems = null, $attrs = array(), $level = 0) {
+		$attrs = array_merge(array(
+			'debug' => false,
+			'urlAdd' => null,
+			'urlOptions' => array(),
+			'tag' => false,
+			'childrenOptions' => array(),
+		), $attrs);
 		if (!is_array($menuItems)) {
 			$menuItems = array($menuItems);
 		}
@@ -983,9 +990,7 @@ class LayoutHelper extends LayoutAppHelper {
 			}
 			unset($attrs['urlAdd']);
 		}
-
 		$debug = !empty($attrs['debug']);
-		
 		$urlOptions = Param::keyCheck($attrs, 'urlOptions', true, array());
 		
 		$currentSelectClass = $this->bootstrap ? 'active' : 'selected';
@@ -993,21 +998,27 @@ class LayoutHelper extends LayoutAppHelper {
 		$menuCount = count($menuItems);
 		foreach ($menuItems as $k => $menuItem) {
 			$liAttrs = array();
+			$children = '';
 			if (isset($attrs['active']) && is_numeric($attrs['active']) && $attrs['active'] == $k) {
 				$liAttrs = $this->addClass($liAttrs, $currentSelectClass);
 			}
-			
 			//Allows for passing just an array to be read as a link
 			if (is_array($menuItem) && isset($menuItem[0]) && isset($menuItem[1])) {
 				list($content, $link, $options, $confirm) = $menuItem + array('', array(), array(), null);
 				$options = array_merge((array) $options, $urlOptions);
 				//Checks current parameters to see if it matches the given URL
 				//Can pass currentSelect as an array of what items to match array('action', 'controller')
-				
+				if ($children = Param::keyCheck($options, 'children', true)) {
+					$childrenOptions = !empty($attrs['childrenOptions']) ? $attrs['childrenOptions'] : array();
+					if (Param::keyCheck($options, 'childrenOptions')) {
+						$childenOptions = array_merge($childrnOptions, Param::keyCheck($options, 'childrenOptions'));
+						unset($options['childrenOptions']);
+					}
+					$children = $this->menu($children, $childrenOptions, $level + 1);
+				}
 				if (Param::keyCheck($options, 'active', true)) {
 					$liAttrs = $this->addClass($liAttrs, $currentSelectClass);
 				}
-				
 				if (
 					!isset($options['icon']) && 
 					!empty($attrs['icon']) && 
@@ -1120,21 +1131,17 @@ class LayoutHelper extends LayoutAppHelper {
 			if ($k == $menuCount - 1) {
 				$liAttrs = $this->addClass($liAttrs, 'last');
 			}
-			
-			$list .= $this->Html->tag('li', $menuItem, $liAttrs);
+			$list .= $this->Html->tag('li', $menuItem . $children, $liAttrs);
 		}
 		unset($attrs['currentSelect']);
-		
-		if (empty($attrs['class'])) {
-			$attrs['class'] = 'layoutMenu';
+		if ($levelClass = Param::keyCheck($attrs, 'levelClass', true)) {
+			$attrs = $this->addClass($attrs, $levelClass . $level);
 		}
-		
 		if ($tag = Param::keyCheck($attrs, 'tag', true, 'div')) {
 			$output = $this->Html->tag($tag, $this->Html->tag('ul', $list), $attrs);
 		} else {
 			$output = $this->Html->tag('ul', $list, $attrs);
 		}
-		
 		if (!empty($attrs['preCrumb']) || !empty($attrs['pre_crumb'])) {
 			$this->_View->viewVars['pre_crumb'] = $output;
 			$output = '';

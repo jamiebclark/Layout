@@ -279,3 +279,13 @@ $modalWidthSlim: 360px;
 		}
 	}
 }
+
+.input-autocomplete-multi {
+	@extend %input-container;
+	.input-autocomplete {
+		border-bottom: 1px solid #EEE;
+	}
+	.input-autocomplete, .input-autocomplete-multi-values {
+		padding: $paddingSmall;
+	}		
+}

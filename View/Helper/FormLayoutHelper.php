@@ -88,24 +88,57 @@ class FormLayoutHelper extends LayoutAppHelper {
 		
 		return $this->Form->input($name, $options);
 	}
-	
+
+	/**
+	 * A creates a combination of form elements to allow for an auto complete that generates a checked list
+	 * 
+	 * @param string $model The model this is generating for
+	 * @param string $url The URL where the autocomplete dropdown will be generated
+	 * @param Array $attrs Optional additional attributes
+	 *
+	 **/
 	public function inputAutoCompleteMulti($model, $url = null, $attrs = array()) {
 		$attrs = array_merge(array(
-			'vals' => array(),
 			'label' => 'Search',
 			'displayField' => 'title',
 			'primaryKey' => 'id',
 			'habtm' => false,
-			'checked' => array(),
-			'unchecked' => array(),
-			'default' => array(),
+			'options' => array(),
+			'selected' => array(),
+			'select' => array(),
 		), $attrs);
 		extract($attrs);
-		$i = 0;
+		$out = $this->inputAutoComplete("$model.search", $url, array(
+			'label' => $label,
+			'placeholder' => 'Type to begin searching',
+		));
+		$k = 0;
+		if (!empty($options)) {
+			$out .= $this->Html->div('input-autocomplete-multi-values', 
+				$this->Form->input("$model.$model", array(
+					'multiple' => 'checkbox',
+					'label' => false,
+				) + compact('options', 'selected'))
+			);
+			$k = count($options);
+		} else {
+			$out .= $this->Html->div('input-autocomplete-multi-values', '');
+		}
+		if (!empty($select)) {
+			$out .= $this->Form->input("$model.$model.", array(
+				'options' => array('' => ' --- ') + $select,
+				'class' => 'input-autocomplete-multi-default-values',
+			));
+		}		
+		return $this->Html->div('input-autocomplete-multi', $out);
 		
+		$i = 0;
 		$habtm = empty($field);
 		$field = $habtm ? '' : ".$primaryKey";
 		
+		$modelName = $habtm ? "$model.$model." : "$model.";
+		$fieldName = $habtm ? '' : ".$primaryKey";
+	
 		$checked = $this->resultToList($checked, $model);
 		$unchecked = $this->resultToList($unchecked, $model);
 		if (!empty($this->request->data[$model])) {
@@ -123,6 +156,8 @@ class FormLayoutHelper extends LayoutAppHelper {
 		$usedVals = array();
 		$allVals = array($checked, $unchecked);
 
+		debug($allVals);
+		
 		$valsOutput = '';
 		foreach ($allVals as $unchecked => $vals) {
 			foreach ($vals as $id => $title) {
@@ -131,7 +166,7 @@ class FormLayoutHelper extends LayoutAppHelper {
 				}
 				$usedVals[$id] = $id;
 				$valsOutput .= $this->Html->tag('label',
-					$this->Form->checkbox("$model.$i$field", array(
+					$this->Form->checkbox("$modelName$i$fieldName", array(
 						'hiddenField' => false,
 						'checked' => !$unchecked,
 						'value' => $id,
@@ -141,9 +176,8 @@ class FormLayoutHelper extends LayoutAppHelper {
 			}
 		}
 		$valsOutput = $this->Html->div('vals', $valsOutput);
-		
 		if (!empty($options)) {
-			$valsOutput .= $this->Form->input("$model.$i$field", array(
+			$valsOutput .= $this->Form->input("$modelName$i$fieldName", array(
 				'type' => 'select',
 				'div' => false,
 				'label' => false,
@@ -153,13 +187,87 @@ class FormLayoutHelper extends LayoutAppHelper {
 			));
 			$i++;
 		}
-		
-		$out = $this->Form->input("$model.$i$field", compact('url', 'label') + array(
+		$out = $this->Form->input("$modelName$i$fieldName", compact('url', 'label') + array(
 			'type' => 'text',
 			'div' => 'input text input-autocomplete-multi',
 			'after' => $valsOutput,
 		));
+		return $this->Html->div('input-autocomplete-multi', $out);
+	}
+	
+	public function inputAutoCompleteMultiOLD($model, $url = null, $attrs = array()) {
+		$attrs = array_merge(array(
+			'vals' => array(),
+			'label' => 'Search',
+			'displayField' => 'title',
+			'primaryKey' => 'id',
+			'habtm' => false,
+			'checked' => array(),
+			'unchecked' => array(),
+			'default' => array(),
+		), $attrs);
+		extract($attrs);
+		$i = 0;
 		
+		$habtm = empty($field);
+		$field = $habtm ? '' : ".$primaryKey";
+		
+		$modelName = $habtm ? "$model.$model." : "$model.";
+		$fieldName = $habtm ? '' : ".$primaryKey";
+	
+		$checked = $this->resultToList($checked, $model);
+		$unchecked = $this->resultToList($unchecked, $model);
+		if (!empty($this->request->data[$model])) {
+			$hasData = true;
+			$checked += $this->resultToList($this->request->data[$model], $model);
+		}
+		if (!empty($default)) {
+			if (!empty($hasData)) {
+				$unchecked += $this->resultToList($default, $model);
+			} else {
+				$checked += $this->resultToList($default, $model);
+			}
+		}
+		//if (!empty($suggested)) {
+		$usedVals = array();
+		$allVals = array($checked, $unchecked);
+
+		debug($allVals);
+		
+		$valsOutput = '';
+		foreach ($allVals as $unchecked => $vals) {
+			foreach ($vals as $id => $title) {
+				if (!empty($usedVals[$id])) {
+					continue;
+				}
+				$usedVals[$id] = $id;
+				$valsOutput .= $this->Html->tag('label',
+					$this->Form->checkbox("$modelName$i$fieldName", array(
+						'hiddenField' => false,
+						'checked' => !$unchecked,
+						'value' => $id,
+					))
+				. $title) . "\n";
+				$i++;
+			}
+		}
+		$valsOutput = $this->Html->div('vals', $valsOutput);
+		if (!empty($options)) {
+			$valsOutput .= $this->Form->input("$modelName$i$fieldName", array(
+				'type' => 'select',
+				'div' => false,
+				'label' => false,
+				'style' => 'display: none',
+				'class' => 'default-vals',
+				'options' => array('' => '---') + $this->resultToList($options, $model),
+			));
+			$i++;
+		}
+		$out = $this->Form->input("$modelName$i$fieldName", compact('url', 'label') + array(
+			'type' => 'text',
+			'div' => 'input text input-autocomplete-multi',
+			'after' => $valsOutput,
+		));
 		return $out;
 	}
 	
@@ -1382,7 +1490,7 @@ class FormLayoutHelper extends LayoutAppHelper {
 		return $url;
 	}
 	
-	private function resultToList($result, $model, $primaryKey = 'id', $displayField = 'title') {
+	public function resultToList($result, $model, $primaryKey = 'id', $displayField = 'title') {
 		$list = array();
 		if (!empty($result[$model])) {
 			$result = $result[$model];
@@ -1393,6 +1501,9 @@ class FormLayoutHelper extends LayoutAppHelper {
 		}
 		if (is_array($result)) {
 			foreach ($result as $key => $val) {
+				if (isset($val[$model])) {
+					$val = $val[$model];
+				}
 				if (is_array($val)) {
 					if (!empty($val[$model])) {
 						$val = $val[$model];

@@ -637,9 +637,6 @@ documentReady(function() {
 			if ($(this).data('input-list-init')) {
 				return $(this);
 			}
-			console.log($control.length);
-
-			
 			function addRemoveBox($listItem) {
 				var $id = $(':input[name*="id]"]', $listItem).first();
 				if (!$id.length) {
@@ -693,7 +690,6 @@ documentReady(function() {
 				$addLink = $('<a class="btn btn-small" href="#" tabindex="-1">Add</a>').appendTo($control);
 			}
 			$addLink.click(function(e) {
-				console.log('Add Link Clicked: ' + $listItems.length);
 				e.preventDefault();
 				$listItems.cloneNumbered().trigger('inputListAdd');
 			});
@@ -851,7 +847,7 @@ documentReady(function() {
 						'href' : '#'
 					}).click(function(e) {
 						e.preventDefault();
-						$dropdown.trigger('dropdownClicked', [value, label]);
+						$dropdown.trigger('clicked', [value, label]);
 					})
 				);
 			} else {
@@ -951,7 +947,7 @@ documentReady(function() {
 								} else {
 									$dropdown.html(data);
 									$dropdown.find('a').click(function(e) {
-										$dropdown.trigger('dropdownClicked', [$(this).attr('href'), $(this).html()]);
+										$dropdown.trigger('clicked', [$(this).attr('href'), $(this).html()]);
 									});
 								}
 								$dropdown.trigger('checkEmpty').trigger('loaded');
@@ -961,7 +957,7 @@ documentReady(function() {
 				'loaded': function() {
 					$(this).removeClass('loading');
 				},
-				'dropdownClicked' : function(e, value, label) {
+				'clicked' : function(e, value, label) {
 					e.preventDefault();
 					$dropdown.hide();
 					if ($.isFunction(options.afterClick)) {
@@ -973,7 +969,48 @@ documentReady(function() {
 		return $dropdown;
 	};
 	
-	$.fn.formAutoComplete = function(options) {
+	$.fn.inputAutoCompleteMulti = function(options) {
+		return this.each(function() {
+			var $this = $(this),
+				$inputAutocomplete = $('.input-autocomplete', $this),
+				$checkboxContainer = $('> .input-autocomplete-multi-values input[type="checkbox"]', $this).first().closest('div'),
+				$checkboxes = $('input[type="checkbox"]', $checkboxContainer),
+				$defaultValues = $('.input-autocomplete-multi-default-values'),
+				checkboxName = $checkboxes.first().attr('name');
+				
+			if (!$this.data('autocomplete-init')) {
+				$inputAutocomplete.bind('clicked', function(e, value, label) {
+					$this.trigger('addValue', [value, label]);
+					$inputAutocomplete.trigger('clear');
+				});
+				$defaultValues.change(function() {
+					var $option = $('option:selected', $(this)).first(),
+						value = $option.val(),
+						label = $option.html();
+					$this.trigger('addValue', [value, label]);
+					$('option[value='+value+']').each(function() {$(this).remove();});
+					$('option', $(this)).first().prop('selected', true);
+				});
+				$this.bind('addValue', function(e, value, label) {
+					var $existing = $checkboxContainer.find('[value="'+value+'"]');
+					if (!$existing.length) {
+						$('<label class="checkbox">'+label+'</label>').prepend(
+							$('<input/>', {
+								'type': 'checkbox',
+								'name': checkboxName,
+								'value': value,
+								'checked': true
+							})
+						).appendTo($checkboxContainer);
+					} else {
+						$existing.attr('checked', true);
+					}
+				});
+			}
+		});		
+	};
+	
+	$.fn.inputAutoComplete = function(options) {
 		var defaults = {
 			'click' : false,
 			'afterClick' : false,
@@ -1008,7 +1045,7 @@ documentReady(function() {
 					} else if (options.action == 'redirect') {
 						window.location.href = redirectUrl ? redirectUrl + value : value;
 					} else {
-						$.error('Action: ' + options.action + ' not found for jQuery.formAutoComplete');
+						$.error('Action: ' + options.action + ' not found for jQuery.inputAutoComplete');
 					}
 					
 					if (!$.isFunction(options.click)) {
@@ -1019,6 +1056,7 @@ documentReady(function() {
 					if ($.isFunction(options.afterClick)) {
 						options.afterClick(value, label);
 					}
+					$this.trigger('clicked', [value, label]);
 				}
 			}),
 			timeout = false;
@@ -1093,15 +1131,19 @@ documentReady(function() {
 		}).bind({
 			'reset': function() {
 				showText();
-			}
+			},
 		});
 		/*
 		if ($text.val() == '') {
 			showText();
 		}
 		*/
-		
-		$this.data('autocomplete-init', true);
+		$this.bind({
+			'clear': function() {
+				showText();
+				$input.val('');
+			}
+		}).data('autocomplete-init', true);
 		return $this;
 	};
 })(jQuery);
@@ -1114,46 +1156,11 @@ documentReady(function () {
 		if ($(this).hasClass('action-redirect')) {
 			loadOptions.action = 'redirect';
 		}
-		$(this).formAutoComplete(loadOptions);
-	});
-	$('.input-autocomplete-multi').each(function() {
-		if (!$(this).data('autocomplete-init')) {
-			var $vals = $(this).find('> .vals'),
-				$input = $(this).find('input').first();
-			
-			if (!$vals.length) {
-				$vals = $('<div class="vals"></div>').appendTo($(this));
-			}
-			var loadOptions = {
-				'afterClick': function(value, label) {
-					var $existing = $vals.find('[value="'+value+'"]');
-					if (!$existing.length) {
-						var length = $vals.find(':input').length,
-							name = $input.attr('name');
-						$('<label>'+label+'</label>').prepend(
-							$('<input/>', {
-								'type': 'checkbox',
-								'name': name,
-								'value': value,
-								'checked': true
-							}).renumberInput(length)
-						).appendTo($vals);
-						$input.renumberInput(length + 1).val('');
-					} else {
-						$existing.attr('checked', true);
-					}
-				}
-			};
-			if ($(this).hasClass('action-redirect')) {
-				loadOptions.action = 'redirect';
-			}
-			$(this).formAutoComplete(loadOptions);
-			if ($(this).find('.layout-dropdown-holder').length) {
-				$vals.appendTo($(this).find('> .layout-dropdown-holder'));
-			}
-		}
+		$(this).inputAutoComplete(loadOptions);
 	});
 	
+	$('.input-autocomplete-multi').inputAutoCompleteMulti();
+
 });
 
 $(document).ready(function() {

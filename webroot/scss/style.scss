@@ -189,24 +189,6 @@ a.media {
 		-webkit-box-shadow: $contentBoxShadow;
 		box-shadow: $contentBoxShadow;
 	}
-	
-	.contentbox-heading {
-		margin-bottom: 0 !important;
-		.navbar-inner {
-			border: 0;
-			border: 0;
-			border: 0;
-			@include border-radius(0);
-			padding: $contentBoxHeadingPadding;
-			background: $contentBoxHeadingBackground;
-			font-family: $contentBoxHeadingFont;
-			font-size: $contentBoxHeadingSize;
-		}
-		border-bottom: $contentBoxDividerBorder;
-	}
-	.contentbox-body {
-		padding: $contentBoxBodyPadding;
-	}
 	&.list {
 		.contentbox-body {
 			padding: 0;
@@ -218,6 +200,35 @@ a.media {
 		}
 	}
 }
+.contentbox-heading {
+	margin-bottom: 0 !important;
+	border-bottom: $contentBoxDividerBorder;
+	.navbar-inner {
+	}
+}
+h2.contentbox-heading, 
+h3.contentbox-heading, 
+h4.contentbox-heading, 
+.contentbox-heading .navbar-inner {
+	border: 0;
+	margin: 0;
+	@include border-radius(0);
+	padding: $contentBoxHeadingPadding;
+	background: $contentBoxHeadingBackground;
+	font-family: $contentBoxHeadingFont;
+	font-size: $contentBoxHeadingSize;
+}
+h2.contentbox-heading, 
+h3.contentbox-heading, 
+h4.contentbox-heading {
+	line-height: $contentBoxHeadingLineHeight;
+}
+.contentbox-body {
+	padding: $contentBoxBodyPadding;
+}
+
+
+
 
 .clearfix {
 	@include clearfix;
