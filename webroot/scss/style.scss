@@ -170,12 +170,10 @@ a.media {
 		font-weight: normal;
 	}
 }
-/*
 li.media {
-	border-bottom: 1px solid #EEE;
-	padding: 10px 5px;
+	border-bottom: 1px solid $grayLightest;
+	padding-bottom: 10px;
 }
-*/
 .media-wrap, .media {
 	display: block;
 	position: relative;
@@ -186,6 +184,9 @@ li.media {
 		top: 0;
 		right: 0;
 	}
+}
+.media-object {
+	border: 1px solid $grayLightest;
 }
 
 // Menu Lists
