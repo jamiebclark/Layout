@@ -89,7 +89,6 @@ $calendardateWidth:				$calendardateMonthHeight + $calendardateDayHeight;
 }
 
 .calendardate {
-
 	float: left;
 	margin: $baseLineHeight 0;
 	width: $calendardateWidth;
@@ -135,6 +134,9 @@ $calendardateWidth:				$calendardateMonthHeight + $calendardateDayHeight;
 			@include gradient-vertical(#FFF,#FFF);
 
 		}
+	}
+	&.media-object {
+		margin-top: 0;
 	}
 }
 a:hover {

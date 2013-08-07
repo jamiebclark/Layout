@@ -31,7 +31,7 @@
 					var $check = $('<input/>', {
 						type : 'checkbox',
 						checked : isBlank ? false : 'checked',
-						id : id,
+						id : id
 					}).change(function() {
 						if ($(this).is(':checked')) {
 							$inputHolder.show();

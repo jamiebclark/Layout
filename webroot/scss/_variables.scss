@@ -54,6 +54,13 @@ $thumbnailTiny:					$baseLineHeight !default;
 $thumbnailSmall:				80px !default;
 $thumbnailMid:					120px !default;
 $thumbnailLarge:				240px !default;
+$thumbnailTextColor:			$textColor !default;
+$thumbnailTextHover:			$linkColorHover !default;
+$thumbnailTextBackground:		#F8F8F8 !default;
+
+$thumbnailBorder:				$navbarBorder !default;
+$thumbnailBorderHover:			$linkColorHover !default;
+
 
 // Iconic
 // ------------------------

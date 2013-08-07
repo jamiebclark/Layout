@@ -66,11 +66,11 @@ $flash .= $this->Session->flash('auth', array(
 				}
 			?>
 
-			<div id="breadcrumb">
-				<div class="container">
-					<?php echo $this->Crumbs->output();?>
+			<?php if ($crumbs = $this->Crumbs->output()): ?>
+				<div id="breadcrumb">
+					<div class="container"><?php echo $crumbs;?></div>
 				</div>
-			</div>
+			<?php endif; ?>
 			
 			<?php
 			$content = '';

@@ -5,6 +5,7 @@
 	height: $lineHeight + 2 * 1 + 2 * $inputPaddingTop;
 }
 
+
 @function oppositeSide($side) {
 	@if $side == 'left' {
 		@return 'right';

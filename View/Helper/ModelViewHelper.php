@@ -43,6 +43,10 @@ class ModelViewHelper extends LayoutAppHelper {
 	var $defaultMediaDir = 'small';	//Default sub-directory of an image used in a media HTML object
 	var $defaultImageFile = '0.jpg';
 
+	var $thumbType = 'image';
+	var $dateStartField = 'started';
+	var $dateEndField = 'stopped';
+	
 	//Whether the urls should be formatted to include slugs: array('controller','action', 'id' => $id, 'slug' => $slug)
 	// Should be set up in Config/router first
 	protected $sluggable = false;	
@@ -457,8 +461,6 @@ class ModelViewHelper extends LayoutAppHelper {
 	 * @return string Media HTML element
 	 **/
 	function media($result, $options = array()) {
-		$modelResult = $this->_getResult($result);
-		
 		$options = array_merge(array(
 			'tag' => 'div',							//Tag wrapper
 			'dir' => $this->defaultMediaDir,		//Thumbnail directory
@@ -471,14 +473,15 @@ class ModelViewHelper extends LayoutAppHelper {
 			'body' => '',
 			'titleTag' => 'h4',
 			'link' => false,
+			'alias' => $this->modelName,
 		), $options);
-		$options = $this->addClass($options, 'media');
+		$options = $this->addClass($options, 'media media-' . strtolower($this->modelName));
 		if (!empty($options['dir'])) {
 			$options = $this->addClass($options, 'media-' . $options['dir']);
 		}
 		extract($options);
 		$returnOptions = compact('class');
-		
+		$modelResult = $this->_getResult($result, $alias);
 		if (empty($url) && $url !== false) {
 			$url = $this->url($modelResult);
 		}
@@ -511,33 +514,17 @@ class ModelViewHelper extends LayoutAppHelper {
 			$thumb = $this->addClass($thumb, 'media-object');
 			$thumb['media'] = true;
 			$thumb['url'] = $url;
+			$thumb['link'] = $link;
 			$out .= $this->thumb($result, $thumb);
 		}
-
 		if (!empty($remove)) {
 			$right .= $this->__removeLink(null, $modelResult, !empty($options['remove']) ? $options['remove'] : null);
 		}
-
 		if (!empty($right)) {
 			$out .= $this->Html->tag('div', $right, array('class' => 'pull-right'));
 		}
-
 		//Body
-		/*
-		if (!empty($url)) {
-			$title = $this->link($modelResult, compact('url'));
-		} else {
-			$title = $modelResult[$this->displayField];
-		}
-		
-		if (!empty($titleTag)) {
-			$title = $this->Html->tag($titleTag, $title, array('class' => 'media-title ' . $this->cssClass));
-		} else {
-			$title .= "<br/>\n";
-		}
-		$bd = $title;
-		*/
-		$bd = $this->title($result, array(
+		$body = $this->title($result, array(
 			'class' => 'media-title ' . $this->cssClass,
 			'tag' => $titleTag,
 			'url' => $url,
@@ -545,11 +532,11 @@ class ModelViewHelper extends LayoutAppHelper {
 	
 		foreach ($this->_addressBookFunctions as $func) {
 			if (!empty($$func)) {
-				$bd .= $this->AddressBook->$func($modelResult, array('tag' => $contentTag));
+				$body .= $this->AddressBook->$func($modelResult, array('tag' => $contentTag));
 			}
 		}
 		if (!empty($after)) {
-			$bd .= $after;
+			$body .= $after;
 		}
 		
 		if (!empty($actionMenu)) {
@@ -558,29 +545,46 @@ class ModelViewHelper extends LayoutAppHelper {
 			} else {
 				$actionMenuOptions = array();
 			}
-			$bd .= $this->Layout->actionMenu($actionMenu, $modelResult + $actionMenuOptions);
+			$actionMenu = $this->actionMenu($actionMenu, $modelResult + $actionMenuOptions);
+			if ($link) {
+				if (!empty($wrapTag)) {
+					$wrapTag = 'span';
+				}
+			} else {
+				$out .= $actionMenu;
+			}
 		}
-		$out .= $this->Html->tag('div', $bd, array('class' => 'media-body')) . "\n";
+		$out .= $this->Html->tag('div', $body, array('class' => 'media-body')) . "\n";
 		$out = $this->Html->tag($tag, $out, $returnOptions);
 		if (!empty($wrapTag)) {
-			$out = $this->Html->tag($wrapTag, $out);
+			if (!empty($actionMenu) && !empty($link)) {
+				$out .= $actionMenu;
+			}
+			$out = $this->Html->tag($wrapTag, $out, array('class' => 'media-wrap'));
 		}
 		return $out;
 	}
 	
 	function mediaList($results, $options = array(), $listOptions = array()) {
-		$listOptions = $this->addClass($listOptions, 'media-list');
-		
 		$out = '';
-		foreach ($results as $result) {
-			$passOptions = $options;
-			$id = !empty($result[$this->modelAlias][$this->primaryKey]) ? $result[$this->modelAlias][$this->primaryKey] : null;
-			if (!empty($listOptions['active']) && $listOptions['active'] == $id) {
-				$passOptions = $this->addClass($passOptions, 'active');
+		$listOptions = $this->addClass($listOptions, 'media-list');
+		if (empty($results)) {
+			if (!empty($listOptions['empty'])) {
+				$out = $this->Html->div('lead', $listOptions['empty']);
 			}
-			$out .= $this->media($result, array('tag' => 'li') + $passOptions);
+		} else {
+			$pagNav = !empty($options['paginate']) ? $this->Layout->paginateNav() : '';
+			foreach ($results as $result) {
+				$passOptions = $options;
+				$id = !empty($result[$this->modelAlias][$this->primaryKey]) ? $result[$this->modelAlias][$this->primaryKey] : null;
+				if (!empty($listOptions['active']) && $listOptions['active'] == $id) {
+					$passOptions = $this->addClass($passOptions, 'active');
+				}
+				$out .= $this->media($result, array('tag' => 'li') + $passOptions);
+			}
+			$out = $pagNav . $this->Html->tag('ul', $out, $listOptions) . $pagNav;
 		}
-		return $this->Html->tag('ul', $out, $listOptions);
+		return $out;
 	}
 	
 	function linkList($Result, $linkOptions = array(), $listOptions = array()) {
@@ -641,7 +645,17 @@ class ModelViewHelper extends LayoutAppHelper {
 		if (isset($options['alt'])) {
 			$options['alt'] = str_replace('"', "'", strip_tags($options['alt']));
 		}
-		if ($out = $this->Image->thumb($result, $options)) {
+		
+		$type = Param::keyCheck($options, 'type', true, $this->thumbType);
+		if ($type == 'text') {
+			$out = $this->thumbText($result, $options);
+		} else if ($type == 'date') {
+			$out = $this->thumbDate($result, $options);
+		} else {
+			$out = $this->Image->thumb($result, $options);
+		}
+		
+		if (!empty($out)) {
 			if (!empty($hasMedia) && !empty($url)) {
 				$out = $this->Html->link($out, $url, array('escape' => false, 'class' => 'pull-left'));
 			}
@@ -657,14 +671,50 @@ class ModelViewHelper extends LayoutAppHelper {
 		return $return;
 	}
 
+	function thumbText($result, $options = array()) {
+		$text = 'True';
+		if (!empty($options['text']) && $options['text'] !== true) {
+			$text = $options['text'];
+		}
+		$options = $this->addClass($options, 'thumbnail-text');
+		$out = $this->Html->tag('span', $text, $this->keyFilter($options, array('style', 'class', 'id')));
+		return $out;
+	}
+	
+	function thumbDate($result, $options = array()) {
+		if (isset($options['dir'])) {
+			$options['class'] = $options['dir'];
+		}
+		if (!empty($options['media'])) {
+			unset($options['media']);
+			$options = $this->addClass($options, 'media-object');
+			if (!empty($options['link'])) {
+				$options = $this->addClass($options, 'pull-left');
+			}
+		}
+		$start = $end = null;
+		if (!empty($this->dateField) && !empty($result[$this->dateField])) {
+			$start = $result[$this->dateField];
+		} else if (!empty($this->dateStartField) && !empty($result[$this->dateStartField])) {
+			$start = $result[$this->dateStartField];
+		}
+		if (!empty($this->dateEndField) && !empty($result[$this->dateEndField])) {
+			$end = $result[$this->dateEndField];
+		}
+		return $this->Calendar->calendarDate($start, $end, $options);
+	}
+	
 	function thumbnail($result, $options = array()) {
 		$result = $this->_getResult($result);
 		$options = array_merge(array(
 			'dir' => 'mid',
-			'tag' => 'div',
-			'caption' => false,
-			'url' => true,
-			'link' => false,
+			'tag' => 'div',		
+			'image' => true,		// Display the image
+			'caption' => false,		// Display a caption
+			'url' => true,			// Link thumbnail to something
+			'link' => false,		// Make the entire thumbnail a link
+			'empty' => false,		// How to handle a not found image
+			'captionTitleTag' => 'h3',
 		), $options);
 		$options = $this->addClass($options, 'thumbnail');
 		extract($options);
@@ -676,10 +726,21 @@ class ModelViewHelper extends LayoutAppHelper {
 		}
 		if ($link) {
 			$link = $url;
+			$options['url'] = false;
 			$url = false;
 		}
-		
-		$out = $this->thumb($result, compact('dir', 'url') + array('dirClass' => false));
+		$out = '';
+		if ($image) {
+			$out .= $this->thumb($result, compact('dir', 'url') + array('dirClass' => false));
+		}
+		if (empty($out)) {
+			if ($empty === false) {
+				return '';
+			} else if ($empty && empty($catpion)) {
+				$caption = true;
+				$options = compact('caption') + $options;
+			}
+		}
 		if (!empty($caption)) {
 			$out .= $this->thumbnailCaption($result, $options);
 		}
@@ -694,12 +755,13 @@ class ModelViewHelper extends LayoutAppHelper {
 	
 	function thumbnailCaption($result, $options = array()) {
 		$caption = '';
+		$tag = !empty($options['captionTitleTag']) ? $options['captionTitleTag'] : 'h3';
 		$useCaption = !empty($options['caption']) ? $options['caption'] : true;
 		if (!empty($result['title']) && ($useCaption === true || $useCaption == 'title')) {
-			$caption .= $this->title($result, array('tag' => 'h3'));
+			$caption .= $this->title($result, compact('tag') + array('url' => $options['url'], 'class' => 'caption-title'));
 		}
 		if (!empty($result['description']) && ($useCaption === true || $useCaption == 'description')) {
-			$caption .= $this->Html->div('description', $result['description']);
+			$caption .= $this->Html->div('caption-description', $result['description']);
 		}
 		if (!empty($options['after'])) {
 			$caption .= $options['after'];
@@ -828,7 +890,10 @@ class ModelViewHelper extends LayoutAppHelper {
 		return $title;
 	}
 	
-	protected function _getResult($result) {
-		return !empty($result[$this->modelName]) ? $result[$this->modelName] : $result;
+	protected function _getResult($result, $alias = null) {
+		if (empty($alias)) {
+			$alias = $this->modelName;
+		}
+		return !empty($result[$alias]) ? $result[$alias] : $result;
 	}
 }

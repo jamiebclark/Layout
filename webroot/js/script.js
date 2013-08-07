@@ -529,3 +529,23 @@ documentReady(function() {
 documentReady(function() {
 	$('.scrollfix').scrollfix();
 });
+
+// Media
+(function($) {
+	$.fn.layoutMedia = function() {
+		var fadeDuration = 100;
+		return this.each(function() {
+			var $this = $(this),
+				$wrap = $this.closest('.media-wrap'),
+				$wrapActions = $('.action-menu', $wrap);
+			$wrap.hover(function() {
+				$wrapActions.fadeIn(fadeDuration);
+			}, function() {
+				$wrapActions.fadeOut(fadeDuration);
+			});
+		});
+	};
+})(jQuery);
+documentReady(function() {
+	$('.media').layoutMedia();
+});

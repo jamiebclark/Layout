@@ -7,6 +7,9 @@
 			vertical-align: middle;
 			text-align: center;
 		}
+		&.thumbnail-text {
+			line-height: $size;
+		}
 	}
 }
 @include setThumbnailSize(tiny, $thumbnailTiny);
@@ -20,6 +23,37 @@
 		padding-right: 0;
 		h1, h2, h3, h4 {
 			line-height: normal;
+		}
+	}
+}
+.caption-description {
+	line-height: 1;
+	padding: $paddingSmall;
+	padding-top: 0;
+	color: $grayLight;
+}
+.thumbnail-text {
+	float: left;
+	padding: 0;
+	margin: 0;
+	display: block;
+	vertical-align: middle;
+	text-align: center;
+	color: $thumbnailTextColor;
+	border: 1px solid $thumbnailBorder;
+	background: $thumbnailTextBackground;
+}
+a:hover {
+	.thumbnail-text {
+		color: $thumbnailTextHover;
+		border-color: $thumbnailBorderHover;
+	}
+}
+a.thumbnail:hover {
+	text-decoration: none !important;
+	.caption {
+		.caption-title, .caption-description {
+			color: $linkColorHover;
 		}
 	}
 }

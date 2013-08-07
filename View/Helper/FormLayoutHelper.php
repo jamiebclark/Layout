@@ -106,13 +106,22 @@ class FormLayoutHelper extends LayoutAppHelper {
 			'options' => array(),
 			'selected' => array(),
 			'select' => array(),
+			'title' => null
 		), $attrs);
 		extract($attrs);
-		$out = $this->inputAutoComplete("$model.search", $url, array(
+		$out = '';
+		$out .= $this->inputAutoComplete("$model.search", $url, array(
 			'label' => $label,
 			'placeholder' => 'Type to begin searching',
 		));
 		$k = 0;
+
+		if (!empty($this->request->data[$model])) {
+			$data = $this->resultToList($this->request->data[$model], $model, $primaryKey, $displayField);
+			$options = $data + $options;
+			$selected = array_merge($selected, array_keys($data));
+		}
+
 		if (!empty($options)) {
 			$out .= $this->Html->div('input-autocomplete-multi-values', 
 				$this->Form->input("$model.$model", array(
@@ -129,9 +138,14 @@ class FormLayoutHelper extends LayoutAppHelper {
 				'options' => array('' => ' --- ') + $select,
 				'class' => 'input-autocomplete-multi-default-values',
 			));
-		}		
-		return $this->Html->div('input-autocomplete-multi', $out);
-		
+		}
+		$objectOptions = array('data-name' => "[$model][$model][]");
+		$out = $this->Html->div('input-autocomplete-multi', $out, $objectOptions);
+		if (!empty($title)) {
+			$out = $this->Html->tag('h4', $title) . $out;
+		}
+		return $out;
+		/*		
 		$i = 0;
 		$habtm = empty($field);
 		$field = $habtm ? '' : ".$primaryKey";
@@ -139,17 +153,17 @@ class FormLayoutHelper extends LayoutAppHelper {
 		$modelName = $habtm ? "$model.$model." : "$model.";
 		$fieldName = $habtm ? '' : ".$primaryKey";
 	
-		$checked = $this->resultToList($checked, $model);
-		$unchecked = $this->resultToList($unchecked, $model);
+		$checked = $this->resultToList($checked, $mode, $primaryKey, $displayFieldl);
+		$unchecked = $this->resultToList($unchecked, $model, $primaryKey, $displayField);
 		if (!empty($this->request->data[$model])) {
 			$hasData = true;
-			$checked += $this->resultToList($this->request->data[$model], $model);
+			$checked += $this->resultToList($this->request->data[$model], $model, $primaryKey, $displayField);
 		}
 		if (!empty($default)) {
 			if (!empty($hasData)) {
-				$unchecked += $this->resultToList($default, $model);
+				$unchecked += $this->resultToList($default, $model, $primaryKey, $displayField);
 			} else {
-				$checked += $this->resultToList($default, $model);
+				$checked += $this->resultToList($default, $model, $primaryKey, $displayField);
 			}
 		}
 		//if (!empty($suggested)) {
@@ -193,6 +207,7 @@ class FormLayoutHelper extends LayoutAppHelper {
 			'after' => $valsOutput,
 		));
 		return $this->Html->div('input-autocomplete-multi', $out);
+		*/
 	}
 	
 	public function inputAutoCompleteMultiOLD($model, $url = null, $attrs = array()) {

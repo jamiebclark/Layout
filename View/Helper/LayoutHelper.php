@@ -866,6 +866,7 @@ class LayoutHelper extends LayoutAppHelper {
 							'url' => $rowUrl,
 							'root' => false,
 							'tag' => 'li',
+							'class' => false,
 						) + $userOptions);
 						continue;
 					} else {
@@ -978,6 +979,7 @@ class LayoutHelper extends LayoutAppHelper {
 			'urlOptions' => array(),
 			'tag' => false,
 			'childrenOptions' => array(),
+			'hasChildrenAfter' => '',
 		), $attrs);
 		if (!is_array($menuItems)) {
 			$menuItems = array($menuItems);
@@ -1009,21 +1011,34 @@ class LayoutHelper extends LayoutAppHelper {
 				//Checks current parameters to see if it matches the given URL
 				//Can pass currentSelect as an array of what items to match array('action', 'controller')
 				if ($children = Param::keyCheck($options, 'children', true)) {
-					$childrenOptions = !empty($attrs['childrenOptions']) ? $attrs['childrenOptions'] : array();
-					if (Param::keyCheck($options, 'childrenOptions')) {
-						$childenOptions = array_merge($childrnOptions, Param::keyCheck($options, 'childrenOptions'));
+					$childrenOptions = array('id' => null) + $attrs;
+					if (isset($attrs['childrenOptions'])) {
+						$childrenOptions = array_merge($childrenOptions, $attrs['childrenOptions']);
+					}
+					if (isset($options['childrenOptions'])) {
+						$childrenOptions = array_merge($childrenOptions, $options['childrenOptions']);
 						unset($options['childrenOptions']);
 					}
+					/*
+					foreach (array('attrs', 'options') as $varName) {
+						if (!isset($$varName)) {
+							continue;
+						}
+						$var =& $$varName;
+						if (isset($var['childrenOptions'])) {
+							debug(array('Found Children Options', $var['childrenOptions']));
+							$childrenOptions = array_merge($childrenOptions, $var['childrenOptions']);
+							unset($var['childrenOptions']);
+						}
+						unset($var);
+					}
+					*/
 					$children = $this->menu($children, $childrenOptions, $level + 1);
 				}
 				if (Param::keyCheck($options, 'active', true)) {
 					$liAttrs = $this->addClass($liAttrs, $currentSelectClass);
 				}
-				if (
-					!isset($options['icon']) && 
-					!empty($attrs['icon']) && 
-					!empty($menuItem[1]['action'])
-				) {
+				if (!isset($options['icon']) && !empty($attrs['icon']) && !empty($menuItem[1]['action'])) {
 					$options['icon'] = $menuItem[1]['action'];
 				}
 				$iconAlign = Param::keyCheck($options, 'iconAlign', true);
@@ -1033,8 +1048,11 @@ class LayoutHelper extends LayoutAppHelper {
 					if ($iconAlign == 'left') {
 						$content = "$icon $content";
 					} else {
-						$content .= ' ' . $icon;
+						$content .= " $icon";
 					}
+				}
+				if (!empty($children) && isset($attrs['hasChildrenAfter'])) {
+					$content .= $attrs['hasChildrenAfter'];
 				}
 				
 				//Can pass specific values in menuItem options
@@ -1117,7 +1135,7 @@ class LayoutHelper extends LayoutAppHelper {
 						$liAttrs = $this->addClass($liAttrs, $currentSelectClass);
 					}
 				}
-				$menuItem = $this->Html->link($content, $link, $options, $confirm);
+				$menuItem = $this->Html->link($content, $link, array('escape' => false) + $options, $confirm);
 			} else {
 				if (!empty($attrs['currentSelect'])) {
 					if (preg_match('#href="([^"]*)"#', $menuItem, $matches)) {
@@ -1133,14 +1151,16 @@ class LayoutHelper extends LayoutAppHelper {
 			}
 			$list .= $this->Html->tag('li', $menuItem . $children, $liAttrs);
 		}
+		unset($attrs['childrenOptions']);
 		unset($attrs['currentSelect']);
 		if ($levelClass = Param::keyCheck($attrs, 'levelClass', true)) {
 			$attrs = $this->addClass($attrs, $levelClass . $level);
 		}
+		$htmlAttrs = $this->keyFilter($attrs, array('id', 'class', 'style'));
 		if ($tag = Param::keyCheck($attrs, 'tag', true, 'div')) {
-			$output = $this->Html->tag($tag, $this->Html->tag('ul', $list), $attrs);
+			$output = $this->Html->tag($tag, $this->Html->tag('ul', $list), $htmlAttrs);
 		} else {
-			$output = $this->Html->tag('ul', $list, $attrs);
+			$output = $this->Html->tag('ul', $list, $htmlAttrs);
 		}
 		if (!empty($attrs['preCrumb']) || !empty($attrs['pre_crumb'])) {
 			$this->_View->viewVars['pre_crumb'] = $output;

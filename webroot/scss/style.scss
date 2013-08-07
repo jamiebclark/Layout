@@ -101,6 +101,7 @@ div.lead {
 	margin: 10px;
 	.media-body {
 		display: block;
+		text-align: left;
 	}
 	&, .bd {
 		@extends %overflow;
@@ -128,7 +129,7 @@ div.lead {
 		line-height: normal;
 	}
 	p {
-		margin-bottom: .5em;
+		margin-bottom: $baseLineHeight / 2;
 	}
 	&.border, .border .media {
 		border: 1px solid #EEE;
@@ -137,14 +138,21 @@ div.lead {
 	}
 }
 
+$mediaLinkWidth: 		760px;
+$mediaLinkPadding: 		10px;
+$mediaLinkColor: 		#999;
+$mediaLinkColorHover: 	#666;
+$mediaLinkBorder:		#CCC;
+$mediaLinkBorderHover:	#999;
+
 a.media {
-	color: #999;
-	padding: 10px;
-	border: 1px solid #CCC;
-	max-width: 760px;
+	color: $mediaLinkColor;
+	padding: $mediaLinkPadding;
+	border: 1px solid $mediaLinkBorder;
+	max-width: $mediaLinkWidth;
 	&:hover {
-		color: #666;
-		border-color: #999;
+		color: $mediaLinkColorHover;
+		border-color: $mediaLinkBorderHover;
 		text-decoration: none;
 	}
 	h2, h3, h4 {
@@ -160,6 +168,17 @@ a.media {
 	}
 	p {
 		font-weight: normal;
+	}
+}
+.media-wrap {
+	display: block;
+	position: relative;
+	max-width: $mediaLinkWidth + 2 * $mediaLinkPadding;
+	> .action-menu {
+		display: none;
+		position: absolute;
+		top: 0;
+		right: 0;
 	}
 }
 

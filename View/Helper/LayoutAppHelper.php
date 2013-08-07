@@ -63,4 +63,23 @@ class LayoutAppHelper extends AppHelper {
 	function isTagAttribute($tag) {
 		return isset($this->_tagAttributes[$tag]);
 	}
+	
+	/**
+	 * Filters out any keys from an array not found in key array
+	 *
+	 * @var Array $array Array to check for keys
+	 * @var Array $keys Keys to make sure exist in $array
+	 *
+	 * @return Array Filtered $array
+	 **/
+	protected function keyFilter($array, $keys) {
+		$keys = array_flip($keys);
+		foreach ($array as $key => $value) {
+			if (!isset($keys[$key])) {
+				unset($array[$key]);
+			}
+		}
+		return $array;
+	}
+
 }

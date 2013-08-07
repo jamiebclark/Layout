@@ -45,13 +45,13 @@ $hoverWindowBorder: #CCC;
 	}
 	.hover-arrow, .hover-arrow-border {
 		@include arrow($side, $hoverArrowHeight, $hoverArrowColor);
-		height: $hoverArrowHeight;
+		//height: $hoverArrowHeight;
 		z-index: 50;
 		#{$adjust}: $baseLineHeight;
 	}
 	.hover-arrow-border {
 		@include arrow($side, $hoverArrowHeight + $hoverArrowBorder, $hoverWindowBorderColor);
-		height: $hoverArrowHeight;
+		//height: $hoverArrowHeight;
 		#{$adjust}: $baseLineHeight - $hoverArrowBorder;
 		z-index: 49;
 	}

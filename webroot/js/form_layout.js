@@ -973,12 +973,17 @@ documentReady(function() {
 		return this.each(function() {
 			var $this = $(this),
 				$inputAutocomplete = $('.input-autocomplete', $this),
-				$checkboxContainer = $('> .input-autocomplete-multi-values input[type="checkbox"]', $this).first().closest('div'),
+				$inputMultiValues = $('> .input-autocomplete-multi-values', $this),
+				$checkboxContainer = $('input[type="checkbox"]', $inputMultiValues).first().closest('div'),
 				$checkboxes = $('input[type="checkbox"]', $checkboxContainer),
 				$defaultValues = $('.input-autocomplete-multi-default-values'),
-				checkboxName = $checkboxes.first().attr('name');
+				checkboxName = $this.data('name');
 				
 			if (!$this.data('autocomplete-init')) {
+				if (!$checkboxContainer.length) {
+					$checkboxContainer = $('<div class="controls"></div>');
+					$inputMultiValues.append($checkboxContainer);
+				}					
 				$inputAutocomplete.bind('clicked', function(e, value, label) {
 					$this.trigger('addValue', [value, label]);
 					$inputAutocomplete.trigger('clear');
@@ -1003,9 +1008,9 @@ documentReady(function() {
 							})
 						).appendTo($checkboxContainer);
 					} else {
-						$existing.attr('checked', true);
+						$existing.prop('checked', true);
 					}
-				});
+				}).data('autocomplete-init', true);
 			}
 		});		
 	};
@@ -1131,7 +1136,7 @@ documentReady(function() {
 		}).bind({
 			'reset': function() {
 				showText();
-			},
+			}
 		});
 		/*
 		if ($text.val() == '') {
@@ -1220,7 +1225,7 @@ $(document).ready(function() {
 				$div.show().css({
 					'top' : pos.top + h, 
 					'left' : pos.left, 
-					'width' : w,
+					'width' : w
 				//	'z-index' : zIndex + 1
 				});
 				$('.expanded > ul', $div).show();

@@ -397,6 +397,7 @@ class TableHelper extends LayoutAppHelper {
 	function tableNav($options = array(), $wrap = false) {
 		$return = $wrap ? array('','') : '';
 		$out = '';
+		
 		if (!empty($options['sort'])) {
 			$out .= $this->tableSortMenu($options['sort'], array('class' => 'pull-right'));
 		}
@@ -419,7 +420,6 @@ class TableHelper extends LayoutAppHelper {
 	
 	function _table($headers = null, $rows = null, $options = array()) {
 		$return = $tableNav = '';
-		
 		list($tableNavTop, $tableNavBottom) = $this->tableNav($options, true);
 		unset($options['sort']);
 		unset($options['paginate']);

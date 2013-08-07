@@ -63,6 +63,16 @@
 }
 .input-autocomplete {
 	@extend %overflow;
+	&.contain-button {
+		input {
+			border-top-right-radius: 0;
+			border-bottom-right-radius: 0;
+		}
+		.controls > .btn {
+			border-top-left-radius: 0;
+			border-bottom-left-radius: 0;
+		}
+	}
 }
 
 // Date / Time Inputs
