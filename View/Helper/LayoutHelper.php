@@ -506,7 +506,6 @@ class LayoutHelper extends LayoutAppHelper {
 							unset($newUrl[0]);
 						}
 					}
-
 					$title = Inflector::humanize($menuItem);
 					if (($action = $this->getAction($menuItem, $useIcons))) {
 						$linkText = $action;
@@ -541,11 +540,10 @@ class LayoutHelper extends LayoutAppHelper {
 						}
 					}				
 				}
-				
 				//ID Replace
 				if (is_array($menu[$key][1])) {
 					foreach ($menu[$key][1] as $urlKey => $urlVal) {
-						if ($urlVal == 'ID') {
+						if ($urlVal === 'ID') {
 							$menu[$key][1][$urlKey] = $id;
 						}
 					}

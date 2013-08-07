@@ -170,11 +170,17 @@ a.media {
 		font-weight: normal;
 	}
 }
-.media-wrap {
+/*
+li.media {
+	border-bottom: 1px solid #EEE;
+	padding: 10px 5px;
+}
+*/
+.media-wrap, .media {
 	display: block;
 	position: relative;
 	max-width: $mediaLinkWidth + 2 * $mediaLinkPadding;
-	> .action-menu {
+	.action-menu {
 		display: none;
 		position: absolute;
 		top: 0;

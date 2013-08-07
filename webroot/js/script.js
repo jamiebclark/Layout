@@ -537,11 +537,16 @@ documentReady(function() {
 		return this.each(function() {
 			var $this = $(this),
 				$wrap = $this.closest('.media-wrap'),
-				$wrapActions = $('.action-menu', $wrap);
-			$wrap.hover(function() {
-				$wrapActions.fadeIn(fadeDuration);
+				$actions = $('.action-menu', $wrap);
+			if ($wrap.length == 0) {
+				$actions = $('.action-menu', $this);
+			}
+			$this.hover(function() {
+				$(this).addClass('media-hover');
+				$actions.fadeIn(fadeDuration);
 			}, function() {
-				$wrapActions.fadeOut(fadeDuration);
+				$(this).removeClass('media-hover');
+				$actions.fadeOut(fadeDuration);
 			});
 		});
 	};

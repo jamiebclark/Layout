@@ -547,7 +547,7 @@ class ModelViewHelper extends LayoutAppHelper {
 			}
 			$actionMenu = $this->actionMenu($actionMenu, $modelResult + $actionMenuOptions);
 			if ($link) {
-				if (!empty($wrapTag)) {
+				if (empty($wrapTag)) {
 					$wrapTag = 'span';
 				}
 			} else {
