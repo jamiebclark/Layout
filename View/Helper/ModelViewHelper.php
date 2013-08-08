@@ -260,6 +260,17 @@ class ModelViewHelper extends LayoutAppHelper {
 		return isset($this->autoActions[$action]) || in_array($action, $this->autoActions);
 	}
 	
+	function adminMenu($actions, $result, $actionMenuOptions = array(), $navBarOptions = array()) {
+		$navBarOptions = array_merge(array(
+			'title' => 'Staff Only',
+		), $navBarOptions);
+		extract($navBarOptions);
+		$actionMenuOptions = $this->addClass($actionMenuOptions, 'pull-right');
+		$actionMenuOptions['div'] = false;
+		$menu = $this->actionMenu($actions, $result, $actionMenuOptions);
+		return $this->Layout->navBar($menu, $title, $navBarOptions);
+	}
+	
 	function actionMenu($actions = null, $result = array(), $attrs = null) {
 		if (!isset($attrs)) {
 			$attrs = $result;
@@ -295,6 +306,9 @@ class ModelViewHelper extends LayoutAppHelper {
 					if (isset($attrs[$field]) && !isset($config[$field])) {
 						$config[$field] = $attrs[$field];
 					}
+				}
+				if (!empty($attrs['urlAdd'])) {
+					$config['url'] = $attrs['urlAdd'] + $config['url'];
 				}
 				if (!empty($config['urlAdd'])) {
 					$config['url'] = $config['urlAdd'] + $config['url'];
@@ -864,7 +878,43 @@ class ModelViewHelper extends LayoutAppHelper {
 		}
 		return $this->Layout->neighbors($prev, $next, $up);
 	}
-	
+
+
+	function inputThumb($fieldName = null, $options = array()) {
+		$options = array_merge(array(
+			'name' => 'add_image',
+			'label' => 'Change Picture',
+			'deleteName' => 'delete_file',
+			'image' => '',
+		), $options);
+		extract($options);
+		$add = !empty($this->request->data[$this->modelName]['id']);
+		$hasImg = !empty($this->request->data[$this->modelName]['filename']);
+		if (empty($image)) {
+			$image = $this->thumb($hasImg ? $this->request->data[$this->modelName] : 0, array(
+				'class' => 'input-thumb-image',
+				'type' => 'image',
+			));
+		}
+		$out = $image;
+		if (empty($fieldName)) {
+			$fieldName = "{$this->modelName}.$name";
+		}
+		$out .= $this->Form->input($fieldName, array(
+			'type' => 'file', 
+			'div' => false,
+			'label' => $this->Html->tag('font', $label),
+		));
+		$out = $this->Html->div('input-thumb', $out);
+		if ($hasImg && $deleteName) {
+			$out .= $this->Form->input($deleteName, array(
+				'type' => 'checkbox',
+				'label' => 'Delete photo',
+				'div' => 'input-thumb-delete',
+			));
+		}
+		return $out;
+	}	
 	/**
 	 * Replaces any instance of the string with the actual profile's ID
 	 * If value is an array, it applies to all values and any arrays found inside

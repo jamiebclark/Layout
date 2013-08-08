@@ -14,6 +14,7 @@
 @import "content";
 @import "display-text";
 @import "liquid-layout";
+@import "model-view";
 @import "table";
 @import "form-layout";
 @import "collapse_list";
@@ -23,7 +24,9 @@
 @import "calendar"; 
 @import "hover"; 
 
-
+p.test-class {
+	font-weight: bold;
+}
 
 // Page Styling
 // -----------------
@@ -252,8 +255,6 @@ h4.contentbox-heading {
 .contentbox-body {
 	padding: $contentBoxBodyPadding;
 }
-
-
 
 
 .clearfix {

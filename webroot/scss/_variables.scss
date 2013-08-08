@@ -94,3 +94,12 @@ $contentBoxHeadingLineHeight:	40px !default;
 $contentBoxDividerBorder:		1px solid #D4D4D4 !default;
 $contentBoxBodyPadding: 		10px !default;
 
+// Input Thumbnail
+// ----------------------
+$inputThumbWidth: 				160px !default;
+$inputThumbHeight: 				160px !default;
+$inputThumbColor: 				$linkColor; //$color1 !default;
+$inputThumbColorHover: 			$linkColorHover; //$color2 !default;
+$inputThumbFullColor: 			$linkColor;	//$color3 !default;
+$inputThumbDeleteColor:			$gray !default;
+
