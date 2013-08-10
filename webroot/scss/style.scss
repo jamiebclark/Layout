@@ -73,7 +73,7 @@ div.lead {
 	.breadcrumb {
 		margin-bottom: 0;
 	}
-	margin-bottom: $baseLineHeight;
+	margin-bottom: $baseLineHeight / 2;
 }
 
 // Lists
@@ -190,6 +190,17 @@ li.media {
 }
 .media-object {
 	border: 1px solid $grayLightest;
+}
+.media-description {
+	font-size: $fontSizeSmall;
+	line-height: 1;
+	color: $grayLight;
+	padding: 10px;
+}
+.media {
+	.nav {
+		margin: 0;
+	}
 }
 
 // Menu Lists

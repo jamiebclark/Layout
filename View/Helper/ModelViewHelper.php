@@ -264,6 +264,7 @@ class ModelViewHelper extends LayoutAppHelper {
 		$navBarOptions = array_merge(array(
 			'title' => 'Staff Only',
 		), $navBarOptions);
+		$navBarOptions = $this->addClass($navBarOptions, 'admin-menu');
 		extract($navBarOptions);
 		$actionMenuOptions = $this->addClass($actionMenuOptions, 'pull-right');
 		$actionMenuOptions['div'] = false;
@@ -827,7 +828,11 @@ class ModelViewHelper extends LayoutAppHelper {
 			}
 			$out = $this->Html->tag('ul', $out, array('class' => 'thumbnails'));
 		}
-		$paginate = $this->Layout->paginateNav();
+		if (!isset($paginate) || $paginate !== false) {
+			$paginate = $this->Layout->paginateNav();
+		} else {
+			$paginate = '';
+		}
 		if (empty($sub)) {
 			$out = $paginate . $this->Html->div($wrapClass, $out) . $paginate;
 		}

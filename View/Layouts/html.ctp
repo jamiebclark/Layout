@@ -83,7 +83,7 @@ $flash .= $this->Session->flash('auth', array(
 			//echo $this->element('Layout.liquid_content', compact('content'));
 			?>
 		</div>
-		<div id="footer">
+		<div id="footer" class="no-print">
 			<?php 
 				echo $this->fetch('footer');
 				if (!empty($adminDisplay)) {

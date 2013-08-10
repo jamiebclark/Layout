@@ -46,7 +46,7 @@ tr {
 .table-nav {
 	@include clearfix();
 	min-height: $baseLineHeight;
-	margin: $baseLineHeight 0;
+	margin: 0;
 	padding: $baseLineHeight / 2;
 	background-color: $grayLightest;	
 	

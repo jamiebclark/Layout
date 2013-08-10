@@ -1074,10 +1074,10 @@ class FormLayoutHelper extends LayoutAppHelper {
 		if (!isset($options['label']) || (empty($options['label']) && $options['label'] !== false)) {
 			$options['label'] = $this->getLabelText($fieldName);
 		}
-		return $this->input($fieldName. ".date", $options);
+		$options = $this->_formatFields($options, 'm/d/Y');
+		return $this->input("$fieldName.date", $options);
 	}
 
-	
 	function inputTime($fieldName, $options = array()) {
 		$options = array_merge(array(
 			'placeholder' => '0:00pm',
@@ -1086,13 +1086,8 @@ class FormLayoutHelper extends LayoutAppHelper {
 			//'prepend' => '<i class="icon-time"></i>',
 		), $this->addClass($options, 'time timepicker'));
 		$options['type'] = 'text';
-		$formatFields = array('default', 'value');
-		foreach ($formatFields as $field) {
-			if (isset($options[$field])) {
-				$options[$field] = date('H:i:s', strtotime($options[$field]));
-			}
-		}
-		return $this->input($fieldName . '.time', $options);			
+		$options = $this->_formatFields($options, 'H:i:s');
+		return $this->input("$fieldName.time", $options);			
 	}
 	
 	function inputDatetime($fieldName, $options = array()) {
@@ -1567,5 +1562,14 @@ class FormLayoutHelper extends LayoutAppHelper {
 			return null;
 		}
 		return $data;
+	}
+	// Checks an options array for specific fields and matches it with a date formatting
+	private function _formatFields($options, $dateFormat, $fields = array('value', 'default')) {
+		foreach ($fields as $field) {
+			if (isset($options[$field])) {
+				$options[$field] = date($dateFormat, strtotime($options[$field]));
+			}
+		}
+		return $options;
 	}
 }

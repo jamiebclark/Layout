@@ -1,4 +1,5 @@
 .content-page {
+	overflow: hidden;
 	background-color: white;
 	border: 1px solid #CCC;
 	@include box-shadow(5px 5px 5px #CCC);
