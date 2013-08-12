@@ -13,6 +13,7 @@ class ModelViewHelper extends LayoutAppHelper {
 		'Html', 
 		'Layout.AddressBook',
 		'Layout.Asset', 
+		'Layout.Calendar',
 		'Layout.DisplayText',
 		'Layout.Iconic',
 		'Layout.Image', 
@@ -680,8 +681,13 @@ class ModelViewHelper extends LayoutAppHelper {
 	
 	function image($Result, $options = array()) {
 		$return = '';
-		if (!empty($this->imageDir) && !empty($Result[$this->fileField])) {
-			$return .= $this->Image->image($Result[$this->fileField], $this->imageDir, $options);
+		if (!empty($options['src'])) {
+			$src = $options['src'];
+		} else if (!empty($this->imageDir) && !empty($Result[$this->fileField])) {
+			$src = $Result[$this->fileField];
+		}
+		if (!empty($src)) {
+			$return .= $this->Image->image($src, $options);
 		}
 		return $return;
 	}
@@ -888,7 +894,7 @@ class ModelViewHelper extends LayoutAppHelper {
 	function inputThumb($fieldName = null, $options = array()) {
 		$options = array_merge(array(
 			'name' => 'add_image',
-			'label' => 'Change Picture',
+			'label' => 'Photo',
 			'deleteName' => 'delete_file',
 			'image' => '',
 		), $options);

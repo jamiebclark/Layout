@@ -132,7 +132,12 @@ class ImageHelper extends LayoutAppHelper {
 		}
 		$url = Param::keyCheck($options, 'url', true, false);
 		$image = '';
-		if ($src = $this->src($file, $options)) {
+		if (!empty($options['src'])) {
+			$src = $options['src'];
+		} else {
+			$src = $this->src($file, $options);
+		}
+		if ($src) {
 			$image = $this->Html->image($src, $this->narrowOptions($options, array(
 				'src', 'alt', 'class', 'id')));
 			if ($url) {
