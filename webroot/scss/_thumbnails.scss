@@ -14,8 +14,10 @@
 }
 @include setThumbnailSize(tiny, $thumbnailTiny);
 @include setThumbnailSize(small, $thumbnailSmall);
+@include setThumbnailSize(smaller, $thumbnailSmaller);
 @include setThumbnailSize(mid, $thumbnailMid);
 @include setThumbnailSize(large, $thumbnailLarge);
+@include setThumbnailSize(larger, $thumbnailLarger);
 
 .thumbnail {
 	.caption {

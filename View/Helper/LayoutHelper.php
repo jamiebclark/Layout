@@ -402,10 +402,10 @@ class LayoutHelper extends LayoutAppHelper {
 	}
 	
 	function tabMenu($menu = null, $attrs = array()) {
-		$attrs = $this->addClass($attrs, 'nav nav-tabs');
-		if (!Param::keyValCheck($attrs, 'currentSelect')) {
-			$attrs['currentSelect'] = true;
-		}
+		$attrs = array_merge(array(
+			'currentSelect' => true,
+		), $attrs);
+		$attrs = $this->addClass($attrs, 'nav-tabs');
 		return $this->nav($menu, $attrs);
 	}
 	
@@ -774,7 +774,7 @@ class LayoutHelper extends LayoutAppHelper {
 	}
 	
 	function adminMenu($menu = null, $attrs = array()) {
-		$attrs = $this->addClass($attrs, 'admin-menu');
+		$attrs = $this->addClass($attrs, 'navbar-admin');
 		$title = Param::keyCheck($attrs, 'prefix', true); //Legacy Term
 		if (empty($title)) {
 			$title = Param::keyCheck($attrs, 'title', true, 'Staff Only');

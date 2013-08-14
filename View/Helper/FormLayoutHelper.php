@@ -745,22 +745,28 @@ class FormLayoutHelper extends LayoutAppHelper {
 		$options = $this->addClass($options, 'input-list');
 		extract($options);
 		$out = '';
-		if (is_array($listContent)) {
+		if (is_callable($listContent)) {
+			$type = 'function';
+		} else if (is_array($listContent)) {
 			$total = count($listContent);
 			$type = 'array';
-		} else {
+		}
+		if (empty($total)) {
 			if ($data = $this->getModelData($model)) {
 				$total = count($data) + 1; //Adds an extra blank one
 			} else {
 				$total = $count;
 			}
 		}
+		
 		if ($total < 0) {
 			return $out;
 		}
 		for ($count = 0; $count < $total; $count++) {
 			$row = '';
-			if ($type == 'array') {
+			if ($type == 'function') {
+				$row .= $listContent($count);
+			} else if ($type == 'array') {
 				$row .= $listContent[$count];
 			} else if ($type == 'element') {
 				$row .= $this->_View->element($listContent, compact('count') + $pass);
@@ -895,7 +901,7 @@ class FormLayoutHelper extends LayoutAppHelper {
 				if (empty($input['fieldset']) && empty($input['legend'])) {
 					$input['fieldset'] = false;
 				}
-				$input = $this->Form->inputs($input);
+				$input = $this->inputs($input);
 			}
 			$row .= $this->Html->div('input-choice-content', $input, array(
 				'style' => empty($isDefault) ? 'display:none;' : null,

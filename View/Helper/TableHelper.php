@@ -218,6 +218,11 @@ class TableHelper extends LayoutAppHelper {
 			) {
 				$text = "Sorting: $title";
 				$active = true;
+				if ($direction == 'asc') {
+					$direction = 'desc';
+				} else {
+					$direction = 'asc';
+				}
 			} else {
 				$active = false;
 			}

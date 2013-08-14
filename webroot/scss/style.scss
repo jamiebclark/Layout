@@ -132,7 +132,7 @@ div.lead {
 		line-height: normal;
 	}
 	p {
-		margin-bottom: $baseLineHeight / 2;
+		margin-bottom: $baseLineHeight / 4;
 	}
 	&.border, .border .media {
 		border: 1px solid #EEE;
@@ -181,7 +181,7 @@ li.media {
 	display: block;
 	position: relative;
 	max-width: $mediaLinkWidth + 2 * $mediaLinkPadding;
-	.action-menu {
+	.media-actionmenu {
 		display: none;
 		position: absolute;
 		top: 0;

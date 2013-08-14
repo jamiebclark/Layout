@@ -42,8 +42,12 @@ class FormLayoutComponent extends Component {
 					if (isset($data[$subModel])) {
 						//$SubModel = $this->initModel($subModel);
 						$SubModel =& $Model->{$subModel};
-						$ids = !empty($data[$subModel][$subModel]) ? $data[$subModel][$subModel] : array();
-						unset($data[$subModel][$subModel]);
+
+						$ids = array();
+						if (!empty($data[$subModel][$subModel])) {
+							$ids = $data[$subModel][$subModel];
+							unset($data[$subModel][$subModel]);
+						}
 						if (!empty($data[$subModel])) {
 							foreach ($data[$subModel] as $key => $val) {
 								if (is_array($val)) {

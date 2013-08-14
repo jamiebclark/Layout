@@ -51,9 +51,11 @@ $hoverArrowBorder:				1px !default;
 // Thumbnails
 // ------------------------
 $thumbnailTiny:					$baseLineHeight !default;
+$thumbnailSmaller:				40px !default;
 $thumbnailSmall:				80px !default;
-$thumbnailMid:					120px !default;
+$thumbnailMid:					160px !default;
 $thumbnailLarge:				240px !default;
+$thumbnailLarger:				320px !default;
 $thumbnailTextColor:			$textColor !default;
 $thumbnailTextHover:			$linkColorHover !default;
 $thumbnailTextBackground:		#F8F8F8 !default;

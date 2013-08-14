@@ -214,18 +214,19 @@ class DisplayTextHelper extends LayoutAppHelper {
 			'/["]{2}(.*?)["]{2}/s'											=>  "<blockquote><div>$1</div></blockquote>",
 			
 			//Updates List Items
-			'/\n-[\s]+(.*?)[\r]*[\n]*[\r]*[\n]*\r/sm'		=>	'<uli>$1</uli>',
-			'/\n[\d]+\.[\s]+([^\r\n]+)[\r]*/sm'	=>	'<oli>$1</oli>',
-			'#((?<!uli\>)<uli>.*?</uli>(?!\<uli))#m'		=>	'<ul>$1</ul>',
-			'#((?<!oli\>)<oli>.*?</oli>(?!\<oli))#m'		=>	'<ol>$1</ol>',
-			'/<[o|u]li>/'									=>	'<li>',
-			'/<\/[o|u]li>/'									=>	"</li>\r\n",
+			'/\n-[\s]+(.*?)[\r]*[\n]*[\r]*[\n]*\r/sm'			=>	'<uli>$1</uli>',
+			'/\n[\d]+\.[\s]+([^\r\n]+)[\r]*/sm'					=>	'<oli>$1</oli>',
+			'#((?<!uli\>)<uli>.*?</uli>(?!\<uli))#m'			=>	'<ul>$1</ul>',
+			'#((?<!oli\>)<oli>.*?</oli>(?!\<oli))#m'			=>	'<ol>$1</ol>',
+			'/<[o|u]li>/'										=>	'<li>',
+			'/<\/[o|u]li>/'										=>	"</li>\r\n",
 			
 			'/\[(\/[^\s]+)\]/'									=>	'<a href="' . $webroot . '$1">$1</a>',
 			'/\[(\/[^\s]+)[\s]([^\]]+)\]/'						=>	'<a href="' . $webroot . '$1">$2</a>',
 			'/\[([http|\/|\.][^\s]+)\]/'						=>	'<a href="$1">$1</a>',
 			'/\[([http|\/|\.][^\s]+)[\s]([^\]]+)\]/'			=>	'<a href="$1">$2</a>',
 			//'/\{([http|\/|\.][^\s]+)[\s]([^\}]+)\}/'			=>	'<a href="$1">$2</a>',
+
 		);
 
 		/*
@@ -706,4 +707,3 @@ class DisplayTextHelper extends LayoutAppHelper {
 		return $value;
 	}
 }
-?>

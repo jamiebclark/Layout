@@ -35,6 +35,7 @@ class CollapseListHelper extends LayoutAppHelper {
 			'actionMenu' => null,
 			'selected' => false,		//ID of the row to be highlighted
 			'autoSelected' => true,
+			'selectRoot' => false,		//Expand the root element
 			'activeField' => false,
 			'withChecked' => false,
 			'form' => null,
@@ -52,9 +53,14 @@ class CollapseListHelper extends LayoutAppHelper {
 			$options['ModelView'] =& $this->ModelView;
 			$options['ModelView']->setModel($options['model']);
 		}
-		
+		$root = empty($options['sub']);
+		if ($root) {
+			$params = $this->request->params;
+			if (empty($selected) && $options['autoSelected'] && !empty($params['pass'][0]) && is_numeric($params['pass'][0])) {
+				$options['selected'] = $params['pass'][0];
+			}
+		}
 		extract($options);
-		$root = !$sub;
 		
 		if ($root) {
 			$this->listItemCount = 0;
@@ -79,12 +85,9 @@ class CollapseListHelper extends LayoutAppHelper {
 			//Title
 			$titleClass = 'collapse-list-item-title';
 			$titleLinkClass = '';
-			$isSelected = false;
-			if ($selected == $id) {
-				$isSelected = true;
-			} else if ($autoSelected && !empty($this->request->params['pass'][0]) && $this->request->params['pass'][0] == $id) {
-				$isSelected = true;
-			}
+
+			$isSelected = !empty($selected) ? ($selected == $id) : ($root && $selectRoot);
+
 			if ($isSelected) {
 				$titleClass .= ' selected';
 			}
