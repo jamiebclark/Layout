@@ -179,6 +179,7 @@ a.media {
 }
 li.media {
 	border-bottom: 1px solid $grayLightest;
+	@include border-radius($baseBorderRadius);
 	padding-bottom: 10px;
 }
 .media-wrap, .media {
@@ -197,7 +198,7 @@ li.media {
 }
 .media-description {
 	font-size: $fontSizeSmall;
-	line-height: 1;
+	line-height: $baseLineHeight * .75;
 	color: $grayLight;
 	padding: 10px;
 }
