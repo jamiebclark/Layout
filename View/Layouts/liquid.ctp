@@ -50,7 +50,7 @@ if ($hasRight) {
 					maxHeight = h;
 				}
 			}).each(function() {
-				$(this).height(maxHeight);
+				$(this).css('min-height', maxHeight);
 			});
 		});
 	};

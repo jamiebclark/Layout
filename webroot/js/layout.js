@@ -20,6 +20,7 @@
 				$offContent.showEnableChildren();
 			}
 			function toggleCheck() {
+				console.log($control.is(':checked'));
 				if ($control.is(':checked')) {
 					toggleOn();
 				} else {
@@ -33,6 +34,7 @@
 				});
 				toggleCheck();
 				$toggle.data('layout-toggle-init');
+				console.log('Toggle Check');
 			}
 			return $(this);
 		});

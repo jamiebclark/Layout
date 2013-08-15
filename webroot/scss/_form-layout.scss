@@ -158,7 +158,9 @@ $inputContainerControlBgColor:	#EEE;
 .input-choice-active {
 	.input-choice-control {
 		background-color: $inputChoiceActiveColor;
-		color: $inputChoiceActiveTextColor;
+		&, label {
+			color: $inputChoiceActiveTextColor;
+		}
 	}
 }
 .input-choice-hover {
@@ -169,6 +171,9 @@ $inputContainerControlBgColor:	#EEE;
 .input-choice-control {
 	padding: $paddingSmall;
 	background-color: $inputContainerControlBgColor;
+	label {
+		font-size: $fontSizeLarge;
+	}
 }
 .input-choice-content {
 	padding: $paddingLarge;

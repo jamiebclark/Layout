@@ -139,6 +139,10 @@ div.lead {
 		@include border-radius($baseBorderRadius);
 		padding: 10px;
 	}
+	> .pull-right {
+		text-align: right;
+		max-width: 50%;
+	}
 }
 
 $mediaLinkWidth: 		760px;

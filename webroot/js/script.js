@@ -8,7 +8,7 @@ function documentReady(actions) {
 		return this.each(function() {
 			var $toggle = $(this),
 				$control = $toggle.find('.layout-toggle-control input[type*=checkbox]').first(),
-				$content = $toggle.find('> .layout-toggle-content'),
+				$content = $toggle.find('> .layout-toggle-content').first(),
 				$offContent = $toggle.find('> .layout-toggle-off');
 				tc = toggleCount++;
 			

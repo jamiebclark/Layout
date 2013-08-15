@@ -741,6 +741,7 @@ class FormLayoutHelper extends LayoutAppHelper {
 			'titleTag' => 'h3',
 			'class' => '',
 			'pass' => array(),
+			'addBlank' => 1,
 		), $options);
 		$options = $this->addClass($options, 'input-list');
 		extract($options);
@@ -753,7 +754,10 @@ class FormLayoutHelper extends LayoutAppHelper {
 		}
 		if (empty($total)) {
 			if ($data = $this->getModelData($model)) {
-				$total = count($data) + 1; //Adds an extra blank one
+				$total = count($data);
+				if (!empty($addBlank)) {
+					$total += 1; //Adds an extra blank one
+				}
 			} else {
 				$total = $count;
 			}
