@@ -261,7 +261,7 @@ class ModelViewHelper extends LayoutAppHelper {
 		return isset($this->autoActions[$action]) || in_array($action, $this->autoActions);
 	}
 	
-	function adminMenu($actions, $result, $actionMenuOptions = array(), $navBarOptions = array()) {
+	function adminMenu($actions, $result = array(), $actionMenuOptions = array(), $navBarOptions = array()) {
 		$navBarOptions = array_merge(array(
 			'title' => 'Staff Only',
 		), $navBarOptions);
@@ -273,7 +273,7 @@ class ModelViewHelper extends LayoutAppHelper {
 		return $this->Layout->navBar($menu, $title, $navBarOptions);
 	}
 	
-	function actionMenu($actions = null, $result = array(), $attrs = null) {
+	function actionMenu($actions = null, $result = array(), $attrs = array()) {
 		if (!isset($attrs)) {
 			$attrs = $result;
 		}
@@ -282,7 +282,7 @@ class ModelViewHelper extends LayoutAppHelper {
 			'text' => false,	// Displays the link text for each action
 			'active' => null,
 			'id' => null,
-			'url' => null,
+			'url' => array(),
 			'vertical' => false,
 		), $attrs);
 		$attrs = $this->addClass($attrs, 'action-menu inline');
@@ -304,13 +304,14 @@ class ModelViewHelper extends LayoutAppHelper {
 					$action = $config;
 					$config = array();
 				}
+				// debug(compact('action', 'config', 'attrs'));
 				foreach ($this->autoActionFields as $field) {
 					if (isset($attrs[$field]) && !isset($config[$field])) {
 						$config[$field] = $attrs[$field];
 					}
 				}
 				if (!empty($attrs['urlAdd'])) {
-					$config['url'] = $attrs['urlAdd'] + $config['url'];
+					$config['urlAdd'] = !empty($config['urlAdd']) ? array_merge($attrs['urlAdd'], $config['urlAdd']) : $attrs['urlAdd'];
 				}
 				if (!empty($config['urlAdd'])) {
 					$config['url'] = $config['urlAdd'] + $config['url'];
@@ -332,11 +333,12 @@ class ModelViewHelper extends LayoutAppHelper {
 				//ID Replace
 				if (is_array($menuItem[1])) {
 					foreach ($menuItem[1] as $urlKey => $urlVal) {
-						if ($urlVal == 'ID') {
+						if ($urlVal === 'ID') {
 							$menuItem[1][$urlKey] = $id;
 						}
 					}
 				}
+	
 				if (is_array($menuItem)) {
 					list($linkTitle, $linkUrl, $linkOptions, $linkPost) = $menuItem + array(null, null, null, null);
 					if (empty($linkUrl['controller']) || $linkUrl['controller'] == $this->controller && !isset($linkUrl[0])) {
@@ -463,7 +465,7 @@ class ModelViewHelper extends LayoutAppHelper {
 	function description($result, $options = array()) {
 		$options = array_merge(array(
 			'tag' => 'div',
-			'class' => 'lead',
+			'class' => 'media-description',
 		), $options);
 		$out = '';
 		if (!empty($this->descriptionField) && !empty($result[$this->descriptionField])) {
@@ -567,7 +569,7 @@ class ModelViewHelper extends LayoutAppHelper {
 				$actionMenuOptions = array();
 			}
 			$actionMenuOptions = $this->addClass($actionMenuOptions, 'media-actionmenu');
-			$actionMenu = $this->actionMenu($actionMenu, $modelResult + $actionMenuOptions);
+			$actionMenu = $this->actionMenu($actionMenu, $modelResult, $actionMenuOptions);
 			if ($link) {
 				if (empty($wrapTag)) {
 					$wrapTag = 'span';

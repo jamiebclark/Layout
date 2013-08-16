@@ -489,38 +489,61 @@ documentReady(function() {
 	$.fn.scrollfix = function() {
 		return this.each(function() {
 			function fix() {
-				var top = $(window).scrollTop();
-				if (containerBottom && (top + height) > containerBottom ) {
-					top = containerBottom - height;
+				var top = $(window).scrollTop(),
+					overBorder = containerBottom && (top + height) > containerBottom,
+					setPosition,
+					setTop;
+				
+				if (overBorder) {
+					setTop = containerBottom - height;
+					setPosition = 'absolute';
+				} else {
+					setTop = 0;
+					setPosition = 'fixed';
 				}	
 				$scroll.css({
 					'width': width,
-					'position': 'absolute',
-					'top': top
+					'position': setPosition,
+					'top': setTop
 				});
 			}
 			function unfix() {
 				$scroll.css({'position': 'static'});
 			}
-			if (!$(this).data('scroll-init')) {
-				var $scroll = $(this),
-					height = $scroll.outerHeight(),
-					width = $scroll.outerWidth(),
-					pos = $scroll.position(),
-					top = pos.top,
-					$container = $scroll.closest('.row'),
-					containerBottom;
+			function setSizes() {
+				height = $scroll.outerHeight();
+				width = $scroll.outerWidth();
+				pos = $scroll.position();
+				top = pos.top;
+				containerBottom;
 				if ($container.length) {
-					var containerPos = $container.position();
+					containerPos = $container.position();
 					containerBottom = containerPos.top + $container.height();
 				}
+			}
+			if (!$(this).data('scroll-init')) {
+				var $scroll = $(this),
+					$container = $scroll.closest('.row'),
+					height,
+					width,
+					pos,
+					top,
+					containerBottom,
+					containerPos;
+				setSizes();
 				$(window).scroll(function() {
+					console.log([$(window).scrollTop(), top]);
 					if ($(window).scrollTop() > top) {
 						fix();
 					} else {
 						unfix();
 					}
+				}).resize(function() {
+					setSizes();
+				}).load(function() {
+					setSizes();
 				});
+				
 				$(this).data('scroll-init', true);
 			}
 		});

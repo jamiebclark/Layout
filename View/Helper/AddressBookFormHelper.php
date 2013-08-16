@@ -43,6 +43,8 @@ class AddressBookFormHelper extends LayoutAppHelper {
 			'addline' => 2,
 			'addressPrefix' => '', //Prefixes the address columns, for instance, mail_addline1
 			'count' => null,
+			'before' => '',
+			'after' => '',
 		), $options);
 		extract($options);
 		if (empty($prefix)) {
@@ -115,7 +117,8 @@ class AddressBookFormHelper extends LayoutAppHelper {
 				'options' => $countries,
 			),
 		);
-		$out .= $this->FormLayout->inputRows($inputRows, compact('fieldset', 'legend', 'span', 'placeholder'));	
+		$out .= $this->FormLayout->inputRows($inputRows, compact('fieldset', 'legend', 'span', 'placeholder'));
+		$out = $before . $out . $after;
 		return $this->Html->div('input-address', $out);
 	}
 	

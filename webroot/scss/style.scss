@@ -102,6 +102,8 @@ div.lead {
 // ---------------------
 .media {
 	margin: 10px;
+	@include border-radius($baseBorderRadius);
+
 	.media-body {
 		display: block;
 		text-align: left;
@@ -179,7 +181,6 @@ a.media {
 }
 li.media {
 	border-bottom: 1px solid $grayLightest;
-	@include border-radius($baseBorderRadius);
 	padding-bottom: 10px;
 }
 .media-wrap, .media {
