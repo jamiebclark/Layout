@@ -517,13 +517,13 @@ documentReady(function() {
 				top = pos.top;
 				containerBottom;
 				if ($container.length) {
-					containerPos = $container.position();
+					containerPos = $container.offset();
 					containerBottom = containerPos.top + $container.height();
 				}
 			}
 			if (!$(this).data('scroll-init')) {
 				var $scroll = $(this),
-					$container = $scroll.closest('.row'),
+					$container = $scroll.closest('.row,.row-fluid'),
 					height,
 					width,
 					pos,
@@ -532,7 +532,6 @@ documentReady(function() {
 					containerPos;
 				setSizes();
 				$(window).scroll(function() {
-					console.log([$(window).scrollTop(), top]);
 					if ($(window).scrollTop() > top) {
 						fix();
 					} else {
