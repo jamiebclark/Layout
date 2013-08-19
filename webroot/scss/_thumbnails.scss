@@ -28,6 +28,15 @@
 		}
 	}
 }
+ul.thumbnails {
+	> li {
+		margin-bottom: 0;
+		img {
+			width: 100%;
+		}
+	}
+}
+
 .caption-title {
 	margin: 0;
 }
