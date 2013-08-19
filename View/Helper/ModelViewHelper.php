@@ -615,21 +615,22 @@ class ModelViewHelper extends LayoutAppHelper {
 		return $out;
 	}
 	
-	function linkList($Result, $linkOptions = array(), $listOptions = array()) {
+	function linkList($result, $linkOptions = array(), $listOptions = array()) {
 		$list = array();
-		foreach ($Result as $row) {
+		foreach ($result as $row) {
 			$list[] = $this->link($this->_getResult($row), $linkOptions);
 		}
 		return $this->Html->tag('ul', '<li>' . implode('</li><li>', $list) . '</li>', $listOptions);	
 	}	
 
-	function url($Result, $options = array()) {
+	function url($result, $options = array()) {
+		$modelResult = $this->_getResult($result);
 		$controller = !empty($options['controller']) ? $options['controller'] : $this->controller;
 		$action = !empty($options['action']) ? $options['action'] : 'view';
 		$url = compact('controller', 'action');
 	
-		$id = is_numeric($Result) ? $Result : $Result[$this->primaryKey];
-		$title = (is_numeric($Result) || empty($Result[$this->displayField])) ? null : $Result[$this->displayField];
+		$id = is_numeric($result) ? $result : $modelResult[$this->primaryKey];
+		$title = (is_numeric($result) || empty($modelResult[$this->displayField])) ? null : $modelResult[$this->displayField];
 		
 		if ($this->sluggable && !empty($title)) {
 			$url += array('id' => $id, 'slug' => $title);
@@ -739,7 +740,7 @@ class ModelViewHelper extends LayoutAppHelper {
 	}
 	
 	function thumbnail($result, $options = array()) {
-		$result = $this->_getResult($result);
+		$modelResult = $this->_getResult($result);
 		$options = array_merge(array(
 			'dir' => 'mid',
 			'tag' => 'div',		
@@ -789,13 +790,16 @@ class ModelViewHelper extends LayoutAppHelper {
 	
 	function thumbnailCaption($result, $options = array()) {
 		$caption = '';
+		$modelResult = $this->_getResult($result);
 		$tag = !empty($options['captionTitleTag']) ? $options['captionTitleTag'] : 'h3';
 		$useCaption = !empty($options['caption']) ? $options['caption'] : true;
-		if (!empty($result['title']) && ($useCaption === true || $useCaption == 'title')) {
+		if (!empty($modelResult['title']) && ($useCaption === true || $useCaption == 'title')) {
 			$caption .= $this->title($result, compact('tag') + array('url' => $options['url'], 'class' => 'caption-title'));
 		}
-		if (!empty($result['description']) && ($useCaption === true || $useCaption == 'description')) {
-			$caption .= $this->Html->div('caption-description', $result['description']);
+		if ($useCaption === true || $useCaption == 'description') {
+			if ($description = $this->thumbnailCaptionDescription($result, $options)) {
+				$caption .= $this->Html->div('caption-description', $description);
+			}
 		}
 		if (!empty($options['after'])) {
 			$caption .= $options['after'];
@@ -806,6 +810,14 @@ class ModelViewHelper extends LayoutAppHelper {
 		return $caption;	
 	}
 	
+	function thumbnailCaptionDescription($result, $options = array()) {
+		$result = $this->_getResult($result);
+		if (!empty($result['description'])) {
+			return $this->DisplayText->text($result['description']);
+		}
+		return '';
+	}
+
 	function thumbnails($results, $options = array()) {
 		$options = array_merge(array(
 			'id' => null,
@@ -835,9 +847,9 @@ class ModelViewHelper extends LayoutAppHelper {
 			}
 		} else {
 			foreach ($results as $result) {
-				$result = $this->_getResult($result);
+				$modelResult = $this->_getResult($result);
 				$thumbOptions = $options;
-				if ($result['id'] == $id) {
+				if ($modelResult['id'] == $id) {
 					$thumbOptions = $this->addClass($thumbOptions, 'active');
 				}
 				$out .= $this->Html->tag('li', 

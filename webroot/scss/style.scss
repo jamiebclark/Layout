@@ -128,7 +128,7 @@ div.lead {
 		float:right; 
 		margin-left: 10px;
 	}
-	h1, h2, h3, h4, h5 {
+	h1, h2, h3, h4, h5, h6 {
 		margin: 0 0 0 0;
 		padding: 0;
 		line-height: normal;
@@ -250,8 +250,10 @@ li.media {
 	margin-bottom: 0 !important;
 	border-bottom: $contentBoxDividerBorder;
 	.navbar-inner {
+		box-shadow: 0 0 0 0;
 	}
 }
+
 h2.contentbox-heading, 
 h3.contentbox-heading, 
 h4.contentbox-heading, 
