@@ -313,6 +313,13 @@ class ModelViewHelper extends LayoutAppHelper {
 				if (!empty($attrs['urlAdd'])) {
 					$config['urlAdd'] = !empty($config['urlAdd']) ? array_merge($attrs['urlAdd'], $config['urlAdd']) : $attrs['urlAdd'];
 				}
+				if (empty($config['url'])) {
+					if (!empty($attrs['url'])) {
+						$config['url'] = $attrs['url'];
+					} else if (!empty($result['url'])) {
+						$config['url'] = $result['url'];
+					}
+				}
 				if (!empty($config['urlAdd'])) {
 					$config['url'] = $config['urlAdd'] + $config['url'];
 				}
