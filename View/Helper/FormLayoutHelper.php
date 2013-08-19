@@ -742,6 +742,7 @@ class FormLayoutHelper extends LayoutAppHelper {
 			'class' => '',
 			'pass' => array(),
 			'addBlank' => 1,
+			'countStart' => 0,
 		), $options);
 		$options = $this->addClass($options, 'input-list');
 		extract($options);
@@ -766,7 +767,7 @@ class FormLayoutHelper extends LayoutAppHelper {
 		if ($total < 0) {
 			return $out;
 		}
-		for ($count = 0; $count < $total; $count++) {
+		for ($count = $countStart; $count < $countStart + $total; $count++) {
 			$row = '';
 			if ($type == 'function') {
 				$row .= $listContent($count);

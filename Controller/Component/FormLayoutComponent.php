@@ -8,14 +8,19 @@
 class FormLayoutComponent extends Component {
 	var $controller;
 	
-	function initialize(Controller $controller) {
-		//debug($controller->request->data);
+	public function startup(Controller $controller) {
 		$this->controller = $controller;
-		$this->parseData();
-		$this->parseHabtmIds();		
+		if (!isset($this->settings['autoParse']) || $this->settings['autoParse'] !== false) {
+			$this->parse();
+		}
 		return true;
 	}
-
+	
+	public function parse() {
+		$this->parseData();
+		$this->parseHabtmIds();		
+	}
+	
 	public function parseData($passModel = null) {
 		if(!empty($this->controller->request->data)) {
 			$this->controller->request->data = $this->parseDataFunction(
