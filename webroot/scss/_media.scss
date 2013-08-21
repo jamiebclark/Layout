@@ -1,0 +1,125 @@
+// Media Box
+// ---------------------
+.media {
+	margin: $mediaMargin;
+	@include border-radius($mediaBorderRadius);
+
+	.media-body {
+		display: block;
+		text-align: left;
+	}
+	&, .bd {
+		@extends %overflow;
+		display: block;
+	}
+	.img {
+		float:left; 
+		margin-right: 10px;
+		img {
+			display: block;
+		}
+		&.small {
+			img {
+				width: 40px;
+			}
+		}
+	}
+	.imgExt, .rght {
+		float:right; 
+		margin-left: 10px;
+	}
+	h1, h2, h3, h4, h5, h6 {
+		margin: 0 0 0 0;
+		padding: 0;
+		line-height: normal;
+	}
+	p {
+		margin-bottom: $baseLineHeight / 4;
+	}
+	&.border, .border .media {
+		border: 1px solid #EEE;
+		@include border-radius($baseBorderRadius);
+		padding: 10px;
+	}
+	> .pull-right {
+		text-align: right;
+		max-width: 50%;
+	}
+}
+
+
+a.media {
+	color: $mediaLinkColor;
+	padding: $mediaLinkPadding;
+	border: 1px solid $mediaLinkBorder;
+	max-width: $mediaLinkWidth;
+	&:hover {
+		color: $mediaLinkColorHover;
+		border-color: $mediaLinkBorderHover;
+		text-decoration: none;
+	}
+	h2, h3, h4 {
+		margin: 0;
+		padding: 0;
+	}
+	h2 {
+		font-size: 1.25em;
+		line-height: 1.25;
+	}
+	h3 {
+		font-size: 1em;
+	}
+	p {
+		font-weight: normal;
+	}
+}
+li.media {
+	border-bottom: 1px solid $grayLightest;
+	padding-bottom: 10px;
+}
+.media-wrap, .media {
+	display: block;
+	position: relative;
+	max-width: $mediaLinkWidth + 2 * $mediaLinkPadding;
+	.media-actionmenu {
+		display: none;
+		position: absolute;
+		top: 0;
+		right: 0;
+	}
+}
+.media-object {
+	border: 1px solid $grayLightest;
+}
+.media-description {
+	font-size: $fontSizeSmall;
+	line-height: $baseLineHeight * .75;
+	color: $grayLight;
+	padding: 10px;
+}
+.media {
+	.nav {
+		margin: 0;
+	}
+}
+ul.media-list {
+	margin-top: $mediaMargin;
+	margin-bottom: $mediaMargin;
+	li > a.media {
+		margin-bottom: 0;
+		border-radius: 0;
+		margin-top: -1px;
+		position: relative;
+		z-index: 1;
+		&:hover {
+			z-index: 2;
+		}
+	}
+	li:first-child > a.media {
+		@include border-top-radius($mediaBorderRadius);
+	}
+	li:last-child > a.media {
+		@include border-bottom-radius($mediaBorderRadius);
+	}
+}
+

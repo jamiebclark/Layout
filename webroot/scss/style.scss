@@ -11,18 +11,19 @@
 @import "clearfix";
 @import "iconic";
 
+@import "calendar"; 
+@import "collapse_list";
 @import "content";
 @import "display-text";
-@import "liquid-layout";
-@import "model-view";
-@import "table";
 @import "form-layout";
-@import "collapse_list";
-@import "thumbnails";
-@import "sprites";
-
-@import "calendar"; 
 @import "hover"; 
+@import "liquid-layout";
+@import "media";
+@import "model-view";
+@import "sprites";
+@import "table";
+@import "thumbnails";
+
 
 p.test-class {
 	font-weight: bold;
@@ -98,117 +99,6 @@ div.lead {
 	}
 }
 
-// Media Box
-// ---------------------
-.media {
-	margin: 10px;
-	@include border-radius($baseBorderRadius);
-
-	.media-body {
-		display: block;
-		text-align: left;
-	}
-	&, .bd {
-		@extends %overflow;
-		display: block;
-	}
-	.img {
-		float:left; 
-		margin-right: 10px;
-		img {
-			display: block;
-		}
-		&.small {
-			img {
-				width: 40px;
-			}
-		}
-	}
-	.imgExt, .rght {
-		float:right; 
-		margin-left: 10px;
-	}
-	h1, h2, h3, h4, h5, h6 {
-		margin: 0 0 0 0;
-		padding: 0;
-		line-height: normal;
-	}
-	p {
-		margin-bottom: $baseLineHeight / 4;
-	}
-	&.border, .border .media {
-		border: 1px solid #EEE;
-		@include border-radius($baseBorderRadius);
-		padding: 10px;
-	}
-	> .pull-right {
-		text-align: right;
-		max-width: 50%;
-	}
-}
-
-$mediaLinkWidth: 		760px;
-$mediaLinkPadding: 		10px;
-$mediaLinkColor: 		#999;
-$mediaLinkColorHover: 	#666;
-$mediaLinkBorder:		#CCC;
-$mediaLinkBorderHover:	#999;
-
-a.media {
-	color: $mediaLinkColor;
-	padding: $mediaLinkPadding;
-	border: 1px solid $mediaLinkBorder;
-	max-width: $mediaLinkWidth;
-	&:hover {
-		color: $mediaLinkColorHover;
-		border-color: $mediaLinkBorderHover;
-		text-decoration: none;
-	}
-	h2, h3, h4 {
-		margin: 0;
-		padding: 0;
-	}
-	h2 {
-		font-size: 1.25em;
-		line-height: 1.25;
-	}
-	h3 {
-		font-size: 1em;
-	}
-	p {
-		font-weight: normal;
-	}
-}
-li.media {
-	border-bottom: 1px solid $grayLightest;
-	padding-bottom: 10px;
-}
-.media-wrap, .media {
-	display: block;
-	position: relative;
-	max-width: $mediaLinkWidth + 2 * $mediaLinkPadding;
-	.media-actionmenu {
-		display: none;
-		position: absolute;
-		top: 0;
-		right: 0;
-	}
-}
-.media-object {
-	border: 1px solid $grayLightest;
-}
-.media-description {
-	font-size: $fontSizeSmall;
-	line-height: $baseLineHeight * .75;
-	color: $grayLight;
-	padding: 10px;
-}
-.media {
-	.nav {
-		margin: 0;
-	}
-}
-
 // Menu Lists
 // ----------------
 .layout-id-menu {
@@ -218,8 +108,6 @@ li.media {
 		padding: $paddingSmall;
 	}
 }
-		
-
 
 // Content Box
 // ----------------
@@ -355,101 +243,3 @@ h4.contentbox-heading {
 	text-align: right;
 }
 
-// Select Collapse
-// ---------------------------------
-$selectCollapseColorActive:				$dropdownLinkColorActive;
-$selectCollapseColorHover:				$dropdownLinkColorHover;
-$selectCollapseBackgroundActive:		$dropdownLinkBackgroundActive;
-$selectCollapseBackgroundHover:			$dropdownLinkBackgroundHover;
-$selectCollapseOptionColor:				$textColor;
-$selectCollapseOptionColorHover:		$textColor;
-$selectCollapseOptionBackgroundHover:	$infoBackground;
-$selectCollapseOptionPaddingTop:		0;
-$selectCollapseOptionPaddingLeft:		4px;
-$selectCollapseLineHeight:				16px;
-$selectCollapseOptionHeight:			$selectCollapseLineHeight + 2 * $selectCollapseOptionPaddingTop;
-$selectCollapseBulletWidth:				$selectCollapseLineHeight;
-$selectCollapseSize:					12px;
-
-$zindexSelectCollapseMask:				$zindexModal + 10;
-$zindexSelectCollapse:					$zindexSelectCollapseMask + 10;
-
-.select-collapse-mask {
-	z-index: $zindexSelectCollapseMask;
-	&.expanded {
-		z-index: $zindexSelectCollapseMask + 1;
-	}
-}
-.select-collapse-window { 
-	border: 1px solid $windowBorderColor;
-	//@include box-shadow($shadow);
-	z-index: $zindexSelectCollapse;
-	box-shadow: $shadow;
-	background-color: white;
-	position: absolute;	
-	overflow: auto;
-	max-height: 400px;
-	ul {
-		@extend %blanklist;
-	}
-	
-	a {
-		font-size: $selectCollapseSize;
-		font-weight: normal;
-		display: block;
-		line-height: $selectCollapseLineHeight;
-		&:hover {
-			background-color: $selectCollapseBackgroundHover;
-			color: $selectCollapseColorHover;
-			text-decoration: none !important;
-		}
-	}
-	ul {
-		ul {
-			margin-left: $selectCollapseBulletWidth;
-			display: none;
-		}
-		&.expanded {
-			display: block;
-		}
-	}
-}
-.select-collapse-option {
-	display: block;
-	position: relative;
-	padding-left: $selectCollapseBulletWidth;
-	a {
-		color: $selectCollapseOptionColor;
-	}
-	.hover, &:hover {
-		background: $selectCollapseOptionBackgroundHover;
-	}
-	&.active {
-		background: $selectCollapseBackgroundActive;
-		a {
-			color: $selectCollapseColorActive;
-		}
-	}
-}
-.select-collapse-link {
-	padding: $selectCollapseOptionPaddingTop $selectCollapseOptionPaddingLeft;
-}
-
-.select-collapse-bullet {
-	position: absolute;
-	left: 0;
-	top: 0;
-	width: $selectCollapseBulletWidth;
-	height: $selectCollapseOptionHeight;
-
-	padding: 0;
-	margin: 0;
-	
-	text-align: center;
-	background-color: #CCC;
-	font-weight: bold !important;
-	&:hover {
-		background-color: #666;
-		color: white;
-	}
-}

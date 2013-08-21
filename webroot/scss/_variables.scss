@@ -105,3 +105,33 @@ $inputThumbColorHover: 			$linkColorHover; //$color2 !default;
 $inputThumbFullColor: 			$linkColor;	//$color3 !default;
 $inputThumbDeleteColor:			$gray !default;
 
+// Media
+// -------------
+$mediaMargin:			10px !default;
+$mediaBorderRadius:		$baseBorderRadius !default;
+$mediaLinkWidth: 		760px !default;
+$mediaLinkPadding: 		10px !default;
+$mediaLinkColor: 		#999 !default;
+$mediaLinkColorHover: 	#666 !default;
+$mediaLinkBorder:		#CCC !default;
+$mediaLinkBorderHover:	#999 !default;
+
+
+// Select Collapse
+// -----------------------
+$selectCollapseColorActive:				$dropdownLinkColorActive !default;
+$selectCollapseColorHover:				$dropdownLinkColorHover !default;
+$selectCollapseBackgroundActive:		$dropdownLinkBackgroundActive !default;
+$selectCollapseBackgroundHover:			$dropdownLinkBackgroundHover !default;
+$selectCollapseOptionColor:				$textColor !default;
+$selectCollapseOptionColorHover:		$textColor !default;
+$selectCollapseOptionBackgroundHover:	$infoBackground !default;
+$selectCollapseOptionPaddingTop:		0 !default;
+$selectCollapseOptionPaddingLeft:		4px !default;
+$selectCollapseLineHeight:				16px !default;
+$selectCollapseOptionHeight:			$selectCollapseLineHeight + 2 * $selectCollapseOptionPaddingTop !default;
+$selectCollapseBulletWidth:				$selectCollapseLineHeight !default;
+$selectCollapseSize:					12px !default;
+
+$zindexSelectCollapseMask:				$zindexModal + 10 !default;
+$zindexSelectCollapse:					$zindexSelectCollapseMask + 10 !default;

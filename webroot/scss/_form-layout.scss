@@ -304,3 +304,86 @@ $modalWidthSlim: 360px;
 		padding: $paddingSmall;
 	}		
 }
+
+
+// Select Collapse
+// ---------------------------------
+.select-collapse-mask {
+	z-index: $zindexSelectCollapseMask;
+	&.expanded {
+		z-index: $zindexSelectCollapseMask + 1;
+	}
+}
+.select-collapse-window { 
+	border: 1px solid $windowBorderColor;
+	//@include box-shadow($shadow);
+	z-index: $zindexSelectCollapse;
+	box-shadow: $shadow;
+	background-color: white;
+	position: absolute;	
+	overflow: auto;
+	max-height: 400px;
+	ul {
+		@extend %blanklist;
+	}
+	
+	a {
+		font-size: $selectCollapseSize;
+		font-weight: normal;
+		display: block;
+		line-height: $selectCollapseLineHeight;
+		&:hover {
+			background-color: $selectCollapseBackgroundHover;
+			color: $selectCollapseColorHover;
+			text-decoration: none !important;
+		}
+	}
+	ul {
+		ul {
+			margin-left: $selectCollapseBulletWidth;
+			display: none;
+		}
+		&.expanded {
+			display: block;
+		}
+	}
+}
+.select-collapse-option {
+	display: block;
+	position: relative;
+	padding-left: $selectCollapseBulletWidth;
+	a {
+		color: $selectCollapseOptionColor;
+	}
+	.hover, &:hover {
+		background: $selectCollapseOptionBackgroundHover;
+	}
+	&.active {
+		background: $selectCollapseBackgroundActive;
+		a {
+			color: $selectCollapseColorActive;
+		}
+	}
+}
+.select-collapse-link {
+	padding: $selectCollapseOptionPaddingTop $selectCollapseOptionPaddingLeft;
+}
+
+.select-collapse-bullet {
+	position: absolute;
+	left: 0;
+	top: 0;
+	width: $selectCollapseBulletWidth;
+	height: $selectCollapseOptionHeight;
+
+	padding: 0;
+	margin: 0;
+	
+	text-align: center;
+	background-color: #CCC;
+	font-weight: bold !important;
+	&:hover {
+		background-color: #666;
+		color: white;
+	}
+}
