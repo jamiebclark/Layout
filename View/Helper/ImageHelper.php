@@ -31,9 +31,19 @@ class ImageHelper extends LayoutAppHelper {
 		}
 		if (!empty($settings['externalServer'])) {
 			$this->externalServer = $settings['externalServer'];
-		}			
+		}
 	}
 
+	function getExternalServer($options = array()) {
+		$root = !empty($options['externalServer']) ? $options['externalServer'] : $this->externalServer;
+		if (substr($root,-5) == '/img/') {
+			if (!empty($options['plugin'])) {
+				$root = substr($root,0,-5) . '/' . strtolower($options['plugin']) . '/img/';
+			}
+		}
+		return $root;
+	}
+	
 	/** 
 	 * Finds the html path to an image
 	 *
@@ -77,10 +87,15 @@ class ImageHelper extends LayoutAppHelper {
 		if (!empty($options['externalServer'])) {
 			$options['useRoot'] = false;
 			$options['isFile'] = false;
-			if (!empty($options['plugin'])) {
-				$options['externalServer'] .= Inflector::singularize(Inflector::tableize($options['plugin']));
-				unset($options['plugin']);
+			$root = $options['externalServer'];
+			if (substr($root,-5) == '/img/') {
+				if (!empty($options['plugin'])) {
+					$plugin = Inflector::singularize(Inflector::tableize($options['plugin']));
+					$root = substr($root,0,-5) . "/$plugin/img/";
+					unset($options['plugin']);
+				}
 			}
+			$options['externalServer'] = $root;
 		}
 		if (is_array($file)) {
 			if (isset($file[$options['imageField']])) {
