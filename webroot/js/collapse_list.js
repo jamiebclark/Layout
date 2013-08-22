@@ -27,17 +27,14 @@
 						$titles.removeClass('selected');
 						next();
 					});
-				console.log($selected.length);
 				if (id) {
 					$selected = $rootList.find('#' + id + ' .collapse-list-item-title').first();
 				}
-				console.log($selected.length);
 				if ($selected.length) {
 					$collapseList
 						.queue(qName, function(next) {
 							$selected.parentsUntil('.collapse-list', 'ul.collapse-list-list').each(function() {
 								updateList($(this), false, false, qName);
-								console.log('Displaying Collapse List Level');
 							});
 							next();
 						})
@@ -47,7 +44,6 @@
 						})
 						.queue(qName, function(next) {
 							$selected.addClass('selected');
-							console.log('Selecting Current Item');
 							next();
 						})
 						.delay(2000, qName)
@@ -168,7 +164,6 @@
 					})
 					.droppable({
 						drop: function(e, ui) {
-							console.log('Dropped');
 							if (collapseTimeout) {
 								clearTimeout(collapseTimeout);
 							}
@@ -182,7 +177,6 @@
 						over: function(e, ui) {
 							var p1 = $(ui.draggable).offset();
 							$(this).addClass('drop-over').parentsUntil('.collapse-list').removeClass('drop-over');
-							console.log('Before ' + p1.top);
 							
 							if ($checkbox.length && $checkbox.is(':checked')) {
 								if (collapseTimeout) {
@@ -191,7 +185,6 @@
 								collapseTimeout = setTimeout(function() {
 									$checkbox.attr('checked', false).change();
 									var p2 = $(ui.draggable).offset();
-									console.log('After ' + p2.top + ': Adjusting: ' + (p2.top - p1.top));
 									$(ui.draggable).animate({
 										'top': '-=' + (p2.top - p1.top)
 									});

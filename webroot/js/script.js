@@ -589,8 +589,6 @@ documentReady(function() {
 				embedWidth = $embedObject.attr('width') ? $embedObject.attr('width') : $embedObject.width(),
 				embedHeight = $embedObject.attr('height') ? $embedObject.attr('height') : $embedObject.height(),
 				embedRatio = embedWidth / embedHeight;
-			
-			console.log('Fitting object');
 			function fitEmbedObject() {
 				var w = $container.width();
 				$embedObjects.width(w).height(w / embedRatio);
@@ -602,6 +600,9 @@ documentReady(function() {
 				});	
 				$container.data('embed-fit-init', true);
 			}
+			$container.on('resize', function() {
+				fitEmbedObject();
+			})
 		});
 	};
 })(jQuery);
