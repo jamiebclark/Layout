@@ -139,7 +139,7 @@ class FormLayoutHelper extends LayoutAppHelper {
 				'class' => 'input-autocomplete-multi-default-values',
 			));
 		}
-		$objectOptions = array('data-name' => "[$model][$model][]");
+		$objectOptions = array('data-name' => "data[$model][$model][]");
 		$out = $this->Html->div('input-autocomplete-multi', $out, $objectOptions);
 		if (!empty($title)) {
 			$out = $this->Html->tag('h4', $title) . $out;

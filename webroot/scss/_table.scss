@@ -26,6 +26,10 @@ tr {
 	}
 }
 
+td.dt {
+	text-align: right;
+	color: $textColorLighter;
+}
 
 .table-with-checked {
 	padding: $paddingSmall;

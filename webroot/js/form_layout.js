@@ -689,16 +689,19 @@ documentReady(function() {
 			if (!$addLink.length) {
 				$addLink = $('<a class="btn btn-small" href="#" tabindex="-1">Add</a>').appendTo($control);
 			}
+			
 			$addLink.click(function(e) {
 				e.preventDefault();
-				$listItems.cloneNumbered().trigger('inputListAdd');
+				$list.trigger('add');
 			});
 					
 			$listItems.filter(':visible').each(function() {
 				addRemoveBox($(this));
 				return $(this);
 			});
-			$list.data('input-list-init', true);
+			$list.on('add', function() {
+				$listItems.cloneNumbered().trigger('inputListAdd');
+			}).data('input-list-init', true);
 			return $(this);
 		});
 	};
@@ -930,7 +933,7 @@ documentReady(function() {
 						lastUrl = loadOptions.url;
 						var request = $.ajax(loadOptions)
 							.error(function(data) {
-								console.log('Dropdown call failed');
+								console.log('Dropdown call failed: ' + loadOptions.url);
 							})
 							.success(function(data, text, httpRequest) {
 								var timestamp = Math.round(new Date().getTime() / 1000);
