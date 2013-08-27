@@ -26,8 +26,8 @@
 
 // Extend Bootstrap
 // -----------------------
-.modal-footer {
-	position: relative;
+legend+.control-group {
+	margin-top: 0;	// Not sure why this rule exists in bootstrap, but it makes everything look weird
 }
 
 p.test-class {
