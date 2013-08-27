@@ -1200,7 +1200,8 @@ $(document).ready(function() {
 				$modalParent = $select.closest('.modal'),
 				bulletRepeat = ' - ',
 				childIndex = 0,
-				lastChildIndex = 0;
+				lastChildIndex = 0,
+				initName = 'collapse-init';
 				
 			function setLink($a) {
 				$div.find('.active').removeClass('active');
@@ -1209,7 +1210,9 @@ $(document).ready(function() {
 				expandUp($li);
 				set($a.data('val'));
 				hide();
-				$select.focus();
+				if ($select.data(initName)) {
+					$select.focus();
+				}
 			}
 			function set(val) {
 				$select.val(val);
@@ -1296,7 +1299,7 @@ $(document).ready(function() {
 				});
 			}
 			
-			if (!$select.data('collapse-init')) {
+			if (!$select.data(initName)) {
 				$div.appendTo($('body'));
 				$mask.appendTo($('body'));
 				positionMask();
@@ -1395,7 +1398,7 @@ $(document).ready(function() {
 				}).on('shown', function() {
 					positionMask();
 				});
-				$select.data('collapse-init', true);
+				$select.data(initName, true);
 			}
 			return $(this);
 		});
