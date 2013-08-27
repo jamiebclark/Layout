@@ -1283,20 +1283,29 @@ $(document).ready(function() {
 			
 			function positionMask() {
 				if ($select.is(':visible')) {
-					var pos = $select.offset(),
+					var offset = $select.offset(),
+						pos = $select.position(),
 						h = $select.outerHeight(),
 						w = $select.outerWidth();
 				} else {
-					var pos = {top: 0, left: 0},
+					var offset = {top: 0, left: 0},
 						w = 0,
 						h = 0;
 				}
+				
+				if ($scrollParent.length && pos.top > $scrollParent.height()) {
+					h -= pos.top - $scrollParent.height();
+					if (h < 0) {
+						h = 0;
+					}
+				}
+				
 				$mask.css({
 					'position' : 'absolute',
-					'top' : pos.top,
-					'left' : pos.left,
-					'right' : pos.left + w,
-					'bottom' : pos.top + h,
+					'top' : offset.top,
+					'left' : offset.left,
+					'right' : offset.left + w,
+					'bottom' : offset.top + h,
 					'width' : w,
 					'height' : h
 				});
