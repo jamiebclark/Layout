@@ -8,13 +8,10 @@
 		height: auto !important;
 	}
 }
-
-$hoverWindowPadding: 10px;
-$hoverWindowBorder: #CCC;
 .hover-window {
 	position: absolute;
 	padding: $hoverWindowPadding;
-	border: 1px solid $hoverWindowBorder;
+	border: $hoverWindowBorder solid $hoverWindowBorderColor;
 	@include gradient-vertical(#FFF,#EEE);
 	@include box-shadow($shadowPadding, $shadowPadding, $shadowRadius, $shadowColor);
 	border-radius: $borderRadiusSmall;
@@ -28,7 +25,7 @@ $hoverWindowBorder: #CCC;
 	margin-bottom: 4px;
 }
 .hover-window-title {
-	border-bottom: 1px solid lighten($hoverWindowBorder, 10%);
+	border-bottom: 1px solid lighten($hoverWindowBorderColor, 10%);
 }
 .hover-window-title-control {
 	display: block;
@@ -40,20 +37,32 @@ $hoverWindowBorder: #CCC;
 
 @mixin arrowBorder($side) {
 	$adjust: top;
+	$verticalAdjust: false;
 	@if ($side == top or $side == bottom) {
-		$adjust: 'left';
+		$adjust: left;
+		@if ($side == top) {
+			$verticalAdjust: top;
+		} @else {
+			$verticalAdjust: bottom;
+		}
 	}
 	.hover-arrow, .hover-arrow-border {
 		@include arrow($side, $hoverArrowHeight, $hoverArrowColor);
 		//height: $hoverArrowHeight;
 		z-index: 50;
 		#{$adjust}: $baseLineHeight;
+		@if ($verticalAdjust != false) {
+			#{$verticalAdjust}: $hoverArrowBorder;
+		}
 	}
 	.hover-arrow-border {
 		@include arrow($side, $hoverArrowHeight + $hoverArrowBorder, $hoverWindowBorderColor);
 		//height: $hoverArrowHeight;
 		#{$adjust}: $baseLineHeight - $hoverArrowBorder;
 		z-index: 49;
+		@if ($verticalAdjust != false) {
+			#{$verticalAdjust}: -#{$hoverArrowBorder};
+		}
 	}
 }
 
@@ -71,12 +80,12 @@ $hoverWindowBorder: #CCC;
 		margin: 0;
 	}
 
-	@include arrowBorder(top);
+	@include arrowBorder("top");
 		
 	.hover-window {
 		margin: 0;
 		margin-top: $hoverArrowHeight;
-		position: reltiave;
+		position: relative;
 		z-index: 2;
 	}
 	&.width-auto {

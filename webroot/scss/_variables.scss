@@ -44,14 +44,17 @@ $windowBackgroundColor:			#FFF !default;
 
 // Hover Content
 // ---------------------
+$hoverWindowBorder: 			1px;
 $hoverWindowBorderColor:		$windowBorderColor !default;
+$hoverWindowPadding: 			10px;
 $hoverWindowWidthWider: 		660px !default;
 $hoverWindowWidthWide: 			460px !default;
 $hoverWindowWidthSlim: 			240px !default;
 
+
 $hoverArrowHeight:				10px !default;
 $hoverArrowColor:				white !default;//$hoverWindowBorderColor;
-$hoverArrowBorder:				1px !default;
+$hoverArrowBorder:				$hoverWindowBorder !default;
 
 // Thumbnails
 // ------------------------
