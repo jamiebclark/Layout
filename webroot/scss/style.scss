@@ -24,6 +24,11 @@
 @import "table";
 @import "thumbnails";
 
+// Extend Bootstrap
+// -----------------------
+.modal-footer {
+	position: relative;
+}
 
 p.test-class {
 	font-weight: bold;

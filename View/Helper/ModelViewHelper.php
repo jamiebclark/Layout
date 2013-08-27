@@ -950,6 +950,7 @@ class ModelViewHelper extends LayoutAppHelper {
 			'type' => 'file', 
 			'div' => false,
 			'label' => $this->Html->tag('font', $label),
+			'tabindex' => -1,
 		));
 		$out = $this->Html->div('input-thumb', $out);
 		if ($hasImg && $deleteName) {
