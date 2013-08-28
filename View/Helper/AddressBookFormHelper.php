@@ -92,29 +92,39 @@ class AddressBookFormHelper extends LayoutAppHelper {
 				$aPlaceholder = 'Apt. or Suite#';
 			}
 			$inputRows[] = array(	
-				$addressPrefix . ($numerical ? $numeric++ : 'addline' . $i) => 
-					array('type' => 'text', 'label' => $aLabel, 'placeholder' => $aPlaceholder)
+				$addressPrefix . ($numerical ? $numeric++ : 'addline' . $i) => array(
+					'type' => 'text', 
+					'label' => $aLabel, 
+					'placeholder' => $aPlaceholder,
+					'div' => 'addressbookform-addline',
+				)
 			);
 		}
 		$inputRows[] = array(
 			$this->_numericField('city', $numerical, $addressPrefix) => array(
 				'label' => 'City',
 				'type' => 'text',
+				'span' => 8,
+				'div' => 'addressbookform-city',
 			),
 			$this->_numericField('state', $numerical, $addressPrefix) => array(
 				'label' => 'State',
 				'options' => $states,
+				'div' => 'addressbookform-state',
 			)
 		);
 		$inputRows[] = array(
 			$this->_numericField('zip', $numerical, $addressPrefix) => array(
 				'label' => 'Zip',
 				'type' => 'text',
+				'span' => 8,
+				'div' => 'addressbookform-zip',
 			),
 			$this->_numericField('country', $numerical, $addressPrefix) => array(
 				'default' => 'US', 
 				'label' => 'County',
 				'options' => $countries,
+				'div' => 'addressbookform-country',
 			),
 		);
 		$out .= $this->FormLayout->inputRows($inputRows, compact('fieldset', 'legend', 'span', 'placeholder'));

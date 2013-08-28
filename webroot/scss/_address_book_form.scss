@@ -90,3 +90,18 @@ $ns: 					"input-name";	//Namespace
 		}
 	}
 }
+
+// Address Input
+// --------------------------------------
+.form-horizontal {
+	.addressbookform-state,
+	.addressbookform-country {
+		label {
+			display: none;
+		}
+		.controls {
+			margin-left: 0;
+		}
+	}
+}
+			

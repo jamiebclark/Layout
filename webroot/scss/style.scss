@@ -216,13 +216,20 @@ h4.contentbox-heading {
 			color: $linkColorHover;
 		}
 	}
-			
 }
 .layout-toggle-content {
 	border-top: 1px solid #F8F8F8;
 	padding-top: .5em;
 	background-color: white;
 	padding: $paddingLarge;
+}
+.form-horizontal {
+	.layout-toggle-control {
+		padding-left: $horizontalComponentOffset - 20px;
+	}
+	.layout-toggle-content {
+		padding-left: 0;
+	}
 }
 
 
