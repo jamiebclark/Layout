@@ -63,7 +63,13 @@
 }
 .input-autocomplete {
 	@extend %overflow;
+	.layout-dropdown-holder {
+		float: none;
+	}
 	&.contain-button {
+		.layout-dropdown-holder {
+			float: left;
+		}
 		input {
 			border-top-right-radius: 0;
 			border-bottom-right-radius: 0;

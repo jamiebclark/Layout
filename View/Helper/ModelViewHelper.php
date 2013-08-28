@@ -345,9 +345,9 @@ class ModelViewHelper extends LayoutAppHelper {
 						}
 					}
 				}
-	
 				if (is_array($menuItem)) {
 					list($linkTitle, $linkUrl, $linkOptions, $linkPost) = $menuItem + array(null, null, null, null);
+					
 					if (empty($linkUrl['controller']) || $linkUrl['controller'] == $this->controller && !isset($linkUrl[0])) {
 						$linkUrl[0] = $id;
 					}

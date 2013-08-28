@@ -1289,6 +1289,7 @@ $(document).ready(function() {
 						w = $select.outerWidth();
 				} else {
 					var offset = {top: 0, left: 0},
+						pos = offset,
 						w = 0,
 						h = 0;
 				}

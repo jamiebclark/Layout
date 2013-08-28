@@ -738,7 +738,7 @@ class FormLayoutHelper extends LayoutAppHelper {
 			'count' => 1,
 			'type' => 'element',
 			'tag' => 'div',
-			'titleTag' => 'h3',
+			'titleTag' => 'h4',
 			'class' => '',
 			'pass' => array(),
 			'addBlank' => 1,
