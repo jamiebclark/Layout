@@ -112,8 +112,11 @@ ul.media-list {
 		margin-top: -1px;
 		position: relative;
 		z-index: 1;
-		&:hover {
+		&.active {
 			z-index: 2;
+		}
+		&:hover {
+			z-index: 3;
 		}
 	}
 	li:first-child > a.media {

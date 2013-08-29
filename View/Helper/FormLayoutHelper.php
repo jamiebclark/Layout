@@ -295,6 +295,8 @@ class FormLayoutHelper extends LayoutAppHelper {
 			'addDiv' => false,
 			'displayInput' => null,
 			'redirectUrl' => null,
+			'searchField' => $searchField,
+			'displayOptions' => array(),	// Array(ID => TITLE) of possible values
 		);
 		$options = array_merge(array(
 			'label' => null,
@@ -303,17 +305,8 @@ class FormLayoutHelper extends LayoutAppHelper {
 		), $custom, $options);
 		
 		extract($options);
+		
 		$hasValue = !empty($value);
-
-		//debug(array($displayOptions, $this->Html->value($prefix . $idField)));
-		
-		if (!$hasValue && $this->Html->value($prefix . $idField)) {
-		
-			if (!empty($displayOptions[$this->Html->value($prefix . $idField)])) {
-				$value = $displayOptions[$this->Html->value($prefix . $idField)];
-			}		
-		}
-		
 		foreach ($custom as $key => $val) {
 			unset($options[$key]);
 		}
@@ -327,6 +320,16 @@ class FormLayoutHelper extends LayoutAppHelper {
 			}
 			if (isset($count)) {
 				$prefix .= $count . '.';
+			}
+		}
+		
+		$idField = $prefix . $idField;
+		$searchField = $prefix . $searchField;
+		if (!$hasValue) {
+			if ($this->Html->value($idField) && !empty($displayOptions[$this->Html->value($idField)])) {
+				$value = $displayOptions[$this->Html->value($idField)];
+			} else if ($this->Html->value($searchField)) {
+				$value = $this->Html->value($searchField);
 			}
 		}
 		
@@ -345,7 +348,7 @@ class FormLayoutHelper extends LayoutAppHelper {
 		if (!empty($redirectUrl)) {
 			$redirectUrl = is_array($redirectUrl) ? Router::url($redirectUrl) . '/' : $redirectUrl;
 		}
-		$return .= $this->input($prefix . $searchField, array_merge($options, array(
+		$return .= $this->input($searchField, array_merge($options, array(
 			'type' => 'text',
 			'before' => $idInput,
 			'between' => $displayInput,
