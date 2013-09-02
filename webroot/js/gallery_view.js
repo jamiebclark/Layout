@@ -212,6 +212,8 @@
 				if (!('a', $headerTitle).length && imgUrl) {
 					$headerTitle.wrap($('<a></a>', {'href':imgUrl}));
 				}
+			} else {
+				$headerTitle.html('');
 			}
 			$infoControl = $('<a></a>', {
 				'href': '#',
