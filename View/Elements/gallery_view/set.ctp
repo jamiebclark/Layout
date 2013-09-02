@@ -18,8 +18,10 @@ $this->start('galleryViewControls');
 $this->end();
 
 // Thumbnails
-$this->prepend('galleryViewThumbnails', '<div class="gallery-view-thumbnails">');
-$this->append('galleryViewThumbnails', '</div>');
+if ($this->fetch('galleryViewThumbnails')) {
+	$this->prepend('galleryViewThumbnails', '<div class="gallery-view-thumbnails">');
+	$this->append('galleryViewThumbnails', '</div>');
+}
 
 // Main Image Display
 $galleryViewImage = $this->fetch('galleryViewImage');
