@@ -58,11 +58,12 @@ class GalleryViewHelper extends AppHelper {
 
 	private function getNeighbors($neighbors, $keys = false) {
 		$next = $prev = array();
+		// Reverses next and prev, since we want to sort in descending order
 		if (!empty($neighbors['next'])) {
-			$next = $neighbors['next'];
+			$prev = $neighbors['next'];
 		}
 		if (!empty($neighbors['prev'])) {
-			$prev = $neighbors['prev'];
+			$next = $neighbors['prev'];
 		}
 		return $keys ? compact('next', 'prev') : array($next, $prev);	
 	}
