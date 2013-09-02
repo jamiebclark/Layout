@@ -1,0 +1,237 @@
+$galleryViewControlSize:	 	140px !default;
+$galleryInfoControlSize: 		40px !default;
+$galleryViewBorderRadius:		4px !default;
+$galleryViewBodyHeight:			500px !default;
+
+@import "bootstrap/variables";
+@import "variables";
+@import "bootstrap/mixins";
+@import "mixins";
+
+.gallery-view {
+	position: relative;
+	top: 0;
+	right: 0;
+	bottom: 0;
+	left: 0;
+	background-color: white;
+}
+.gallery-view-title {
+	display: none;
+}
+.gallery-view-image {
+	clear: both;
+	text-align: center;
+	background-color: #EEE;
+	position: relative;
+	img {
+		max-width: 100%;
+		max-height: 100%;
+	}
+}
+.gallery-view-image-display {
+	a {
+		display: block;
+	}
+	img {
+		min-width: 400px;
+	}
+}
+
+.gallery-view-controls {
+	position: absolute;
+	top: 0;
+	right: 0;
+	left: 0;
+	bottom: 0;
+}
+
+a.gallery-view-control {
+	&.next {
+		right: 0;
+	}
+	&.prev {
+		left: 0;
+	}
+	&:hover {
+		@include background-opacity(#FFF, .25);
+		span {
+			opacity: 1;
+		}
+	}
+	position: absolute;
+	top: 0;
+	bottom: 0;
+	width: $galleryViewControlSize / 2;
+	span {
+		position: absolute;
+		top: 50%;
+		display: block;
+		font-size: $galleryViewControlSize;
+		font-weight: bold;
+		width: $galleryViewControlSize / 2;
+		height: $galleryViewControlSize;
+		line-height: $galleryViewControlSize * .75;
+		margin-top: -#{$galleryViewControlSize / 2};
+		color: #CCC;
+		opacity: .5;
+	}
+}
+.gallery-view-html .gallery-view-infos {
+	position: absolute;
+	top: 0;
+	right: 0;
+	bottom: 0;
+	width: 33%;
+	overflow: auto;
+	background-color: white;
+	border-left: 1px solid black;
+}
+.gallery-view-infos > div {
+	margin-left: 10px;
+}
+
+// Modal Window
+#gallery-modal {
+	.modal-body, 
+	.gallery-view, 
+	.gallery-view-image, 
+	.gallery-view-image-display, 
+	.gallery-view-image-display a, 
+	.gallery-view-image-display img {
+		height: 100%;
+		min-height: 0;
+		max-height: none;
+	}
+	
+	border-radius: $galleryViewBorderRadius;
+	
+	.modal-header {
+		.modal-header-title {
+			height: 30px;
+			overflow: hidden;
+		}
+	}
+	.modal-body {
+		padding: 0;
+		padding-bottom: $galleryViewBorderRadius;
+		overflow: hidden;
+		height: auto;
+	}
+	
+	.gallery-view-image-display {
+		img {
+			min-width: 0 !important;
+		}
+	}
+	
+	.gallery-view-caption.gallery-view-control {
+		background: transparent;
+		position: absolute;
+		top: 0;
+		left: 0;
+		padding: 10px;
+		margin: 10px;
+		@include background-opacity(#FFF,.5);
+	}
+	
+	.gallery-view-thumbnails {
+		position: absolute;
+		bottom: 0;
+		left: 0;
+		right: 0;
+	}
+	.gallery-view-thumbnails > div {
+		position: absolute;
+		bottom: 0;
+	}
+	.gallery-view-infos {
+		position: absolute;
+		right: 0;
+		bottom: 0;
+		top: 0;
+		background-color: white;
+		width: 40%;
+	}
+	.gallery-view-infos-inner {
+		overflow: auto;
+		position: absolute;
+		top: 0;
+		right: 0;
+		bottom: 0;
+		left: 0;
+	}
+	
+	.gallery-view-info-control {
+		position: absolute;
+		left: -#{$galleryInfoControlSize};
+		width: $galleryInfoControlSize;
+		top: 40px;
+		font-size: $galleryInfoControlSize;
+		text-align: center;
+		height: $galleryInfoControlSize;
+		line-height: $galleryInfoControlSize * .75;
+		background-color: white;
+		text-decoration: none;
+		
+		border-top-left-radius: $galleryInfoControlSize;
+		border-bottom-left-radius: $galleryInfoControlSize;
+		
+		&:hover {
+			background-color: #CCC;
+		}
+	}
+}
+.gallery-view-thumbnails {
+	> div {
+		background-color: white;
+		padding: 10px 0;
+	}
+	li, a, img, div, ul {
+		margin: 0 !important;
+		padding: 0 !important;
+		border: 0;
+	}
+	li {
+		position: relative;
+		max-width: 180px;
+	}
+	@for $i from 1 through 12 {
+		.thumbnails#{$i} {
+			li {
+				margin: .5% !important;
+				width: #{100/$i - 1}% !important;
+			}
+		}
+	}
+	a:hover {
+		opacity: .5;
+	}
+	.active {
+		background-color: $linkColorHover;
+		a {
+			opacity: .5;
+		}
+	}
+}
+		
+.ajax-loading {
+	opacity: .5;
+	background-color: black;
+	position: absolute;
+	top: 0;
+	bottom: 0;
+	left: 0;
+	right: 0;
+	text-align: center;
+	height: 100%;
+	span {
+		color: white;
+		position: absolute;
+		top: 50%;
+		left: 0;
+		right: 0;
+		font-size: 40px;
+		margin-top: -20px;
+	}
+}

@@ -1204,8 +1204,6 @@ $(document).ready(function() {
 				lastChildIndex = 0,
 				initName = 'collapse-init';
 				
-			console.log($scrollParent.length);
-			
 			function setLink($a) {
 				$div.find('.active').removeClass('active');
 				var $li = $a.closest('span.select-collapse-option').addClass('active').closest('li');
