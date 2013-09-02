@@ -10,12 +10,17 @@ echo $this->element('Layout.gallery_view/set');
 		</div>
 	<?php endif; ?>
 	<div class="row-fluid">
-		<div class="span8">
-			<?php echo $this->fetch('galleryViewImages'); ?>
-		</div>
-		<div class="span4">
-			<?php echo $this->fetch('galleryViewInfos'); ?>
-		</div>
+		<?php if ($info =  $this->fetch('galleryViewInfos')): ?>
+			<div class="span8">
+				<?php echo $this->fetch('galleryViewImages'); ?>
+			</div>
+			<div class="span4">
+				<?php echo $info; ?>
+			</div>
+		<?php else:
+			echo $this->fetch('galleryViewImages');
+		endif;
+	?>
 	</div>
 </div>
 <?php

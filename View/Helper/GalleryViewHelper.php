@@ -43,6 +43,7 @@ class GalleryViewHelper extends AppHelper {
 		$neighbors = $this->getNeighbors(!empty($neighbors) ? $neighbors : $result, $keys);
 		$info = array();
 		foreach ($neighbors as $key => $rows)  {
+			$val = null;
 			if (isset($rows[0][$this->modelName]['id'])) {
 				$modelId = $rows[0][$this->modelName]['id'];
 				if ($return == 'url') {
@@ -50,8 +51,9 @@ class GalleryViewHelper extends AppHelper {
 				} else if ($return == 'id') {
 					$val = $modelId;
 				}
-				$info[$key] = $val;
+
 			}
+			$info[$key] = $val;
 		}
 		return $info;
 	}
@@ -60,10 +62,10 @@ class GalleryViewHelper extends AppHelper {
 		$next = $prev = array();
 		// Reverses next and prev, since we want to sort in descending order
 		if (!empty($neighbors['next'])) {
-			$prev = $neighbors['next'];
+			$next = $neighbors['next'];
 		}
 		if (!empty($neighbors['prev'])) {
-			$next = $neighbors['prev'];
+			$prev = $neighbors['prev'];
 		}
 		return $keys ? compact('next', 'prev') : array($next, $prev);	
 	}

@@ -1,4 +1,8 @@
 <?php
+if (!empty($galleryViewResult) && !empty($neighbors)) {
+	list($nextUrl, $prevUrl) = $this->GalleryView->getNeighborUrls($galleryViewResult, $neighbors);
+	list($nextPhotoId, $prevPhotoId) = $this->GalleryView->getNeighborIds($galleryViewResult, $neighbors);
+}
 // Controls
 $this->start('galleryViewControls');
 	if (!empty($prevUrl)) {
@@ -50,16 +54,16 @@ $this->start('galleryViewImages'); ?>
 	?></div><?php 
 $this->end();
 
-$this->start('galleryViewInfos'); ?>
-	<div class="gallery-view-infos"><?php
-		if (!empty($this->viewVars['galleryViewTitle'])):?>
-			<div class="gallery-view-title">
-				<?php echo $this->viewVars['galleryViewTitle']; ?>
-			</div>
-		<?php endif;
-		echo $this->fetch('galleryViewCaption');
-		echo $this->fetch('galleryViewInfo');
-	?></div><?php
+$this->start('galleryViewInfos');
+	$out = '';
+	if (!empty($this->viewVars['galleryViewTitle'])){
+		$out .= $this->Html->div('gallery-view-title', $this->viewVars['galleryViewTitle']);
+	}
+	$out .= $this->fetch('galleryViewCaption');
+	$out .= $this->fetch('galleryViewInfo');
+	if (!empty($out)) {
+		echo $this->Html->div('gallery-view-infos', $out);
+	}
 $this->end();	
 
 // Display Layout
