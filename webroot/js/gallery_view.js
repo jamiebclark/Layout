@@ -3,7 +3,8 @@
 	
 	$.fn.galleryViewLink = function() {
 		return this.each(function() {
-			var $a = $(this),
+			var $this = $(this),
+				$a = this.nodeName.toLowerCase() == 'a' ? $this : $('a', $this).first(),
 				url = $a.attr('href');
 			if (!$a.data('gallery-view-link-init')) {
 				$a.click(function(e) {
@@ -119,15 +120,12 @@
 			if (typeof $info.data('gallery-hidden') === 'undefined') {
 				infoWidth = $info.outerWidth();
 				infoWidthInner = $('.gallery-view-infos-inner', $info).outerWidth();
-				$info.css({'width':0});
-				
 				afterHideInfo();
-			} else {
-				$info.animate({'width': 0}, {
-					'complete': function() {
-						afterHideInfo();
-					}});
-			}
+			} 
+			$info.animate({'width': 0}, {
+				'complete': function() {
+					afterHideInfo();
+				}});
 		}
 		
 		function afterHideInfo() {
@@ -245,7 +243,9 @@
 				resize();
 				showThumbnails();
 				hideThumbnails(500);
+				hideInfo();
 			});
+			
 			if ($modal.is(':visible')) {
 				hideInfo();	
 			}

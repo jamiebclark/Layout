@@ -1,5 +1,6 @@
 <?php 
-echo $this->Html->css('Layout.gallery_view'); 
+$this->Asset->css('Layout.gallery_view'); 
+$this->Asset->js('Layout.gallery_view'); 
 echo $this->element('Layout.gallery_view/set');
 ?>
 <div class="gallery-view">
@@ -19,4 +20,3 @@ echo $this->element('Layout.gallery_view/set');
 </div>
 <?php
 echo $this->fetch('content');
-echo $this->Html->script('Layout.gallery_view'); 
