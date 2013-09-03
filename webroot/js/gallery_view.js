@@ -105,7 +105,7 @@
 			} 
 			$modal.css(css);
 			var bodyPadding = $body.outerHeight() - $body.height();
-			var bodyHeight = $modal.innerHeight() - $header.outerHeight() - bodyPadding;
+			var bodyHeight = $modal.innerHeight() - $header.outerHeight() - $thumbnails.outerHeight() - bodyPadding;
 			$image.height(bodyHeight);
 		}
 		
@@ -198,8 +198,8 @@
 			});
 			$view = $('<div class="gallery-view"></div>')
 				.append($imageHolder)
-				.append($thumbnails)
 				.append($info)
+				.append($thumbnails)
 				.append($caption)
 				.appendTo($body)
 				.galleryView();
@@ -237,14 +237,15 @@
 					hideInfo();	
 				});
 			}
-			
+			/*
 			$thumbnails.hover(showThumbnails, hideThumbnails).css('min-height', '100px');
 			hideThumbnails();
+			*/
 			
 			$modal.modal('show').on('shown', function() {
 				resize();
-				showThumbnails();
-				hideThumbnails(500);
+				//showThumbnails();
+				//hideThumbnails(500);
 				hideInfo();
 			});
 			
