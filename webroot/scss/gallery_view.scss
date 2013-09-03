@@ -135,6 +135,18 @@ a.gallery-view-control {
 		@include background-opacity(#FFF,.5);
 	}
 	
+	.gallery-view-thumbnails {
+		position: relative;
+	}
+	.gallery-view-thumbnails-control {
+		position: absolute;
+		line-height: $baseLineHeight;
+		top: -#{$baseLineHeight};
+		left: $baseLineHeight;
+		@include border-top-radius($baseLineHeight);
+		background-color: white;
+		padding: 0 #{$baseLineHeight / 2};
+	}
 	/*
 	.gallery-view-thumbnails {
 		position: absolute;
@@ -152,6 +164,7 @@ a.gallery-view-control {
 		right: 0;
 		bottom: 0;
 		top: 0;
+		z-index: 1;
 		background-color: white;
 		width: 40%;
 	}
@@ -164,7 +177,7 @@ a.gallery-view-control {
 		left: 0;
 	}
 	
-	.gallery-view-info-control {
+	.gallery-view-infos-control {
 		position: absolute;
 		left: -#{$galleryInfoControlSize};
 		width: $galleryInfoControlSize;
@@ -188,15 +201,19 @@ a.gallery-view-control {
 	> div {
 		background-color: white;
 		padding: 10px 0;
+		text-align: center;
 	}
-	li, a, img, div, ul {
+	ul {
+		display: inline-block;
+	}
+	li, li a, img, div, ul {
 		margin: 0 !important;
 		padding: 0 !important;
 		border: 0;
 	}
 	li {
 		position: relative;
-		max-width: 180px;
+		max-width: 160px;
 	}
 	@for $i from 1 through 12 {
 		.thumbnails#{$i} {
@@ -206,8 +223,10 @@ a.gallery-view-control {
 			}
 		}
 	}
-	a:hover {
-		opacity: .5;
+	li {
+		a:hover {
+			opacity: .5;
+		}
 	}
 	.active {
 		background-color: $linkColorHover;

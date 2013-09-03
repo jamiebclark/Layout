@@ -1,6 +1,6 @@
 <?php
 if (!empty($galleryViewResult) && !empty($neighbors)) {
-	list($nextUrl, $prevUrl) = $this->GalleryView->getNeighborUrls($galleryViewResult, $neighbors);
+	list($nextUrl, $prevUrl) = $this->GalleryView->getNeighborUrls($galleryViewResult, $neighbors, compact('urlAdd'));
 	list($nextPhotoId, $prevPhotoId) = $this->GalleryView->getNeighborIds($galleryViewResult, $neighbors);
 }
 // Controls

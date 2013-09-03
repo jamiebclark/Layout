@@ -1,5 +1,69 @@
 (function($) {
 	var scrollToggle = 1;
+	$.fn.viewToggleControl = function(passedOptions) {
+		var defaults = {
+			'controlDisplay': ['Show','Hide'],
+			'id': 'toggle-control',
+			'hidden': false
+		};
+		var options = $.extend([], defaults, passedOptions),
+			$this = $(this),
+			$control,
+			$inner,
+			id = options.id,
+			isHidden = options.hidden,
+			controlDisplay = options.controlDisplay,
+			controlClass = id + '-control',
+			innerClass = id + '-inner';
+			
+		
+		function setControlDisplay() {
+			var key = Math.round(!isHidden);
+			$control.html(controlDisplay[key]);
+		}
+		
+		if (!$this.data('toggle-control-init')) {
+			$control = $('<a></a>', {
+				'href': '#',
+				'class': controlClass,
+				'click': function(e) {
+					e.preventDefault();
+					if (isHidden) {
+						$this.trigger('show');
+					} else {
+						$this.trigger('hide');
+					}
+				}
+			});
+			$this
+				.wrapInner($('<div></div>', {'class': innerClass}))
+				.prepend($control)
+				.on('hide', function() {
+					isHidden = true;
+					$this.data('hidden', true);
+					if (options.hide) {
+						options.hide;
+					}
+					$this.trigger('change');
+				})
+				.on('show', function() {
+					isHidden = false;
+					if (options.show) {
+						options.show;
+					}
+					$this.trigger('change');
+				})
+				.on('change', function() {
+					$this.data('hidden', isHidden);
+					setControlDisplay();
+				})
+				.data('toggle-control-init', true);
+		}
+		$inner = $('.' + innerClass, $this);
+		$control = $('.' + controlClass, $this);
+		setControlDisplay();
+		return $this;
+	};
 	
 	$.fn.galleryViewLink = function() {
 		return this.each(function() {
@@ -67,8 +131,6 @@
 				screenH = $(window).height(),
 				marginW = screenW * (marginPctWidth / 100),
 				marginH = screenH * (marginPctHeight / 100),
-				imgW = $image[0].offsetWidth,
-				imgH = $image[0].offsetHeight,
 				minWidth = 600,
 				maxWidth = 1020,
 				minHeight = 500,
@@ -106,23 +168,24 @@
 			$modal.css(css);
 			var bodyPadding = $body.outerHeight() - $body.height();
 			var bodyHeight = $modal.innerHeight() - $header.outerHeight() - $thumbnails.outerHeight() - bodyPadding;
-			$image.height(bodyHeight);
+			$image.stop().animate({'height' : bodyHeight});
 		}
 		
 		function showInfo() {
-			$infoControl.html('&raquo;');
 			$('.gallery-view-infos-inner', $info).show();
 			$info.animate({'width': infoWidth}).data('gallery-hidden', false);			
 		}
 		
 		function hideInfo() {
-			$infoControl.html('&laquo;');
+			var duration = null;
 			if (typeof $info.data('gallery-hidden') === 'undefined') {
 				infoWidth = $info.outerWidth();
 				infoWidthInner = $('.gallery-view-infos-inner', $info).outerWidth();
 				afterHideInfo();
+				duration = 0;
 			} 
 			$info.animate({'width': 0}, {
+				'duration': duration,
 				'complete': function() {
 					afterHideInfo();
 				}});
@@ -133,12 +196,13 @@
 			$info.data('gallery-hidden', true);
 		}
 		
-		function hideThumbnails(delay) {
-			if (typeof delay == 'undefined') {
-				var delay = 0;
-			}
-			var duration = $thumbnails.data('hide-init') ? null : 0;
-			$('> div', $thumbnails).delay(delay).stop().css({'position':'absolute','bottom':0}).slideUp(duration);
+		function hideThumbnails() {
+			var duration = !$modal.data('thumbnails-hidden') && $thumbnails.data('hide-init') ? null : 0;
+			var $inner = $('> div', $thumbnails);
+			$inner.css({'position':'absolute','bottom':0,'left':0,'right':0});
+			resize();
+			$inner.stop().slideUp(duration);
+			$modal.data('thumbnails-hidden', true);
 			$thumbnails.data('hide-init', true);
 		}
 
@@ -146,8 +210,10 @@
 			$('> div', $thumbnails).stop().slideDown({
 				'complete': function() {
 					$(this).css({'position':'static'});
+					resize();
 				}
 			});
+			$modal.data('thumbnails-hidden', false);
 		}
 
 		function init() {
@@ -181,16 +247,14 @@
 			$image = $('img', $imageHolder).first();
 			$thumbnails = $('.gallery-view-thumbnails', $data);
 			$info = $('.gallery-view-infos', $data);
+			nextUrl = $('.gallery-view-control.next').attr('href');
+			prevUrl = $('.gallery-view-control.prev').attr('href');
 			
 			$caption
 				.addClass('gallery-view-control')
 				.click(function(e) {
 					e.preventDefault();
-					if ($info.data('gallery-hidden')) {
-						showInfo();
-					} else {
-						hideInfo();
-					}
+					$info.trigger($info.data('gallery-hidden') ? 'show' : 'hide');
 				})
 				.appendTo($imageHolder);
 			$('a', $caption).click(function(e) {
@@ -215,42 +279,46 @@
 			} else {
 				$headerTitle.html('');
 			}
-			$infoControl = $('<a></a>', {
-				'href': '#',
-				'html': '&laquo;',
-				'class': 'gallery-view-info-control',
-				'click': function(e) {
-					e.preventDefault();
-					if ($info.data('gallery-hidden')) {
-						showInfo();
-					} else {
-						hideInfo();
-					}
-				}
-			});
-			$info.wrapInner($('<div></div>', {
-				'class': 'gallery-view-infos-inner'
-			})).prepend($infoControl);
+			
+			$info.viewToggleControl({
+				'id': 'gallery-view-infos',
+				'controlDisplay': ['&laquo;', '&raquo;'],
+			})
+				.on('show', function() {
+					showInfo();
+				})
+				.on('hide', function() {
+					hideInfo();
+				});
+
+			$thumbnails.viewToggleControl({
+				'id': 'gallery-view-thumbnails',
+				'controlDisplay': ['Show Thumbnails', 'Hide Thumbnails']
+			})
+				.on('show', function() {
+					showThumbnails();
+				})
+				.on('hide', function() {
+					hideThumbnails();
+				});
+
+			if ($modal.data('thumbnails-hidden')) {
+				$thumbnails.trigger('hide');
+			}
 			
 			if (newModal) {
 				$modal.on('shown', function() {
-					hideInfo();	
+					$info.trigger('hide');
 				});
 			}
-			/*
-			$thumbnails.hover(showThumbnails, hideThumbnails).css('min-height', '100px');
-			hideThumbnails();
-			*/
-			
+
 			$modal.modal('show').on('shown', function() {
 				resize();
-				//showThumbnails();
-				//hideThumbnails(500);
-				hideInfo();
+				$info.trigger('hide');
 			});
 			
 			if ($modal.is(':visible')) {
-				hideInfo();	
+				$info.trigger('hide');
 			}
 
 			$image.bind('load', function() {
@@ -314,12 +382,25 @@
 				$prev = $('.gallery-view-control.prev', $view);				
 
 			if (!$view.data('gallery-view-init')) {
+				$('img', $display).bind('load', function() {
+					if ($next.length) {
+						if (!$('a', $display).length) {
+							$display.wrapInner($('<a></a>'));
+						}
+						var $a = $('a', $display).first()
+							.addClass('gallery-view-link')
+							.attr('href', $next.attr('href'));
+					}
+					$view.galleryViewLink();
+				});
+
 				$('.gallery-view-thumbnails a, a.gallery-view-control,.gallery-view-image a', $view).each(function() {
 					$(this).addClass('gallery-view-link');
 				});
 				$view.data('gallery-view-init', true);
 				$view.hover(hoverOn, hoverOff);
 				hoverOff();
+				
 				var scroll = $('body').scrollTop();
 				$('body').scrollTop(scroll + scrollToggle);
 				scrollToggle *= -1;
