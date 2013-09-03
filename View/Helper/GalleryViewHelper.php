@@ -19,11 +19,11 @@ class GalleryViewHelper extends AppHelper {
 		), $options);
 		extract($options);
 		list($next, $prev) = $this->getNeighbors(!empty($neighbors) ? $neighbors : $result);
-		if (!empty($next)) {
-			rsort($next);
+		if (!empty($prev)) {
+			rsort($prev);
 		}
 		$current = array(0 => array($alias => $result[$alias]));
-		return array_merge($next, $current, $prev);
+		return array_merge($prev, $current, $next);
 	}
 	
 	function getNeighborUrls($result, $neighbors = null, $options = array()) {
