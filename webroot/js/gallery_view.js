@@ -310,7 +310,7 @@
 			
 			$info.viewToggleControl({
 				'id': 'gallery-view-infos',
-				'controlDisplay': ['&laquo;', '&raquo;'],
+				'controlDisplay': ['&laquo;', '&raquo;']
 			})
 				.on('show', function() {
 					showInfo();

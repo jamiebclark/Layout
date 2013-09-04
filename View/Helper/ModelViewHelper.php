@@ -399,8 +399,12 @@ class ModelViewHelper extends LayoutAppHelper {
 		}
 
 		$titleOptions = array('tag' => false);
-		if (!empty($options['titleFields'])) {
-			$titleOptions = array_merge($titleOptions, array_intersect_key($options, array_flip($options['titleFields'])));
+		if ($titleFields = Param::keyCheck($options, 'titleFields', true)) {
+			foreach ($titleFields as $field) {
+				if ($val = Param::keyCheck($options, $field, true)) {
+					$titleOptions[$field] = $val;
+				}
+			}
 		}
 
 		$title = $this->title($result, $titleOptions);
