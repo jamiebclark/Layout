@@ -147,6 +147,7 @@
 			} else if (boxHeight < minHeight) {
 				boxHeight = minHeight;
 			}
+			
 			var boxWidthOuter = boxWidth + marginW * 2,
 				boxHeightOuter = boxHeight + marginH * 2;
 			var css = {
@@ -168,7 +169,26 @@
 			$modal.css(css);
 			var bodyPadding = $body.outerHeight() - $body.height();
 			var bodyHeight = $modal.innerHeight() - $header.outerHeight() - $thumbnails.outerHeight() - bodyPadding;
-			$image.stop().animate({'height' : bodyHeight});
+			$('img,iframe,embed', $imageHolder).each(function() {
+				var w, h, tag = this.nodeName.toLowerCase();
+				if (tag == 'img') {
+					w = this.offsetWidth;
+					h = this.offsetHeight;
+				} else {
+					w = $(this).outerWidth();
+					h = $(this).outerHeight();
+				}
+				var	r = w / h,
+					newHeight = bodyHeight,
+					newWidth = r * newHeight;
+				if (newWidth > boxWidth) {
+					newWidth = boxWidth;
+					newHeight = newWidth / r;
+				}
+				if (newWidth && newHeight) {
+					$(this).show().stop().animate({'width':newWidth,'height':newHeight});
+				}
+			});
 		}
 		
 		function showInfo() {
@@ -216,6 +236,13 @@
 			$modal.data('thumbnails-hidden', false);
 		}
 
+		function stopVideo() {
+			$embed.each(function() {
+				var src = $(this).attr('src');
+				$(this).attr('src', '').attr('src', src);
+			});
+		}
+		
 		function init() {
 			$modal = $('#gallery-modal');
 			newModal = !$modal.length;
@@ -245,6 +272,7 @@
 			$caption = $('.gallery-view-caption', $data);
 			$imageHolder = $('.gallery-view-image', $data);
 			$image = $('img', $imageHolder).first();
+			$embed = $('embed,iframe', $imageHolder);
 			$thumbnails = $('.gallery-view-thumbnails', $data);
 			$info = $('.gallery-view-infos', $data);
 			nextUrl = $('.gallery-view-control.next').attr('href');
@@ -312,10 +340,15 @@
 				});
 			}
 
-			$modal.modal('show').on('shown', function() {
-				resize();
-				$info.trigger('hide');
-			});
+			$modal
+				.modal('show')
+				.on('shown', function() {
+					resize();
+					$info.trigger('hide');
+				})
+				.on('hide', function() {
+					stopVideo();
+				});
 			
 			if ($modal.is(':visible')) {
 				$info.trigger('hide');
@@ -324,6 +357,9 @@
 			$image.bind('load', function() {
 				resize();
 			});
+			if (!$image.length) {
+				resize();
+			}
 
 			if (!$this.data('gallery-view-modal-init')) {
 				$(window).resize(function() {
@@ -351,7 +387,8 @@
 			$infoControl,
 			infoWidth, infoWidthInner,
 			imgUrl,
-			$view;
+			$view,
+			$embed;
 
 		if (arguments && arguments[0] && arguments[0] == 'get') {
 			get(arguments[1]);

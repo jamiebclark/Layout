@@ -856,12 +856,14 @@ class ModelViewHelper extends LayoutAppHelper {
 		} else {
 			foreach ($results as $result) {
 				$modelResult = $this->_getResult($result);
-				$thumbOptions = $options;
+				$thumbnailOptions = !empty($options['thumbnailOptions']) ? $options['thumbnailOptions'] : array();
+				$thumbnailOptions += $options;
+				unset($thumbnailOptions['thumbnailOptions']);
 				if ($modelResult['id'] == $id) {
-					$thumbOptions = $this->addClass($thumbOptions, 'active');
+					$thumbnailOptions = $this->addClass($thumbnailOptions, 'active');
 				}
 				$out .= $this->Html->tag('li', 
-					$this->thumbnail($result, $thumbOptions),
+					$this->thumbnail($result, $thumbnailOptions),
 					compact('class')
 				);
 			}

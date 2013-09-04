@@ -1,16 +1,33 @@
 <?php
 class GalleryViewHelper extends AppHelper {
 	var $name = 'GalleryView';
-	var $helpers = array('Layout.Asset');
+	var $helpers = array('Layout.Asset', 'Layout.ModelView');
 	
 	var $modelName;
 	
+	function __construct($View, $settings = array()) {
+		$this->modelName = Inflector::classify($View->request->params['controller']);
+		$this->helpers[] = $this->modelName;
+		parent::__construct($View, $settings);
+	}
+	
 	function beforeRender($viewFile) {
-		$this->modelName = Inflector::classify($this->request->params['controller']);
-		
 		$this->Asset->css('Layout.gallery_view'); 
 		$this->Asset->js('Layout.gallery_view'); 
 		return parent::beforeRender($viewFile);
+	}
+	
+	function thumbnails($result, $neighbors = null, $options = array()) {
+		$thumbs = $this->getThumbnails($result, $neighbors);
+		$count = count($thumbs);
+		$out = '';
+		if ($count > 1) {
+			$out = $this->{$this->modelName}->thumbnails($thumbs, array(
+				'class' => 'row-fluid thumbnails' . $count,
+				'id' => $result[$this->modelName]['id']
+			));
+		}
+		return $out;
 	}
 	
 	function getThumbnails($result, $neighbors = null, $options = array()) {
