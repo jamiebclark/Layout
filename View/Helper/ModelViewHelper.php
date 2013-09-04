@@ -382,12 +382,13 @@ class ModelViewHelper extends LayoutAppHelper {
 	}
 	
 	
-	function link($Result, $options = array()) {
+	function link($result, $options = array()) {
 		$options = array_merge(array(
 			'class' => $this->cssClass,
 			'escape' => false,
+			'titleFields' => array('truncate'),
 		), (array) $options);
-		$url = !empty($options['url']) ? $options['url'] : $this->url($Result);
+		$url = !empty($options['url']) ? $options['url'] : $this->url($result);
 		if (isset($options['prefix'])) {
 			if ($options['prefix'] === false) {
 				$url += Prefix::reset();
@@ -396,19 +397,19 @@ class ModelViewHelper extends LayoutAppHelper {
 			}
 			unset($options['prefix']);
 		}
+
 		$titleOptions = array('tag' => false);
-		foreach (array('truncate') as $field) {
-			if (isset($options[$field])) {
-				$titleOptions[$field] = $options[$field];
-			}
+		if (!empty($options['titleFields'])) {
+			$titleOptions = array_merge($titleOptions, array_intersect_key($options, array_flip($options['titleFields'])));
 		}
-		$title = $this->title($Result, $titleOptions);
+
+		$title = $this->title($result, $titleOptions);
 		if (!empty($options['img'])) {
 			$imgOptions = array();
 			if ($options['img'] !== true) {
 				$imgOptions['dir'] = $options['img'];
 			}
-			$title = $this->thumb($Result, $imgOptions). ' ' . $title;		
+			$title = $this->thumb($result, $imgOptions). ' ' . $title;		
 		}
 
 		$link = $this->Html->link($title, $url,array('escape' => false) + $options);
