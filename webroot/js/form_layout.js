@@ -660,7 +660,7 @@ documentReady(function() {
 						.attr('tabindex', -1)
 						.appendTo($listItem)
 						.wrap($('<div></div>', {'class' : removeClass + " span1"}))
-						.after($('<label></label>', {'html': 'Remove','for': removeBoxId}));
+						.wrap($('<label></label>', {'html': 'Remove'}));
 				}
 				$checkbox.change(function() {
 					if ($(this).is(':checked')) {
@@ -795,7 +795,7 @@ documentReady(function() {
 				$cloned = $entry.clone().insertAfter($entry),
 				newIdKey = $ids.length;
 			$cloned.find('input').removeClass('hasDatepicker');
-			$cloned.find(':text,textarea').val('').trigger('reset');
+			$cloned.find('input[name*="[id]"],:text,textarea').val('').trigger('reset');
 			$cloned
 				.slideDown()
 				.data('added', true)
