@@ -220,6 +220,7 @@ a.gallery-view-control {
 			li {
 				margin: .5% !important;
 				width: #{100/$i - 1}% !important;
+				float: left;
 			}
 		}
 	}

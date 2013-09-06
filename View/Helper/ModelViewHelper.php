@@ -397,6 +397,9 @@ class ModelViewHelper extends LayoutAppHelper {
 			}
 			unset($options['prefix']);
 		}
+		if ($urlAdd = Param::keyCheck($options, 'urlAdd', true)) {
+			$url += $urlAdd;
+		}
 
 		$titleOptions = array('tag' => false);
 		if ($titleFields = Param::keyCheck($options, 'titleFields', true)) {
