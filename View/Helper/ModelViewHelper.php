@@ -558,9 +558,6 @@ class ModelViewHelper extends LayoutAppHelper {
 			$thumb += compact('url', 'link', 'alias', 'size') + $thumb;
 			$out .= $this->thumb($result, $thumb);
 		}
-		if (!empty($remove)) {
-			$right .= $this->__removeLink(null, $modelResult, !empty($options['remove']) ? $options['remove'] : null);
-		}
 		if (!empty($right)) {
 			$out .= $this->Html->tag('div', $right, array('class' => 'pull-right'));
 		}

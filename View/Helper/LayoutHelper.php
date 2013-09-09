@@ -252,20 +252,20 @@ class LayoutHelper extends LayoutAppHelper {
 		if (!empty($modelId)) {
 			$baseMenu = array(
 				array(
-					'Edit ' . $human,
+					"Edit $human",
 					$urlBase + array('action' => 'edit', $modelId),
 					array('icon' => 'pen')
 				),
 				array(
-					'Delete ' . $human,
+					"Delete $human",
 					$urlBase + array('action' => 'delete', $modelId),
 					array('icon' => 'x'),
-					'Delete this ' . $human . '?'
+					"Delete this $human?"
 				)
 			);
 		} else {
 			$baseMenu = array(array(
-				'Add ' . $human, 
+				"Add $human", 
 				$urlBase + array('action' => 'add'),
 				array('icon' => 'add')
 			));
