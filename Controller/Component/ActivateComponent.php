@@ -3,6 +3,8 @@
  * Used with any model containing an "active" boolean field
  *
  **/
+App::uses('Url', 'Layout.Lib');
+
 class ActivateComponent extends Component {
 	var $name = 'Activate';
 	var $controller;
@@ -78,17 +80,27 @@ class ActivateComponent extends Component {
 		*/
 				$data = array(			$Model->primaryKey => $id,			$field => $this->_getVal($on),		);		$success = $Model->save($data);
 		
-		$msg = ($success ? 'Successfully marked' : 'There was an error marking') . " $humanName " . ($on ? $paramOn : $paramOff);
+		if ($success) {
+			$msg = 'Successfully marked';
+			$class = 'alert-success';
+		} else {
+			$msg = 'There was an error marking';
+			$class = 'alert-error';
+		}
+		$msg .= sprintf(' <a href="%s">%s</a> ', Router::url(array('action' => 'view', $id)), $humanName);
+		$msg .= $on ? $paramOn : $paramOff;
+		$redirect = $this->controller->referer();
+		if ($redirect == '/') {
+			$redirect = array('action' => 'index');
+		} else {
+			$redirect = Url::urlArray($redirect);
+		}
+		$redirect['active'] = $id;
 		
 		if ($this->sessionOutput) {
-			$this->controller->Session->setFlash($msg);
+			$this->controller->Session->setFlash($msg, 'default', compact('class'));
 		}
-		
-		if ($this->controller->referer() == '/') {
-			$this->controller->redirect(array('action' => 'index'));
-		} else {
-			$this->controller->redirect($this->controller->referer());
-		}
+		$this->controller->redirect($redirect);
 	}
 	
 	function deactivate($id) {

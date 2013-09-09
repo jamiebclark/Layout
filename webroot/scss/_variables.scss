@@ -51,10 +51,11 @@ $hoverWindowWidthWider: 		660px !default;
 $hoverWindowWidthWide: 			460px !default;
 $hoverWindowWidthSlim: 			240px !default;
 
-
 $hoverArrowHeight:				10px !default;
 $hoverArrowColor:				white !default;//$hoverWindowBorderColor;
 $hoverArrowBorder:				$hoverWindowBorder !default;
+
+$hoverZIndex:					1000;
 
 // Thumbnails
 // ------------------------

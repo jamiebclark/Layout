@@ -60,6 +60,18 @@ h3, h4 {
 		margin-bottom: $baseLineHeight;
 	}
 }
+.dl-inline {
+	@extend %overflow;
+	margin: 0;
+	dt, dd {
+		float: left;
+		padding: $paddingSmall;
+		margin: 0;
+	}
+	dd {
+		padding-left: 0;
+	}
+}
 
 .list-blank {
 	@extend %blanklist;

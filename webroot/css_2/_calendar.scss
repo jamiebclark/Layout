@@ -483,21 +483,34 @@ $calBoxW: 2em;
 	}
 }
 
+$deadlinePast: 					red !default;
+$deadlinePastBackground: 		lighten($deadlinePast, 20%) !default;
+$deadlineUpcoming: 				orange !default;
+$deadlineUpcomingBackground: 	lighten($deadlineUpcoming, 20%) !default;
+$deadlineComplete: 				#CCC !default;
+$deadlineCompleteBackground: 	transparent !default;
+$deadlineFar:					#999 !default;
+$deadlineFarBackground:			transparent !default;
+
 .deadline {
 	font-weight: normal;
 }
 .deadline-complete {
 	text-decoration: line-through;
-	color: #CCC;
+	color: $deadlineComplete;
+	background: $deadlineCompleteBackground;
 }
 .deadline-upcoming {
 	//font-weight: bold;
-	color: orange;
+	color: $deadlineUpcoming;
+	background: $deadlineUpcomingBackground;
 }
 .deadline-past {
 	//font-weight: bold;
-	color: red;
+	color: $deadlinePast;
+	background: $deadlinePastBackground;
 }
 .deadline-far {
-	color: #999;
+	color: $deadlineFar;
+	background: $deadlineFarBackground;
 }

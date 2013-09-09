@@ -1,13 +1,19 @@
 .hover-layout {
 	position: relative;
 	&.hovering {
-		z-index: 1000;
+		z-index: $hoverZIndex;
 	}
 	.hover-over {
 		padding: 0 !important;
 		height: auto !important;
 	}
 }
+.media-wrap {
+	.hover-layout {
+		display: block;
+	}
+}
+
 .hover-window {
 	position: absolute;
 	padding: $hoverWindowPadding;

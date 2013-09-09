@@ -502,16 +502,16 @@ class ModelViewHelper extends LayoutAppHelper {
 			'tag' => 'div',							//Tag wrapper
 			'dir' => $this->defaultMediaDir,		//Thumbnail directory
 			'thumb' => array(),						//Thumbnail options
-			'url' => null,	
-			'urlAdd' => null,
-			'contentTag' => 'p',
-			'right' => '',
-			'idMenu' => false,
-			'body' => '',
-			'titleTag' => 'h4',
-			'link' => false,
-			'alias' => $this->modelName,
+			'url' => null,							//Use a custom URL instead of the automated one
+			'urlAdd' => null,						//Additional parameters to pass to the url
+			'contentTag' => 'p',					//Tag to wrap the individual content elements
+			'right' => '',							//Text to be floated right
+			'body' => '',							//Additional text to show up in the body of the media element
+			'titleTag' => 'h4',						//Tag of the title
+			'link' => false,						//Whether the entire media element should be a link
+			'alias' => $this->modelName,			//Alias of the primary model in the result
 			'title' => null,						//Custom title
+			'actionMenu' => null,					//Actions to be added to an action menu within media element
 		), $options);
 		$options = $this->addClass($options, 'media media-' . strtolower($this->modelName));
 		if (!empty($options['dir'])) {
@@ -526,12 +526,15 @@ class ModelViewHelper extends LayoutAppHelper {
 		if (!empty($urlAdd) && $url !== false) {
 			$url = $urlAdd + $url;
 		}
+		if ($link || !empty($options['hover'])) {
+			if ($tag == 'li') {
+				$wrapTag = 'li';
+				$tag = 'span';
+			}
+		}
 		if ($link) {
 			if ($link === true) {
 				$link = $url;
-			}
-			if ($tag == 'li') {
-				$wrapTag = 'li';
 			}
 			$tag = 'a';
 			$url = false;
@@ -595,6 +598,10 @@ class ModelViewHelper extends LayoutAppHelper {
 		}
 		$out .= $this->Html->tag('div', $body, array('class' => 'media-body')) . "\n";
 		$out = $this->Html->tag($tag, $out, $returnOptions);
+		if (!empty($options['hover']) && method_exists($this, 'hoverContent') && ($hoverContent = $this->hoverContent($result))) {
+			$out = $this->Layout->hover($out, $hoverContent);
+		}
+
 		if (!empty($wrapTag)) {
 			if (!empty($actionMenu) && !empty($link)) {
 				$out .= $actionMenu;

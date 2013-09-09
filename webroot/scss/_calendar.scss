@@ -40,6 +40,19 @@ $calendardateYearHeight:		30px !default;
 
 $calendardateWidth:				$calendardateMonthHeight + $calendardateDayHeight;
 
+// Deadline
+// --------------------------------------------------
+$deadlinePast: 					#780000 !default;
+$deadlinePastBackground: 		#FFECEC !default;
+$deadlineUpcoming: 				orange !default;
+$deadlineUpcomingBackground: 	lighten($deadlineUpcoming, 40%) !default;
+$deadlineComplete: 				#CCC !default;
+$deadlineCompleteBackground: 	transparent !default;
+$deadlineFar:					#999 !default;
+$deadlineFarBackground:			transparent !default;
+
+
+
 .calendardate-wrap {
 	clear: both;
 	position: relative;
@@ -92,6 +105,7 @@ $calendardateWidth:				$calendardateMonthHeight + $calendardateDayHeight;
 	float: left;
 	margin: $baseLineHeight 0;
 	width: $calendardateWidth;
+	border: 0 !important;
 	@include border-radius($baseBorderRadius);
 	
 	span {
@@ -537,21 +551,33 @@ $calBoxW: 2em;
 	}
 }
 
+@mixin deadline($class, $color, $background) {
+	.#{$class} {
+		color: $color;
+		.calendardate-month {
+			background-color: $color;
+		}
+		.calendardate-day, .calendardate-year {
+			color: $color;
+		}
+	}
+	.media.#{$class} {
+		@if ($background == 'transparent') {
+			background: $background;
+		} @else {
+			@include gradient-vertical(#FFF, $background);
+		}
+	}
+}
+
 .deadline {
 	font-weight: normal;
 }
+
+@include deadline(deadline-complete, $deadlineComplete, $deadlineCompleteBackground);
+@include deadline(deadline-upcoming, $deadlineUpcoming, $deadlineUpcomingBackground);
+@include deadline(deadline-past, $deadlinePast, $deadlinePastBackground);
+@include deadline(deadline-far, $deadlineFar, $deadlineFarBackground);
 .deadline-complete {
 	text-decoration: line-through;
-	color: #CCC;
-}
-.deadline-upcoming {
-	//font-weight: bold;
-	color: orange;
-}
-.deadline-past {
-	//font-weight: bold;
-	color: red;
-}
-.deadline-far {
-	color: #999;
 }
