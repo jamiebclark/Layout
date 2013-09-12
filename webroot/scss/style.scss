@@ -33,6 +33,12 @@ legend+.control-group {
 p.test-class {
 	font-weight: bold;
 }
+.carousel {
+	min-height: 200px;
+}
+.carousel-indicators > li:hover {
+	cursor: pointer;
+}
 
 // Page Styling
 // -----------------

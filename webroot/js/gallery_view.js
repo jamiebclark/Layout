@@ -115,26 +115,18 @@
 			}
 
 		}
-		
 		function messageRemove(delay) {
 			if (typeof delay == 'undefined') {
 				delay = 0;
 			}
 			$('.ajax-loading', $modal).delay(delay).fadeOut();
 		}
-	
 		function resize() {
 			$image.removeAttr('width').removeAttr('height');
-			var marginPctWidth = 10,
-				marginPctHeight = 10,
-				screenW = $(window).width(),
+			var screenW = $(window).width(),
 				screenH = $(window).height(),
 				marginW = screenW * (marginPctWidth / 100),
 				marginH = screenH * (marginPctHeight / 100),
-				minWidth = 600,
-				maxWidth = 1020,
-				minHeight = 500,
-				maxHeight = 900,
 				boxWidth = screenW - marginW * 2,
 				boxHeight = screenH - marginH * 2;
 			if (boxWidth > maxWidth) {
@@ -178,12 +170,14 @@
 					w = $(this).outerWidth();
 					h = $(this).outerHeight();
 				}
-				var	r = w / h,
-					newHeight = bodyHeight,
-					newWidth = r * newHeight;
+				if (w && h) {
+					imageSizeRatio = w/h;
+				}
+				var	newHeight = bodyHeight,
+					newWidth = imageSizeRatio * newHeight;
 				if (newWidth > boxWidth) {
 					newWidth = boxWidth;
-					newHeight = newWidth / r;
+					newHeight = newWidth / imageSizeRatio;
 				}
 				if (newWidth && newHeight) {
 					$(this).show().stop().animate({'width':newWidth,'height':newHeight});
@@ -295,10 +289,8 @@
 				.append($caption)
 				.appendTo($body)
 				.galleryView();
-		
 			$thumbnails = $('.gallery-view-thumbnails', $view);
 			$info = $('.gallery-view-infos', $view);
-			
 			if ($title.length) {
 				$headerTitle.html($title.html());
 				if (!('a', $headerTitle).length && imgUrl) {
@@ -333,13 +325,11 @@
 			if ($modal.data('thumbnails-hidden')) {
 				$thumbnails.trigger('hide');
 			}
-			
 			if (newModal) {
 				$modal.on('shown', function() {
 					$info.trigger('hide');
 				});
 			}
-
 			$modal
 				.modal('show')
 				.on('shown', function() {
@@ -349,18 +339,15 @@
 				.on('hide', function() {
 					stopVideo();
 				});
-			
 			if ($modal.is(':visible')) {
 				$info.trigger('hide');
 			}
-
 			$image.bind('load', function() {
 				resize();
 			});
 			if (!$image.length) {
 				resize();
 			}
-
 			if (!$this.data('gallery-view-modal-init')) {
 				$(window).resize(function() {
 					resize();
@@ -388,7 +375,14 @@
 			infoWidth, infoWidthInner,
 			imgUrl,
 			$view,
-			$embed;
+			$embed,
+			marginPctWidth = 5,
+			marginPctHeight = 5,
+			minWidth = 600,
+			maxWidth = 1020,
+			minHeight = 500,
+			maxHeight = 900,
+			imageSizeRatio;
 
 		if (arguments && arguments[0] && arguments[0] == 'get') {
 			get(arguments[1]);
