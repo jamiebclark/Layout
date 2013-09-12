@@ -265,7 +265,7 @@
 			$title = $('.gallery-view-title', $data);
 			$caption = $('.gallery-view-caption', $data);
 			$imageHolder = $('.gallery-view-image', $data);
-			$image = $('img', $imageHolder).first();
+			$image = $('img', $imageHolder).first().css({'max-height':'none','max-width':'none'});
 			$embed = $('embed,iframe', $imageHolder);
 			$thumbnails = $('.gallery-view-thumbnails', $data);
 			$info = $('.gallery-view-infos', $data);

@@ -8,6 +8,15 @@ $galleryViewBodyHeight:			500px !default;
 @import "bootstrap/mixins";
 @import "mixins";
 
+#gallery-view-layout {
+	.gallery-view-image {
+		img {
+			max-width: 960px;
+			width: 100%;
+			height: auto;
+		}
+	}
+}
 .gallery-view {
 	position: relative;
 	top: 0;
