@@ -682,7 +682,9 @@ documentReady(function() {
 			$listItems.each(function() {
 				$(this).addClass('row-fluid');
 				return $(this);
-			}).bind('cloned', function (e, $cloned) {
+			});
+			
+			$list.bind('cloned', function (e, $cloned) {
 				addRemoveBox($cloned);
 				$listItems = $('> .input-list-inner > .input-list-item', $list);
 			});
@@ -700,7 +702,7 @@ documentReady(function() {
 				return $(this);
 			});
 			$list.on('add', function() {
-				$listItems.cloneNumbered().trigger('inputListAdd');
+				$listItems.cloneNumbered($list).trigger('inputListAdd');
 			}).data('input-list-init', true);
 			return $(this);
 		});
@@ -762,45 +764,50 @@ documentReady(function() {
 		var i = startIndex, 
 			k = '', 
 			endIndex,
-			len = name.length;
+			len = name.length,
+			success = true;
 		if (forward) {
-			while (name.charAt(i) != '[') {
+			while (success && name.charAt(i) != '[') {
 				i++;
 				if (i > len) {
-					return false;
+					success = false;
 				}
 			}
-			while (name.charAt(++i) != ']') {
+			while (success && name.charAt(++i) != ']') {
 				k += name.charAt(i);
 				if (k > len) {
-					return false;
+					success = false;
 				}
 			}
 			endIndex = i;
 		} else {
-			while (name.charAt(i) != ']') {
+			while (success && name.charAt(i) != ']') {
 				i--;
 				if (i < 0) {
-					return false;
+					success = false;
 				}
 			}
-			while (name.charAt(--i) != '[') {
+			while (success && name.charAt(--i) != '[') {
 				k = name.charAt(i) + k;
 				if (k < 0) {
-					return false;
+					success = false;
 				}
 			}
 			endIndex = startIndex;
 			startIndex = i;
 		}
-		return {index: startIndex, key: k, endIndex: endIndex};	
+		if (success) {
+			return {index: startIndex, key: k, endIndex: endIndex};	
+		} else {
+			return false;
+		}
 	}
 	
-	$.fn.cloneNumbered = function() {
-		if ($(this).data('cloning')) {
+	$.fn.cloneNumbered = function($parent) {
+		if ($parent.data('cloning')) {
 			return $(this);
 		}
-		$(this).data('cloning', true);
+		$parent.data('cloning', true);
 		var $ids = $(this).find(':input[name*="[id]"]:enabled'),
 			$idFirst = $ids.first(),
 			idName = $idFirst.attr('name'),
@@ -825,10 +832,12 @@ documentReady(function() {
 					return $(this).renumberInput(newIdKey, key.index).removeAttr('disabled');//.removeAttr('checked');
 				});
 			$cloned.find(':input:visible').first().focus();
-			$(this).trigger('cloned', [$cloned]);
+			$cloned.data('id-key', newIdKey);
+			
+			$parent.trigger('cloned', [$cloned]);
 			//formLayoutInit();
 		}
-		$(this).data('cloning', false);
+		$parent.data('cloning', false);
 		$(document).trigger('ajaxComplete');
 		return $(this);
 	};
