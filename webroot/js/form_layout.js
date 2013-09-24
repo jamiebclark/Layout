@@ -707,30 +707,37 @@ documentReady(function() {
 	};
 
 	$.fn.renumberInput = function(newIdKey, keyIndex) {
+		
 		if (typeof keyIndex === "undefined") {
 			var keyIndex = -1;
 		}
+
 		if (!$(this).attr('name')) {
 			return $(this);
 		}
 		var	name = $(this).attr('name'),
 			id = $(this).attr('id');
-			
 		if (keyIndex != -1) {
-			var key = getNameKey(name, keyIndex),
-				idKeyP = "[" + key.key + "]",
+			var key = getNameKey(name, keyIndex);
+			if (key === false) {
+				return $(this);
+			}
+			var idKeyP = "[" + key.key + "]",
 				idKey = key.key,
 				newNameStart = name.substr(0,key.index),
 				newNameEnd = name.substr(name.indexOf("[", newNameStart.length + idKeyP.length));
-			$(this).attr('name', newNameStart + "["+newIdKey+"]" + newNameEnd);
+			if (newNameEnd != ']') {
+				$(this).attr('name', newNameStart + "["+newIdKey+"]" + newNameEnd);
+			}
 		} else {
-			var reg = /\[(\d+)\]/,
-				idKeyMatch = name.match(reg),
-				idKeyP = idKeyMatch[0],
-				idKey = idKeyMatch[1];
-			$(this).attr('name', name.replace(idKeyP, "["+newIdKey+"]"));
+			var idKeyMatch = name.match(/\[(\d+)\]/);
+			if (idKeyMatch) {
+				var idKeyP = idKeyMatch[0],
+					idKey = idKeyMatch[1];
+				$(this).attr('name', name.replace(idKeyP, "["+newIdKey+"]"));
+			}
 		}
-		
+
 		if (id) {
 			var oldId = id,
 				$labels = $('label').filter(function() { return $(this).attr('for') == oldId;}),
@@ -752,21 +759,36 @@ documentReady(function() {
 		if (typeof forward === 'undefined') {
 			var forward = true;
 		}
-		var i = startIndex, k = '', endIndex;
+		var i = startIndex, 
+			k = '', 
+			endIndex,
+			len = name.length;
 		if (forward) {
 			while (name.charAt(i) != '[') {
 				i++;
+				if (i > len) {
+					return false;
+				}
 			}
 			while (name.charAt(++i) != ']') {
 				k += name.charAt(i);
+				if (k > len) {
+					return false;
+				}
 			}
 			endIndex = i;
 		} else {
 			while (name.charAt(i) != ']') {
 				i--;
+				if (i < 0) {
+					return false;
+				}
 			}
 			while (name.charAt(--i) != '[') {
 				k = name.charAt(i) + k;
+				if (k < 0) {
+					return false;
+				}
 			}
 			endIndex = startIndex;
 			startIndex = i;
