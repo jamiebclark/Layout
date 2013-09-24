@@ -1005,6 +1005,7 @@ class LayoutHelper extends LayoutAppHelper {
 			//Allows for passing just an array to be read as a link
 			if (is_array($menuItem) && isset($menuItem[0]) && isset($menuItem[1])) {
 				list($content, $link, $options, $confirm) = $menuItem + array('', array(), array(), null);
+				$hasLink = $link !== false;
 				$options = array_merge((array) $options, $urlOptions);
 				//Checks current parameters to see if it matches the given URL
 				//Can pass currentSelect as an array of what items to match array('action', 'controller')
@@ -1078,62 +1079,65 @@ class LayoutHelper extends LayoutAppHelper {
 						debug(compact('translate', 'selectItems'));
 					}
 					*/
-					if (empty($link['controller'])) {
-						$link['controller'] = $this->request->params['controller'];
-					}
-					if (empty($link['action'])) {
-						$link['action'] = $this->request->params['action'];
-					}
-					
-					//debug($this->request->params);
-					$linkPrefix = null;
-					$paramPrefix = null;
+					if (is_array($link)) {
+						if (empty($link['controller'])) {
+							$link['controller'] = $this->request->params['controller'];
+						}
+						if (empty($link['action'])) {
+							$link['action'] = $this->request->params['action'];
+						}
+						//debug($this->request->params);
+						$linkPrefix = null;
+						$paramPrefix = null;
 
-					if (!empty($this->request->params['prefix'])) {
-						$paramPrefix = $this->request->params['prefix'];
-					}
-					
-					$linkPrefix = Prefix::get($link);
-					$paramPrefix = Prefix::get($this->request->params);
-					
-					if (empty($linkPrefix) && (!isset($link[$paramPrefix]) || $link[$paramPrefix] !== false)) {
-						$linkPrefix = $paramPrefix;
-					}
-					
-					if (!empty($linkPrefix)) {
-						$link['action'] = $linkPrefix . '_' . $link['action'];
-					}
-					$trace  = $link['controller'] . ' == ' . $this->request->params['controller'] . ' and ';
-					$trace .= $link['action'] . ' == ' . $this->request->params['action'] . ' and ';
-					$trace .= $linkPrefix . ' == ' . $paramPrefix;
-					
-
-					if ($debug) {
-						debug($trace);
-					}
-					
-					$checkKeys = array('controller', 'action', 'prefix');
-					$match = true;
-					foreach ($checkKeys as $key) {
-						if (!($match = $this->checkSelectItems(
-							$key, 
-							$link, 
-							$selectItems, 
-							$translate,
-							$linkPrefix,
-							$paramPrefix
-						))) {
-							if ($debug) {
-								debug(array("Failed matching $key", $link, $this->request->params));
+						if (!empty($this->request->params['prefix'])) {
+							$paramPrefix = $this->request->params['prefix'];
+						}
+						
+						$linkPrefix = Prefix::get($link);
+						$paramPrefix = Prefix::get($this->request->params);
+						
+						if (empty($linkPrefix) && (!isset($link[$paramPrefix]) || $link[$paramPrefix] !== false)) {
+							$linkPrefix = $paramPrefix;
+						}
+						if (!empty($linkPrefix)) {
+							$link['action'] = $linkPrefix . '_' . $link['action'];
+						}
+						$trace  = $link['controller'] . ' == ' . $this->request->params['controller'] . ' and ';
+						$trace .= $link['action'] . ' == ' . $this->request->params['action'] . ' and ';
+						$trace .= $linkPrefix . ' == ' . $paramPrefix;
+						if ($debug) {
+							debug($trace);
+						}
+						
+						$checkKeys = array('controller', 'action', 'prefix');
+						$match = true;
+						foreach ($checkKeys as $key) {
+							if (!($match = $this->checkSelectItems(
+								$key, 
+								$link, 
+								$selectItems, 
+								$translate,
+								$linkPrefix,
+								$paramPrefix
+							))) {
+								if ($debug) {
+									debug(array("Failed matching $key", $link, $this->request->params));
+								}
+								break;
 							}
-							break;
 						}
 					}
 					if ($match) {
 						$liAttrs = $this->addClass($liAttrs, $currentSelectClass);
 					}
 				}
-				$menuItem = $this->Html->link($content, $link, array('escape' => false) + $options, $confirm);
+				if (!empty($link)) {
+					$menuItem = $this->Html->link($content, $link, array('escape' => false) + $options, $confirm);
+				} else {
+					$liAttrs += $options;
+					$menuItem = $content;
+				}
 			} else {
 				if (!empty($attrs['currentSelect'])) {
 					if (preg_match('#href="([^"]*)"#', $menuItem, $matches)) {
