@@ -192,7 +192,8 @@ class TableComponent extends Component {
 			$message = $options['message'];
 		} else {
 			$message = (!empty($options['verb']) ? $options['verb'] : 'Adjusted');
-			$message .= " {$options['count']} ".$this->getHumanModel($model, $options['count'] != 1);
+			$count = isset($options['count']) ? $options['count'] : 0;
+			$message .= " $count " . $this->getHumanModel($model, $options['count'] != 1);
 		}
 		if (!empty($options['redirect'])) {
 			$redirect = $options['redirect'];
