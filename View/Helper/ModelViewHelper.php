@@ -725,6 +725,13 @@ class ModelViewHelper extends LayoutAppHelper {
 		return $return;
 	}
 
+	// Returns only the path to the model's image
+	function imageSrc($result, $options = array()) {
+		$result = $this->_getResult($result);
+		$options = $this->thumbOptions($options);
+		return $this->Image->src($result, $options);
+	}
+	
 	function thumbText($result, $options = array()) {
 		$text = 'True';
 		if (!empty($options['text']) && $options['text'] !== true) {

@@ -303,7 +303,6 @@ class FormLayoutHelper extends LayoutAppHelper {
 			'div' => 'input-autocomplete',
 			'value' => null,
 		), $custom, $options);
-		
 		extract($options);
 		
 		$hasValue = !empty($value);
@@ -326,7 +325,7 @@ class FormLayoutHelper extends LayoutAppHelper {
 		$idField = $prefix . $idField;
 		$searchField = $prefix . $searchField;
 		if (!$hasValue) {
-			if ($this->Html->value($idField) && !empty($displayOptions[$this->Html->value($idField)])) {
+			if (!empty($idField) && $this->Html->value($idField) && !empty($displayOptions[$this->Html->value($idField)])) {
 				$value = $displayOptions[$this->Html->value($idField)];
 			} else if ($this->Html->value($searchField)) {
 				$value = $this->Html->value($searchField);
