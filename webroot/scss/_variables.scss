@@ -1,5 +1,4 @@
 $isLayoutExtended:				false !default;		// If you are extending the layout style rather than including it, set this to true
-
 $sides:							top, right, bottom, left;
 
 // Colors
@@ -7,13 +6,14 @@ $sides:							top, right, bottom, left;
 $grayLightest: 					#F8F8F8 !default;
 
 // Directories
+$layoutBaseDir:					"../";
+@if ($isLayoutExtended == true) {
+	$layoutBaseDir:				"../layout/";
+}
+
 $fontDir: 						false !default;
 @if ($fontDir == false) {
-	@if ($isLayoutExtended == true){
-		$fontDir:						"../layout/files/fonts/";
-	} @else {
-		$fontDir:						"../files/fonts/";
-	}
+	$fontDir:					"#{$layoutBaseDir}files/fonts/";
 }
 	
 

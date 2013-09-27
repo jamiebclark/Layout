@@ -824,7 +824,7 @@ documentReady(function() {
 				$cloned = $entry.clone().insertAfter($entry),
 				newIdKey = $ids.length;
 			$cloned.find('input').removeClass('hasDatepicker');
-			$cloned.find('input[name*="[id]"],:text,textarea').val('').trigger('reset');
+			$cloned.find('input[name*="[id]"],:text,textareas').val('').trigger('reset');
 			$cloned
 				.slideDown()
 				.data('added', true)
@@ -1448,4 +1448,81 @@ $(document).ready(function() {
 })(jQuery);
 documentReady(function() {
 	$('select.select-collapse').selectCollapse();
+});
+
+
+(function($) {
+	$.fn.inputCenterFocus = function() {
+		return this.each(function() {
+			var $input = $(this),
+				inputOffset,
+				oWidth = $input.css('width'),
+				oHeight = $input.css('height'),
+				oZIndex = $input.css('z-index'),
+				oPos = $input.css('position'),
+				screenW,
+				screenH,
+				boxStartLeft,
+				boxStartTop,
+				boxEndLeft,
+				boxEndTop,
+				boxEndWidth,
+				boxEndHeight,
+				boxPctWidth = .8,
+				boxPctHeight = .8;
+			
+			function grow() {
+				inputOffset = $input.offset();
+				boxStartTop = inputOffset.top;
+				boxStartLeft = inputOffset.left;
+
+				screenW = $(window).width();
+				screenH = $(window).height();
+				
+				boxEndHeight = screenH * boxPctHeight;
+				boxEndWidth = screenW * boxPctWidth;
+				boxEndTop = (screenH - boxEndHeight) / 2;
+				boxEndLeft = (screenW - boxEndWidth) / 2;
+				
+				$(this)
+					.css({
+						'position': 'fixed', 
+						'z-index': 1000,
+						'width': oWidth,
+						'height': oHeight,
+						'left': boxStartLeft,
+						'top': boxStartTop
+					})
+					.animate({
+						'width': boxEndWidth,
+						'height': boxEndHeight,
+						'left': boxEndLeft,
+						'top': boxEndTop
+					});
+			}
+			
+			function shrink() {
+				$(this).animate({
+					'width': oWidth,
+					'height': oHeight,
+					'left': boxStartLeft,
+					'top': boxStartTop
+				}, {
+					complete: function() {
+						$(this).css({
+							'position': oPos,
+							'z-index': oZIndex
+						});
+					}
+				})
+			}
+			
+			if (!$input.data('centerfocus-init')) {
+				$input.focus(grow).blur(shrink).data('centerfocus-init', true);
+			}				
+		});
+	};
+})(jQuery);
+documentReady(function() {
+	$('.input-centerfocus').inputCenterFocus();
 });

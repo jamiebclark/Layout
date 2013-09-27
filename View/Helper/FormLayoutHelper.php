@@ -897,13 +897,12 @@ class FormLayoutHelper extends LayoutAppHelper {
 			//$input = '<input name="input_choice" value="'. $count . '"';
 			$radioValue = isset($options['values'][$count]) ? $options['values'][$count] : $count;
 			$isDefault = $radioValue == $default || (empty($default) && $count == 0);
-			$row = $this->Html->div('input-choice-control',
-				$this->Form->radio($name, array($radioValue => $label), array(
-					'label' => !is_numeric($label) ? $label : false,
-					'legend' => false,
-					'value' => $default,
-				))
-			) . "\n";
+			$radio = $this->Form->radio($name, array($radioValue => $label), array(
+				'label' => false,
+				'legend' => false,
+				'value' => $default,
+			));
+			$row = $this->Html->div('input-choice-control', $radio) . "\n";
 			if (is_array($input)) {
 				if (empty($input['fieldset']) && empty($input['legend'])) {
 					$input['fieldset'] = false;

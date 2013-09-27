@@ -130,10 +130,10 @@ class TableComponent extends Component {
 		$model = !empty($options['model']) ? $options['model'] : $this->controller->modelClass;
 		if (empty($options['result'])) {
 			if (!empty($this->controller->{$model})) {
-				$Model =& $this->controller->{$model};
+				$Model = $this->controller->{$model};
 			} else {
 				App::import('Model', $model);
-				$Model =& new $model();
+				$Model = new $model();
 			}
 			$verb = 'Set';
 			if (empty($options['conditions'])) {
