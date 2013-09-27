@@ -28,6 +28,7 @@ class ActivateComponent extends Component {
 			'model' => null,
 			'param' => array('activate', 'deactivate'),
 			'field' => 'active',
+			'verb' => false,
 			'sessionOutput' => true,
 			'format' => 'boolean',
 		), $settings);
@@ -40,6 +41,12 @@ class ActivateComponent extends Component {
 			list($paramOn, $paramOff) = $settings['param'] + array(null, null);
 			$settings += compact('paramOn', 'paramOff');
 		}
+		if (empty($settings['verb'])) {
+			$settings['verb'] = array($paramOn, $paramOff);
+		} else if (!is_array($settings['verb'])) {
+			$settings['verb'] = array($settings['verb'], 'not ' . $settings['verb']);
+		}
+		//debug($settings);
 		parent::__construct($collection, $settings);
 	}
 
@@ -48,7 +55,7 @@ class ActivateComponent extends Component {
 		$model = !empty($controller->modelClass) ? $controller->modelClass : null;
 		
 		$this->settings['model'] = $model;
-		$this->settings['humanName'] = Inflector::humanize($model);
+		$this->settings['humanName'] = InflectorPlus::humanize($model);
 		
 		if (!method_exists($this->controller, '_beforeActivate') || $this->controller->_beforeActivate()) {
 			$this->paramCheck();
@@ -78,7 +85,8 @@ class ActivateComponent extends Component {
 			$Model->alias . '.' . $Model->primaryKey => $id,
 		));
 		*/
-				$data = array(			$Model->primaryKey => $id,			$field => $this->_getVal($on),		);		$success = $Model->save($data);
+				$data = array(			$Model->primaryKey => $id,			$field => $this->_getVal($on),		);
+		$success = $Model->save($data, array('validate' => false, 'callbacks' => false));
 		
 		if ($success) {
 			$msg = 'Successfully marked';
@@ -88,14 +96,17 @@ class ActivateComponent extends Component {
 			$class = 'alert-error';
 		}
 		$msg .= sprintf(' <a href="%s">%s</a> ', Router::url(array('action' => 'view', $id)), $humanName);
-		$msg .= $on ? $paramOn : $paramOff;
+		$msg .= $this->_pickSetting('verb', $on);
+		
 		$redirect = $this->controller->referer();
 		if ($redirect == '/') {
 			$redirect = array('action' => 'index');
 		} else {
 			$redirect = Url::urlArray($redirect);
 		}
-		$redirect['active'] = $id;
+		$param = $this->_pickSetting('param', $on);
+		unset($redirect[$param]);
+		$redirect[$param . '_finished'] = 1;
 		
 		if ($this->sessionOutput) {
 			$this->controller->Session->setFlash($msg, 'default', compact('class'));
@@ -116,5 +127,16 @@ class ActivateComponent extends Component {
 			$val = $on ? 1 : 0;
 		}
 		return $val;
+	}
+	
+	// Finds a setting that is saved as a 2 item array, key 0 for "on", key 1 for "off"
+	private function _pickSetting($field, $on = true) {
+		if (!isset($this->settings[$field])) {
+			return null;
+		} else if (!is_array($this->settings[$field])) {
+			return $this->settings[$field];
+		} else {
+			return $on ? $this->settings[$field][0] : $this->settings[$field][1];
+		}
 	}
 }
