@@ -1,6 +1,6 @@
 <?php
 App::import('Lib', 'Layout.Date');
-
+App::uses('LayoutAppHelper', 'Layout.View/Helper');
 class CalendarHelper extends LayoutAppHelper {
 	var $name = 'Calendar';
 	var $helpers = array(
