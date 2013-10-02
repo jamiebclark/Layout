@@ -72,31 +72,24 @@ class ActivateComponent extends Component {
 		}
 	}
 	
-	function activate($id, $reverse = false) {
+	function activate($id, $setOn = true) {
 		extract($this->settings);
-		
 		$Model =& $this->controller->{$model};
-		$on = !$reverse;
-		
-		/*
-		$Model->updateAll(array(
-			$Model->alias . '.' . $this->field => !$reverse ? 1 : 0,
-		), array(
-			$Model->alias . '.' . $Model->primaryKey => $id,
-		));
-		*/
-				$data = array(			$Model->primaryKey => $id,			$field => $this->_getVal($on),		);
+				$data = array(			$Model->primaryKey => $id,			$field => $this->_getVal($setOn),		);
 		$success = $Model->save($data, array('validate' => false, 'callbacks' => false));
 		
 		if ($success) {
 			$msg = 'Successfully marked';
 			$class = 'alert-success';
+			if (method_exists($this->controller, '_afterActivate')) {
+				$this->controller->_afterActivate($id, $setOn);
+			}
 		} else {
 			$msg = 'There was an error marking';
 			$class = 'alert-error';
 		}
 		$msg .= sprintf(' <a href="%s">%s</a> ', Router::url(array('action' => 'view', $id)), $humanName);
-		$msg .= $this->_pickSetting('verb', $on);
+		$msg .= $this->_pickSetting('verb', $setOn);
 		
 		$redirect = $this->controller->referer();
 		if ($redirect == '/') {
@@ -104,7 +97,7 @@ class ActivateComponent extends Component {
 		} else {
 			$redirect = Url::urlArray($redirect);
 		}
-		$param = $this->_pickSetting('param', $on);
+		$param = $this->_pickSetting('param', $setOn);
 		unset($redirect[$param]);
 		$redirect[$param . '_finished'] = 1;
 		
@@ -118,25 +111,25 @@ class ActivateComponent extends Component {
 		return $this->activate($id, true);	
 	}
 	
-	function _getVal($on = true) {
+	function _getVal($setOn = true) {
 		$format = $this->settings['format'];
 		$val = true;
 		if ($format == 'date') {
-			$val = $on ? date('Y-m-d H:i:s') : null;
+			$val = $setOn ? date('Y-m-d H:i:s') : null;
 		} else {
-			$val = $on ? 1 : 0;
+			$val = $setOn ? 1 : 0;
 		}
 		return $val;
 	}
 	
 	// Finds a setting that is saved as a 2 item array, key 0 for "on", key 1 for "off"
-	private function _pickSetting($field, $on = true) {
+	private function _pickSetting($field, $setOn = true) {
 		if (!isset($this->settings[$field])) {
 			return null;
 		} else if (!is_array($this->settings[$field])) {
 			return $this->settings[$field];
 		} else {
-			return $on ? $this->settings[$field][0] : $this->settings[$field][1];
+			return $setOn ? $this->settings[$field][0] : $this->settings[$field][1];
 		}
 	}
 }
