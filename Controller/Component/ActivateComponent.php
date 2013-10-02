@@ -88,8 +88,6 @@ class ActivateComponent extends Component {
 				$data = array(			$Model->primaryKey => $id,			$field => $this->_getVal($on),		);
 		$success = $Model->save($data, array('validate' => false, 'callbacks' => false));
 		
-		debug(compact('id', 'reverse', 'data', 'success'));
-		
 		if ($success) {
 			$msg = 'Successfully marked';
 			$class = 'alert-success';
