@@ -88,6 +88,8 @@ class ActivateComponent extends Component {
 				$data = array(			$Model->primaryKey => $id,			$field => $this->_getVal($on),		);
 		$success = $Model->save($data, array('validate' => false, 'callbacks' => false));
 		
+		debug(compact('id', 'reverse', 'data', 'success'));
+		
 		if ($success) {
 			$msg = 'Successfully marked';
 			$class = 'alert-success';
@@ -122,7 +124,7 @@ class ActivateComponent extends Component {
 		$format = $this->settings['format'];
 		$val = true;
 		if ($format == 'date') {
-			$val = $on ? 'NOW()' : null;
+			$val = $on ? date('Y-m-d H:i:s') : null;
 		} else {
 			$val = $on ? 1 : 0;
 		}
