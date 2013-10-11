@@ -54,7 +54,12 @@ class AssetHelper extends LayoutAppHelper {
 		}	}
 	
 	function js($file, $config = array()) {
-		return $this->_addFile('js', $file, $config);
+		$type = 'js';
+		if (!empty($config['afterBlock'])) {
+			$type = 'jsAfterBlock';
+			unset($config['afterBlock']);
+		}
+		return $this->_addFile($type, $file, $config);
 	}
 	
 	function css($file, $config = array()) {
@@ -74,7 +79,7 @@ class AssetHelper extends LayoutAppHelper {
 	}
 
 	function output($inline = false, $repeat = false) {
-		$assetOrder = array('css', 'js', 'block');
+		$assetOrder = array('css', 'js', 'block', 'jsAfterBlock');
 		$eol = "\n\t";
 		$out = $eol . '<!--- ASSETS -->'. $eol;
 		foreach ($assetOrder as $type) {
@@ -159,7 +164,7 @@ class AssetHelper extends LayoutAppHelper {
 			if (!empty($config['if'])) {
 				$out = sprintf('<!--[if %s]>%s<![endif]-->', $config['if'], $out);
 			}
-		} else if ($type == 'js') {
+		} else if ($type == 'js' || $type == 'jsAfterBlock') {
 			$out = $this->Html->script($file, $options);
 		} else if ($type == 'block') {
 			$out = $this->Html->scriptBlock($file, $options);
