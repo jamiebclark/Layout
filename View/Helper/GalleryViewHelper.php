@@ -22,10 +22,9 @@ class GalleryViewHelper extends AppHelper {
 		$count = count($thumbs);
 		$out = '';
 		if ($count > 1) {
-			$out = $this->{$this->modelName}->thumbnails($thumbs, array(
-				'class' => 'row-fluid thumbnails' . $count,
-				'id' => $result[$this->modelName]['id']
-			));
+			$options = $this->addClass($options, 'row-fluid thumbnails' . $count);
+			$options['id'] = $result[$this->modelName]['id'];
+			$out = $this->{$this->modelName}->thumbnails($thumbs, $options);
 		}
 		return $out;
 	}

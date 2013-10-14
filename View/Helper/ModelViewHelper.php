@@ -728,7 +728,7 @@ class ModelViewHelper extends LayoutAppHelper {
 	// Returns only the path to the model's image
 	function imageSrc($result, $options = array()) {
 		$result = $this->_getResult($result);
-		$options = $this->thumbOptions($options);
+		$options = $this->thumbOptions($result, $options);
 		return $this->Image->src($result, $options);
 	}
 	
