@@ -55,7 +55,10 @@ class ImageHelper extends LayoutAppHelper {
 	function src($file, $options = array()) {
 		$src = $this->path($file, array('useRoot' => false, 'ds' => '/') + $options);
 		if (!$this->cache) {
-			$src .= '?u=' . date('Ymdhis');
+			$options['modified'] = date('Ymdhis');
+		}
+		if (!empty($options['modified'])) {
+			$src .= '?u=' . $options['modified'];
 		}
 		return $src;
 	}

@@ -921,13 +921,16 @@ class ModelViewHelper extends LayoutAppHelper {
 			'plugin' => $this->modelPlugin,
 			'size' => null,
 		), (array) $options);
+		//Keeps track of when the entry was last modified to ensure image cache refresh
+		if (!empty($options['modified']) && !empty($Result['modified'])) {
+			$options['modified'] = date('Ymdhis', strtotime($Result['modified']));
+		}
 		if (empty($options['size'])) {
 			$options['size'] = $options['dir'];
 		}
 		if (!empty($options['size']) && !empty($options['dirClass'])) {
 			$options = $this->addClass($options, "thumbnail-{$options['size']}");
 		}
-		
 		return !empty($modelId) ? $this->_idReplace($options, $modelId) : $options;
 	}
 	
