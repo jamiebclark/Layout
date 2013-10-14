@@ -183,6 +183,7 @@ $inputContainerControlBgColor:	#EEE;
 }
 .input-choice-content {
 	padding: $paddingLarge;
+	@extend %overflow;
 }
 
 .input-choice-input {
