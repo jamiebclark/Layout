@@ -447,7 +447,7 @@ class ModelViewHelper extends LayoutAppHelper {
 			'truncate' => false,
 			'url' => false,
 			'alias' => null,
-		), $options);
+		), (array) $options);
 		$options = $this->addClass($options, strtolower($this->name) . '-title');
 		extract($options);
 		$result = $this->_getResult($result, $alias);
