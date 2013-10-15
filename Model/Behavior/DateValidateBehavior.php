@@ -3,26 +3,65 @@ class DateValidateBehavior extends ModelBehavior {
 
 	var $validated = false;
 	
+	function setup($Model, $settings = array()) {
+		debug($Model->data);
+		debug("GO!");
+		exit();
+		return parent::setup($Model, $settings);
+	}
+	
 	function beforeValidate(&$Model) {
 		$this->validated = true;
-		$this->__dateValidateCheck($Model);
+		$this->validateDateData($Model);
 		return parent::beforeValidate($Model);
 	}
 
 	function beforeSave(&$Model) {
 		if (!$this->validated) {
 			//If user is skipping validation, make sure to call it here instead
-			$this->__dateValidateCheck($Model);
+			$this->validateDateData($Model);
 		}
-		$this->__nullDateFix($Model);
+		$this->_nullDateFix($Model);
 		return true;
 	}
 
 	/**
+	 * Scans the Model schema to check for date, timestamp, or datetime columns and
+	 * runs strtotime() on them. This allows for more flexibility in date format
+	 *
+	 **/
+	public function validateDateData(&$Model) {
+		if (!empty($Model->data[$Model->alias])) {
+			$data =& $Model->data[$Model->alias];
+		} else {
+			$data =& $Model->data;
+		}
+		$schema = $Model->schema();
+		foreach ($schema as $key => $field) {
+			if (!empty($data[$key])) {
+				$val = $data[$key];
+				//Allows you to pass more formats of dates
+				if ($field['type'] == 'date') {
+					$dateVal = $this->_dateValidate($val,'Y-m-d');
+					if ($dateVal) {
+						$data[$key] = $dateVal;
+					}
+				} elseif (in_array($field['type'],array('timestamp','datetime'))) {
+					$dateVal = $this->_dateValidate($val,'Y-m-d H:i:s');
+					if ($dateVal) {
+						$data[$key] = $dateVal;
+					}
+				}
+			} 
+		}
+		return true;
+	}
+	
+	/**
 	 * Prevents blank dates saving as 0000-00-00 instead of NULL
 	 *
 	 **/
-	function __nullDateFix(&$Model) {
+	private function _nullDateFix(&$Model) {
 		$schema = $Model->schema();
 		foreach ($schema as $key => $field) {
 			$null = $field['null'];
@@ -40,47 +79,16 @@ class DateValidateBehavior extends ModelBehavior {
 		}
 	}
 
-	/**
-	 * Scans the Model schema to check for date, timestamp, or datetime columns and
-	 * runs strtotime() on them. This allows for more flexibility in date format
-	 *
-	 **/
-	function __dateValidateCheck(&$Model) {
-		if (!empty($Model->data[$Model->alias])) {
-			$data =& $Model->data[$Model->alias];
-		} else {
-			$data =& $Model->data;
-		}
-		$schema = $Model->schema();
-		foreach ($schema as $key => $field) {
-			if (!empty($data[$key])) {
-				$val = $data[$key];
-				//Allows you to pass more formats of dates
-				if ($field['type'] == 'date') {
-					$dateVal = $this->__dateValidate($val,'Y-m-d');
-					if ($dateVal) {
-						$data[$key] = $dateVal;
-					}
-				} elseif (in_array($field['type'],array('timestamp','datetime'))) {
-					$dateVal = $this->__dateValidate($val,'Y-m-d H:i:s');
-					if ($dateVal) {
-						$data[$key] = $dateVal;
-					}
-				}
-			} 
-		}
-		return true;
-	}
 	
-	function __dateValidate($val, $dateFormat) {
+	function _dateValidate($val, $dateFormat) {
 		if (is_array($val)) {
 			if (isset($val['date']) && isset($val['time'])) {
-				$val = $this->__dateStrValidate($val['date']).' '.$this->__timeStrValidate($val['time']);
+				$val = $this->_dateStrValidate($val['date']).' '.$this->_timeStrValidate($val['time']);
 			} else {
 				return false;
 			}
 		} else {
-			$val = $this->__dateTimeStrValidate($val);
+			$val = $this->_dateTimeStrValidate($val);
 		}
 		if ($val != '' && ($stamp = strtotime($val))) {
 			return date($dateFormat,$stamp);
@@ -93,7 +101,7 @@ class DateValidateBehavior extends ModelBehavior {
 	 * Performs last-minute changes to the date string
 	 *
 	 **/
-	function __dateStrValidate($dateStr) {
+	function _dateStrValidate($dateStr) {
 		return $dateStr;
 	}
 	
@@ -101,17 +109,17 @@ class DateValidateBehavior extends ModelBehavior {
 	 * Performs last-minute changes to the date string
 	 *
 	 **/
-	function __timeStrValidate($timeStr) {
+	function _timeStrValidate($timeStr) {
 		//If a user enters 1210am, it doesn't recognize it
 		$timeStr = preg_replace('/12([\d]{2})[\s]*[a|A][m|M]/', '00:$1:00', $timeStr);
 		return $timeStr;
 	}
 	
-	function __dateTimeStrValidate($dateTimeStr) {
+	function _dateTimeStrValidate($dateTimeStr) {
 		$strs = explode(' ', $dateTimeStr);
-		$return = $this->__dateStrValidate(array_shift($strs));
+		$return = $this->_dateStrValidate(array_shift($strs));
 		if (count($strs) > 0) {
-			$return .= ' ' . $this->__timeStrValidate(implode(' ', $strs));
+			$return .= ' ' . $this->_timeStrValidate(implode(' ', $strs));
 		}
 		return trim($return);
 	}

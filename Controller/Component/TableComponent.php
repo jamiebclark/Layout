@@ -172,7 +172,7 @@ class TableComponent extends Component {
 					$options['delete'] = $options['conditions'];
 				}
 				$Model->order = array();
-				$options['result'] = $Model->deleteAll($options['delete']);
+				$options['result'] = $Model->deleteAll($options['delete'], true, true);
 				if (empty($options['verb'])) {
 					$options['verb'] = 'Deleted';
 				}

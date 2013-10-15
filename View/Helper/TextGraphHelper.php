@@ -100,16 +100,27 @@ class TextGraphHelper extends AppHelper {
 			$class = 'empty';
 		} else {
 			$diff = $currentVal - $startVal;
-			$pct = $diff / $startVal * 100;
+			$pct = $diff / $startVal;
 		}
-		$pct = number_format($pct, 2) . '%';
-		if ($pct > 0) {
-			$pct = '+' . $pct;
-			$class = 'positive';
-		} else if ($pct < 0) {
-			$class = 'negative';
+		return $this->pctFormat($pct);
+	}
+	
+	function pctFormat($pct) {
+		$class = 'badge';
+		if (!isset($pct)) {
+			$pct = '---';
+			$class = ' badge-empty';
+		} else {
+			$pct = ((float)number_format($pct * 100, 2)) . '%';
+			if ($pct > 0) {
+				$pct = '+' . $pct;
+				$class .= ' badge-success';
+			} else if ($pct < 0) {
+				$pct = $pct;
+				$class .= ' badge-warning';
+			}
 		}
-		return $this->Html->tag('font',  $pct, compact('class'));
+		return $this->Html->tag('span',  $pct, compact('class'));
 	}
 	
 	function getPct($val, $min = 0, $max = 0) {
