@@ -36,7 +36,7 @@ class ModelViewHelper extends LayoutAppHelper {
 	var $modelPlugin;
 
 	
-	var $fileField = 'filename';
+	var $imageField = 'filename';
 
 	var $imageDir;
 	var $thumbDir = 'profiles/';	//Base directory where thumbnails are stored
@@ -717,8 +717,8 @@ class ModelViewHelper extends LayoutAppHelper {
 		$return = '';
 		if (!empty($options['src'])) {
 			$src = $options['src'];
-		} else if (!empty($this->imageDir) && !empty($Result[$this->fileField])) {
-			$src = $Result[$this->fileField];
+		} else if (!empty($this->imageDir) && !empty($Result[$this->imageField])) {
+			$src = $Result[$this->imageField];
 		}
 		if (!empty($src)) {
 			$return .= $this->Image->image($src, $options);
@@ -921,6 +921,7 @@ class ModelViewHelper extends LayoutAppHelper {
 			'dirClass' => true,
 			'plugin' => $this->modelPlugin,
 			'size' => null,
+			'imageField' => $this->imageField,
 		), (array) $options);
 		//Keeps track of when the entry was last modified to ensure image cache refresh
 		if (!empty($options['modified']) && !empty($Result['modified'])) {
@@ -960,7 +961,7 @@ class ModelViewHelper extends LayoutAppHelper {
 		), $options);
 		extract($options);
 		$add = !empty($this->request->data[$this->modelName]['id']);
-		$hasImg = !empty($this->request->data[$this->modelName]['filename']);
+		$hasImg = !empty($this->request->data[$this->modelName][$this->imageField]);
 		if (empty($image)) {
 			$image = $this->thumb($hasImg ? $this->request->data[$this->modelName] : 0, array(
 				'class' => 'input-thumb-image',
