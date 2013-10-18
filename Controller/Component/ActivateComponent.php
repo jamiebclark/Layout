@@ -50,7 +50,7 @@ class ActivateComponent extends Component {
 		parent::__construct($collection, $settings);
 	}
 
-	function startup(&$controller) {
+	function startup(Controller $controller) {
 		$this->controller =& $controller;
 		$model = !empty($controller->modelClass) ? $controller->modelClass : null;
 		

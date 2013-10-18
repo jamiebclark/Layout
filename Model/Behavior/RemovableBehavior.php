@@ -11,7 +11,7 @@
 /***********/
 
 class RemovableBehavior extends ModelBehavior {
-	function beforeSave(&$Model, $options) {
+	function beforeSave(Model $Model, $options = array()) {
 		$data =& $Model->getData();
 		$removeId = null;
 		if (!empty($data['remove']) && !empty($data[$Model->primaryKey])) {

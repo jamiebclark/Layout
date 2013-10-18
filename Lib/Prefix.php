@@ -1,6 +1,6 @@
 <?php
 class Prefix {
-	function reset($allow = null, $url = array()) {
+	public static function reset($allow = null, $url = array()) {
 		$prefixes = Router::prefixes();
 		if (!empty($prefixes)) {
 			foreach ($prefixes as $prefix) {
@@ -12,7 +12,7 @@ class Prefix {
 		return $url;
 	}
 	
-	function remove($url, $allow = null) {
+	public static function remove($url, $allow = null) {
 		unset($url['prefix']);
 		
 		$prefixes = Router::prefixes();
@@ -26,7 +26,7 @@ class Prefix {
 		return $url;
 	}
 	
-	function get($linkArray) {
+	public static function get($linkArray) {
 		$prefixes = Router::prefixes();
 		if (!empty($linkArray['prefix'])) {
 			return $linkArray['prefix'];
@@ -39,7 +39,7 @@ class Prefix {
 		return false;
 	}
 	
-	function removeFromAction($action, $prefix) {
+	public static function removeFromAction($action, $prefix) {
 		$prefix .= '_';
 		if (!empty($prefix) && strpos($action, $prefix) === 0) {
 			$action = substr($action, strlen($prefix));

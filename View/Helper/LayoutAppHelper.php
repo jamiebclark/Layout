@@ -43,7 +43,7 @@ class LayoutAppHelper extends AppHelper {
 		parent::__construct($View, $settings);
 	}
 	
-	function beforeRender($writeFile) {
+	function beforeRender($viewFile) {
 		if ($this->name == 'Asset') {
 			$Asset =& $this;
 		} else {
@@ -52,7 +52,7 @@ class LayoutAppHelper extends AppHelper {
 		$Asset->css($this->defaultCss);
 		$Asset->js($this->defaultJs);
 
-		parent::beforeRender($writeFile);
+		parent::beforeRender($viewFile);
 	}
 	
 	function getCurrentModel() {

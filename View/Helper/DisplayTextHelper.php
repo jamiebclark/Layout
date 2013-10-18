@@ -3,7 +3,7 @@
  * Handles text being displayed in message boards / blogs
  *
  **/
-App::import('Lib', 'Layout.TextCleanup');
+App::uses('TextCleanup', 'Layout.Lib');
 App::uses('LayoutAppHelper', 'Layout.View/Helper');
 class DisplayTextHelper extends LayoutAppHelper {
 	var $helpers = array(

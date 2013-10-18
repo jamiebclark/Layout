@@ -112,7 +112,8 @@ class ModelViewHelper extends LayoutAppHelper {
 	
 	protected function getViewModel() {
 		if (!empty($this->request->params['models'])) {
-			return array_shift(array_keys($this->request->params['models']));
+			$modelKeys = array_keys($this->request->params['models']);
+			return array_shift($modelKeys);
 		}
 		return null;
 	}
@@ -127,7 +128,7 @@ class ModelViewHelper extends LayoutAppHelper {
 		if (!empty($this->modelPlugin)) {
 			$loadModel = "{$this->modelPlugin}.$loadModel";
 		}
-		$Model =& ClassRegistry::init($loadModel, true);
+		$Model = ClassRegistry::init($loadModel, true);
 		if (empty($Model)) {
 			throw new Exception("Could not load ModelViewHelper for model <em>$loadModel</em>");
 		}
@@ -290,7 +291,7 @@ class ModelViewHelper extends LayoutAppHelper {
 			$attrs['text'] = true;
 		}
 		if (empty($attrs['url']) && !empty($result['id'])) {
-			$attrs['url'] = $this->url($result);
+			$attrs['url'] = $this->modelUrl($result);
 		}
 		$menu = array();
 		$useIcons = !empty($attrs['icons']);
@@ -388,7 +389,7 @@ class ModelViewHelper extends LayoutAppHelper {
 			'escape' => false,
 			'titleFields' => array('truncate'),
 		), (array) $options);
-		$url = !empty($options['url']) ? $options['url'] : $this->url($result);
+		$url = !empty($options['url']) ? $options['url'] : $this->modelUrl($result);
 		if (isset($options['prefix'])) {
 			if ($options['prefix'] === false) {
 				$url += Prefix::reset();
@@ -463,7 +464,7 @@ class ModelViewHelper extends LayoutAppHelper {
 		$text = $before . $text . $after;
 		if (!empty($url)) {
 			if ($url === true) {
-				$url = $this->url($result);
+				$url = $this->modelUrl($result);
 			}
 			$text = $this->Html->link($text, $url, array('escape' => false));
 		}
@@ -521,7 +522,7 @@ class ModelViewHelper extends LayoutAppHelper {
 		$returnOptions = compact('class');
 		$modelResult = $this->_getResult($result, $alias);
 		if (empty($url) && $url !== false) {
-			$url = $this->url($modelResult);
+			$url = $this->modelUrl($modelResult);
 		}
 		if (!empty($urlAdd) && $url !== false) {
 			$url = $urlAdd + $url;
@@ -642,7 +643,7 @@ class ModelViewHelper extends LayoutAppHelper {
 		return $this->Html->tag('ul', '<li>' . implode('</li><li>', $list) . '</li>', $listOptions);	
 	}	
 
-	function url($result, $options = array()) {
+	public function modelUrl($result, $options = array()) {
 		$modelResult = $this->_getResult($result);
 		$controller = !empty($options['controller']) ? $options['controller'] : $this->controller;
 		$action = !empty($options['action']) ? $options['action'] : 'view';
@@ -678,7 +679,7 @@ class ModelViewHelper extends LayoutAppHelper {
 		$alias = !empty($options['alias']) ? $options['alias'] : null;
 		$result = $this->_getResult($result, $alias);
 		if (Param::keyCheck($options, 'url') === true && !empty($result)) {
-			$options['url'] = $this->url($result);
+			$options['url'] = $this->modelUrl($result);
 		}
 		$options = $this->thumbOptions($result, $options);
 		if (!empty($options['media'])) {
@@ -780,7 +781,7 @@ class ModelViewHelper extends LayoutAppHelper {
 		$options = $this->addClass($options, 'thumbnail');
 		extract($options);
 		if ($url === true) {
-			$url = $this->url($result);
+			$url = $this->modelUrl($result);
 		}
 		if (!empty($urlAdd)) {
 			$url = $urlAdd + $url;
@@ -943,7 +944,7 @@ class ModelViewHelper extends LayoutAppHelper {
 			}
 			if (!empty($neighbors[$resultField])) {
 				$result = $this->_getResult($neighbors[$resultField]);
-				$$neighborField = array($this->title($result, array('tag' => false)), $this->url($result));
+				$$neighborField = array($this->title($result, array('tag' => false)), $this->modelUrl($result));
 			}
 		}
 		return $this->Layout->neighbors($prev, $next, $up);

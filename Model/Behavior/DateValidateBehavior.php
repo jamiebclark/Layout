@@ -3,26 +3,23 @@ class DateValidateBehavior extends ModelBehavior {
 
 	var $validated = false;
 	
-	function setup($Model, $settings = array()) {
-		debug($Model->data);
-		debug("GO!");
-		exit();
+	function setup(Model $Model, $settings = array()) {
 		return parent::setup($Model, $settings);
 	}
 	
-	function beforeValidate(&$Model) {
+	function beforeValidate(Model $Model, $options = array()) {
 		$this->validated = true;
 		$this->validateDateData($Model);
-		return parent::beforeValidate($Model);
+		return parent::beforeValidate($Model, $options);
 	}
 
-	function beforeSave(&$Model) {
+	function beforeSave(Model $Model, $options = array()) {
 		if (!$this->validated) {
 			//If user is skipping validation, make sure to call it here instead
 			$this->validateDateData($Model);
 		}
 		$this->_nullDateFix($Model);
-		return true;
+		return parent::beforeSave($Model, $options);
 	}
 
 	/**
@@ -30,7 +27,7 @@ class DateValidateBehavior extends ModelBehavior {
 	 * runs strtotime() on them. This allows for more flexibility in date format
 	 *
 	 **/
-	public function validateDateData(&$Model) {
+	public function validateDateData(Model $Model) {
 		if (!empty($Model->data[$Model->alias])) {
 			$data =& $Model->data[$Model->alias];
 		} else {
@@ -61,7 +58,7 @@ class DateValidateBehavior extends ModelBehavior {
 	 * Prevents blank dates saving as 0000-00-00 instead of NULL
 	 *
 	 **/
-	private function _nullDateFix(&$Model) {
+	private function _nullDateFix(Model $Model) {
 		$schema = $Model->schema();
 		foreach ($schema as $key => $field) {
 			$null = $field['null'];

@@ -397,7 +397,8 @@ App::uses('LayoutAppHelper', 'Layout.View/Helper');class CrumbsHelper extends L
 	}
 	
 	private function getModel() {
-		$modelInfo = array_shift(array_values($this->request->params['models']));
+		$models = array_values($this->request->params['models']);
+		$modelInfo = array_shift($models);
 		$model = !empty($modelInfo['plugin']) ? $modelInfo['plugin'] . '.' : '';
 		$model .= $modelInfo['className'];
 		return $model;

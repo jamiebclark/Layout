@@ -1,7 +1,7 @@
 <?php
 App::uses('Prefix', 'Lib');
 class Url {
-	function &getInstance() {
+	public static function &getInstance() {
 		static $instance = array();
 
 		if (!$instance) {
@@ -10,7 +10,7 @@ class Url {
 		return $instance[0];
 	}
 
-	function getAction($url = null) {
+	public static function getAction($url = null) {
 		$paths = Router::getPaths(empty($url) ? true : $url);
 		$action = $paths->params['action'];
 		if (!empty($paths->params['prefix'])) {
@@ -19,7 +19,7 @@ class Url {
 		return $action;
 	}
 	
-	function urlArray($url = null) {
+	public static function urlArray($url = null) {
 		if (empty($url)) {
 			$url = Router::url();
 		}
@@ -43,14 +43,14 @@ class Url {
 		return $url;
 	}
 	
-	function host($url) {
+	public static function host($url) {
 		$self =& Url::getInstance();
 		$url = parse_url($self->validate($url));
 		return preg_replace('/^www./', '', $url['host']);
 	}
 	
 	//Makes sure the URL is formatted correctly with the appropriate prefixes
-	function validate($url, $options = array()) {
+	public static function validate($url, $options = array()) {
 		if (substr($url,0,1) == '/') {
 			//If it's a local URL, add the local host
 			$url = 'http://' . $_SERVER['HTTP_HOST'] . $url;
@@ -62,7 +62,7 @@ class Url {
 		return $url;
 	}
 	
-	function base() {
+	public static function base() {
 		$self =& Url::getInstance();
 		$urlArray = $self::urlArray();
 		$url = Router::url($urlArray, true);

@@ -9,7 +9,7 @@ class CrumbsComponent extends Component {
 		parent::__construct($collection, $settings);
 	}
 
-	function initialize(&$controller) {
+	function initialize(Controller $controller) {
 		$this->controller =& $controller;
 	}
 	

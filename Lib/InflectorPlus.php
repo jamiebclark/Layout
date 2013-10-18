@@ -1,7 +1,7 @@
 <?php
 App::import('Lib', 'Inflector');
 class InflectorPlus {
-	function &getInstance() {
+	public static function &getInstance() {
 		static $instance = array();
 		if (!$instance) {
 			$instance[0] =& new InflectorPlus();
@@ -11,7 +11,7 @@ class InflectorPlus {
 
 	
 	//Returns a string in camelcase format with first character lowercase
-	function varName($model, $plural = false) {
+	public static function varName($model, $plural = false) {
 		if (ctype_lower(substr($model,0,1))) {
 		//It's a table / controller
 			$model = Inflector::camelize(Inflector::singularize($model));
@@ -23,21 +23,21 @@ class InflectorPlus {
 		return $varName;
 	}
 	
-	function varNameSingular($model) {
+	public static function varNameSingular($model) {
 		$self =& InflectorPlus::getInstance();
 		return $self->varName($model, false);
 	}
 	
-	function varNamePlural($model) {
+	public static function varNamePlural($model) {
 		$self =& InflectorPlus::getInstance();
 		return $self->varName($model, true);
 	}
 	
-	function foreignKey($model) {
+	public static function foreignKey($model) {
 		return Inflector::underscore($model) . '_id';
 	}
 
-	function humanize($model) {
+	public static function humanize($model) {
 		if (!ctype_lower(substr($model,0,1))) {
 			$model = trim(preg_replace('/([A-Z])/', ' $1', $model));
 		} else {
@@ -46,7 +46,7 @@ class InflectorPlus {
 		return $model;
 	}
 	
-	function modelize($table) {
+	public static function modelize($table) {
 		return Inflector::singularize(Inflector::camelize($table));
 	}
 }
