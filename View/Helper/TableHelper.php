@@ -1,4 +1,5 @@
 <?php
+App::uses('InflectorPlus', 'Layout.Lib');
 App::uses('LayoutAppHelper', 'Layout.View/Helper');
 class TableHelper extends LayoutAppHelper {
 	var $name = 'Table';
