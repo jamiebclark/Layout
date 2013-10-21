@@ -444,10 +444,11 @@ class TableHelper extends LayoutAppHelper {
 		);
 		$options = $this->addClass($options, 'table layout-table');
 		$options['tableCells'] = array_merge(array(
-			'oddTrOptions' => array('class' => 'altrow'),
+			'oddTrOptions' => null,
 			'evenTrOptions' => null,
 			'useCount' => false,
-			'continueOddEven' => true
+			'continueOddEven' => true,
+			'altrowClass' => 'altrow',
 		), $options['tableCells']);
 
 		$tableCellOptions = Param::keyCheck($options, 'tableCells', true, array());
@@ -483,6 +484,9 @@ class TableHelper extends LayoutAppHelper {
 				$trOptions = !empty($this->trOptions[$k]) ? $this->trOptions[$k] : array();
 				if ($k % 2) {
 					$trOptions = array_merge((array)$oddTrOptions, $trOptions);
+					if (!empty($altrowClass)) {
+						$trOptions = $this->addClass($trOptions, $altrowClass);
+					}
 				} else {
 					$trOptions = array_merge((array)$evenTrOptions, $trOptions);
 				}
