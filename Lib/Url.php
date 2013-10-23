@@ -19,6 +19,7 @@ class Url {
 		return $action;
 	}
 	
+	//Returns a CakePHP-formatted URL Array
 	public static function urlArray($url = null) {
 		if (empty($url)) {
 			$url = Router::url();
