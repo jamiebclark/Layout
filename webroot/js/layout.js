@@ -20,21 +20,24 @@
 				$offContent.showEnableChildren();
 			}
 			function toggleCheck() {
-				console.log($control.is(':checked'));
-				if ($control.is(':checked')) {
-					toggleOn();
-				} else {
-					toggleOff();
+				if (!$control.is(':disabled')) {
+					if ($control.is(':checked')) {
+						toggleOn();
+					} else {
+						toggleOff();
+					}
 				}
 			}
 			
 			if (!$toggle.data('layout-toggle-init')) {
 				$control.change(function() {
 					toggleCheck();
+				}).bind('layout-enabled', function() {
+					toggleCheck();
 				});
 				toggleCheck();
 				$toggle.data('layout-toggle-init');
-				console.log('Toggle Check');
+				console.log('LAYOUT TOGGLE');
 			}
 			return $(this);
 		});

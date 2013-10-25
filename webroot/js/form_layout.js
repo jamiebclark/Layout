@@ -1,5 +1,6 @@
 //Basic functions	
 (function($) {
+	var disableTrigger = 'layout-disabled';
 	$.fn.hideDisableChildren = function() {
 		if ($(this).is(':visible')) {
 			$(this).slideUp();
@@ -12,7 +13,8 @@
 				$(this)
 					.data('stored-disabled', $(this).prop('disabled'))
 					.data('hide-disabled-set', true)
-					.prop('disabled', true);
+					.prop('disabled', true)
+					.trigger('layout-disabled');
 			});
 		return $(this);
 	};
@@ -26,6 +28,9 @@
 				setDisabled = $(this).data('stored-disabled');
 			}
 			$(this).data('hide-disabled-set', false).prop('disabled', setDisabled);
+			if (!setDisabled) {
+				$(this).trigger('layout-enabled');
+			}
 		});
 		
 		if (focusFirst) {
@@ -590,20 +595,21 @@ var dropdownInput;
 					if (!$checkedControl.length) {
 						$checkedControl = $controls.first();
 					}
-					var $choice = $checkedControl.closest('.input-choice');
-					$choices.each(function() {
-						$(this).removeClass('input-choice-active');
-					});
-					$choice.addClass('input-choice-active');
-					$contents
-						.filter(function() {
-							return !$(this).closest('.input-choice').hasClass('input-choice-active');
-						})
-						.each(function() {
-							$(this).hideDisableChildren();
+					if (!$checkedControl.is(':disabled')) {
+						var $choice = $checkedControl.closest('.input-choice');
+						$choices.each(function() {
+							$(this).removeClass('input-choice-active');
 						});
-					$('.input-choice-content', $choice).showEnableChildren();
-
+						$choice.addClass('input-choice-active');
+						$contents
+							.filter(function() {
+								return !$(this).closest('.input-choice').hasClass('input-choice-active');
+							})
+							.each(function() {
+								$(this).hideDisableChildren();
+							});
+						$('.input-choice-content', $choice).showEnableChildren();
+					}
 				}
 				$controls.each(function() {
 					$(this)
@@ -612,6 +618,9 @@ var dropdownInput;
 							})
 						.click(function(e) {
 							$checkedControl = $(this);
+							select();
+						})
+						.bind('layout-enabled', function() {
 							select();
 						});
 				});
