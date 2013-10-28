@@ -26,19 +26,7 @@
 
 // Extend Bootstrap
 // -----------------------
-legend+.control-group {
-	margin-top: 0;	// Not sure why this rule exists in bootstrap, but it makes everything look weird
-}
-
-p.test-class {
-	font-weight: bold;
-}
-.carousel {
-	min-height: 200px;
-}
-.carousel-indicators > li:hover {
-	cursor: pointer;
-}
+@import "bootstrap";
 
 // Page Styling
 // -----------------

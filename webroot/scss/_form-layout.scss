@@ -253,18 +253,6 @@ textarea, input {
 	}
 }
 
-// Modal
-// -------------------------
-$modalWidthWide: 760px;
-$modalWidthSlim: 360px;
-@mixin modalWidth($class, $w) {
-	.modal.#{$class} {
-		width: $w;
-		margin-left: -1 * $w / 2;
-	}
-}
-@include modalWidth(modal-wide, $modalWidthWide);
-@include modalWidth(modal-slim, $modalWidthSlim);
 
 // Dropdowns and Autocompletes
 // ---------------------------------

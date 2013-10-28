@@ -1,3 +1,8 @@
+//Converts pixels to em (to overcome WebKit but with browser zoom)
+@function pem($pixels) {
+	@return #{$pixels/16.0}em;
+}
+
 @mixin inputFontSize($fontSize) {
 	$lineHeight: $fontSize + 4px;
 	font-size: $fontSize;

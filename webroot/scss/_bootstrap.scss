@@ -1,0 +1,59 @@
+// Extends core Bootstrap styles
+
+#container {
+	//border: 1px solid red;	//Used to debug page width
+}
+
+legend+.control-group {
+	margin-top: 0;	// Not sure why this rule exists in bootstrap, but it makes everything look weird
+}
+
+p.test-class {
+	font-weight: bold;
+}
+.carousel {
+	min-height: 200px;
+}
+.carousel-indicators > li:hover {
+	cursor: pointer;
+}
+
+div.alert {
+	margin-left: auto;
+	margin-right: auto;
+	margin-top: $baseLineHeight / 2;
+	margin-bottom: $baseLineHeight / 2;
+	padding: $paddingLarge;
+}
+
+// Modal
+// -------------------------
+$modalWidthWide: 760px;
+$modalWidthSlim: 360px;
+@mixin modalWidth($class, $w) {
+	.modal.#{$class} {
+		width: $w;
+		margin-left: -1 * $w / 2;
+	}
+}
+@include modalWidth(modal-wide, $modalWidthWide);
+@include modalWidth(modal-slim, $modalWidthSlim);
+.modal-body-submit {
+	display: none;
+}
+@media (max-width: pem(767)) {
+	.modal {
+		width: 100% !important;
+		height: 100% !important;
+		margin: 0 !important;
+		padding: 0 !important;
+		top: 0 !important;
+		left: 0 !important;
+	}
+	.modal-body {
+		max-height: none;
+	}
+	.modal-body-submit {
+		display: inline;
+	}
+}

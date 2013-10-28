@@ -401,7 +401,7 @@ $(document).ready(function() {
 						
 						$('submit,button[type="submit"]').each(function() {
 							if (!$(this).attr('name')) {
-								$(this).remove();
+								$(this).addClass('modal-body-submit');
 							}
 						});
 						$('.form-actions:empty', $form).remove();
