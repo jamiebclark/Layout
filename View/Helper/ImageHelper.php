@@ -53,11 +53,25 @@ class ImageHelper extends LayoutAppHelper {
 	 * @return string HTML-safe path to image
 	 **/
 	function src($file, $options = array()) {
+		//Src-Specific options
+		$srcOptions = array(
+			'cache' => $this->cache,
+			'addDate' => true,
+		);
+		
+		foreach ($srcOptions as $key => $val) {
+			if (isset($options[$key])) {
+				$val = $options[$key];
+				unset($options[$key]);		//Prevents it from being passed to path function
+			}
+			$$key = $val;
+		}		
+		
 		$src = $this->path($file, array('useRoot' => false, 'ds' => '/') + $options);
-		if (!$this->cache) {
+		if (!$cache) {
 			$options['modified'] = date('Ymdhis');
 		}
-		if (!empty($options['modified'])) {
+		if ($addDate && !empty($options['modified'])) {
 			$src .= '?u=' . $options['modified'];
 		}
 		return $src;
