@@ -45,6 +45,9 @@
 		text-align: right;
 		max-width: 50%;
 	}
+	&.inactive {
+		background-color: $grayLighter;
+	}
 }
 
 
