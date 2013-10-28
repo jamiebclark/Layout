@@ -43,7 +43,6 @@ class ActivateComponent extends Component {
 		if (!method_exists($this->controller, '_beforeActivate') || $this->controller->_beforeActivate()) {
 			$this->paramCheck();
 		}
-		
 		parent::initialize($controller);
 	}
 	
