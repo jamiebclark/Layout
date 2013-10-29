@@ -2,7 +2,8 @@
 App::uses('LayoutAppHelper', 'Layout.View/Helper');
 class AssetHelper extends LayoutAppHelper {
 	var $name = 'Asset';
-	var $helpers = array('Html');	
+	var $helpers = array('Html');
+	
 	//Assets to be loaded whenever helper is called, broken down by category
 	public $defaultAssets = array(
 		'jquery' => array(
@@ -27,6 +28,7 @@ class AssetHelper extends LayoutAppHelper {
 	private $_assetTypes = array('css', 'js');
 	private $_assets = array();
 	private $_usedAssets = array();
+	private $_blocked = array();
 
 	
 	function __construct(View $view, $settings = array()) {
@@ -51,7 +53,8 @@ class AssetHelper extends LayoutAppHelper {
 			if (!empty($options[$type])) {
 				$this->$type($options[$type]);
 			}
-		}	}
+		}
+	}
 	
 	function js($file, $config = array()) {
 		$type = 'js';
@@ -87,7 +90,8 @@ class AssetHelper extends LayoutAppHelper {
 				foreach ($this->_assets[$type] as $file => $config) {
 					if (isset($this->_usedAssets[$type][$file]) && !$repeat) {
 						continue;
-					}					$out .= $this->_output($type, $file, $config, $inline) . $eol;
+					}
+					$out .= $this->_output($type, $file, $config, $inline) . $eol;
 					$this->_usedAssets[$type][$file] = $config;
 				}
 			}
@@ -121,6 +125,10 @@ class AssetHelper extends LayoutAppHelper {
 			if ($file === false) {
 				continue;
 			}
+			if (isset($this->_blocked[$type][$file])) {
+				continue;
+			}
+			
 			$config = array_merge($configAll, $config);
 			if (!empty($config['prepend'])) {
 				unset($config['prepend']);
@@ -148,12 +156,20 @@ class AssetHelper extends LayoutAppHelper {
 			$files = array($files);
 		}
 		foreach ($files as $file) {
-			unset($this->{$type}[$file]);
+			if (isset($this->_assets[$type][$file])) {
+				unset($this->_assets[$type][$file]);
+			}
+			$this->_blocked[$type][$file] = $file;
 		}
 	}
 	
 	protected function _output($type, $file, $config = array(), $inline = false) {
-		$options = compact('inline');		if (!empty($config['plugin'])) {			$options['plugin'] = $config['plugin'];			unset($config['plugin']);		}		if ($type == 'css') {
+		$options = compact('inline');
+		if (!empty($config['plugin'])) {
+			$options['plugin'] = $config['plugin'];
+			unset($config['plugin']);
+		}
+		if ($type == 'css') {
 			$keys = array('media');
 			foreach ($keys as $key) {
 				if (!empty($config[$key])) {
@@ -168,7 +184,8 @@ class AssetHelper extends LayoutAppHelper {
 			$out = $this->Html->script($file, $options);
 		} else if ($type == 'block') {
 			$out = $this->Html->scriptBlock($file, $options);
-		}		return $out;
+		}
+		return $out;
 	}
 
 	private function setDefaultAssets() {
