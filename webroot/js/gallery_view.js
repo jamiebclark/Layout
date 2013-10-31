@@ -271,9 +271,6 @@
 			$image = $('img', $imageHolder).first().css({'max-height':'none','max-width':'none'});
 			$embed = $('embed,iframe', $imageHolder);
 			$thumbnails = $('.gallery-view-thumbnails', $data);
-			if (!$thumbnails.length) {
-				$thumbnails = $('<div class="gallery-view-thumbnails"></div>');
-			}
 			$info = $('.gallery-view-infos', $data);
 			nextUrl = $('.gallery-view-control.next').attr('href');
 			prevUrl = $('.gallery-view-control.prev').attr('href');
