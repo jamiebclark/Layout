@@ -137,22 +137,20 @@ class TableComponent extends Component {
 			}
 			$verb = 'Set';
 			if (empty($options['conditions'])) {
-				$options['conditions'] = array(
-					$model . '.id' => $ids,
-				);
+				$options['conditions'] = array($Model->escapeField($Model->primaryKey) => $ids);
 			}			
 			if ($action == 'approve') {
 				$options['verb'] = 'Approved';
-				$options['updateAll'] = array($model . '.approved' => 1);
+				$options['saveAll'] = array('approved' => 1);
 			} else if ($action == 'unapprove') {
 				$options['verb'] = 'Unapproved';
-				$options['updateAll'] = array($model . '.approved' => 0);
+				$options['saveAll'] = array('approved' => 0);
 			} else if ($action == 'active') {
 				$options['verb'] = 'Activated';
-				$options['updateAll'] = array($model . '.active' => 1);
+				$options['saveAll'] = array('active' => true);
 			} else if ($action == 'inactive') {
 				$options['verb'] = 'Deactivated';
-				$options['updateAll'] = array($model . '.active' => 0);
+				$options['saveAll'] = array('active' => 0);
 			} else if ($action == 'delete') {
 				$options['delete'] = true;
 			} else if ($action == 'duplicate') {
@@ -173,16 +171,30 @@ class TableComponent extends Component {
 				}
 				$Model->order = array();
 				$options['result'] = $Model->deleteAll($options['delete'], true, true);
+				$options['count'] = count($ids);
 				if (empty($options['verb'])) {
 					$options['verb'] = 'Deleted';
+				}
+			} else if (!empty($options['saveAll'])) {
+				$data = array();
+				foreach ($ids as $id) {
+					$data[] = array($Model->primaryKey => $id) + $options['saveAll'];
+				}
+				$Model->create();
+				$options['result'] = $Model->saveAll($data);
+				$options['count'] = count($ids);
+				if (empty($options['verb'])) {
+					$options['verb'] = 'Saved';
 				}
 			} else if (!empty($options['updateAll'])) {
 				$options['result'] = $Model->updateAll($options['updateAll'], $options['conditions']);
 				if (empty($options['verb'])) {
 					$options['verb'] = 'Updated';
 				}
-			}	
-			$options['count'] = $Model->getAffectedRows();
+			}
+			if (!isset($options['count'])) {
+				$options['count'] = $Model->getAffectedRows();
+			}
 		}
 		$success = null;
 		if (isset($options['result']) && (!isset($options['count']) || !empty($options['count']))) {
