@@ -28,6 +28,7 @@
 				'class': controlClass,
 				'click': function(e) {
 					e.preventDefault();
+					e.stopPropagation();
 					if (isHidden) {
 						$this.trigger('show');
 					} else {
@@ -81,16 +82,18 @@
 	
 	$.fn.galleryViewModal = function() {
 		function get(url) {
-			message('Loading...');
-			imgUrl = url;
-			$.get(url, function(data) {
-				messageRemove();
-				$data = $('<span></span>').append(data);
-				init();
-			})
-			.fail(function() {
-				message('Error loading', 'error', 500);
-			});
+			if (url != '#') {
+				message('Loading...');
+				imgUrl = url;
+				$.get(url, function(data) {
+					messageRemove();
+					$data = $('<span></span>').append(data);
+					init();
+				})
+				.fail(function() {
+					message('Error loading', 'error', 500);
+				});
+			}
 		}
 		
 		function message(text, className, delayHide) {
@@ -268,6 +271,9 @@
 			$image = $('img', $imageHolder).first().css({'max-height':'none','max-width':'none'});
 			$embed = $('embed,iframe', $imageHolder);
 			$thumbnails = $('.gallery-view-thumbnails', $data);
+			if (!$thumbnails.length) {
+				$thumbnails = $('<div class="gallery-view-thumbnails"></div>');
+			}
 			$info = $('.gallery-view-infos', $data);
 			nextUrl = $('.gallery-view-control.next').attr('href');
 			prevUrl = $('.gallery-view-control.prev').attr('href');
