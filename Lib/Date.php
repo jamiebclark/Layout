@@ -344,8 +344,9 @@ class Date {
 		);
 		
 		if (!is_array($options)) {
-			$maxUnit = $options;
-		} else if (!empty($options['maxUnit'])) {
+			$options = array('maxUnit' => $options);
+		}
+		if (!empty($options['maxUnit'])) {
 			$maxUnit = $options['maxUnit'];
 		}
 		$minUnit = isset($options['minUnit']) ? $options['minUnit'] : false;
@@ -358,7 +359,7 @@ class Date {
 		$maxMet = false;
 		$minMet = false;
 		$return = array();
-		
+
 		if (isset($options['short'])) {
 			$short = $options['short'];
 		} else if (($key = array_search('short', $options)) !== false) {
