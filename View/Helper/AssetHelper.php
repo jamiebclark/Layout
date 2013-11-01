@@ -30,8 +30,15 @@ class AssetHelper extends LayoutAppHelper {
 	private $_usedAssets = array();
 	private $_blocked = array();
 
+	private $_minify = true;
 	
 	function __construct(View $view, $settings = array()) {
+		if ($this->_minify && CakePlugin::loaded('Minify')) {
+			$this->helpers[] = 'Minify.Minify';
+		} else {
+			$this->_minify = false;
+		}
+		
 		parent::__construct($view, $settings);
 		
 		foreach ($this->defaultAssets as $assetGroupKey => $assetGroup) {
@@ -87,15 +94,36 @@ class AssetHelper extends LayoutAppHelper {
 		$out = $eol . '<!--- ASSETS -->'. $eol;
 		foreach ($assetOrder as $type) {
 			if (!empty($this->_assets[$type])) {
+				$files = array();
 				foreach ($this->_assets[$type] as $file => $config) {
-					if (isset($this->_usedAssets[$type][$file]) && !$repeat) {
-						continue;
+					if (is_numeric($file)) {
+						$file = $config;
+						$config = array();
 					}
-					$out .= $this->_output($type, $file, $config, $inline) . $eol;
-					$this->_usedAssets[$type][$file] = $config;
+					$files[] = $file;
+				}
+				
+				if ($this->_minify) {
+					if ($this->_minify && $type == 'css') {
+						$out .= $this->Minify->css($files, null, compact('inline'));
+					} else if ($this->_minify && $type == 'js') {
+						$out .= $this->Minify->script($files, compact('inline'));
+					}
+					foreach ($this->_assets[$type] as $file => $config) {
+						$this->_usedAssets[$type][$file] = $config;
+					}
+				} else {
+					foreach ($this->_assets[$type] as $file => $config) {
+						if (isset($this->_usedAssets[$type][$file]) && !$repeat) {
+							continue;
+						}
+						$out .= $this->_output($type, $file, $config, $inline) . $eol;
+						$this->_usedAssets[$type][$file] = $config;
+					}
 				}
 			}
 		}
+		
 		$out .= '<!--- END ASSETS -->'. $eol;
 		return $out;
 	}
@@ -165,6 +193,8 @@ class AssetHelper extends LayoutAppHelper {
 	
 	protected function _output($type, $file, $config = array(), $inline = false) {
 		$options = compact('inline');
+		$AssetOutputHelper = $this->_minify ? 'Minify' : 'Html';
+		
 		if (!empty($config['plugin'])) {
 			$options['plugin'] = $config['plugin'];
 			unset($config['plugin']);
@@ -176,12 +206,12 @@ class AssetHelper extends LayoutAppHelper {
 					$options[$key] = $config[$key];
 				}
 			}
-			$out = $this->Html->css($file, null, $options);
+			$out = $this->{$AssetOutputHelper}->css($file, null, $options);
 			if (!empty($config['if'])) {
 				$out = sprintf('<!--[if %s]>%s<![endif]-->', $config['if'], $out);
 			}
 		} else if ($type == 'js' || $type == 'jsAfterBlock') {
-			$out = $this->Html->script($file, $options);
+			$out = $this->{$AssetOutputHelper}->script($file, $options);
 		} else if ($type == 'block') {
 			$out = $this->Html->scriptBlock($file, $options);
 		}

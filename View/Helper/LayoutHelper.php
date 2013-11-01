@@ -40,12 +40,13 @@ class LayoutHelper extends LayoutAppHelper {
 		'spam', 'clock',
 	);
 
-
+	/*
 	function beforeRender($viewFile) {
-		$this->Asset->css('Layout.font-awesome');
+	//	$this->Asset->css('Layout.font-awesome');
 	//	$this->Asset->js('Layout.layout');
 		parent::beforeRender($viewFile);
 	}
+	*/
 	
 	public function toggle($content, $offContent = null, $label, $options = array()) {
 		$options = array_merge(array(
