@@ -56,6 +56,7 @@ a.media {
 	padding: $mediaLinkPadding;
 	border: 1px solid $mediaLinkBorder;
 	max-width: $mediaLinkWidth;
+	
 	&:hover {
 		color: $mediaLinkColorHover;
 		border-color: $mediaLinkBorderHover;
