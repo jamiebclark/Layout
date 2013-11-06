@@ -1,4 +1,5 @@
 $isLayoutExtended:				false !default;		// If you are extending the layout style rather than including it, set this to true
+$isMinified:					false !default;
 $sides:							top, right, bottom, left;
 
 // Colors
@@ -7,7 +8,7 @@ $grayLightest: 					#F8F8F8 !default;
 
 // Directories
 $layoutBaseDir:					"../";
-@if ($isLayoutExtended == true) {
+@if $isLayoutExtended == true and $isMinified == false {
 	$layoutBaseDir:				"../layout/";
 }
 
