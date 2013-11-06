@@ -9,7 +9,7 @@ header("Last-Modified: $lastModified GMT");
 header("Etag: $etag"); 
 
 $offset = 60 * 60;
-header("expires: " . gmdate("D, d M Y H:i:s", time() + $offset) . " GMT");
+header("Expires: " . gmdate("D, d M Y H:i:s", time() + $offset) . " GMT");
 
 if ($isModified) { 
 	// Read the cache file and send it to the client.
