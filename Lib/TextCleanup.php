@@ -4,7 +4,7 @@ class TextCleanup {
 		static $instance = array();
 
 		if (!$instance) {
-			$instance[0] =& new TextCleanup();
+			$instance[0] = new TextCleanup();
 		}
 		return $instance[0];
 	}
@@ -15,7 +15,7 @@ class TextCleanup {
 	
 	public static function ms($str) {
 		if (is_array($str)) {
-			$self =& new TextCleanup();
+			$self = new TextCleanup();
 			foreach ($str as $k=>$v) {
 				$str[$k] = $self->ms($v);
 			}

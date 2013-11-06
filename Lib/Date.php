@@ -6,7 +6,7 @@ class Date {
 		static $instance = array();
 
 		if (!$instance) {
-			$instance[0] =& new Date();
+			$instance[0] = new Date();
 		}
 		return $instance[0];
 	}
@@ -58,7 +58,7 @@ class Date {
 		} else {
 			//Beginning Sunday
 			if ($sundayMatch) {
-				$self =& Date::getInstance();
+				$self = Date::getInstance();
 				return $self->sundayStamp($dateStr.' -1 day','before');
 			} else {
 				return strtotime($dateStr.' -'.date('w',$stamp).' days');
@@ -67,7 +67,7 @@ class Date {
 	}
 	
 	public static function payPeriodEnd($dateStr = null) {
-		$self =& Date::getInstance();
+		$self = Date::getInstance();
 		if ($stamp = $self->validStamp(empty($dateStr) ? 'now' : $dateStr)) {
 			list($d, $t) = explode('-', date('d-t', $stamp));
 			$d = $d > 15 ? $t : 15;
@@ -78,7 +78,7 @@ class Date {
 	}
 	
 	public static function payPeriodStart($dateStr = null) {
-		$self =& Date::getInstance();
+		$self = Date::getInstance();
 		if ($stamp = $self->validStamp(empty($dateStr) ? 'now' : $dateStr)) {
 			$d = date('j', $stamp);
 			return date('Y-m-' . ($d > 15 ? '15' : '01'), $stamp);
@@ -88,7 +88,7 @@ class Date {
 	}
 	
 	public static function fiscalYear($dateStr = null) {
-		$self =& Date::getInstance();
+		$self = Date::getInstance();
 		if ($stamp = $self->validStamp(empty($dateStr) ? 'now' : $dateStr)) {
 			list($y, $m) = explode('-', date('Y-m', $stamp));
 			return ($m >= $self->fiscalYearMonth) ? $y+1 : $y;
@@ -141,7 +141,7 @@ class Date {
 		
 		$output = false; 
 		extract($options);
-		$self =& Date::getInstance();
+		$self = Date::getInstance();
 		if (empty($dateStr)) {
 			$dateStr = 'now';
 		}
@@ -236,7 +236,7 @@ class Date {
 	}
 
 	public static function dateRangeLimitDays(&$base, &$result)	{
-		$self =& Date::getInstance();
+		$self = Date::getInstance();
 
 		$days_in_month_leap = array(31, 31, 29, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31);
 		$days_in_month = array(31, 31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31);
@@ -280,7 +280,7 @@ class Date {
 	}
 
 	public static function dateNormalize(&$base, &$result) {
-		$self =& Date::getInstance();
+		$self = Date::getInstance();
 		$result = $self->dateRangeLimit(0, 60, 60, "s", "i", $result);
 		$result = $self->dateRangeLimit(0, 60, 60, "i", "h", $result);
 		$result = $self->dateRangeLimit(0, 24, 24, "h", "d", $result);
@@ -297,7 +297,7 @@ class Date {
 	 * Accepts two unix timestamps.
 	 */
 	public static function dateDiff($one, $two) {
-		$self =& Date::getInstance();
+		$self = Date::getInstance();
 		$invert = false;
 		if ($one > $two) {
 			list($one, $two) = array($two, $one);
@@ -328,7 +328,7 @@ class Date {
 	}
 	
 	public static function age($dateStr) {
-		$self =& Date::getInstance();
+		$self = Date::getInstance();
 		$stamp = $self->validStamp($dateStr);
 		$diff = $self->dateDiff($stamp, time());
 		return $diff['y'];

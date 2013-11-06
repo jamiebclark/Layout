@@ -5,7 +5,7 @@ class Url {
 		static $instance = array();
 
 		if (!$instance) {
-			$instance[0] =& new Url();
+			$instance[0] = new Url();
 		}
 		return $instance[0];
 	}

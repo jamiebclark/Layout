@@ -4,7 +4,7 @@ class InflectorPlus {
 	public static function &getInstance() {
 		static $instance = array();
 		if (!$instance) {
-			$instance[0] =& new InflectorPlus();
+			$instance[0] = new InflectorPlus();
 		}
 		return $instance[0];
 	}
@@ -24,12 +24,12 @@ class InflectorPlus {
 	}
 	
 	public static function varNameSingular($model) {
-		$self =& InflectorPlus::getInstance();
+		$self = InflectorPlus::getInstance();
 		return $self->varName($model, false);
 	}
 	
 	public static function varNamePlural($model) {
-		$self =& InflectorPlus::getInstance();
+		$self = InflectorPlus::getInstance();
 		return $self->varName($model, true);
 	}
 	

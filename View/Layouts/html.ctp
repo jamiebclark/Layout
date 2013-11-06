@@ -53,7 +53,7 @@ $flash .= $this->Session->flash('auth', array(
 		}
 		
 		echo $this->fetch('meta');
-		echo $this->Asset->output(true);
+		echo $this->Asset->output(true, false, 'css');
 	?>
 </head>
 <body>
@@ -94,5 +94,6 @@ $flash .= $this->Session->flash('auth', array(
 			?>
 		</div>
 	</div>
+	<?php echo $this->Asset->output(true); ?>
 </body>
 </html>

@@ -1,5 +1,7 @@
 <?php
 App::uses('LayoutAppHelper', 'Layout.View/Helper');
+App::uses('AssetMinify', 'Layout.Vendor');
+
 class AssetHelper extends LayoutAppHelper {
 	var $name = 'Asset';
 	var $helpers = array('Html');
@@ -22,23 +24,22 @@ class AssetHelper extends LayoutAppHelper {
 			'js' => array('Layout.script')
 		)
 	);
+	
+	public $minify = true;
+	
 	//After constructor, all assets will be stored here
 	private $_defaultAssets = array();
 
 	private $_assetTypes = array('css', 'js');
+	private $_assetTypesComplete = array('css', 'js', 'block', 'jsAfterBlock');
+
 	private $_assets = array();
 	private $_usedAssets = array();
 	private $_blocked = array();
 
-	private $_minify = true;
+	private $_minifyableTypes = array('css', 'js', 'jsAfterBlock');
 	
 	function __construct(View $view, $settings = array()) {
-		if ($this->_minify && CakePlugin::loaded('Minify')) {
-			$this->helpers[] = 'Minify.Minify';
-		} else {
-			$this->_minify = false;
-		}
-		
 		parent::__construct($view, $settings);
 		
 		foreach ($this->defaultAssets as $assetGroupKey => $assetGroup) {
@@ -80,6 +81,18 @@ class AssetHelper extends LayoutAppHelper {
 		return $this->_addFile('block', $script, $config);
 	}
 	
+	function blockStart($options = array()) {
+		$this->_blockOptions = array();
+		ob_start();
+	}
+	
+	function blockEnd() {
+		$buffer = ob_get_clean();
+		$options = $this->_blockOptions;
+		$this->_blockOptions = array();
+		return $this->block($buffer, $options);
+	}
+	
 	function removeCss($file) {
 		return $this->_removeFile('css', $file);
 	}
@@ -88,42 +101,40 @@ class AssetHelper extends LayoutAppHelper {
 		return $this->_removeFile('js', $file);
 	}
 
-	function output($inline = false, $repeat = false) {
-		$assetOrder = array('css', 'js', 'block', 'jsAfterBlock');
+	/**
+	 * Outputs all stored assets
+	 *
+	 * @param bool $inline If the output should be outputted right away or wait until fetch
+	 * @param bool $repeat If true, skips any assets that have already been outputted
+	 **/
+	function output($inline = false, $repeat = false, $types = array()) {
 		$eol = "\n\t";
 		$out = $eol . '<!--- ASSETS -->'. $eol;
-		foreach ($assetOrder as $type) {
+		if (empty($types)) {
+			$types = $this->_assetTypesComplete;
+		} else if (!is_array($types)) {
+			$types = array($types);
+		}
+		foreach ($types as $type) {
 			if (!empty($this->_assets[$type])) {
-				$files = array();
-				foreach ($this->_assets[$type] as $file => $config) {
+				$files = $this->_assets[$type];
+				if ($this->minify && in_array($type, $this->_minifyableTypes)) {
+					$AssetMinify = new AssetMinify();
+					$files = $AssetMinify->minify($files, $type);
+				}
+				foreach ($files as $file => $config) {
 					if (is_numeric($file)) {
 						$file = $config;
 						$config = array();
 					}
-					$files[] = $file;
-				}
-				
-				if ($this->_minify) {
-					if ($this->_minify && $type == 'css') {
-						$out .= $this->Minify->css($files, null, compact('inline'));
-					} else if ($this->_minify && $type == 'js') {
-						$out .= $this->Minify->script($files, compact('inline'));
+					if ($this->isAssetUsed($type, $file) && !$repeat) {
+						continue;
 					}
-					foreach ($this->_assets[$type] as $file => $config) {
-						$this->_usedAssets[$type][$file] = $config;
-					}
-				} else {
-					foreach ($this->_assets[$type] as $file => $config) {
-						if (isset($this->_usedAssets[$type][$file]) && !$repeat) {
-							continue;
-						}
-						$out .= $this->_output($type, $file, $config, $inline) . $eol;
-						$this->_usedAssets[$type][$file] = $config;
-					}
+					$out .= $this->_output($type, $file, $config, $inline) . $eol;
+					$this->setAssetUsed($type, $file);
 				}
 			}
 		}
-		
 		$out .= '<!--- END ASSETS -->'. $eol;
 		return $out;
 	}
@@ -193,8 +204,6 @@ class AssetHelper extends LayoutAppHelper {
 	
 	protected function _output($type, $file, $config = array(), $inline = false) {
 		$options = compact('inline');
-		$AssetOutputHelper = $this->_minify ? 'Minify' : 'Html';
-		
 		if (!empty($config['plugin'])) {
 			$options['plugin'] = $config['plugin'];
 			unset($config['plugin']);
@@ -206,12 +215,12 @@ class AssetHelper extends LayoutAppHelper {
 					$options[$key] = $config[$key];
 				}
 			}
-			$out = $this->{$AssetOutputHelper}->css($file, null, $options);
+			$out = $this->Html->css($file, null, $options);
 			if (!empty($config['if'])) {
 				$out = sprintf('<!--[if %s]>%s<![endif]-->', $config['if'], $out);
 			}
 		} else if ($type == 'js' || $type == 'jsAfterBlock') {
-			$out = $this->{$AssetOutputHelper}->script($file, $options);
+			$out = $this->Html->script($file, $options);
 		} else if ($type == 'block') {
 			$out = $this->Html->scriptBlock($file, $options);
 		}
@@ -230,5 +239,19 @@ class AssetHelper extends LayoutAppHelper {
 			}
 		}
 		$this->_defaultAssets = $default;
+	}
+	
+	private function isAssetUsed($type, $file) {
+		return isset($this->_usedAssets[$type][$file]);
+	}
+	
+	private function setAssetUsed($type, $file) {
+		if (is_array($file)) {
+			foreach ($file as $f) {
+				$this->setAssetUsed($type, $f);
+			}
+		} else {
+			$this->_usedAssets[$type][$file] = true;
+		}
 	}
 }

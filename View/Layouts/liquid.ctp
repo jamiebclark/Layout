@@ -37,7 +37,7 @@ if ($hasRight) {
 		</div>
 	<?php endif; ?>
 </div>
-<script type="text/javascript">
+<?php $this->Asset->blockStart(); ?>
 (function($) {
 	$.fn.liquidLayout = function() {
 		return this.each(function() {
@@ -65,9 +65,8 @@ $(window)
 $(document).ajaxComplete(function() {
 	$('.liquid-layout').liquidLayout();
 });
-</script>
-
 <?php
+$this->Asset->blockEnd();
 /*
 $leftSpan = 2;
 $rightSpan = 3;
