@@ -104,18 +104,33 @@ class AssetMinify {
 			$PhpClosure = new PhpClosure();
 		}
 
+		$fileHeader = '';
+		$fileContent = '';
 		foreach ($files as $file) {
 			$path = $this->getPath($file, $type);
 			if (!empty($PhpClosure)) {
 				$PhpClosure->add($path);
 			} else {
 				if (is_file($path)) {
-					fwrite($fp, file_get_contents($path));
+					$content = file_get_contents($path);
+
+					//Strip comments
+					$content = preg_replace('@/\*.+\*/@s', '', $content);
+					
+					if (preg_match_all('/@import[^;]+;/', $content, $matches)) {
+						foreach ($matches[0] as $match) {
+							$fileHeader .= $match;
+						}
+						$content = str_replace($matches[0], '', $content);
+					}
+					$fileContent .= $content;
 				}	
 			}
 		}
 		if (!empty($PhpClosure)) {
 			fwrite($fp, $PhpClosure->compile());
+		} else {
+			fwrite($fp, $fileHeader . $fileContent);
 		}
 		fclose($fp);
 	}
