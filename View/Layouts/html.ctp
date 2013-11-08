@@ -79,7 +79,7 @@ $flash .= $this->Session->flash('auth', array(
 			if (!empty($flash)) {
 				$content .= $this->Html->div('container', $flash);
 			}
-			$content .= $this->Html->div('container', $this->fetch('content')); 
+			$content .= $this->Html->div('container', $this->fetch('content'), array('id' => 'content-container')); 
 			echo $content;
 			//TODO: Test Liquid Layout
 			//echo $this->element('Layout.liquid_content', compact('content'));
