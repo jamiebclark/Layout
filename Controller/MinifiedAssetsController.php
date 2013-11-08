@@ -4,6 +4,15 @@ class MinifiedAssetsController extends LayoutAppController {
 	var $name = 'MinifiedAssets';
 	var $uses = array();
 	
+	var $allowedActions = array('*');
+	
+	function beforeFilter() {
+		if (isset($this->Auth)) {
+			$this->Auth->allow();
+		}
+		return parent::beforeFilter();
+	}
+	
 	function css($file = null) {
 		$this->_renderFile('css', $file);
 	}
