@@ -4,6 +4,15 @@ require_once('PhpClosure.php');
 class AssetMinify {
 	public $forceOverwrite = false;
 	
+	const PLUGIN_NAME = 'Layout';
+	
+	function __construct() {
+		if (isset($_GET['clearCache'])) {
+			$this->forceOverwrite = true;
+			$this->clearCache('-1 week');
+		}
+	}
+	
 	public function minify($files, $type = 'css') {
 		$return = array();
 		$minFiles = array();
@@ -16,14 +25,14 @@ class AssetMinify {
 				$minFiles[] = $file;
 			} else {
 				if (!empty($minFiles)) {
-					$return[] = $this->getDstFile($minFiles, $type);
+					$return[] = $this->getCacheFile($minFiles, $type);
 				}
 				$return[] = $file;
 				$minFiles = array();
 			}
 		}
 		if (!empty($minFiles)) {
-			$return[] = $this->getDstFile($minFiles, $type);
+			$return[] = $this->getCacheFile($minFiles, $type);
 		}	
 		return $return;
 	}
@@ -33,7 +42,7 @@ class AssetMinify {
 			//$dir = 'Layout.min/';
 			$dir = "Layout./$type-min/";
 		} else {
-			$dir = APP . 'Plugin' . DS . 'Layout' . DS . 'webroot' . DS . $type . DS . 'min' . DS;
+			$dir = $this->_getPluginDir() . 'webroot' . DS . $type . DS . 'min' . DS;
 		}
 		if (!empty($filename)) {
 			$dir .= $filename;
@@ -41,25 +50,65 @@ class AssetMinify {
 		return $dir;	
 	}
 	
-	//Finds the full path of the cached minified file
-	private function getDstFile($files, $type) {
-		$dstFilename = $this->getDstPath($files, $type);
-		$lastModified = $this->getLastModified($files, $type);
-		if ($this->forceOverwrite || !is_file($dstFilename) || filemtime($dstFilename) < $lastModified) {
-			$this->buildDstFile($dstFilename, $files, $type);
+
+	public function clearCache($age = null) {
+		$this->_clearCache($age, $this->getCacheDir('js', false));
+		$this->_clearCache($age, $this->getCacheDir('css', false));
+	}
+
+	/**
+	 * Auto-deletes older files in cache folder
+	 *
+	 * @include int|null $age the expire time
+	 * @include string|null $dir the directory where to look. Defaults to root cache directory
+	 * @include bool $deleteOnEmpty If directory is empty and set to true, deletes the directory
+	 * @return int Remaining file count
+	 **/	
+	private function _clearCache($age = null, $dir = null, $deleteOnEmpty = false) {
+		$cutoff = !empty($age) ? strtotime($age) : true;
+		$handle = opendir($dir);
+		$fileCount = 0;
+		while (false !== ($entry = readdir($handle))) {
+			if ($entry == '.' || $entry == '..' || $entry == 'empty') {
+				continue;
+			}
+			$path = $dir . $entry;
+			if (is_dir($path)) {
+				$fileCount += $this->clearCache($age, $path . DS, true);
+			} else {
+				if ($cutoff === true || filemtime($path) < $cutoff) {
+					unlink($path);
+				} else {
+					$fileCount++;
+				}
+			}
 		}
-		return $this->getDstPath($files, $type, true);
+		if ($deleteOnEmpty && $fileCount == 0) {
+			rmdir($dir);
+		}
+		closedir($handle);
+		return $fileCount;
+	}
+	
+	//Finds the full path of the cached minified file
+	private function getCacheFile($files, $type) {
+		$cacheFilepath = $this->getCacheFilepath($files, $type);
+		$lastModified = $this->getLastModified($files, $type);
+		if ($this->forceOverwrite || !is_file($cacheFilepath) || filemtime($cacheFilepath) < $lastModified) {
+			$this->buildCacheFile($cacheFilepath, $files, $type);
+		}
+		return $this->getCacheFilepath($files, $type, true);
 	}
 	
 	//Finds full path of a Cake asset
 	private function getPath($file, $type) {
 		list($plugin, $file) = pluginSplit($file);
-		$root = empty($plugin) ? WWW_ROOT : APP . 'Plugin' . DS . $plugin . DS . 'webroot' . DS;
+		$root = empty($plugin) ? WWW_ROOT : $this->_getPluginDir($plugin) . 'webroot' . DS;
 		return $root . $type . DS . $file . '.' . $type;
 	}
 	
 	//Finds the full path of where the cached file will be stored
-	private function getDstPath($files, $type, $forWeb = false) {
+	private function getCacheFilepath($files, $type, $forWeb = false) {
 		return $this->getCacheDir($type, $forWeb, $this->getFilename($files, $type));
 	}
 
@@ -84,7 +133,7 @@ class AssetMinify {
 	}
 	
 	//Creates a cached file including all files
-	private function buildDstFile($filename, $files, $type) {
+	private function buildCacheFile($filename, $files, $type) {
 		$filename = trim($filename);
 		if (!($dirname = dirname($filename))) {
 			throw new Exception("Invalid directory");
@@ -115,7 +164,7 @@ class AssetMinify {
 					$content = file_get_contents($path);
 
 					//Strip comments
-					$content = preg_replace('@/\*.+\*/@s', '', $content);
+					$content = preg_replace('!/\*.*?\*/!s', '', $content);
 					
 					if (preg_match_all('/@import[^;]+;/', $content, $matches)) {
 						foreach ($matches[0] as $match) {
@@ -133,5 +182,12 @@ class AssetMinify {
 			fwrite($fp, $fileHeader . $fileContent);
 		}
 		fclose($fp);
+	}
+	
+	private function _getPluginDir($plugin = null) {
+		if (empty($plugin)) {
+			$plugin = self::PLUGIN_NAME;
+		}
+		return APP. 'Plugin' . DS . $plugin . DS;
 	}
 }

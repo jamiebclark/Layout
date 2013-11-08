@@ -153,7 +153,7 @@ class CollapseListHelper extends LayoutAppHelper {
 				$out .= $this->Table->withChecked($withChecked);
 			}
 			$out = $this->Table->formWrap($out, $form);
-			$out .= '<script type="text/javascript">$(".collapse-list").collapseList();</script>';
+			$this->Asset->block('$(".collapse-list").collapseList();');
 		}
 		return $out;
 	}
