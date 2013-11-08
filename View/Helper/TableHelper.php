@@ -327,7 +327,7 @@ class TableHelper extends LayoutAppHelper {
 		if (!empty($options)) {
 			if (!is_array($options)) {
 				if ($options !== true) {
-					$options = array('model' => $options['form']);
+					$options = array('model' => $options);
 				} else {
 					$options = array();
 				}
