@@ -95,6 +95,7 @@ class AssetMinify {
 		$cacheFilepath = $this->getCacheFilepath($files, $type);
 		$lastModified = $this->getLastModified($files, $type);
 		if ($this->forceOverwrite || !is_file($cacheFilepath) || filemtime($cacheFilepath) < $lastModified) {
+		//	debug(filemtime($cacheFilepath) . ' :: ' . $lastModified);
 			$this->buildCacheFile($cacheFilepath, $files, $type);
 		}
 		return $this->getCacheFilepath($files, $type, true);

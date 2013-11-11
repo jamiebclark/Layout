@@ -44,7 +44,7 @@ class MinifiedAssetsController extends LayoutAppController {
 		
 		$isModified = !(@strtotime(@$_SERVER['HTTP_IF_MODIFIED_SINCE']) == $cacheMtime || 
 			@trim(@$_SERVER['HTTP_IF_NONE_MATCH']) == $etag);
-		$isModified = true;
+		//$isModified = true;
 
 		$this->set(compact('type', 'filepath', 'contentType', 'cacheMtime', 'etag', 'lastModified', 'isModified'));
 		$this->render('view');
