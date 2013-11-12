@@ -111,7 +111,7 @@ class TextGraphHelper extends AppHelper {
 			$pct = '---';
 			$class = ' badge-empty';
 		} else {
-			$pct = ((float)number_format($pct * 100, 2)) . '%';
+			$pct = (number_format((float)$pct * 100, 2)) . '%';
 			if ($pct > 0) {
 				$pct = '+' . $pct;
 				$class .= ' badge-success';
