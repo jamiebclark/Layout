@@ -30,6 +30,9 @@ class Url {
 		}
 		if (!is_array($url)) {
 			$url = Router::parse($url);
+			if ($prefix = Prefix::get($url)) {
+				$url['action'] = Prefix::removeFromAction($url['action'], $prefix);
+			}
 			unset($url['url']);
 			$vars = array('pass', 'named');
 			foreach ($vars as $var) {
