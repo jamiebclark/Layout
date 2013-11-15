@@ -173,6 +173,10 @@ class AssetMinify {
 						}
 						$content = str_replace($matches[0], '', $content);
 					}
+					if (!empty($fileContent)) {
+						$fileContent .= "\n";
+					}
+					$fileContent .= "/*$file*/\n";
 					$fileContent .= $content;
 				}	
 			}
