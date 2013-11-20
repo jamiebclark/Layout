@@ -94,7 +94,7 @@ class TextGraphHelper extends AppHelper {
 		);
 	}
 	
-	function pctChange($currentVal, $startVal) {
+	function pctChange($currentVal, $startVal, $round = 2) {
 		if (empty($startVal)) {
 			$pct = 0;
 			$class = 'empty';
@@ -102,16 +102,16 @@ class TextGraphHelper extends AppHelper {
 			$diff = $currentVal - $startVal;
 			$pct = $diff / $startVal;
 		}
-		return $this->pctFormat($pct);
+		return $this->pctFormat($pct, $round);
 	}
 	
-	function pctFormat($pct) {
+	function pctFormat($pct, $round = 2) {
 		$class = 'badge';
 		if (!isset($pct)) {
 			$pct = '---';
 			$class = ' badge-empty';
 		} else {
-			$pct = ((float)number_format($pct * 100, 2)) . '%';
+			$pct = (number_format((float)$pct * 100, $round)) . '%';
 			if ($pct > 0) {
 				$pct = '+' . $pct;
 				$class .= ' badge-success';

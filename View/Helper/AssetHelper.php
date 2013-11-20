@@ -133,10 +133,28 @@ class AssetHelper extends LayoutAppHelper {
 					$out .= $this->_output($type, $file, $config, $inline) . $eol;
 					$this->setAssetUsed($type, $file);
 				}
+				
+				if ($htmlType = $this->getHtmlType($type)) {
+					$out .= $this->_View->fetch($htmlType);
+					$this->_View->set($htmlType, '');
+				}
 			}
 		}
 		$out .= '<!--- END ASSETS -->'. $eol;
 		return $out;
+	}
+	
+	//Converts type to the corresponding Html helper type
+	private function getHtmlType($type) {
+		$return = null;
+		if (in_array($type, array('css', 'script'))) {
+			$return = $type;
+		} else if (in_array($type, array('block'))) {
+			$return = 'block';
+		} else if (in_array($type, array('js'))) {
+			$return = 'script';
+		}
+		return $return;
 	}
 	
 	/**
