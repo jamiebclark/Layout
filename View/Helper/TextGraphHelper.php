@@ -226,6 +226,8 @@ class TextGraphHelper extends AppHelper {
 				$disp = $pctDisp;
 			} else if ($options['disp'] == 'numbers') {
 				$disp = "$amt / $total";
+			} else {
+				$disp = $options['disp'];
 			}
 		}
 		if (!empty($disp) && !empty($options['units'])) {
