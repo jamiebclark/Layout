@@ -45,6 +45,8 @@ class AddressBookFormHelper extends LayoutAppHelper {
 			'count' => null,
 			'before' => '',
 			'after' => '',
+			'beforeFields' => null,
+			'afterFields' => null,
 		), $options);
 		extract($options);
 		if (empty($prefix)) {
@@ -71,16 +73,24 @@ class AddressBookFormHelper extends LayoutAppHelper {
 			$out .= $this->Form->hidden($this->_numericField('user_id', $numerical, $prefix), array('value' => $this->viewVars['loggedUserId']));
 		}
 
-		if (!empty($location)) {
-			$inputRows[] = array(
-				$this->_numericField('location', $numerical, $addressPrefix) => array('label' => 'Location')
-			);
+		//Certain fields can be added to before fields by passing them by name
+		$checkBefore = array('location', 'locationName');
+		foreach ($checkBefore as $field) {
+			if (!empty($options[$field])) {
+				$beforeFields[$field] = $options[$field] === true ? array() : $options[$field];
+			}
 		}
-		if (!empty($locationName)) {
-			$inputRows[] = array(
-				$this->_numericField('location_name', $numerical, $addressPrefix) => array('label' => 'Location')
-			);
+		
+		if (!empty($beforeFields)) {
+			foreach ($beforeFields as $field => $config) {
+				if (is_numeric($field)) {
+					$field = $config;
+					$config = array();
+				}
+				$inputRows[] = array($this->_numericField($field, $numerical, $addressPrefix) => $config);
+			}
 		}
+		
 		for ($i = 1; $i <= $addline; $i++) {
 			$aPlaceholder = 'Address ' . $i;
 			$aLabel = false;
