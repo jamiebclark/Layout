@@ -890,7 +890,13 @@ class FormLayoutHelper extends LayoutAppHelper {
 		}
 		$options = $this->addClass($options, 'input-choices');
 		extract($options);
-				
+
+		$this->Form->setEntity($name);
+		$passVal = $this->Html->value($this->Form->_entityPath);
+		if ($passVal !== null && $passVal !== false) {
+			$default = $this->Html->value($this->Form->_entityPath);
+		}
+		
 		$return = "\n";
 		$count = 0;
 		foreach ($inputs as $label => $input) {

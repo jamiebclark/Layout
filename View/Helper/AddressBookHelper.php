@@ -82,7 +82,55 @@ class AddressBookHelper extends LayoutAppHelper {
 		}
 		return $title;
 	}
-	*/	
+	*/
+	function resultTable($result, $fields, $options = array()) {
+		return $this->Layout->infoTable($this->resultArray($result, $fields, $options));
+	}
+	
+	function resultList($result, $fields, $options = array()) {
+		return $this->Layout->definitionList($this->resultArray($result, $fields, $options));
+	}
+	
+	function resultArray($result, $fields, $options = array()) {
+		$resultFunctions = array('name', 'address', 'addressLine', 'cityState');
+		$list = array();
+		foreach ($fields as $field => $config) {
+			if (is_numeric($field)) {
+				$field = $config;
+				$config = array();
+			}
+			if ($config === true) {
+				$config = $field;
+			}
+			if (!is_array($config)) {
+				$config = array('type' => $config);
+			}
+			if (!isset($config['type'])) {
+				$config['type'] = $field;
+			}
+			if (!empty($config['label'])) {
+				$label = $config['label'];
+				unset($config['label']);
+			} else {
+				$label = Inflector::humanize($field);
+			}
+			$val = null;
+			if (in_array($field, $resultFunctions)) {
+				$val = $this->{$field}($result, $config);
+			} else if (!empty($result[$field])) {
+				$val = $result[$field];
+				if (!empty($config['type']) && method_exists($this, $config['type'])) {
+					$val = $this->{$config['type']}($val, $config);
+					unset($config['type']);
+				}
+			}
+			if (!empty($val)) {
+				$list[$label] = $val;
+			}
+		}
+		return $list;
+	}
+	
 	function name($result, $options = array()) {
 		if (!empty($result['full_name'])) {
 			return $result['full_name'];
