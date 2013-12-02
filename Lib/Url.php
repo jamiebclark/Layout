@@ -10,6 +10,11 @@ class Url {
 		return $instance[0];
 	}
 
+	public static function getPrefix($url = null) {
+		$paths = Router::getPaths(empty($url) ? true : $url);
+		return !empty($paths->params['prefix']) ? $paths->params['prefix'] : null;			
+	}
+	
 	public static function getAction($url = null) {
 		$paths = Router::getPaths(empty($url) ? true : $url);
 		$action = $paths->params['action'];
