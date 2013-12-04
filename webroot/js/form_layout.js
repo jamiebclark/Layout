@@ -5,7 +5,7 @@
 		if ($(this).is(':visible')) {
 			$(this).slideUp();
 		}
-		$(this).find(':input')
+		$(this).find(':input,select')
 			.filter(function() {
 				return !$(this).data('hide-disabled-set');
 			})
@@ -1242,7 +1242,8 @@ $(document).ready(function() {
 				bulletRepeat = ' - ',
 				childIndex = 0,
 				lastChildIndex = 0,
-				initName = 'collapse-init';
+				initName = 'collapse-init',
+				isDisabled = false;
 				
 			function setLink($a) {
 				$div.find('.active').removeClass('active');
@@ -1280,7 +1281,10 @@ $(document).ready(function() {
 			}
 			function hide() {
 				positionMask();
-				$select.data('expanded', false).removeAttr('disabled');
+				$select.data('expanded', false);
+				if (!isDisabled) {
+					$select.removeAttr('disabled');
+				}
 				$div.hide();
 				return true;
 			}
@@ -1449,7 +1453,14 @@ $(document).ready(function() {
 				}).on('shown', function() {
 					positionMask();
 				});
-				$select.data(initName, true);
+				$select
+					.on('layout-disabled', function() {
+						isDisabled = true;
+					})
+					.on('layout-enabled', function() {
+						isDisabled = false;
+					})
+					.data(initName, true);
 			}
 			return $(this);
 		});
