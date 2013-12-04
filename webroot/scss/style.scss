@@ -120,6 +120,18 @@ div.lead {
 	}
 }
 
+// Padding Breakout
+// --------------------
+.breakout-large {
+	padding: $paddingBreakoutLarge;
+}
+.breakout-mid {
+	padding: $paddingBreakoutMid;
+}
+.breakout-small {
+	padding: $paddingBreakoutSmall;
+}
+
 // Content Box
 // ----------------
 .contentbox {
@@ -177,6 +189,9 @@ h4.contentbox-heading {
 
 .clearfix {
 	@include clearfix;
+}
+.overflowfix {
+	@extend %overflow;
 }
 
 // Toggle

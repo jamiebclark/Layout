@@ -43,6 +43,12 @@ $inputSlimWidth:				80px !default;
 $inactiveColor:					#999 !default;
 $inactiveBackground: 			$grayLighter !default;
 
+// Breakout sizing
+// --------------------------
+$paddingBreakoutLarge:			60px;
+$paddingBreakoutMid:			40px 60px;
+$paddingBreakoutSmall:			20px 40px;
+
 // Window 
 // ------------------
 $windowBorderColor:				#999 !default;
