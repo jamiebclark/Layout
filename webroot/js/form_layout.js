@@ -1243,7 +1243,7 @@ $(document).ready(function() {
 				childIndex = 0,
 				lastChildIndex = 0,
 				initName = 'collapse-init',
-				isDisabled = false;
+				isDisabled = $select.is(':disabled');
 				
 			function setLink($a) {
 				$div.find('.active').removeClass('active');
@@ -1453,6 +1453,10 @@ $(document).ready(function() {
 				}).on('shown', function() {
 					positionMask();
 				});
+				
+				if ($select.is(':disabled')) {
+					isDisabled = true;
+				}
 				$select
 					.on('layout-disabled', function() {
 						isDisabled = true;
