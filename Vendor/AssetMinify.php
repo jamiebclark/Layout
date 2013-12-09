@@ -24,7 +24,6 @@ class AssetMinify {
 			if (is_file($this->getPath($file, $type))) {
 				$minFiles[] = $file;
 			} else {
-				debug($this->getPath($file, $type));
 				if (!empty($minFiles)) {
 					$return[] = $this->getCacheFile($minFiles, $type);
 				}
