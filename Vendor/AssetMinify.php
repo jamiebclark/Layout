@@ -24,6 +24,7 @@ class AssetMinify {
 			if (is_file($this->getPath($file, $type))) {
 				$minFiles[] = $file;
 			} else {
+				debug($this->getPath($file, $type));
 				if (!empty($minFiles)) {
 					$return[] = $this->getCacheFile($minFiles, $type);
 				}
@@ -103,9 +104,18 @@ class AssetMinify {
 	
 	//Finds full path of a Cake asset
 	private function getPath($file, $type) {
-		list($plugin, $file) = pluginSplit($file);
+		$oFile = $file;
+		list($plugin, $file) = pluginSplit($oFile);
+		if (!empty($plugin) && !preg_match('/^[A-Z]/', $plugin)) {
+			$plugin = null;
+			$file = $oFile;
+		}
 		$root = empty($plugin) ? WWW_ROOT : $this->_getPluginDir($plugin) . 'webroot' . DS;
-		return $root . $type . DS . $file . '.' . $type;
+		$filepath = $root . $type . DS . $file;
+		if (substr($filepath, -1 * strlen($type)) != $type) {
+			$filepath .= ".$type";
+		}
+		return $filepath;
 	}
 	
 	//Finds the full path of where the cached file will be stored
