@@ -162,6 +162,11 @@ div.lead {
 	border-bottom: $contentBoxDividerBorder;
 	.navbar-inner {
 		box-shadow: 0 0 0 0;
+		min-height: 0;
+		.brand {
+			padding-top: 5px;
+			padding-bottom: 5px;
+		}
 	}
 }
 
