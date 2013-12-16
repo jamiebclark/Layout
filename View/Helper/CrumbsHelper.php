@@ -291,7 +291,7 @@ App::uses('LayoutAppHelper', 'Layout.View/Helper');class CrumbsHelper extends L
 			if (!empty($this->_View->viewVars['path']) && $modelInfo = $this->getModelInfo()) {
 				extract($modelInfo);	//model, primaryKey, displayField
 				$path = $this->_View->viewVars['path'];
-				$result = $this->_getResult($model);
+				$result = $this->_getPassedResult($model);
 				$crumbs = array();
 				foreach ($path as $row) {
 					$row = $row[$model];
@@ -307,7 +307,7 @@ App::uses('LayoutAppHelper', 'Layout.View/Helper');class CrumbsHelper extends L
 			$action = $urlBase['action'];
 			if ($modelInfo = $this->getModelInfo()) {
 				extract($modelInfo);	//model, primaryKey, displayField
-				$result = $this->_getResult($model);
+				$result = $this->_getPassedResult($model);
 				if (!empty($result) && !empty($result[$model][$primaryKey])) {
 					if ($action == 'view' && !empty($this->title)) {
 						$title = $this->title;
@@ -371,7 +371,7 @@ App::uses('LayoutAppHelper', 'Layout.View/Helper');class CrumbsHelper extends L
 	}
 	
 	//Checks the passed variables to see if there has been a query result passed to view
-	function _getResult($model) {
+	function _getPassedResult($model) {
 		$viewVars =& $this->_View->viewVars;
 		$varName = InflectorPlus::varNameSingular($model);
 		if (isset($viewVars[$varName]) && is_array($viewVars[$varName])) {

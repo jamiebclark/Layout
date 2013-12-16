@@ -82,4 +82,10 @@ class LayoutAppHelper extends AppHelper {
 		return $array;
 	}
 
+	protected function _getResult($result, $alias = null) {
+		if (empty($alias)) {
+			$alias = $this->modelName;
+		}
+		return !empty($result[$alias]) ? $result[$alias] : $result;
+	}	
 }
