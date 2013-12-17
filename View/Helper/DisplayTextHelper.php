@@ -287,14 +287,7 @@ class DisplayTextHelper extends LayoutAppHelper {
 					$attrs = null;
 				}
 				$width = is_numeric($attrs) ? $attrs : 1;
-				$column = preg_replace(
-					array(
-						'#^(<br[\s]*[/]*>)+#',
-						'#(<br[\s]*[/]*>)+$#',
-					), 
-					'', 
-					$column
-				);
+				$column = $this->trimBreaks($column);
 				if (empty($column)) {
 					continue;
 				}
@@ -321,6 +314,14 @@ class DisplayTextHelper extends LayoutAppHelper {
 	function pregReplaceArray($regx, $str) {
 		$str = "\n$str";
 		$str = preg_replace(array_keys($regx),$regx,$str,-1,$count);
+		return $this->trimBreaks($str);
+	}
+	
+	private function trimBreaks($str) {
+		$str = preg_replace(array(
+			'#^[\r\n]*(?:<br\s*/?>[\s\r\n]*)+#', 	//Breaks at beginning of string
+			'#(?:<br\s*/?>[\s\r\n]*)+[\r\n]*$#'		//Breaks at end of string
+		), '', $str);
 		return $str;
 	}
 	
