@@ -648,7 +648,6 @@ class ModelViewHelper extends LayoutAppHelper {
 		$controller = !empty($options['controller']) ? $options['controller'] : $this->controller;
 		$action = !empty($options['action']) ? $options['action'] : 'view';
 		$url = compact('controller', 'action');
-	
 		$id = is_numeric($result) ? $result : $modelResult[$this->primaryKey];
 		$title = (is_numeric($result) || empty($modelResult[$this->displayField])) ? null : $modelResult[$this->displayField];
 		
@@ -1011,12 +1010,5 @@ class ModelViewHelper extends LayoutAppHelper {
 			$title = '<em>' . $this->blankTitle . '</em>';
 		}
 		return $title;
-	}
-	
-	protected function _getResult($result, $alias = null) {
-		if (empty($alias)) {
-			$alias = $this->modelName;
-		}
-		return !empty($result[$alias]) ? $result[$alias] : $result;
-	}
+	}	
 }

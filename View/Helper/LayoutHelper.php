@@ -388,8 +388,13 @@ class LayoutHelper extends LayoutAppHelper {
 			if (is_array($link)) {
 				if (!empty($options['model']) && isset($link[$options['model']])) {
 					$displayField = !empty($options['displayField']) ? $options['displayField'] : 'title';
-					$url = $this->modelUrl($options['model'], $link);
-					$title = $link[$options['model']][$displayField];
+					App::uses('ModelViewHelper', 'Layout.View/Helper');
+					$ModelView = new ModelViewHelper($this->_View);
+					$ModelView->setModel($options['model']);
+					
+					$result = $this->_getResult($link, $options['model']);
+					$url = $ModelView->modelUrl($link);
+					$title = $result[$displayField];
 					$linkAttrs = array();
 				} else {
 					list($title, $url, $linkAttrs) = $link + array(null, null, array());

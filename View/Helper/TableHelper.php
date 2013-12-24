@@ -25,6 +25,8 @@ class TableHelper extends LayoutAppHelper {
 	var $checkboxCount = 0;
 	var $currentCheckboxId;
 	
+	public $sortUrl = array();
+	
 	var $currentTableId = 1;
 	
 	var $trCount = 0;
@@ -377,6 +379,7 @@ class TableHelper extends LayoutAppHelper {
 			'tdCount' => 0,
 			'trCount' => 0,
 			'trOptions' => array(),
+			'sortUrl' => array(),
 		));
 
 		if (!empty($set)) {
@@ -528,7 +531,10 @@ class TableHelper extends LayoutAppHelper {
 		if (!$paginate) {
 			$label = $this->_thSortLink($sort, $label); //ucfirst($label);
 		} else {
-			$label = $this->Paginator->sort($sort, $label, array('escape' => false));
+			$label = $this->Paginator->sort($sort, $label, array(
+				'url' => $this->sortUrl,
+				'escape' => false
+			));
 		}
 		return $label;
 	}
@@ -543,6 +549,6 @@ class TableHelper extends LayoutAppHelper {
 			}
 			$class = $direction;
 		}
-		return $this->Html->link($label, compact('sort', 'direction'), compact('class'));
+		return $this->Html->link($label, compact('sort', 'direction') + $this->sortUrl, compact('class'));
 	}
 }

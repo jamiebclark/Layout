@@ -217,8 +217,8 @@ class DisplayTextHelper extends LayoutAppHelper {
 			'/["]{2}(.*?)["]{2}/s'											=>  "<blockquote><div>$1</div></blockquote>",
 			
 			//Updates List Items
-			'/\n-[\s]+(.*?)[\r]*[\n]*[\r]*[\n]*\r/sm'			=>	'<uli>$1</uli>',
-			'/\n[\d]+\.[\s]+([^\r\n]+)[\r]*/sm'					=>	'<oli>$1</oli>',
+			'/[\r\n]+-[\s]+(.*?)[\r]*[\n]*[\r]*[\n]*$/sm'		=>	'<uli>$1</uli>',
+			'/[\r\n]+[\d]+\.[\s]+([^\r\n]+)[\r]*$/sm'			=>	'<oli>$1</oli>',
 			'#((?<!uli\>)<uli>.*?</uli>(?!\<uli))#m'			=>	'<ul>$1</ul>',
 			'#((?<!oli\>)<oli>.*?</oli>(?!\<oli))#m'			=>	'<ol>$1</ol>',
 			'/<[o|u]li>/'										=>	'<li>',
@@ -287,14 +287,7 @@ class DisplayTextHelper extends LayoutAppHelper {
 					$attrs = null;
 				}
 				$width = is_numeric($attrs) ? $attrs : 1;
-				$column = preg_replace(
-					array(
-						'#^(<br[\s]*[/]*>)+#',
-						'#(<br[\s]*[/]*>)+$#',
-					), 
-					'', 
-					$column
-				);
+				$column = $this->trimBreaks($column);
 				if (empty($column)) {
 					continue;
 				}
@@ -319,7 +312,16 @@ class DisplayTextHelper extends LayoutAppHelper {
 	}
 	
 	function pregReplaceArray($regx, $str) {
+		$str = "\n$str";
 		$str = preg_replace(array_keys($regx),$regx,$str,-1,$count);
+		return $this->trimBreaks($str);
+	}
+	
+	private function trimBreaks($str) {
+		$str = preg_replace(array(
+			'#^[\r\n]*(?:<br\s*/?>[\s\r\n]*)+#', 	//Breaks at beginning of string
+			'#(?:<br\s*/?>[\s\r\n]*)+[\r\n]*$#'		//Breaks at end of string
+		), '', $str);
 		return $str;
 	}
 	
