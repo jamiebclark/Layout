@@ -1,5 +1,5 @@
 <?php
-App::uses('Prefix', 'Lib');
+App::uses('Prefix', 'Layout.Lib');
 class Url {
 	public static function &getInstance() {
 		static $instance = array();

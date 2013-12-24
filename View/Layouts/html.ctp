@@ -16,11 +16,13 @@
  * @license       MIT License (http://www.opensource.org/licenses/mit-license.php)
  */
 
+$flashParams = array('element' => 'alert');
+if (CakePlugin::loaded('TwitterBootstrap')) {
+	$flashParams['params']['plugin'] = 'TwitterBootstrap';
+}
+
 $flash = $this->Session->flash();
-$flash .= $this->Session->flash('auth', array(
-	'element' => 'alert',
-	'params' => array('plugin' => 'TwitterBootstrap')
-));
+$flash .= $this->Session->flash('auth', $flashParams);
 
  //<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
 ?>

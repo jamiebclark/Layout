@@ -40,6 +40,26 @@ class LayoutHelper extends LayoutAppHelper {
 		'spam', 'clock',
 	);
 
+	public function __construct(View $View, $settings = array()) {
+		if (CakePlugin::loaded('TwitterBootstrap')) {
+			$helpers = array(
+				'Html' => array('className' => 'TwitterBootstrap.BootstrapHtml'),
+				'Paginator' => array('className' => 'TwitterBootstrap.BootstrapPaginator'),
+			);
+			foreach ($helpers as $key => $config) {
+				if (($k = array_search($key, $this->helpers)) !== false) {
+					unset($this->helpers[$k]);
+				}
+				if (isset($this->helpers[$key])) {
+					$this->helpers[$key] = $config + $this->helpers[$key];
+				} else {
+					$this->helpers[$key] = $config;
+				}
+			}
+		}
+		return parent::__construct($View, $settings);
+	}
+	
 	/*
 	function beforeRender($viewFile) {
 	//	$this->Asset->css('Layout.font-awesome');
