@@ -6,7 +6,13 @@
 App::uses('LayoutAppHelper', 'Layout.View/Helper');
 
 class FormLayoutHelper extends LayoutAppHelper {
-	var $helpers = array('Asset','Html', 'Form', 'Layout', 'Iconic');
+	var $helpers = array(
+		'Layout.Asset',
+		'Html', 
+		'Form', 
+		'Layout.Layout', 
+		'Layout.Iconic'
+	);
 	var $buttonIcons = array(
 		'add' => 'plus',
 		'update' => 'check',

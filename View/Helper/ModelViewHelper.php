@@ -326,7 +326,7 @@ class ModelViewHelper extends LayoutAppHelper {
 				}
 				$config += compact('result');
 				
-				$id = !empty($result['id']) ? $result['id'] : $this->getUrlId($config['url']);
+				$id = !empty($result[$this->primaryKey]) ? $result[$this->primaryKey] : $this->getUrlId($config['url']);
 				if ($this->isAutoAction($action)) {
 					$menuItem = $this->getAutoAction($action, $id, $config);
 					if ($menuItem === false) {

@@ -65,12 +65,15 @@ $flash .= $this->Session->flash('auth', $flashParams);
 		</div>
 		<div id="content">
 			<?php 
-				if (!empty($pre_crumb)) {
-					echo $this->Html->div('pre-crumb', $pre_crumb);
-				}
-			?>
-
-			<?php if ($crumbs = $this->Crumbs->output()): ?>
+			if (!empty($pre_crumb)) {
+				echo $this->Html->div('pre-crumb', $pre_crumb);
+			}
+			if (!empty($this->Crumbs)) {
+				$crumbs = $this->Crumbs->output();
+			} else {
+				$crumbs = $this->Html->getCrumbs();
+			}
+			if (!empty($crumbs)): ?>
 				<div id="breadcrumb">
 					<div class="container"><?php echo $crumbs;?></div>
 				</div>
