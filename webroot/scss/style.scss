@@ -88,6 +88,14 @@ div.lead {
 	margin-bottom: $baseLineHeight / 2;
 }
 
+// Form
+// ------------------------
+:required {
+	border-color: $requiredBorder !important;
+	background-color: $requiredBackground !important;
+	color: $requiredText !important;
+}
+
 // Lists
 // ------------------------
 .heading-action-menu {
