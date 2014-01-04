@@ -14,7 +14,6 @@ class CollapseListHelper extends LayoutAppHelper {
 
 	function beforeRender($viewFile) {
 		$this->Asset->js(array('Layout.jquery/jquery.scrollTo-1.4.2-min', 'Layout.collapse_list'));
-		$this->Asset->css('Layout.collapse_list');
 		parent::beforeRender($viewFile);
 	}
 
