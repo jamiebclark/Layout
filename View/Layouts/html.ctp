@@ -34,10 +34,9 @@ $flash .= $this->Session->flash('auth', $flashParams);
 	<title>
 		<?php echo $this->fetch('page_title') . ' ' . $title_for_layout; ?>
 	</title>
-	<?php
-		echo $this->Html->meta('icon');
-		echo $this->Html->meta('viewport', 'width = device-width');
-		
+	<?php echo $this->Html->meta('icon'); ?>
+	<meta name="viewport" content="width=device-width"/>
+	<?php		
 		if (!empty($description_for_layout)) {
 			$description_for_layout = str_replace("\n", '', strip_tags($description_for_layout));
 			echo $this->Html->meta('description', $description_for_layout);
