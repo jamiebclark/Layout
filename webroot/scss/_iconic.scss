@@ -2,6 +2,47 @@
 @include font-face(IconicFill, iconic_fill, IconicFill, san-serif, $fontDir);
 //@include font-face(IconicStroke, iconic_stroke);
 
+.large-icon-menu {
+	text-align: center;
+	overflow: hidden;
+	li {
+		display: inline-block;
+		vertical-align: top;
+		list-style-type: none;
+		padding: 0;
+		margin: 0;
+	}
+	.iconic, .description {
+		display: block;
+		float: none;
+		clear: both;
+	}
+	.iconic, h3 {
+		text-align: center;
+	}
+	.iconic {
+		font-size: 4em;
+		padding: .25em;
+	}
+	.description {
+		font-size: 85%;
+	}
+	a:hover {
+		.iconic {
+			text-decoration: none !important;
+		}
+	}
+	
+	li {
+		width: 10em;
+		padding: .75em;
+		&.last {
+			padding-right: 0;
+		}
+	}
+}
+
+
 .iconic-list {
 	@extend %overflow;
 	&, ul, li { 
