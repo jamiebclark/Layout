@@ -334,10 +334,15 @@ $(document).ready(function() {
 				url = $a.attr('href'),
 				title = $a.attr('data-modal-title'),
 				customTitle = title,
-				$ajaxWindow = $('#ajax-modal'),
+				ajaxWindowId = '',
+				ajaxWindowKey = 1;
+			do {
+				ajaxWindowId = '#ajax-modal' + (ajaxWindowKey++);
+			} while ($a.closest(ajaxWindowId).length);
+
+			var $ajaxWindow = $(ajaxWindowId),
 				$ajaxWindowHeader = $('.modal-header', $ajaxWindow),
 				$ajaxWindowBody = $('.modal-body', $ajaxWindow);
-			
 			if (!$ajaxWindow.length) {
 				$ajaxWindow = $('<div></div>', {
 					'id': 'ajax-modal',
@@ -413,7 +418,12 @@ $(document).ready(function() {
 		});
 	};
 })(jQuery);
+/*
 $(document).ready(function() {
+	$('.ajax-modal').ajaxModal();
+});
+*/
+documentReady(function () {
 	$('.ajax-modal').ajaxModal();
 });
 

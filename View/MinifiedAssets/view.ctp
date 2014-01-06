@@ -14,7 +14,7 @@ header("Expires: " . gmdate("D, d M Y H:i:s", time() + $offset) . " GMT");
 if ($isModified) { 
 	// Read the cache file and send it to the client.
 	$content = file_get_contents($filepath);
-	if (strpos($_SERVER['HTTP_ACCEPT_ENCODING'], 'gzip') !== false) {
+	if (!isset($_SERVER['HTTP_ACCEPT_ENCODING']) || strpos($_SERVER['HTTP_ACCEPT_ENCODING'], 'gzip') !== false) {
 		header('Content-Encoding: gzip');
 		$content = gzencode(trim($content), 9);
 	}
