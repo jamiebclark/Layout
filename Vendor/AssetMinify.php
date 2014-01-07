@@ -101,20 +101,43 @@ class AssetMinify {
 		return $this->getCacheFilepath($files, $type, true);
 	}
 	
-	//Finds full path of a Cake asset
-	private function getPath($file, $type) {
+	/**
+	 * Finds full path of a Cake asset
+	 *
+	 * @param string $file The file name from AssetHelper
+	 * @param string $type The type of asset (JS or CSS)
+	 * @param bool $dirOnly If true, returns only the path to the directory of the file
+	 * @param bool $forWeb If true, returns the path formatted for using in a web URL
+	 *
+	 * @return string The path to the file
+	 **/
+	private function getPath($file, $type, $dirOnly = false, $forWeb = false) {
 		$oFile = $file;
+		$ds = $forWeb ? '/' : DS;
+		
 		list($plugin, $file) = pluginSplit($oFile);
 		if (!empty($plugin) && !preg_match('/^[A-Z]/', $plugin)) {
 			$plugin = null;
 			$file = $oFile;
 		}
-		$root = empty($plugin) ? WWW_ROOT : $this->_getPluginDir($plugin) . 'webroot' . DS;
-		$filepath = $root . $type . DS . $file;
-		if (substr($filepath, -1 * strlen($type)) != $type) {
-			$filepath .= ".$type";
+		if ($forWeb) {
+			$root = Router::url('/');
+			if (!empty($plugin)) {
+				$root .= sprintf('%s/', Inflector::underscore($plugin));
+			}
+		} else {
+			$root = empty($plugin) ? WWW_ROOT : $this->_getPluginDir($plugin) . 'webroot' . $ds;
 		}
-		return $filepath;
+		$path = $root . $type . $ds . $file;
+		if (substr($path, -1 * strlen($type)) != $type) {
+			$path .= ".$type";
+		}
+		if ($dirOnly) {
+			$path = explode($ds, $path);
+			array_pop($path);
+			$path = implode($ds, $path) . $ds;
+		}
+		return $path;
 	}
 	
 	//Finds the full path of where the cached file will be stored
@@ -176,11 +199,25 @@ class AssetMinify {
 					//Strip comments
 					$content = preg_replace('!/\*.*?\*/!s', '', $content);
 					
-					if (preg_match_all('/@import[^;]+;/', $content, $matches)) {
-						foreach ($matches[0] as $match) {
-							$fileHeader .= $match;
+					//Update CSS
+					if ($type == 'css') {
+						$webDir = $this->getPath($file, $type, true, true);
+						$replace = array();
+						//Looks for relative url calls
+						if (preg_match_all('#(url\([\'"]*)([^/][^/\.:]*[/\.])([^\)]*\))#', $content, $matches)) {
+							foreach ($matches[0] as $k => $match) {
+								$replace[$match] = $matches[1][$k] . $webDir . $matches[2][$k] . $matches[3][$k];
+							}
 						}
-						$content = str_replace($matches[0], '', $content);
+						if (preg_match_all('/@import[^;]+;/', $content, $matches)) {
+							foreach ($matches[0] as $match) {
+								$fileHeader .= $match;
+							}
+							$replace[$matches[0]] = '';
+						}
+						if (!empty($replace)) {
+							$content = str_replace(array_keys($replace), array_values($replace), $content, $count);
+						}
 					}
 					if (!empty($fileContent)) {
 						$fileContent .= "\n";
