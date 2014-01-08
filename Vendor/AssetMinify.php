@@ -203,10 +203,16 @@ class AssetMinify {
 					if ($type == 'css') {
 						$webDir = $this->getPath($file, $type, true, true);
 						$replace = array();
+
 						//Looks for relative url calls
-						if (preg_match_all('#(url\([\'"]*)([^/][^/\.:]*[/\.])([^\)]*\))#', $content, $matches)) {
+						if (preg_match_all('#(url\([\'"]*)((\.\./)+)*([^/][^/\.:]*[/\.])([^\)]*\))#', $content, $matches)) {
 							foreach ($matches[0] as $k => $match) {
-								$replace[$match] = $matches[1][$k] . $webDir . $matches[2][$k] . $matches[3][$k];
+								$dir = $webDir;
+								if (!empty($matches[2][$k])) {	//Detects "../" and moves the root directory up those levels
+									$up = substr_count($matches[2][$k], '../');
+									$dir = $this->getParentDir($webDir, '/', $up);
+								}
+								$replace[$match] = $matches[1][$k] . $dir . $matches[4][$k] . $matches[5][$k];
 							}
 						}
 						if (preg_match_all('/@import[^;]+;/', $content, $matches)) {
@@ -233,6 +239,19 @@ class AssetMinify {
 			fwrite($fp, $fileHeader . $fileContent);
 		}
 		fclose($fp);
+	}
+	
+	private function getParentDir($dir, $ds = DS, $levels = 1) {
+		$dir = explode($ds, substr($dir, 0, -1));
+		$pre = '';
+		for ($i = 0; $i < $levels; $i++) {
+			if (count($dir) > 0) {
+				array_pop($dir);
+			} else {
+				$pre .= '..' . $ds;
+			}
+		}
+		return $pre . implode($ds, $dir) . $ds;
 	}
 	
 	private function _getPluginDir($plugin = null) {
