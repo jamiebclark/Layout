@@ -549,6 +549,13 @@ $calBoxW: 2em;
 			padding: 4px;
 		}
 	}
+	.input-date-range-radios {
+		label {
+			float: left;
+			padding-top: 0 !important;
+			margin-right: 5px;
+		}
+	}
 }
 
 @mixin deadline($class, $color, $background) {
