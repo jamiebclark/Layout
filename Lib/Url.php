@@ -16,10 +16,12 @@ class Url {
 	}
 	
 	public static function getAction($url = null) {
-		$paths = Router::getPaths(empty($url) ? true : $url);
-		$action = $paths->params['action'];
-		if (!empty($paths->params['prefix'])) {
-			$action = Prefix::removeFromAction($action, $paths->params['prefix']);
+		$action = null;
+		if (Router::getRequest() && ($paths = Router::getPaths(empty($url) ? true : $url))) {
+			$action = $paths->params['action'];
+			if (!empty($paths->params['prefix'])) {
+				$action = Prefix::removeFromAction($action, $paths->params['prefix']);
+			}
 		}
 		return $action;
 	}
@@ -29,25 +31,29 @@ class Url {
 		if (empty($url)) {
 			$url = Router::url();
 		}
-		$paths = Router::getPaths(true);
-		if (!empty($paths->base) && !empty($url) && strpos($url, $paths->base) === 0) {
-			$url = substr($url, strlen($paths->base));
-		}
-		if (!is_array($url)) {
-			$url = Router::parse($url);
-			if ($prefix = Prefix::get($url)) {
-				$url['action'] = Prefix::removeFromAction($url['action'], $prefix);
+		if (Router::getRequest()) {
+			$paths = Router::getPaths(true);
+			if (!empty($paths->base) && !empty($url) && strpos($url, $paths->base) === 0) {
+				$url = substr($url, strlen($paths->base));
 			}
-			unset($url['url']);
-			$vars = array('pass', 'named');
-			foreach ($vars as $var) {
-				if (!empty($url[$var])) {
-					foreach ($url[$var] as $k => $v) {
-						$url[$k] = $v;
+			if (!is_array($url)) {
+				$url = Router::parse($url);
+				if ($prefix = Prefix::get($url)) {
+					$url['action'] = Prefix::removeFromAction($url['action'], $prefix);
+				}
+				unset($url['url']);
+				$vars = array('pass', 'named');
+				foreach ($vars as $var) {
+					if (!empty($url[$var])) {
+						foreach ($url[$var] as $k => $v) {
+							$url[$k] = $v;
+						}
+						unset($url[$var]);
 					}
-					unset($url[$var]);
 				}
 			}
+		} else {
+			return array();
 		}
 		return $url;
 	}
