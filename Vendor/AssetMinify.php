@@ -218,8 +218,8 @@ class AssetMinify {
 						if (preg_match_all('/@import[^;]+;/', $content, $matches)) {
 							foreach ($matches[0] as $match) {
 								$fileHeader .= $match;
+								$replace[$match] = '';
 							}
-							$replace[$matches[0]] = '';
 						}
 						if (!empty($replace)) {
 							$content = str_replace(array_keys($replace), array_values($replace), $content, $count);
