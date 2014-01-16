@@ -67,7 +67,7 @@ class SelectListBehavior extends ModelBehavior {
 				$list += $Model->generateTreeList($conditions, $keyPath, $valuePath, $spacer, $recursive);
 			}
 		} else {
-			$result = $Model->find('all', compact('fields', 'conditions', 'recursive'));	
+			$result = $Model->find('all', compact('fields', 'conditions', 'recursive', 'order'));	
 			foreach ($result as $row) {
 				if (!empty($optGroup)) {
 					$list[$row[0]['optGroup']][$row[0]['listKey']] = $row[0]['listValue'];
