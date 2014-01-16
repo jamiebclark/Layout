@@ -105,7 +105,13 @@ class TextGraphHelper extends AppHelper {
 		return $this->pctFormat($pct, $round);
 	}
 	
-	function pctFormat($pct, $round = 2) {
+	function pctFormat($pct, $settings = array()) {
+		if (is_numeric($settings)) {
+			$settings = array('round' => $settings);
+		}
+		$settings = array_merge(array('round' => 2), $settings);
+		extract($settings);
+		
 		$class = 'badge';
 		if (!isset($pct)) {
 			$pct = '---';
@@ -119,6 +125,9 @@ class TextGraphHelper extends AppHelper {
 				$pct = $pct;
 				$class .= ' badge-warning';
 			}
+		}
+		if (!empty($url)) {
+			$pct = $this->Html->link($pct, $url);
 		}
 		return $this->Html->tag('span',  $pct, compact('class'));
 	}
