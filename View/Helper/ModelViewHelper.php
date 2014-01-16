@@ -647,7 +647,7 @@ class ModelViewHelper extends LayoutAppHelper {
 		$modelResult = $this->_getResult($result);
 		$controller = !empty($options['controller']) ? $options['controller'] : $this->controller;
 		$action = !empty($options['action']) ? $options['action'] : 'view';
-		$plugin = !empty($options['plugin']) ? $options['plugin'] : false;
+		$plugin = !empty($options['plugin']) ? $options['plugin'] : Inflector::underscore($this->modelPlugin);
 		
 		$url = compact('controller', 'action', 'plugin');
 		$id = is_numeric($result) ? $result : $modelResult[$this->primaryKey];
