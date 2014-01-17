@@ -10,7 +10,7 @@ $grayLightest: 					#F8F8F8 !default;
 $layoutBaseDir:					"../";
 $imgDir:						"../img/" !default;
 
-@if $isLayoutExtended == true and $isMinified == false {
+@if $isLayoutExtended == true {
 	$layoutBaseDir:				"../layout/";
 }
 @if $isMinified == true {
