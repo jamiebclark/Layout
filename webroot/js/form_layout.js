@@ -610,6 +610,18 @@ var dropdownInput;
 							});
 						$('.input-choice-content', $choice).showEnableChildren();
 					}
+					console.log($contents.length);
+					
+					$(':input', $contents).each(function() {
+						var $parent = $(this).closest('.input-choice'),
+							isActive = $parent.hasClass('input-choice-active');
+						//Removes required props from hidden elements
+						if (isActive && $(this).data('is-required')) {
+							$(this).prop('required', true);
+						} else if (!isActive && $(this).prop('required')) {
+							$(this).data('is-required', true).removeAttr('required');
+						}
+					});
 				}
 				$controls.each(function() {
 					$(this)
