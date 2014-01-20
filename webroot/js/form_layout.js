@@ -697,7 +697,7 @@ documentReady(function() {
 				addRemoveBox($cloned);
 				$listItems = $('> .input-list-inner > .input-list-item', $list);
 			});
-			if (!$addLink.length) {
+			if (!$addLink || !$addLink.length) {
 				$addLink = $('<a class="btn btn-small" href="#" tabindex="-1">Add</a>').appendTo($control);
 			}
 			
@@ -819,9 +819,23 @@ documentReady(function() {
 		$parent.data('cloning', true);
 		var $ids = $(this).find(':input[name*="[id]"]:enabled'),
 			$idFirst = $ids.first(),
-			idName = $idFirst.attr('name'),
-			nameLength = idName.length,
-			key = getNameKey(idName, idName.indexOf("[id]"), false);
+			idName,
+			nameLength = 0,
+			key;
+		
+		if ($idFirst) {
+			idName = $idFirst.attr('name');
+			if (idName) {
+				nameLength = idName.length;
+				key = getNameKey(idName, idName.indexOf("[id]"), false);
+			}
+		}
+		
+		if (!key) {
+			console.log('Key not found');
+			return false;
+		}
+		
 		$ids = $ids.filter(function() {
 			return $(this).attr('name').length < nameLength + 2;	//Filters out sub-ids
 		});
@@ -832,8 +846,23 @@ documentReady(function() {
 			var $entry = $(this).last(),
 				$cloned = $entry.clone().insertAfter($entry),
 				newIdKey = $ids.length;
-			$cloned.find('input').removeClass('hasDatepicker');
-			$cloned.find('input[name*="[id]"],:text,textareas').val('').trigger('reset');
+			$('input', $cloned).removeClass('hasDatepicker');
+			$('input[name*="[id]"]', $cloned).val('').trigger('reset');
+			console.log($('.clone-numbered-index', $cloned).length);
+			
+			$('.clone-numbered-index', $cloned).html((newIdKey + 1));	//Re-numbers from 0 index
+			
+			$(':input', $cloned).not(':hidden,:checkbox,:radio,:submit,:reset').each(function() {
+				var v = '';
+				if ($(this).data('clone-numbered-default')) {
+					v = $(this).data('clone-default');
+				} else if ($(this).attr('default')) {
+					v = $(this).attr('default');
+				}
+				$(this).val(v);
+				$(this).trigger('reset');
+			});
+			
 			$cloned
 				.slideDown()
 				.data('added', true)

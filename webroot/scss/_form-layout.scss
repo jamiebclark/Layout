@@ -41,6 +41,9 @@
 		@include inputFontSize($fontSizeLarge);
 	}
 }
+.input-lg {
+	@include inputFontSize($fontSizeLarge);
+}
 
 .form-inactive {
 	background: $inactiveBackground;

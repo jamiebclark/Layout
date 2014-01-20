@@ -920,7 +920,10 @@ class FormLayoutHelper extends LayoutAppHelper {
 					$input['fieldset'] = false;
 				}
 				$input = $this->inputs($input);
+			} else if (is_callable($input)) {
+				$input = $input();
 			}
+			
 			$row .= $this->Html->div('input-choice-content', $input, array(
 				'style' => empty($isDefault) ? 'display:none;' : null,
 			)) . "\n";
