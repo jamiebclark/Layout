@@ -585,13 +585,20 @@ var dropdownInput;
 (function($) {
 	$.fn.inputChoices = function() {
 		return this.each(function() {
-			var $list = $(this),
-				$choices = $('.input-choice', $list),
-				$controls = $('.input-choice-control input', $choices),
-				$contents = $('.input-choice-content', $choices),
-				$checkedControl = $controls.filter(':checked');
+			var $list = $(this), $choices, $controls, $contents, $checkedControl;
+			setVars();
+			
 			if (!$list.data('input-choice-init')) {
+				function setVars() {
+					$choices = $('.input-choice', $list),
+						$controls = $('.input-choice-control input', $choices),
+						$contents = $('.input-choice-content', $choices),
+						$checkedControl = $controls.filter(':checked');
+				}
+				
 				function select() {
+					setVars();
+					
 					if (!$checkedControl.length) {
 						$checkedControl = $controls.first();
 					}
@@ -610,7 +617,6 @@ var dropdownInput;
 							});
 						$('.input-choice-content', $choice).showEnableChildren();
 					}
-					console.log($contents.length);
 					
 					$(':input', $contents).each(function() {
 						var $parent = $(this).closest('.input-choice'),
@@ -681,7 +687,7 @@ documentReady(function() {
 						.attr('tabindex', -1)
 						.appendTo($listItem)
 						.wrap($('<div></div>', {'class' : removeClass + " span1"}))
-						.wrap($('<label></label>', {'html': 'Remove'}));
+						.wrap($('<label></label>', {'html': '&times;'}));
 				}
 				$checkbox.change(function() {
 					if ($(this).is(':checked')) {
@@ -860,11 +866,12 @@ documentReady(function() {
 				newIdKey = $ids.length;
 			$('input', $cloned).removeClass('hasDatepicker');
 			$('input[name*="[id]"]', $cloned).val('').trigger('reset');
-			console.log($('.clone-numbered-index', $cloned).length);
 			
 			$('.clone-numbered-index', $cloned).html((newIdKey + 1));	//Re-numbers from 0 index
 			
 			$(':input', $cloned).not(':hidden,:checkbox,:radio,:submit,:reset').each(function() {
+				console.log($(this).attr('name'));
+				
 				var v = '';
 				if ($(this).data('clone-numbered-default')) {
 					v = $(this).data('clone-default');
@@ -885,6 +892,7 @@ documentReady(function() {
 			$cloned.data('id-key', newIdKey);
 			
 			$parent.trigger('cloned', [$cloned]);
+			$entry.trigger('entry-cloned');
 			//formLayoutInit();
 		}
 		$parent.data('cloning', false);
