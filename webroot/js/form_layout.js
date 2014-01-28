@@ -586,49 +586,50 @@ var dropdownInput;
 	$.fn.inputChoices = function() {
 		return this.each(function() {
 			var $list = $(this), $choices, $controls, $contents, $checkedControl;
-			setVars();
-			
-			if (!$list.data('input-choice-init')) {
-				function setVars() {
+							function setVars() {
 					$choices = $('.input-choice', $list),
 						$controls = $('.input-choice-control input', $choices),
 						$contents = $('.input-choice-content', $choices),
 						$checkedControl = $controls.filter(':checked');
 				}
 				
-				function select() {
-					setVars();
-					
-					if (!$checkedControl.length) {
-						$checkedControl = $controls.first();
-					}
-					if (!$checkedControl.is(':disabled')) {
-						var $choice = $checkedControl.closest('.input-choice');
-						$choices.each(function() {
-							$(this).removeClass('input-choice-active');
-						});
-						$choice.addClass('input-choice-active');
-						$contents
-							.filter(function() {
-								return !$(this).closest('.input-choice').hasClass('input-choice-active');
-							})
-							.each(function() {
-								$(this).hideDisableChildren();
-							});
-						$('.input-choice-content', $choice).showEnableChildren();
-					}
-					
-					$(':input', $contents).each(function() {
-						var $parent = $(this).closest('.input-choice'),
-							isActive = $parent.hasClass('input-choice-active');
-						//Removes required props from hidden elements
-						if (isActive && $(this).data('is-required')) {
-							$(this).prop('required', true);
-						} else if (!isActive && $(this).prop('required')) {
-							$(this).data('is-required', true).removeAttr('required');
-						}
-					});
+			function select() {
+				setVars();
+				
+				if (!$checkedControl.length) {
+					$checkedControl = $controls.first();
 				}
+				if (!$checkedControl.is(':disabled')) {
+					var $choice = $checkedControl.closest('.input-choice');
+					$choices.each(function() {
+						$(this).removeClass('input-choice-active');
+					});
+					$choice.addClass('input-choice-active');
+					$contents
+						.filter(function() {
+							return !$(this).closest('.input-choice').hasClass('input-choice-active');
+						})
+						.each(function() {
+							$(this).hideDisableChildren();
+						});
+					$('.input-choice-content', $choice).showEnableChildren();
+				}
+				
+				$(':input', $contents).each(function() {
+					var $parent = $(this).closest('.input-choice'),
+						isActive = $parent.hasClass('input-choice-active');
+					//Removes required props from hidden elements
+					if (isActive && $(this).data('is-required')) {
+						$(this).prop('required', true);
+					} else if (!isActive && $(this).prop('required')) {
+						$(this).data('is-required', true).removeAttr('required');
+					}
+				});
+			}
+
+			setVars();
+			
+			if (!$list.data('input-choice-init')) {
 				$controls.each(function() {
 					$(this)
 						.hover(function() {
