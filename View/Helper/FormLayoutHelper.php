@@ -913,6 +913,7 @@ class FormLayoutHelper extends LayoutAppHelper {
 				'label' => false,
 				'legend' => false,
 				'value' => $default,
+				'data-clone-numbered-default' => $isDefault ? $default : null,
 			));
 			$row = $this->Html->div('input-choice-control', $radio) . "\n";
 			if (is_array($input)) {

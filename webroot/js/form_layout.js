@@ -7,7 +7,7 @@
 		}
 		$(this).find(':input,select')
 			.filter(function() {
-				return !$(this).data('hide-disabled-set');
+				return $(this).prop('disabled', false) || !$(this).data('hide-disabled-set');
 			})
 			.each(function() {
 				$(this)
@@ -27,7 +27,9 @@
 			if ($(this).data('stored-disabled')) {
 				setDisabled = $(this).data('stored-disabled');
 			}
-			$(this).data('hide-disabled-set', false).prop('disabled', setDisabled);
+			$(this)
+				.data('hide-disabled-set', false)
+				.prop('disabled', setDisabled);
 			if (!setDisabled) {
 				$(this).trigger('layout-enabled');
 			}
@@ -586,11 +588,11 @@ var dropdownInput;
 	$.fn.inputChoices = function() {
 		return this.each(function() {
 			var $list = $(this), $choices, $controls, $contents, $checkedControl;
-							function setVars() {
+			function setVars() {
 					$choices = $('.input-choice', $list),
-						$controls = $('.input-choice-control input', $choices),
-						$contents = $('.input-choice-content', $choices),
-						$checkedControl = $controls.filter(':checked');
+					$controls = $('.input-choice-control input', $choices),
+					$contents = $('.input-choice-content', $choices),
+					$checkedControl = $controls.filter(':checked');
 				}
 				
 			function select() {
@@ -605,6 +607,18 @@ var dropdownInput;
 						$(this).removeClass('input-choice-active');
 					});
 					$choice.addClass('input-choice-active');
+
+					$(':input', $contents).each(function() {
+						var $parent = $(this).closest('.input-choice'),
+							isActive = $parent.hasClass('input-choice-active');
+						//Removes required props from hidden elements
+						if (isActive && $(this).data('is-required')) {
+							$(this).prop('required', true);
+						} else if (!isActive && $(this).prop('required')) {
+							$(this).data('is-required', true).removeAttr('required');
+						}
+					});
+					
 					$contents
 						.filter(function() {
 							return !$(this).closest('.input-choice').hasClass('input-choice-active');
@@ -613,18 +627,9 @@ var dropdownInput;
 							$(this).hideDisableChildren();
 						});
 					$('.input-choice-content', $choice).showEnableChildren();
+
 				}
 				
-				$(':input', $contents).each(function() {
-					var $parent = $(this).closest('.input-choice'),
-						isActive = $parent.hasClass('input-choice-active');
-					//Removes required props from hidden elements
-					if (isActive && $(this).data('is-required')) {
-						$(this).prop('required', true);
-					} else if (!isActive && $(this).prop('required')) {
-						$(this).data('is-required', true).removeAttr('required');
-					}
-				});
 			}
 
 			setVars();
@@ -643,9 +648,15 @@ var dropdownInput;
 							select();
 						});
 				});
-				select();
 				$list.data('input-choice-init', true);
+				$(window).load(function() {
+					select();
+				}).unload(function() {
+					select();
+				});
 			}
+			select();
+			return $list;
 		});
 	};
 })(jQuery);
@@ -862,20 +873,28 @@ documentReady(function() {
 			name = $id.attr('name');
 			
 		if ($id.length) {
-			var $entry = $(this).last(),
-				$cloned = $entry.clone().insertAfter($entry),
-				newIdKey = $ids.length;
+			var $entry = $(this).last();
+			var $cloned = $entry.clone();
+			var newIdKey = $ids.length;
 			$('input', $cloned).removeClass('hasDatepicker');
 			$('input[name*="[id]"]', $cloned).val('').trigger('reset');
-			
 			$('.clone-numbered-index', $cloned).html((newIdKey + 1));	//Re-numbers from 0 index
 			
+			$cloned.find(':input').each(function() {
+				return $(this).renumberInput(newIdKey, key.index).removeAttr('disabled');//.removeAttr('checked');
+			});
+
+			$cloned.insertAfter($entry);
+			
+			$(':checkbox,:radio', $cloned).each(function() {
+				if (typeof($(this).data('clone-numbered-default')) !== 'undefined' && $(this).data('clone-numbered-default') == $(this).val()) {
+					$(this).prop('checked', true);
+				}				
+			});
 			$(':input', $cloned).not(':hidden,:checkbox,:radio,:submit,:reset').each(function() {
-				console.log($(this).attr('name'));
-				
 				var v = '';
 				if ($(this).data('clone-numbered-default')) {
-					v = $(this).data('clone-default');
+					v = $(this).data('clone-numbered-default');
 				} else if ($(this).attr('default')) {
 					v = $(this).attr('default');
 				}
@@ -885,12 +904,12 @@ documentReady(function() {
 			
 			$cloned
 				.slideDown()
-				.data('added', true)
-				.find(':input').each(function() {
-					return $(this).renumberInput(newIdKey, key.index).removeAttr('disabled');//.removeAttr('checked');
-				});
+				.data('added', true);
+
 			$cloned.find(':input:visible').first().focus();
 			$cloned.data('id-key', newIdKey);
+			
+			
 			
 			$parent.trigger('cloned', [$cloned]);
 			$entry.trigger('entry-cloned');

@@ -118,6 +118,8 @@ class AssetHelper extends LayoutAppHelper {
 		foreach ($types as $type) {
 			if (!empty($this->_assets[$type])) {
 				$files = $this->_assets[$type];
+				
+				// debug($files);
 				if ($this->minify && in_array($type, $this->_minifyableTypes)) {
 					$AssetMinify = new AssetMinify();
 					$files = $AssetMinify->minify($files, $type);
