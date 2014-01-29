@@ -21,6 +21,8 @@ class DisplayTextHelper extends LayoutAppHelper {
 	
 	var $constants = array();
 	
+	private $_textOptions = array(); 	//Stores options when buffering output
+	
 	function __construct(View $View, $options = null) {
 		if (!empty($options['constants'])) {
 			$this->constants = array_merge($this->constants, $options['constants']);
@@ -118,6 +120,20 @@ class DisplayTextHelper extends LayoutAppHelper {
 		}
 		
 		return $text;
+	}
+	
+	//Starts collecting buffer to output as text
+	public function textStart($options = array()) {
+		$this->_textOptions = $options;
+		ob_start();
+	}
+	
+	//Ends buffer collection and outputs the stored buffer
+	public function textEnd() {
+		$out = ob_get_clean();
+		$options = $this->_textOptions;
+		$this->_textOptions = array();
+		return $this->text($out, $options);
 	}
 	
 	function quote($quote, $author = null, $options = array()) {
