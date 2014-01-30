@@ -41,6 +41,11 @@ $modalWidthSlim: 360px;
 .modal-body-submit {
 	display: none;
 }
+.modal-body .ajax-loading {
+	position: relative;
+	min-height: 200px;
+}
+
 @media (max-width: pem(767)) {
 	.modal {
 		width: 100% !important;

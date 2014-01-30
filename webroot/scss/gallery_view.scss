@@ -5,6 +5,9 @@ $galleryViewBodyHeight:			500px !default;
 
 @import "bootstrap/variables";
 @import "variables";
+
+//@import "ajax-loading";
+
 @import "bootstrap/mixins";
 @import "mixins";
 
@@ -243,26 +246,5 @@ a.gallery-view-control {
 		a {
 			opacity: .5;
 		}
-	}
-}
-		
-.ajax-loading {
-	opacity: .5;
-	background-color: black;
-	position: absolute;
-	top: 0;
-	bottom: 0;
-	left: 0;
-	right: 0;
-	text-align: center;
-	height: 100%;
-	span {
-		color: white;
-		position: absolute;
-		top: 50%;
-		left: 0;
-		right: 0;
-		font-size: 40px;
-		margin-top: -20px;
 	}
 }

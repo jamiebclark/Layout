@@ -410,7 +410,7 @@ class FormLayoutHelper extends LayoutAppHelper {
 				$options['prepend'] = '#';
 			break;
 			case 'cash': 
-				$options['type'] = 'number';
+				$options['type'] = 'text';
 				$options = $this->addClass($options, 'input-cash');
 				$options['prepend'] = '$';
 				$options['placeholder'] = '0.00';

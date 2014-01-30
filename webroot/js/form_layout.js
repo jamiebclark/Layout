@@ -1698,3 +1698,17 @@ documentReady(function() {
 documentReady(function() {
 	$('textarea.textarea-autoresize').textareaAutoresize();
 });
+
+//Sanitizing
+documentReady(function() {
+	function numberSanitize(val) {
+		return val.replace(/[^0-9\.]/g,'');
+	}
+	
+	$('input.input-cash').each(function() {
+		$(this).change(function() {
+			$(this).val(numberSanitize($(this).val()));
+		});
+		return $(this);
+	});
+});

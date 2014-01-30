@@ -388,6 +388,7 @@ $(document).ready(function() {
 				$ajaxWindowHeader.append('<h3>' + title + '</h3>');
 				$a.click(function(e) {
 					e.preventDefault();
+					$ajaxWindowBody.html('<div class="ajax-loading"><span>Loading...</span></div>');
 					$ajaxWindowBody.load(url, function() {
 						var $footer = $('.modal-footer', $ajaxWindow),
 							$form = $('.modal-body form', $ajaxWindow);
