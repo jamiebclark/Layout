@@ -30,11 +30,7 @@ class AddressBookFormHelper extends LayoutAppHelper {
 		));
 	}
 	
-	private function _numericField($fieldName, $isNumeric, $prefix = '') {
-		return $prefix . (($isNumeric) ? $this->numericCount++ : $fieldName);
-	}
-	
-	function inputAddress($model, $options = array()) {
+	function inputAddress($model, $options = array(), $inputOptions = array()) {
 		$options = array_merge(array(
 			'prefix' => '',
 			'numerical' => false,
@@ -68,9 +64,12 @@ class AddressBookFormHelper extends LayoutAppHelper {
 		
 		$out = '';
 		$inputRows = array();
-		//Being Output
+		//Begin Output
 		if (!empty($userId)) {
-			$out .= $this->Form->hidden($this->_numericField('user_id', $numerical, $prefix), array('value' => $this->viewVars['loggedUserId']));
+			$out .= $this->Form->hidden(
+				$this->_numericField('user_id', $numerical, $prefix), 
+				array('value' => $this->viewVars['loggedUserId'])
+			);
 		}
 
 		//Certain fields can be added to before fields by passing them by name
@@ -87,7 +86,9 @@ class AddressBookFormHelper extends LayoutAppHelper {
 					$field = $config;
 					$config = array();
 				}
-				$inputRows[] = array($this->_numericField($field, $numerical, $addressPrefix) => $config);
+				$inputRows[] = array(
+					$this->_numericField($field, $numerical, $addressPrefix) =>  $this->_inputOptions($inputOptions, $field, $config)
+				);
 			}
 		}
 		
@@ -102,26 +103,26 @@ class AddressBookFormHelper extends LayoutAppHelper {
 				$aPlaceholder = 'Apt. or Suite#';
 			}
 			$inputRows[] = array(	
-				$addressPrefix . ($numerical ? $numeric++ : 'addline' . $i) => array(
+				$addressPrefix . ($numerical ? $numeric++ : "addline$i") =>  $this->_inputOptions($inputOptions, "addline$i", array(
 					'type' => 'text', 
 					'label' => $aLabel, 
 					'placeholder' => $aPlaceholder,
 					'div' => 'addressbookform-addline',
 				)
-			);
+			));
 		}
 		$inputRows[] = array(
-			$this->_numericField('city', $numerical, $addressPrefix) => array(
+			$this->_numericField('city', $numerical, $addressPrefix) => $this->_inputOptions($inputOptions, 'city', array(
 				'label' => 'City',
 				'type' => 'text',
 				'span' => 8,
 				'div' => 'addressbookform-city',
-			),
-			$this->_numericField('state', $numerical, $addressPrefix) => array(
+			)),
+			$this->_numericField('state', $numerical, $addressPrefix) =>  $this->_inputOptions($inputOptions, 'state', array(
 				'label' => 'State',
 				'options' => $states,
 				'div' => 'addressbookform-state',
-			)
+			))
 		);
 		$inputRows[] = array(
 			$this->_numericField('zip', $numerical, $addressPrefix) => array(
@@ -200,4 +201,25 @@ class AddressBookFormHelper extends LayoutAppHelper {
 		}
 		return $this->Html->div($ns, $out);
 	}
+
+	private function _numericField($fieldName, $isNumeric, $prefix = '') {
+		return $prefix . (($isNumeric) ? $this->numericCount++ : $fieldName);
+	}
+
+	/**
+	 * Checks a keyed list of options for a specific key and returns the options associated with that key
+	 * 
+	 * @param Array $optionsList Full list of options
+	 * @param String $key The key to check for options
+	 * @param Array $existingOptions Existing options with which to merge any results found
+	 *
+	 * @return Array Complete options merged with existing
+	 **/
+	private function _inputOptions($optionsList, $key, $existingOptions = array()) {
+		if (isset($optionsList[$key])) {
+			$existingOptions = array_merge($optionsList[$key], (array) $existingOptions);
+		}
+		return $existingOptions;
+	}
+
 }
