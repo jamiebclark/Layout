@@ -629,11 +629,9 @@ var dropdownInput;
 					$('.input-choice-content', $choice).showEnableChildren();
 
 				}
-				
 			}
 
 			setVars();
-			
 			if (!$list.data('input-choice-init')) {
 				$controls.each(function() {
 					$(this)
