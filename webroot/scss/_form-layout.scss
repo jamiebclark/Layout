@@ -20,6 +20,12 @@
 	margin-bottom: $baseLineHeight / 2;
 }
 
+.input-list, .input-choices, .input-autocomplete-multi {
+	.input-list, .input-choices, .input-autocomplete-multi {
+		border-color: #EFEFEF;//lighten($inputBorder, /25);
+	}
+}
+
 .form-large {
 	select,
 	textarea,
