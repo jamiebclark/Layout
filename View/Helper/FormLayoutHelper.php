@@ -999,10 +999,9 @@ class FormLayoutHelper extends LayoutAppHelper {
 		} else {
 			$after = '';
 		}
-		
-		$out  = $this->inputDatetime($startFieldName, array('label' => 'From') + $options);
+		$out  = $this->inputDatetime($startFieldName, $this->getPairOptions('first', array('label' => 'From') + $options));
 		//$out .= $this->Html->div('datepair-between', ' - ');
-		$out .= $this->inputDatetime($endFieldName, array('flip' => true, 'label' => 'To') + $options);
+		$out .= $this->inputDatetime($endFieldName, $this->getPairOptions('second', array('flip' => true, 'label' => 'To') + $options));
 		return $this->fakeInput($out, array(
 			'div' => 'datepair datepair-time',
 			'label' => $options['label'],
@@ -1010,7 +1009,6 @@ class FormLayoutHelper extends LayoutAppHelper {
 		) + compact('after'));
 	}
 
-	
  	/**
 	 * A form input that includes a calendar dropdown when clicked on
 	 * If class is "datetime", then it also includes a separate time input
@@ -1022,14 +1020,32 @@ class FormLayoutHelper extends LayoutAppHelper {
 		if (!isset($options['label'])) {
 			$options['label'] = $this->getLabelText($startFieldName);
 		}
-		$out  = $this->inputDate($startFieldName, array('label' => 'From') + $options);
+		$out  = $this->inputDate($startFieldName, $this->getPairOptions('first', array('label' => 'From') + $options));
 		//$out .= $this->Html->div('datepair-between', ' - ');
-		$out .= $this->inputDate($endFieldName, array('label' => 'To') + $options);
+		$out .= $this->inputDate($endFieldName, $this->getPairOptions('second', array('label' => 'To') + $options));
 		return $this->fakeInput($out, array(
 			'div' => 'datepair',
 			'label' => $options['label'],
 			'editable' => true,
 		));
+	}
+
+	/**
+	 * If passing options regarding a pair of inputs, it can also accept an option key for "first" or "second"
+	 * to indicate just one of the inputs in the pair. It also then removes both first and second options
+	 *
+	 * @param String $pairKey "first" or "second"
+	 * @param Array $options Additional options
+	 *
+	 * @return New options
+	 **/
+	private function getPairOptions($pairKey, $options = array()) {
+		if (isset($options[$pairKey])) {
+			$options = array_merge($options, (array) $options[$pairKey]);
+		}
+		unset($options['first']);
+		unset($options['second']);
+		return $options;
 	}
 	
 	private function getDateFieldValue($fieldName, $type = 'date', $value = null) {
@@ -1068,10 +1084,13 @@ class FormLayoutHelper extends LayoutAppHelper {
 		$options = array_merge(array(
 				'placeholder' => 'mm/dd/yyyy',
 				'div' => 'control-group input-date',
-				'default' => $this->getDateFieldValue($fieldName),
+				'default' => null,
 				//'prepend' => '<i class="icon-calendar"></i>',
 				'control' => array('today', 'clear'),
 			), $this->addClass($options, 'date datepicker'));
+		if ($dataValue = $this->getDateFieldValue($fieldName)) {
+			$options['default'] = $dataValue;
+		}
 		$options['type'] = 'text';
 		if (!empty($options['value'])) {
 			$options['value'] = $this->getDateFieldValue($fieldName, 'date', $options['value']);
@@ -1110,9 +1129,12 @@ class FormLayoutHelper extends LayoutAppHelper {
 		$options = array_merge(array(
 			'placeholder' => '0:00pm',
 			'div' => 'control-group input-time',
-			'default' => $this->getFieldValue($fieldName, 'time'),
+			'default' => null,
 			//'prepend' => '<i class="icon-time"></i>',
 		), $this->addClass($options, 'time timepicker'));
+		if ($dataValue = $this->getFieldValue($fieldName, 'time')) {
+			$options['default'] = $dataValue;
+		}
 		$options['type'] = 'text';
 		$options = $this->_formatFields($options, 'H:i:s');
 		return $this->input("$fieldName.time", $options);			
@@ -1592,7 +1614,7 @@ class FormLayoutHelper extends LayoutAppHelper {
 		return $data;
 	}
 	// Checks an options array for specific fields and matches it with a date formatting
-	private function _formatFields($options, $dateFormat, $fields = array('value', 'default')) {
+	private function _formatFields($options, $dateFormat, $fields = array('value', 'default', 'data-clone-numbered-default')) {
 		foreach ($fields as $field) {
 			if (isset($options[$field])) {
 				$options[$field] = date($dateFormat, strtotime($options[$field]));
