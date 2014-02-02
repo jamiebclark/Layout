@@ -459,14 +459,14 @@ class TableHelper extends LayoutAppHelper {
 		
 		if (!empty($options['before'])) {
 			$return .= $options['before'];
-			unset($options['before']);
 		}
 		if (!empty($options['after'])) {
 			$after = $options['after'];
-			unset($options['after']);
 		} else {
 			$after = '';
 		}
+		unset($options['after']);
+		unset($options['before']);
 		
 		$rowsOut = array();
 		if (!empty($headers)) {
