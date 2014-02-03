@@ -29,7 +29,7 @@
 			}
 			$(this)
 				.data('hide-disabled-set', false)
-				.prop('disabled', setDisabled);
+				.prop('disabled', false);
 			if (!setDisabled) {
 				$(this).trigger('layout-enabled');
 			}
@@ -1708,5 +1708,32 @@ documentReady(function() {
 			$(this).val(numberSanitize($(this).val()));
 		});
 		return $(this);
+	});
+});
+
+
+documentReady(function() {
+	$('form.submitted-overlay').each(function() {
+		
+		$(this).submit(function(e) {
+			var padding = 20;
+			var $form = $(this).addClass('submitted-overlay-submitted');
+			var $mask = $('<div class="submitted-overlay-mask"></div>')
+				.css({
+					'width': $form.outerWidth() + 2 * padding,
+					'height': $form.outerHeight() + 2 * padding,
+					'top': padding * -1,
+					'left': padding * -1
+				})
+				.appendTo($form);				
+			$('<div class="submitted-overlay-mask-content"></div>')
+				.append($('<h2>Loading</h2>').animatedEllipsis())
+				.appendTo($mask);
+							
+			$(':submit', $form).each(function() {
+				$(this).prop('disabled', true).html('Loading...');
+			});
+			return $(this);
+		});
 	});
 });

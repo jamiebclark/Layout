@@ -326,6 +326,46 @@ $(document).ready(function() {
 	$('input[name*="[table_checkbox]"]').tableCheckbox();
 });
 
+//Animated Ellipsis
+(function($) {
+	$.fn.animatedEllipsis = function() {
+		return this.each(function() {
+			if (!$(this).data('animate-ellipsis-init')) {
+				var $container = $(this),
+					text = $container.html(),
+					interval;
+				function animate() {
+					var pt = 0;
+					var text = $container.html();
+					function step() {
+						var str = text;
+						for (var i = 1; i <= pt; i++) {
+							str += ".";
+						}
+						if (++pt > 3) {
+							pt = 0;
+						}
+						$container.html(str);
+					}
+
+					interval = setInterval(step, 300);
+				}
+				
+				if (interval) {
+					clearInterval(interval);
+				}
+				animate();
+				$container.data('animate-ellipsis-init');
+			}
+			return $(this);
+		});
+	};
+})(jQuery);
+
+documentReady(function() {
+	$('.animated-ellipsis').animatedEllipsis();
+});
+
 // AJAX Modal Loading Window 
 (function($) {
 	$.fn.ajaxModal = function() {
@@ -388,7 +428,9 @@ $(document).ready(function() {
 				$ajaxWindowHeader.append('<h3>' + title + '</h3>');
 				$a.click(function(e) {
 					e.preventDefault();
-					$ajaxWindowBody.html('<div class="ajax-loading"><span>Loading...</span></div>');
+					$ajaxWindowBody.append($('<div class="ajax-loading"></div')
+						.append($('<span>Loading</span>').animatedEllipsis())
+					);
 					$ajaxWindowBody.load(url, function() {
 						var $footer = $('.modal-footer', $ajaxWindow),
 							$form = $('.modal-body form', $ajaxWindow);
