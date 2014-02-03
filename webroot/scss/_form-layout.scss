@@ -102,6 +102,7 @@ form.submitted-overlay {
 	left: 0;
 	right: 0;
 	bottom: 0;
+	z-index: 5000;
 	@include background-opacity(#000, .25);
 }
 .submitted-overlay-mask-content {
