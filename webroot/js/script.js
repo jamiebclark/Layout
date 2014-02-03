@@ -453,7 +453,6 @@ documentReady(function() {
 							}
 						});
 						$('.form-actions:empty', $form).remove();
-						console.log('Finished Loading');
 						$(document).trigger('ajax-modal-loaded');
 					});
 					$ajaxWindow.modal('show');

@@ -1714,7 +1714,6 @@ documentReady(function() {
 
 documentReady(function() {
 	$('form.submitted-overlay').each(function() {
-		
 		$(this).submit(function(e) {
 			var padding = 20;
 			var $form = $(this).addClass('submitted-overlay-submitted');
