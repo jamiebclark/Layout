@@ -99,7 +99,7 @@ $rowActiveBackground:			$infoBackground !default;
 $rowHoverBackground:			#F8F8F8 !default;
 
 $tableSortBgColor: 				$grayLighter !default;
-$tableSortBorderColor: 			$gray !default;
+$tableSortBorderColor: 			$tableSortBgColor !default;
 $tableSortRounded: 				$baseBorderRadius !default;
 
 // Content Box
