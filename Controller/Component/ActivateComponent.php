@@ -4,6 +4,7 @@
  *
  **/
 App::uses('Url', 'Layout.Lib');
+App::uses('InflectorPlus', 'Layout.Lib');
 
 class ActivateComponent extends Component {
 	var $name = 'Activate';
@@ -38,6 +39,7 @@ class ActivateComponent extends Component {
 		$model = !empty($controller->modelClass) ? $controller->modelClass : null;
 		
 		$this->settings['model'] = $model;
+
 		$this->settings['humanName'] = InflectorPlus::humanize($model);
 		
 		if (!method_exists($this->controller, '_beforeActivate') || $this->controller->_beforeActivate()) {
