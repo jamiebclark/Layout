@@ -617,7 +617,11 @@ class ModelViewHelper extends LayoutAppHelper {
 				$out = $this->Html->div('lead', $listOptions['empty']);
 			}
 		} else {
-			$pagNav = !empty($options['paginate']) ? $this->Layout->paginateNav() : '';
+			$paginateOptions = array();
+			if (!empty($options['paginate']) && $options['paginate'] !== true) {
+				$paginateOptions = $options['paginate'];
+			}
+			$pagNav = !empty($options['paginate']) ? $this->Layout->paginateNav($paginateOptions) : '';
 			$count = 0;
 			foreach ($results as $result) {
 				$passOptions = $options;

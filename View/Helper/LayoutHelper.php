@@ -204,12 +204,22 @@ class LayoutHelper extends LayoutAppHelper {
 		if (empty($this->request->params['paging'])) {
 			return '';
 		}
+
+		if (!empty($options) && is_array($options)) {
+			$this->Paginator->options($options);
+		}
+
 		if ($this->bootstrap) {
 			return $this->Paginator->pagination();
 		}
 		
 		if ($options['hideBlank'] !== false && !$this->Paginator->hasPage(2)) {
 			return '';
+		}
+		unset($options['hideBlank']);
+		
+		if (!empty($options)) {
+			$this->Paginator->options($options);
 		}
 		$render = '';
 		

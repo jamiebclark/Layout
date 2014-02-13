@@ -104,7 +104,8 @@ form.submitted-overlay {
 	bottom: 0;
 	z-index: 5000;
 	@include background-opacity(#000, .25);
-}
+} 
+
 .submitted-overlay-mask-content {
 	position: fixed;
 	border-radius: $baseBorderRadius;

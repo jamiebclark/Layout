@@ -738,8 +738,9 @@ documentReady(function() {
 				addRemoveBox($(this));
 				return $(this);
 			});
-			$list.on('add', function() {
-				$listItems.cloneNumbered($list).trigger('inputListAdd');
+			$list.on('add', function(e) {
+				$listItems.cloneNumbered($list).trigger('inputListAdd').last();
+				e.stopPropagation();
 			}).data('input-list-init', true);
 			return $(this);
 		});
@@ -902,12 +903,11 @@ documentReady(function() {
 			
 			$cloned
 				.slideDown()
-				.data('added', true);
+				.data('added', true)
+				.effect('highlight');
 
 			$cloned.find(':input:visible').first().focus();
 			$cloned.data('id-key', newIdKey);
-			
-			
 			
 			$parent.trigger('cloned', [$cloned]);
 			$entry.trigger('entry-cloned');

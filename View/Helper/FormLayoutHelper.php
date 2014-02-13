@@ -755,6 +755,7 @@ class FormLayoutHelper extends LayoutAppHelper {
 		$options = $this->addClass($options, 'input-list');
 		extract($options);
 		$out = '';
+
 		if (is_callable($listContent)) {
 			$type = 'function';
 		} else if (is_array($listContent)) {
@@ -1594,7 +1595,10 @@ class FormLayoutHelper extends LayoutAppHelper {
 		return $text;
 	}
 
-	private function getModelData($model) {
+	private function getModelData($model = null) {
+		if (empty($model) && !empty($this->request->data)) {
+			return $this->request->data;
+		}
 		$models = explode('.', $model);
 		$data =& $this->request->data;
 		foreach ($models as $subModel) {
@@ -1617,7 +1621,8 @@ class FormLayoutHelper extends LayoutAppHelper {
 	private function _formatFields($options, $dateFormat, $fields = array('value', 'default', 'data-clone-numbered-default')) {
 		foreach ($fields as $field) {
 			if (isset($options[$field])) {
-				$options[$field] = date($dateFormat, strtotime($options[$field]));
+				$time = is_array($options[$field]) ? implode('', $options[$field]) : $options[$field];
+				$options[$field] = date($dateFormat, strtotime($time));
 			}
 		}
 		return $options;

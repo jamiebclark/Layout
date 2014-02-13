@@ -148,6 +148,7 @@ class AddressBookFormHelper extends LayoutAppHelper {
 		$options = array_merge(array(
 			'label' => 'Name',
 			'count' => null,
+			'prefix' => null,
 		), $options);
 		extract($options);
 		if (empty($inputs)) {
@@ -160,10 +161,14 @@ class AddressBookFormHelper extends LayoutAppHelper {
 				'suffix' => array('small' => true),
 			);
 		}
-		
-		$pre = $model . '.';
-		if (is_numeric($count)) {
-			$pre .= $count . '.';
+		if (!isset($prefix)) {
+			$prefix = $model . '.';
+			if (is_numeric($count)) {
+				$prefix .= $count . '.';
+			}
+		}
+		if (empty($prefix)) {
+			$prefix = '';
 		}
 		$hasLabel = !empty($label);
 		$out = '';
@@ -190,12 +195,12 @@ class AddressBookFormHelper extends LayoutAppHelper {
 			if (!empty($data[$name])) {
 				$options['value'] = $data[$name];
 			}
-			$out .= $this->Form->input($pre . $name, $options);
+			$out .= $this->Form->input($prefix . $name, $options);
 		}
 		$out = $this->Html->div("$ns-inner contain-label", $out);
 		if ($hasLabel) {
 			$label = $this->Html->tag('label', $label);
-			$label = $this->Html->div("$ns-small", $this->Html->tag('label', '&nbsp;')) . $label;
+			//$label = $this->Html->div("$ns-small", $this->Html->tag('label', '&nbsp;')) . $label;
 			$label = $this->Html->div("$ns-label control-label", $label);
 			$out = $label . $this->Html->div("$ns-content", $out);
 		}
