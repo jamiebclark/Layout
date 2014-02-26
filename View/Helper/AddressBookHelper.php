@@ -2,7 +2,7 @@
 /**
  * Helper for use with displaying contacts
  *
- **/App::uses('LayoutAppHelper', 'Layout.View/Helper');
+ **/ App::uses('LayoutAppHelper', 'Layout.View/Helper');
 class AddressBookHelper extends LayoutAppHelper {
 	var $name = 'AddressBook';
 	/*	function contactItemList($result, $options = array()) {
@@ -145,9 +145,37 @@ class AddressBookHelper extends LayoutAppHelper {
 		$phoneStr = trim(preg_replace($reg, '($1) $2-$3 $4', $phoneStr, -1, $count));
 		return $phoneStr;
 	}
+
+	
 	function email($email, $options = array()) {
-		return $this->Html->link($email, 'mailto:' . $email, $options);
+		$options = array_merge(array(
+			'link' => true,			//Link the email
+			'protect' => false,		//Hides a certain percentage of the username with asterisks
+		), $options);
+		$isValid = strpos($email, '@');
+		$out = $email;
+		if (!empty($options['protect'])) {
+			$options['link'] = false;
+			if ($options['protect'] >= 1) {
+				$options['protect'] = .5;
+			}
+			if ($isValid) {
+				list($userName, $host) = explode('@', $email);
+				$len = strlen($userName);
+				$out = sprintf('%s%s@%s',
+					substr($userName, 0, floor($len * $options['protect'])),
+					str_repeat('*', ceil($len * (1 - $options['protect']))),
+					$host
+				);
+			}
+			unset($options['protect']);
+		}
+		if ($options['link']) {
+			$out = $this->Html->link($out, 'mailto:' . $email, $options);
+		}
+		return $out;
 	}
+	
 	function website($url, $options = array()) {
 		$host = Url::host($url);
 		$url = Url::validate($url);
