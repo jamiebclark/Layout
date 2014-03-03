@@ -119,6 +119,20 @@ class DisplayTextHelper extends LayoutAppHelper {
 			$text = $before . $text . $after;
 		}
 		
+		if (Param::keyCheck($options, 'php')) {
+			$text = $this->evalPhp($text);
+		}
+
+		return $text;
+	}
+	
+	//Evaluates any PHP included in the text.
+	//Only use this if you trust the content creator!
+	public function evalPhp($text) {
+		extract($this->viewVars);
+		ob_start();
+		eval("?>$text");
+		$text = ob_get_clean();
 		return $text;
 	}
 	
