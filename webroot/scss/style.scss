@@ -80,6 +80,13 @@ div.lead {
 	} 
 }
 
+.phpcode {
+	code {
+		display: block;
+		padding: $paddingLarge;
+	}
+}
+
 #breadcrumb {
 	&, .breadcrumb {
 		background-color: #f5f5f5;
