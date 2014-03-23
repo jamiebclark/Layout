@@ -131,6 +131,7 @@ class DisplayTextHelper extends LayoutAppHelper {
 	public function evalPhp($text) {
 		extract($this->viewVars);
 		ob_start();
+		debug($text);
 		eval("?>$text");
 		$text = ob_get_clean();
 		return $text;
@@ -213,6 +214,15 @@ class DisplayTextHelper extends LayoutAppHelper {
 		- nlPad : adds additional endlines after existing endlines to pad paragraphs
 	 **/
 	function smartNl2br($str, $options = array()) {
+		$preserve = array();
+		if (preg_match_all( '@<\?php(.+?)\?>@is', $str, $matches)) {
+			foreach ($matches[0] as $k => $match) {
+				$key = '###PRESERVE' . $k . '###';
+				$preserve[$key] = $match;
+			}
+			$str = str_replace($preserve, array_keys($preserve), $str);
+		}
+		
 		$nlPad = Param::keyCheck($options, 'nlPad', true);
 		if ($nlPad || Param::falseCheck($options, 'multiNl', true)) {
 			//Strips multiple newlines in a row
@@ -227,6 +237,11 @@ class DisplayTextHelper extends LayoutAppHelper {
 			$regexps[] = '/(<[\/]*'.$nb.'>)([\s]*<br[^>]*>)*/is';
 		}
 		$str = preg_replace($regexps,'$1',$str);
+		
+		if (!empty($preserve)) {
+			$str = str_replace(array_keys($preserve), $preserve, $str);
+		}
+		
 		return $str;
 	}
 	
