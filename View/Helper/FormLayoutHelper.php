@@ -216,6 +216,22 @@ class FormLayoutHelper extends LayoutAppHelper {
 		*/
 	}
 	
+	/**
+	 * Input Hidden
+	 * Outputs a list of hidden form inputs
+	 *
+	 **/
+	public function hidden($fields) {
+		if (!is_array($fields)) {
+			$fields = array($fields);
+		}
+		$out = '';
+		foreach ($fields as $field) {
+			$out .= $this->Form->hidden($field);
+		}
+		return $out;
+	}
+	
 	public function inputAutoCompleteMultiOLD($model, $url = null, $attrs = array()) {
 		$attrs = array_merge(array(
 			'vals' => array(),

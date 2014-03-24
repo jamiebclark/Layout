@@ -2,7 +2,7 @@
 /**
  * Helper for use with displaying contacts
  *
- **/App::uses('LayoutAppHelper', 'Layout.View/Helper');
+ **/ App::uses('LayoutAppHelper', 'Layout.View/Helper');
 class AddressBookHelper extends LayoutAppHelper {
 	var $name = 'AddressBook';
 	/*	function contactItemList($result, $options = array()) {
