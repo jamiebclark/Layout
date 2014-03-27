@@ -375,6 +375,8 @@
 				resize();
 			}
 			if (!$this.data('gallery-view-modal-init')) {
+				/***
+				* Removed
 				$('img', $imageHolder).bind('load', function() {
 					$("<img/>")
 						.attr('src', $(this).attr('src'))
@@ -383,6 +385,7 @@
 							naturalHeight = this.height;
 						});
 				});
+				*/
 
 				$(window).resize(function() {
 					resize();
