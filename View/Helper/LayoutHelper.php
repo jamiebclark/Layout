@@ -40,6 +40,8 @@ class LayoutHelper extends LayoutAppHelper {
 		'spam', 'clock',
 	);
 
+	public $colSizes = array('col', 'col-xs', 'col-sm', 'col-md', 'col-lg');
+	
 	public function __construct(View $View, $settings = array()) {
 		if (CakePlugin::loaded('TwitterBootstrap')) {
 			$helpers = array(
@@ -387,7 +389,8 @@ class LayoutHelper extends LayoutAppHelper {
 			array('arrow_right', $next, 'next'),
 		);
 		$offset = 0;
-		$span = 4;
+		$col = 4;
+		$colSize = 'col-sm';
 		foreach ($neighborChecks as $k => $neighborCheck) {
 			list($icon, $link, $addClass) = $neighborCheck;
 			if (empty($link)) {
@@ -414,9 +417,9 @@ class LayoutHelper extends LayoutAppHelper {
 			} else {
 				$link = "$icon $link";
 			}
-			$neighborClass = "neighbors-$addClass span$span";
+			$neighborClass = "neighbors-$addClass $colSize-$col";
 			if (!empty($offset)) {
-				$neighborClass .= ' offset' . ($span * $offset);
+				$neighborClass .= " $colSize-offset-" . ($col * $offset);
 			}
 			$return .= $this->Html->div($neighborClass, $link);
 			$offset = 0;
@@ -590,7 +593,7 @@ class LayoutHelper extends LayoutAppHelper {
 			$list = array();
 			foreach ($menu as &$link) {
 				if (is_array($link)) {
-					$link[2] = $this->addClass($link[2], 'btn');
+					$link[2] = $this->addClass($link[2], 'btn btn-default');
 					if (!empty($attrs['vertical'])) {
 						if ($prefix = Prefix::get($link[1])) {
 							$link[0] .= ' ' . Inflector::humanize($prefix);
@@ -599,7 +602,7 @@ class LayoutHelper extends LayoutAppHelper {
 					}
 					$list[] = $this->Html->link($link[0],$link[1],$link[2]);
 				} else {
-					$list[] = $this->Html->tag('span', $link, array('class' => 'btn'));
+					$list[] = $this->Html->tag('span', $link, array('class' => 'btn btn-default'));
 				}
 			}
 			$class = !empty($attrs['vertical']) ? 'btn-vertical' : 'btn-group';
@@ -938,7 +941,7 @@ class LayoutHelper extends LayoutAppHelper {
 		extract($options);
 		
 		$out = '';
-		$title .= ' <i class="icon-caret-down"></i>';
+		$title .= ' <i class="glyphicon glyphicon-caret-down"></i>';
 		$out .= $this->Html->link($title, '#', array(
 			'class' => 'dropdown-toggle',
 			'data-toggle' => 'dropdown',
@@ -987,19 +990,23 @@ class LayoutHelper extends LayoutAppHelper {
 		if (!empty($title)) {
 			if (is_array($title)) {
 				$title += array(array(), array(), array());
-				$out .= $this->Html->link($title[0], $title[1], $this->addClass($title[2], 'brand'));
+				$out .= $this->Html->link($title[0], $title[1], $this->addClass($title[2], 'navbar-brand'));
 			} else {
-				$out .= $this->Html->tag('span', $title, array('class' => 'brand'));
+				$out .= $this->Html->tag('span', $title, array('class' => 'navbar-brand'));
 			}
 		}
 		if (!empty($menuItems)) {
-			$out .= is_array($menuItems) ? $this->nav($menuItems, $attrs) : $menuItems;
+			$out .= is_array($menuItems) ? $this->nav($menuItems, $attrs, 'navbar-nav') : $menuItems;
 		}
-		return $this->Html->div($class, $this->Html->div('navbar-inner', $out));
+		return $this->Html->div($class, $out);
 	}
 	
-	function nav($menuItems = array(), $attrs = array()) {
-		return $this->menu($menuItems, $this->addClass(array_merge(array('tag'=>false), $attrs),'nav'));
+	function nav($menuItems = array(), $attrs = array(), $extraClass = false) {
+		$class = 'nav';
+		if ($extraClass) {
+			$class .= ' ' . $extraClass;
+		}
+		return $this->menu($menuItems, $this->addClass(array_merge(array('tag' => false), $attrs), $class));
 	}
 	
 	/**

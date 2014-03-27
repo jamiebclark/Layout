@@ -1,6 +1,6 @@
 @import "font-face";
-@include font-face(IconicFill, iconic_fill, IconicFill, san-serif, $fontDir);
-//@include font-face(IconicStroke, iconic_stroke);
+@include font-face(iconic-fill, iconic_fill, iconic-fill, san-serif, $font-dir);
+//@include font-face(iconic-stroke, iconic_stroke);
 
 .large-icon-menu {
 	text-align: center;
@@ -60,15 +60,15 @@
 		margin-right: 2px !important;
 	}
 	a {
-		font-size: $iconicListFontSize;
-		width: $iconicListSize;
-		line-height: $iconicListSize;
+		font-size: $iconic-list-font-size;
+		width: $iconic-list-size;
+		line-height: $iconic-list-size;
 		
 		margin-right: 4px;
 		text-align: center;
 		vertical-align: middle;
-		border: 1px solid $linkColor;
-		border-radius: $iconicListSize;
+		border: 1px solid $link-color;
+		border-radius: $iconic-list-size;
 		text-decoration: none;
 		
 		font-weight: normal;
@@ -83,7 +83,7 @@
 
 .iconic { 
 	display:inline-block; 
-	font-family: 'IconicFill'; 
+	font-family: 'Iconic-fill'; 
 	font-weight: normal;
 }	
 .iconic.warning {
@@ -547,5 +547,5 @@
 	font-size: 80px;
 	padding: .1em;
 	line-height: normal;
-	color: #CCC;
+	color: #ccc;
 }

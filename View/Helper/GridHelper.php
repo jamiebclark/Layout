@@ -1,24 +1,24 @@
 <?php
 class GridHelper extends AppHelper {
-	var $name = 'Grid';
-	var $helpers = array('Html', 'Layout.Asset');
+	public $name = 'Grid';
+	public $helpers = array('Html', 'Layout.Asset');
 	
-	var $colCount = 0;
+	public $colCount = 0;
 
 	//CSS
-	var $colClassPrefix = 'col';
-	var $lastClass = 'last';
+	const COL_CLASS_PREFIX 		= 'col';
+	const LAST_COL_CLASS 		= 'last';
 	
 	//Bool
-	var $isOpen = false;
-	var $isColOpen = false;
+	public $isOpen = false;
+	public $isColOpen = false;
 	
 	function open($class = null, $content = null, $options = array()) {
 		$this->__reset();
 		$this->isOpen = true;
 		$out = '';
 		$out .= $this->_comment('Grid Open');
-		$out .= $this->Html->div('row-fluid');
+		$out .= $this->Html->div('row');
 		if (!empty($class)) {
 			$out .= $this->col($class, $content, $options);
 		}
@@ -118,13 +118,13 @@ class GridHelper extends AppHelper {
 		return $class;
 	}
 	
-	function __getFractionClass($numerator, $denominator) {
-		return 'span' . floor($numerator / $denominator * 12);
+	function __getFractionClass($numerator, $denominator, $size = 'md') {
+		return 'col-' . $size . '-' . floor($numerator / $denominator * 12);
 		
 		$fraction = $this->__reduce(array($numerator, $denominator));
-		$class = "{$this->colClassPrefix}{$fraction[0]}-{$fraction[1]}";
+		$class = sprintf('%s%s-%s', self::COL_CLASS_PREFIX, $fraction[0], $fraction[1]);
 		if (($this->colCount += ($numerator / $denominator)) >= 1) {
-			$class .= ' ' . $this->lastClass;
+			$class .= ' ' . self::LAST_COL_CLASS;
 		}
 		return $class;
 	}

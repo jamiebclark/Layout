@@ -417,11 +417,11 @@ class TableHelper extends LayoutAppHelper {
 			if ($wrap) {
 				//Returns both top and bottom
 				$return = array(
-					$this->Html->div('table-nav table-nav-top', $out),
-					$this->Html->div('table-nav table-nav-bottom', $out),
+					$this->Html->div('row table-nav table-nav-top', $out),
+					$this->Html->div('row table-nav table-nav-bottom', $out),
 				);
 			} else {
-				$return = $this->Html->div('table-nav', $out);
+				$return = $this->Html->div('row table-nav', $out);
 			}
 		}
 		return $return;	

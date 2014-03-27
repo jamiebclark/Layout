@@ -684,7 +684,7 @@ documentReady(function() {
 					$content = $listItem.children(':not(.'+removeClass+')');
 					
 				if (!$checkbox.length) {
-					$listItem.wrapInner('<div class="span11 input-list-item-inner"></div>');
+					$listItem.wrapInner('<div class="input-list-item-inner"></div>');
 					var removeName = $id.attr('name').replace(/\[id\]/,'[remove]'),
 						removeBoxId = removeName.replace(/(\[([^\]]+)\])/g, '_$2'),
 						$checkbox = $('<input/>', {
@@ -696,7 +696,7 @@ documentReady(function() {
 					$checkbox
 						.attr('tabindex', -1)
 						.appendTo($listItem)
-						.wrap($('<div></div>', {'class' : removeClass + " span1"}))
+						.wrap($('<div></div>', {'class' : removeClass}))
 						.wrap($('<label></label>', {'html': '&times;'}));
 				}
 				$checkbox.change(function() {
@@ -717,7 +717,7 @@ documentReady(function() {
 				}).prop('checked', false).change();
 			}
 			$listItems.each(function() {
-				$(this).addClass('row-fluid');
+				$(this).addClass('row');
 				return $(this);
 			});
 			
@@ -726,7 +726,7 @@ documentReady(function() {
 				$listItems = $('> .input-list-inner > .input-list-item', $list);
 			});
 			if (!$addLink || !$addLink.length) {
-				$addLink = $('<a class="btn btn-small" href="#" tabindex="-1">Add</a>').appendTo($control);
+				$addLink = $('<a class="btn btn-default btn-sm" href="#" tabindex="-1">Add</a>').appendTo($control);
 			}
 			
 			$addLink.click(function(e) {

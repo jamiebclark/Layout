@@ -1,14 +1,14 @@
 /*Layout Colors*/
 $blue:				#00b6de !default;
-$blueLight:			#60cae4 !default;
+$blue-light:			#60cae4 !default;
 $yellow:			#ffd204 !default;
 $orange:			#f26532 !default;
 
-$green:				#C1D72D !default;//b2bb1c !default;
-$greenLight:		#c1d72e !default;
+$green:				#c1d72d !default;//b2bb1c !default;
+$green-light:		#c1d72e !default;
 
 $brown:				#e0c298 !default;
-$brownLight:		#e0c298 !default;
+$brown-light:		#e0c298 !default;
 
 
 $color1:			$orange !default;
@@ -17,7 +17,7 @@ $color3:			$green !default;
 $color4:			$yellow !default;
 
 $color1-light:		#f7ded5 !default; //lighten($color1, 40%) !default;
-$color2-light:		#F1FBFF !default; //#cbecf3 !default; 
+$color2-light:		#f1fbff !default; //#cbecf3 !default; 
 $color3-light:		#eef2d4 !default; //lighten($color3, 40%) !default;
 $color4-light:		#f7efcc !default; //lighten($color4, 40%) !default;
 //desaturate(lighten($color2, 50%),80%) !default;
@@ -25,7 +25,7 @@ $color4-light:		#f7efcc !default; //lighten($color4, 40%) !default;
 $title-color1:		$orange !default;
 $title-color2:		$blue !default;
 $title-color3:		#666 !default;
-$title-color4:		#AAA !default;
+$title-color4:		#aaa !default;
 
 $link-color1:		darken($blue, 20%) !default;
 $link-color2:		$orange !default;
@@ -43,9 +43,9 @@ $highlight-color1:	$blue !default;
 $positive-bg: 		green !default;
 $positive-border: 	green !default;
 $warning-bg: 		yellow !default;
-$warning-border: 	yellow !default;
+$state-warning-border: 	yellow !default;
 $error-bg: 			red !default;
-$error-border: 		red !default;
+$state-danger-border: 		red !default;
 
 
 @mixin link-color($color) {

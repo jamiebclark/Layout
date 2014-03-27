@@ -153,7 +153,7 @@ class CalendarHelper extends LayoutAppHelper {
 			);
 		}
 		$return .= "</div>\n";
-		return $this->Html->div('weekLinks', $return);
+		return $this->Html->div('week-links', $return);
 	}
 	
 	function urlBuild($url, $varName, $varVal) {

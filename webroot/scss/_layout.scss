@@ -35,7 +35,7 @@
 		font-size: 1.5em;
 		
 		&, span {
-			text-shadow: 1px 1px 2px #EEE;
+			text-shadow: 1px 1px 2px #eee;
 		}
 		
 		width: auto;
@@ -58,24 +58,24 @@
 	}
 }
 
-.borderList {
+.border-list {
 	ul, li {@include base-list}
 	li {
-		border-bottom:1px solid #CCC;
+		border-bottom:1px solid #ccc;
 		padding: 0.5em;
 		&.last {
 			border: 0;
 		}
 	}
 }
-.side .borderList a {
+.side .border-list a {
 	font-weight: normal;
 }
 
-.blankList {
+.blank-list {
 	ul, li {@include base-list}
 }
-.folderList {
+.folder-list {
 	ul, li {@include base-list}
 	li {
 		padding:5px 5px 5px 22px;
@@ -90,10 +90,10 @@
 	}
 }
 
-.boxList {
+.box-list {
 	ul, li {@include base-list}
 	li {
-		border: 1px solid #CCC;
+		border: 1px solid #ccc;
 		border-radius: .25em;
 		padding: 9px;
 		margin-bottom: 10px;
@@ -102,7 +102,7 @@
 		}
 	}
 }
-.largeList {
+.large-list {
 	li {
 		font-size: 20px;
 		line-height: 30px;
@@ -117,9 +117,9 @@
 		color: #666;
 		padding: .5em 1em;
 		border: 0;
-		border-bottom: 1px solid #CCC;
+		border-bottom: 1px solid #ccc;
 		&:hover {
-			@include gradient-vertical(#FFF, #F8F8F8);
+			@include gradient-vertical(#fff, #f8f8f8);
 			color: #333;
 		}
 		&.selected {
@@ -131,12 +131,12 @@
 }
 	
 
-.contentBox {
+.content-box {
 	@include overflow-fix;
 	clear: both;
 	background-color: white;
 	border-radius: .25em;
-	border: 1px solid #EFEFEF;
+	border: 1px solid #efefef;
 	
 	margin-bottom: 10px;
 	margin-top: 10px;
@@ -146,7 +146,7 @@
 	.divider {
 		margin: 0;
 		padding: 0 .5em;
-		border-color: #CCC!important;
+		border-color: #ccc!important;
 		
 	}
 	&.toggle {
@@ -154,7 +154,7 @@
 			padding-left: 20px;
 			background: transparent url("/img/icn/16x16/bullet_toggle_minus.png") left center no-repeat;
 		}
-		&.toggleClose {
+		&.toggle-close {
 			a {
 				background-image: url("/img/icn/16x16/bullet_toggle_plus.png");
 			}
@@ -167,7 +167,7 @@
 		line-height: 20px;
 		padding: 5px;
 		&, a {
-			color: #FFF;
+			color: #fff;
 			font-weight: normal;
 		}
 		a {
@@ -178,77 +178,77 @@
 		}
 	}
 	*/
-	.contentBoxBody {
+	.content-box-body {
 		padding: .5em 1em 1em 1em;
 	}
 	&.list {
-		.contentBoxBody {
+		.content-box-body {
 			padding: 0;
 		}
 	}
 	
 	&.border, &.side {
-		border: 1px solid #DDDDDD;
+		border: 1px solid #dddddd;
 		border-radius: .25em;
-		@include box-shadow(5px, 5px, 5px, #DDD);
+		@include box-shadow(5px, 5px, 5px, #ddd);
 		margin: 10px;
 	}
 
 	&.side {
-		@include box-shadow(5px, 5px, 5px, #F8F8F8);
-		.profileMenu {
-			.thumbNameLink {
+		@include box-shadow(5px, 5px, 5px, #f8f8f8);
+		.profile-menu {
+			.thumb-name-link {
 				border: 0;
 			}
 		}
 	}
-	&.staffOnly {
-		background-color: #CC0000;
+	&.staff-only {
+		background-color: #cc0000;
 		&, & h2.divider {
-			border-color: #CC0000;
+			border-color: #cc0000;
 		}
 		h2.divider {
 			color: white;
 		}
-		.contentBoxBody {
+		.content-box-body {
 			background-color: white;
 			margin-bottom: 5px;
 		}
 	}
 	&.notice {
 		border-color: $color2;
-		background-color: #DEF;
+		background-color: #def;
 	}
 
-	.contentBoxBodyList {
+	.content-box-body-list {
 		padding: 0;
 	}
-	.contentBoxBlank {
+	.content-box-blank {
 		background-image:none !important;
-		.contentBoxBody {
+		.content-box-body {
 			padding-top:10px;
 		}
-		.contentBoxBodyList {
+		.content-box-body-list {
 			padding-top:0px;
 		}
 	}
 	&.scroll, &.scroll-tall, &.scroll-short {
-		.contentBoxBody {
+		.content-box-body {
 			overflow: scroll;
 			overflow-x: hidden;
 			height: 200px;
 		}
 	}
-	&.scroll-tall .contentBoxBody {
+	&.scroll-tall .content-box-body {
 		height: 300px;
 	}
-	&.scroll-short .contentBoxBody {
+	&.scroll-short .content-box-body {
 		height: 100px;
 	}
 }
 
 
-.layoutTopMenu {
+.layout-top-menu {
 	@include overflow-fix;
 	ul, li {
 		@include base-layout-list;
@@ -265,10 +265,10 @@
 	}
 }
 
-.layoutTabMenu {
+.layout-tab-menu {
 	margin-top: .5em;
 	clear: both;
-	@include gradient-vertical(#FFF, #CCC);
+	@include gradient-vertical(#fff, #ccc);
 	border-bottom: 4px solid #666;
 	
 	ul, li {
@@ -305,8 +305,8 @@
 	}
 }
 
-.profileMenu {
-	background-color: #FFF;
+.profile-menu {
+	background-color: #fff;
 	clear: both;
 	ul, li {
 		@include reset-list;
@@ -314,7 +314,7 @@
 	li {
 		overflow: hidden;
 	}
-	.thumbNameLink {
+	.thumb-name-link {
 		clear: both;
 		//line-height: 20px;
 		padding: .25em;
@@ -336,9 +336,9 @@
 		border:{
 			width: 1px;
 			style: solid;
-			color: #CCC;
-			left-color: #EEE;
-			top-color: #EEE;
+			color: #ccc;
+			left-color: #eee;
+			top-color: #eee;
 		}
 	}
 	hr {
@@ -348,7 +348,7 @@
 	}
 }
 form {
-	.profileLinkMenu {
+	.profile-link-menu {
 		li {
 			float: left;
 			width: 100%;
@@ -419,29 +419,29 @@ form {
 		color: #999;
 		
 		&:hover {
-			background-color: #FFF;
+			background-color: #fff;
 			text-decoration: none;
-			border-color: #CCC;
+			border-color: #ccc;
 			color: #333;
 		}
 		
 		&.positive {
-			@include gradient-vertical(#FFF, $positive-bg);
+			@include gradient-vertical(#fff, $positive-bg);
 			border-color: $positive-border;
 			&:hover {
 				@include gradient-reset($positive-bg);
 			}
 		}
 		&.warning {
-			@include gradient-vertical(#FFF, $warning-bg);
-			border-color: $warning-border;
+			@include gradient-vertical(#fff, $warning-bg);
+			border-color: $state-warning-border;
 			&:hover {
 				@include gradient-reset($warning-bg);
 			}
 		}
 		&.error {
-			@include gradient-vertical(#FFF, $error-bg);
-			border-color: $error-border;
+			@include gradient-vertical(#fff, $error-bg);
+			border-color: $state-danger-border;
 			&:hover {
 				@include gradient-reset($error-bg);
 			}
@@ -449,23 +449,23 @@ form {
 			
 	}
 	&.bar {
-		border: 1px solid #EEE;
-		border-left-color: #F8F8F8;
-		border-right-color: #F8F8F8;
-		@include gradient-vertical(#FFF,#EEE);
+		border: 1px solid #eee;
+		border-left-color: #f8f8f8;
+		border-right-color: #f8f8f8;
+		@include gradient-vertical(#fff,#eee);
 		a {
 			border: 1px solid transparent;
-			border-left-color: #FFF;
-			border-right-color: #EEE;
+			border-left-color: #fff;
+			border-right-color: #eee;
 		}
 	}
 }
-.layoutHeaderMenu {
+.layout-header-menu {
 	border-top:2px solid #666;
 	padding-left: 5px;
 	overflow: hidden;
 	
-	@include gradient-vertical(#AAA, #EEE);
+	@include gradient-vertical(#aaa, #eee);
 	ul, li {
 		@include base-layout-list;
 	}
@@ -479,7 +479,7 @@ form {
 			display:block;
 
 			border-radius: .5em;
-			@include gradient-vertical(#EEE,#CCC);
+			@include gradient-vertical(#eee,#ccc);
 
 			padding: .25em 1em;
 			margin: .2em .25em;
@@ -490,15 +490,15 @@ form {
 
 			&:hover {
 				text-decoration:underline;
-				@include gradient-reset(#EEE);
-				border-color: #CCC;
+				@include gradient-reset(#eee);
+				border-color: #ccc;
 			}
 		}
 	}
 }
-.layoutActionMenu,
-.thumbNameLink .layoutActionMenu,
-.profileMenu .thumbNameLink .layoutActionMenu {
+.layout-action-menu,
+.thumb-name-link .layout-action-menu,
+.profile-menu .thumb-name-link .layout-action-menu {
 	@include overflow-fix;
 	
 	ul, li {
@@ -513,7 +513,7 @@ form {
 			margin-right: .25em;
 			border:1px solid #666;
 			@include rounded-all(.25em);
-			@include gradient-vertical(#FFF, #DDD);
+			@include gradient-vertical(#fff, #ddd);
 			
 			text-decoration:none;
 			background-color:white;
@@ -525,13 +525,13 @@ form {
 				color: $green;
 			}
 			&.inactive, &.unapproved {
-				color: #CCC;
+				color: #ccc;
 			}
 			&.activate:hover {
 				background-color: $green;
 			}
 			&.deactivate:hover {
-				background-color: #CCC;
+				background-color: #ccc;
 			}
 
 			img, .iconic {
@@ -565,7 +565,7 @@ form {
 			}
 		}
 	}
-	&.actionMenuVertical {
+	&.action-menu-vertical {
 		height: auto;
 		ul, li {
 			float: none;
@@ -578,7 +578,7 @@ form {
 	}
 }
 h1, h2, h3, h4, h5, h6, h7 {
-	.layoutActionMenu {
+	.layout-action-menu {
 		a {
 			font-size: .5em;
 			.iconic {
@@ -605,12 +605,12 @@ h1, h2, h3, h4, h5, h6, h7 {
 		color: #999;
 		
 		&:hover, &.selected, &:active {
-			border-color: #DDD;
+			border-color: #ddd;
 			color: #666;
 		}
 		
 		&:active, &.selected {
-			@include box-shadow(.25em, .25em, .25em, #CCC, 1);
+			@include box-shadow(.25em, .25em, .25em, #ccc, 1);
 			padding: .6em .4em .4em .6em;
 		}
 		
@@ -622,7 +622,7 @@ h1, h2, h3, h4, h5, h6, h7 {
 		}
 	}
 }
-.layoutLargeActionMenu {
+.layout-large-action-menu {
 	clear:both;
 	height:40px;
 	ul, li {
@@ -636,7 +636,7 @@ h1, h2, h3, h4, h5, h6, h7 {
 		@include rounded-all();
 		display: block;
 		font-family: $title-font2;
-		background-color: $blueLight;
+		background-color: $blue-light;
 		font-weight: normal;
 		color: white;
 		padding: 5px;
@@ -645,7 +645,7 @@ h1, h2, h3, h4, h5, h6, h7 {
 		line-height: 20px;
 		border: 1px solid $color2;
 		&:hover {
-			border-color: #CCC;
+			border-color: #ccc;
 			text-decoration: none;
 			background-color: $color2;
 		}
@@ -655,7 +655,7 @@ h1, h2, h3, h4, h5, h6, h7 {
 			
 	}
 }
-.layoutTableSortMenu {
+.layout-table-sort-menu {
 	height: 30px;
 	clear: both;
 	position: relative;
@@ -700,7 +700,7 @@ h1, h2, h3, h4, h5, h6, h7 {
 
 h1, h2, h3, h4, h5, h6, h7 {
 	position: relative;
-	.layoutActionMenu {
+	.layout-action-menu {
 		float: right;
 	}
 	&.divider {
@@ -708,17 +708,17 @@ h1, h2, h3, h4, h5, h6, h7 {
 	}
 }
 
-.layoutMenu {
+.layout-menu {
 	.selected, .selected a {
 		text-decoration: none;
-		background-color: #EDF8FF;
+		background-color: #edf8ff;
 	}
 	.selected a:hover {
-		background-color: #FFF;
+		background-color: #fff;
 	}
 }
 
-.layoutSideMenu {
+.layout-side-menu {
 	clear: both;
 	ul, li {@include base-list}
 	li {
@@ -729,18 +729,18 @@ h1, h2, h3, h4, h5, h6, h7 {
 			color: #666;
 			border: 0;
 			&:hover {
-				background-color: #EDFAFF;
+				background-color: #edfaff;
 			}
 		}
 		&.selected a, a.selected {
-			background-color: #0099CC;
+			background-color: #0099cc;
 			font-weight: bold;
-			color: #FFF;
+			color: #fff;
 		}
 	}
 	.sub {
 		background-color: $bg-color3;
-		border: 1px solid #CCC;
+		border: 1px solid #ccc;
 		margin-bottom: 9px;
 		@include rounded-bottom(4px);
 		li {
@@ -752,7 +752,7 @@ h1, h2, h3, h4, h5, h6, h7 {
 	}
 }
 
-.layoutInfoTable {
+.layout-info-table {
 	th, td {
 		border: 0;
 		border-bottom: 1px dotted #eee;
@@ -760,7 +760,7 @@ h1, h2, h3, h4, h5, h6, h7 {
 	}
 	th {
 		width: 80px;
-		color: #CCC;
+		color: #ccc;
 	}
 	td {
 		font-size: 14px;
@@ -768,20 +768,20 @@ h1, h2, h3, h4, h5, h6, h7 {
 }
 
 
-.paginateNav {
+.paginate-nav {
 	clear: both;
 	padding: 10px 0;
 	div {
 		line-height: 20px;
 	}
-	.paginateCounter {
+	.paginate-counter {
 		font-size: 11px;
 		color: #999;
 	}
-	.paginateControl {
+	.paginate-control {
 		float: right;
 		z-index: 1000;
-		color: #CCC;
+		color: #ccc;
 		span {
 			font-weight: bold;
 			padding: 0px 5px;
@@ -803,16 +803,16 @@ h1, h2, h3, h4, h5, h6, h7 {
 }
 
 h1, h2, h3, h4 {
-	&.adminMenu {
-		@include gradient-vertical(#DDD, #CCC);
-		border: 1px solid #CCC;
+	&.admin-menu {
+		@include gradient-vertical(#ddd, #ccc);
+		border: 1px solid #ccc;
 		@include rounded-all(1em);
 		padding: .25em .5em;
 		@include box-shadow();
 	}
 }
 
-.activateLayout {
+.activate-layout {
 	a {
 		img {
 			@include opacity(.5);
@@ -833,11 +833,11 @@ h1, h2, h3, h4 {
 
 
 /*FORM LAYOUT*/
-.newPassword {
+.new-password {
 	font-weight: normal;
 }
 .input-autocomplete {
-	.fakeInput {
+	.fake-input {
 		font-style: italic;
 	}
 }
@@ -875,7 +875,7 @@ h1, h2, h3, h4 {
 	&, ul, li {
 		@include reset-list;
 	}
-	@include gradient-vertical(#FFF, #EEE);
+	@include gradient-vertical(#fff, #eee);
 	position: absolute;
 	z-index: 4000;
 	display: block;
@@ -901,17 +901,17 @@ h1, h2, h3, h4 {
 	}
 }
 	
-.inputAutoComplete {
+.input-auto-complete {
 	z-index: 400;
 	@include search-button;
 	overflow: visible !important;
 	
-	.selectDropdownWrapper {
+	.select-dropdown-wrapper {
 		position: relative;
 		clear: both;
 	}
 	
-	.selectDropdown {
+	.select-dropdown {
 		@include reset-list-all;
 		border: 1px solid #666;
 		display: none;
@@ -922,9 +922,9 @@ h1, h2, h3, h4 {
 		max-height: 300px;
 		overflow: scroll;
 		overflow-x: hidden;
-		.viewAll {
+		.view-all {
 			padding: 5px;
-			background-color: #EEE;
+			background-color: #eee;
 			a {
 				color: #666;
 				text-decoration: underline;
@@ -934,7 +934,7 @@ h1, h2, h3, h4 {
 			a {
 				display: block;
 				color: white;
-				background-color: #CCC;
+				background-color: #ccc;
 				padding: 5px;
 			}
 		}
@@ -950,7 +950,7 @@ h1, h2, h3, h4 {
 				line-height: 15px;
 			}
 			&.hover {
-				background-color: #09C;
+				background-color: #09c;
 				cursor: pointer;
 				&, font, a {
 					color: white !important;
@@ -987,8 +987,8 @@ h1, h2, h3, h4 {
 
 form {
 	div.expand {
-		border: 1px solid #EEE;
-		@include gradient-vertical(#EEE, #FFF);
+		border: 1px solid #eee;
+		@include gradient-vertical(#eee, #fff);
 		padding: .5em !important;
 		margin: .5em !important;
 		
@@ -1031,7 +1031,7 @@ form {
 		}
 		button {
 			border: 0 !important;
-			@include gradient-vertical(#EEE, #DDD);
+			@include gradient-vertical(#eee, #ddd);
 			@include rounded-right();
 			&:hover {
 				cursor: pointer;
@@ -1053,7 +1053,7 @@ form {
 	.search-box-border {
 		position: relative;
 		height: $search-box-height;
-		border: 1px solid #CCC;
+		border: 1px solid #ccc;
 		background-color: white;
 		.search-box-container {
 			padding: {
@@ -1078,8 +1078,8 @@ form {
 
 
 .select-collapse-window { 
-	border: 1px solid #AAA;
-	box-shadow: 5px 5px 5px #CCC;
+	border: 1px solid #aaa;
+	box-shadow: 5px 5px 5px #ccc;
 	background-color: white;
 	position: absolute;	
 	overflow: auto;
@@ -1110,7 +1110,7 @@ form {
 		span.option {
 			display: block;
 			&:hover {
-				background-color: #EEE;
+				background-color: #eee;
 			}
 			&.selected {
 				background-color: $color3;
@@ -1131,7 +1131,7 @@ form {
 			width: 1em;
 			margin-right: .25em;
 			text-align: center;
-			background-color: #CCC;
+			background-color: #ccc;
 			font-weight: bold !important;
 			&:hover {
 				background-color: #666;
@@ -1182,7 +1182,7 @@ form {
 	}
 }
 
-$arrowHeight = 10px;
+$arrow-height = 10px;
 .hover-layout {
 	position: relative;
 	&.hovering {
@@ -1209,7 +1209,7 @@ $arrowHeight = 10px;
 	}
 
 	.hover-arrow {
-		height: $arrowHeight + 1;
+		height: $arrow-height + 1;
 		background: transparent url("/img/arrow/window/white_grey_up.png") left top no-repeat;
 		position: absolute;
 		top: 0;
@@ -1222,11 +1222,11 @@ $arrowHeight = 10px;
 		margin: 0;
 		padding: 10px;
 		
-		border: 1px solid #CCC;
+		border: 1px solid #ccc;
 		background-color: white;
 		@include box-shadow();
 		@include rounded-all(2px);
-		margin-top: $arrowHeight;
+		margin-top: $arrow-height;
 		position: reltiave;
 		z-index: 2;
 		
@@ -1256,7 +1256,7 @@ $arrowHeight = 10px;
 		}
 		.hover-window {
 			margin-top: 0;
-			margin-bottom: $arrowHeight;
+			margin-bottom: $arrow-height;
 		}
 	}
 	&.position-right {
@@ -1277,29 +1277,29 @@ $arrowHeight = 10px;
 }
 
 
-$buttonBg = $color2;
-$buttonBgActive = $color4;
+$button-bg = $color2;
+$button-bg-active = $color4;
 
-@mixin layoutButton($className, $bgImage: 0, $bgColor: 0) {
+@mixin layout-button($class-name, $bg-image: 0, $bg-color: 0) {
 	/*
-	@if $bgImage != 0 {
-		&.#{$className} {
+	@if $bg-image != 0 {
+		&.#{$class-name} {
 			
 			padding-left: 30px !important;
-			background-image: url("/img/icn/20x20/#{$bgImage}_white.png") !important;
+			background-image: url("/img/icn/20x20/#{$bg-image}_white.png") !important;
 			&.secondary {
-				background-image: url("/img/icn/20x20/#{$bgImage}_grey.png") !important;
+				background-image: url("/img/icn/20x20/#{$bg-image}_grey.png") !important;
 			}
 			
 		}
 	} 
 	*/
-	@if $bgColor != 0 {
-		&.#{$className} {
-			//background-color: $bgColor;
-			@include gradient-vertical($bgColor, darken($bgColor, 10%));
+	@if $bg-color != 0 {
+		&.#{$class-name} {
+			//background-color: $bg-color;
+			@include gradient-vertical($bg-color, darken($bg-color, 10%));
 			&:hover {
-				@include gradient-reset($bgColor);
+				@include gradient-reset($bg-color);
 			}
 		}
 	}
@@ -1326,7 +1326,7 @@ $buttonBgActive = $color4;
 		float: left;
 		
 		font: {
-			family: $titleFont1;
+			family: $title-font1;
 			size: 24px;
 			weight: normal;
 		}
@@ -1344,32 +1344,32 @@ $buttonBgActive = $color4;
 		border: 1px solid #999;
 		
 		@include rounded-all();
-		@include gradient-vertical($buttonBg, darken($buttonBg, 5%));
+		@include gradient-vertical($button-bg, darken($button-bg, 5%));
 		
 		&:hover {
-			border-color: #CCC;
+			border-color: #ccc;
 			@include opacity(.8);
 			text-decoration: none;
-			@include gradient-reset($buttonBg);
+			@include gradient-reset($button-bg);
 		}
 		&:active {
-			background-color: $buttonBgActive !important;
-			border-color: #EEE !important;
+			background-color: $button-bg-active !important;
+			border-color: #eee !important;
 			margin: 2px 1px 0 4px !important;
 		}
-		@include layoutButton(check, check, $color3);
-		@include layoutButton(submit, check, $color3);
-		@include layoutButton(update, check, $color3);
+		@include layout-button(check, check, $color3);
+		@include layout-button(submit, check, $color3);
+		@include layout-button(update, check, $color3);
 
-		@include layoutButton(x, x);
-		@include layoutButton(delete, x);
+		@include layout-button(x, x);
+		@include layout-button(delete, x);
 
-		@include layoutButton(next, next);
-		@include layoutButton(prev, prev);
-		@include layoutButton(add, add);
-		@include layoutButton(up, up);
-		@include layoutButton(upload, up);
-		@include layoutButton(reset, reset);
+		@include layout-button(next, next);
+		@include layout-button(prev, prev);
+		@include layout-button(add, add);
+		@include layout-button(up, up);
+		@include layout-button(upload, up);
+		@include layout-button(reset, reset);
 		
 		.iconic {
 			margin-right: .1em;
@@ -1412,7 +1412,7 @@ fieldset, td {
 
 .form-layout-toggle {
 	margin: .5em 0;
-	border: 1px solid #EEE;
+	border: 1px solid #eee;
 	
 	.toggle-input {
 		float: none;
@@ -1434,12 +1434,12 @@ fieldset, td {
 			right: .5em;
 			bottom: .25em;
 			font-size: 2em;
-			color: #CCC;
+			color: #ccc;
 			line-height: 1;
 		}
 		&:hover {
 			border-color: #666;
-			background-color: #F8F8F8;
+			background-color: #f8f8f8;
 			.ell {
 				color: $color1;
 			}
@@ -1448,7 +1448,7 @@ fieldset, td {
 	}
 
 	.toggle-content {
-		border-top: 1px solid #F8F8F8;
+		border-top: 1px solid #f8f8f8;
 		margin-top: .25em;
 		padding-top: .5em;
 		background-color: white;
@@ -1461,7 +1461,7 @@ fieldset, td {
 }
 
 .input-choices {
-	background-color: #EEE;
+	background-color: #eee;
 	.input {
 		&.select, &.text {
 			label {
@@ -1494,8 +1494,8 @@ fieldset, td {
 	}
 	.remove {
 		input, label, textarea, select{
-			border-color: #EFEFEF;
-			color: #EFEFEF;
+			border-color: #efefef;
+			color: #efefef;
 		}
 	}
 	.input-list-remove {
@@ -1517,20 +1517,20 @@ fieldset, td {
 }
 
 //Page Tabs
-$pageTabFontSize = 15px;
-$pageTabPadding = 5px;
-$pageTabBgPadding = 20px;
+$page-tab-font-size = 15px;
+$page-tab-padding = 5px;
+$page-tab-bg-padding = 20px;
 
-$pageTabHeight = 2 * $pageTabFontSize + $pageTabPadding + $pageTabBgPadding;
+$page-tab-height = 2 * $page-tab-font-size + $page-tab-padding + $page-tab-bg-padding;
 .page-tabs {
 	clear: both;
-	//height: $pageTabHeight;
+	//height: $page-tab-height;
 	//width: 100%;
 	
 	@include overflow-fix;
 	
 	&, a {
-		background: #FFF url("/img/bg/page_tabs/b.png") left bottom repeat-x;
+		background: #fff url("/img/bg/page_tabs/b.png") left bottom repeat-x;
 	}
 	
 	ul, li {
@@ -1550,10 +1550,10 @@ $pageTabHeight = 2 * $pageTabFontSize + $pageTabPadding + $pageTabBgPadding;
 			line-height: normal;
 
 			padding: .5em 1em;
-			padding-bottom: 5px + $pageTabBgPadding;
+			padding-bottom: 5px + $page-tab-bg-padding;
 			border: 0;
 			
-			//height: $pageTabHeight - 2 * $pageTabPadding - $pageTabBgPadding;
+			//height: $page-tab-height - 2 * $page-tab-padding - $page-tab-bg-padding;
 			
 			&:hover, &.selected {
 				background-position: center bottom;
@@ -1643,8 +1643,8 @@ $pageTabHeight = 2 * $pageTabFontSize + $pageTabPadding + $pageTabBgPadding;
 		right: 0;
 		z-index: 50;
 		background-color: white;
-		border: 1px solid #CCC;
-		box-shadow: 2px 2px 2px #EEE;
+		border: 1px solid #ccc;
+		box-shadow: 2px 2px 2px #eee;
 		border-radius: .25em;
 		padding: .5em;
 		&.wide {

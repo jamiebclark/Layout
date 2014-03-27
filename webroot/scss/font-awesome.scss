@@ -21,18 +21,18 @@
  *  Work: Lead Product Designer @ http://kyruus.com
  */
 
-$fontAwesomePath:   "../files/fonts/FontAwesome" !default;
-$borderColor:       #eee;
-$iconMuted:         #eee;
+$font-awesome-path:   "../files/fonts/Font-awesome" !default;
+$border-color:       #eee;
+$icon-muted:         #eee;
 @mixin border-radius($radius) { -webkit-border-radius: $radius; -moz-border-radius: $radius; border-radius: $radius; }
 
 
 @font-face {
-  font-family: 'FontAwesome';
-  src: url('#{$fontAwesomePath}/fontawesome-webfont.eot?v=3.0.1');
-  src: url('#{$fontAwesomePath}/fontawesome-webfont.eot?#iefix&v=3.0.1') format("embedded-opentype"),
-    url('#{$fontAwesomePath}/fontawesome-webfont.woff?v=3.0.1') format("woff"),
-    url('#{$fontAwesomePath}/fontawesome-webfont.ttf?v=3.0.1') format("truetype");
+  font-family: 'Font-awesome';
+  src: url('#{$font-awesome-path}/fontawesome-webfont.eot?v=3.0.1');
+  src: url('#{$font-awesome-path}/fontawesome-webfont.eot?#iefix&v=3.0.1') format("embedded-opentype"),
+    url('#{$font-awesome-path}/fontawesome-webfont.woff?v=3.0.1') format("woff"),
+    url('#{$font-awesome-path}/fontawesome-webfont.ttf?v=3.0.1') format("truetype");
   font-weight: normal;
   font-style: normal;
 }
@@ -41,7 +41,7 @@ $iconMuted:         #eee;
     ------------------------------------------------------- */
 [class^="icon-"],
 [class*=" icon-"] {
-  font-family: FontAwesome;
+  font-family: Font-awesome;
   font-weight: normal;
   font-style: normal;
   text-decoration: inherit;
@@ -141,16 +141,16 @@ ul.icons {
 }
 
 .icon-muted {
-  color: $iconMuted;
+  color: $icon-muted;
 }
 
 // Icon Borders
 // -------------------------
 
 .icon-border {
-  border: solid 1px $borderColor;
+  border: solid 1px $border-color;
   padding: .2em .25em .15em;
-  @include border-radius(3px);
+  border-radius: 3px;
 }
 
 // Icon Sizes
@@ -160,21 +160,21 @@ ul.icons {
   font-size: 2em;
   &.icon-border {
     border-width: 2px;
-    @include border-radius(4px);
+    border-radius: 4px;
   }
 }
 .icon-3x {
   font-size: 3em;
   &.icon-border {
     border-width: 3px;
-    @include border-radius(5px);
+    border-radius: 5px;
   }
 }
 .icon-4x {
   font-size: 4em;
   &.icon-border {
     border-width: 4px;
-    @include border-radius(6px);
+    border-radius: 6px;
   }
 }
 

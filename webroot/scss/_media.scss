@@ -1,8 +1,8 @@
 // Media Box
 // ---------------------
 .media {
-	margin: $mediaMargin;
-	@include border-radius($mediaBorderRadius);
+	margin: $media-margin;
+	border-radius: $media-border-radius;
 
 	.media-body {
 		display: block;
@@ -24,7 +24,7 @@
 			}
 		}
 	}
-	.imgExt, .rght {
+	.img-ext, .rght {
 		float:right; 
 		margin-left: 10px;
 	}
@@ -34,11 +34,11 @@
 		line-height: normal;
 	}
 	p {
-		margin-bottom: $baseLineHeight / 4;
+		margin-bottom: $line-height-computed / 4;
 	}
 	&.border, .border .media {
-		border: 1px solid #EEE;
-		@include border-radius($baseBorderRadius);
+		border: 1px solid #eee;
+		border-radius: $border-radius-base;
 		padding: 10px;
 	}
 	> .pull-right {
@@ -46,20 +46,20 @@
 		max-width: 50%;
 	}
 	&.inactive {
-		background-color: $grayLighter;
+		background-color: $gray-lighter;
 	}
 }
 
 
 a.media {
-	color: $mediaLinkColor;
-	padding: $mediaLinkPadding;
-	border: 1px solid $mediaLinkBorder;
-	max-width: $mediaLinkWidth;
+	color: $media-link-color;
+	padding: $media-link-padding;
+	border: 1px solid $media-link-border;
+	max-width: $media-link-width;
 	
 	&:hover {
-		color: $mediaLinkColorHover;
-		border-color: $mediaLinkBorderHover;
+		color: $media-link-color-hover;
+		border-color: $media-link-border-hover;
 		text-decoration: none;
 	}
 	h2, h3, h4 {
@@ -78,28 +78,28 @@ a.media {
 	}
 }
 li.media {
-	border-bottom: 1px solid $grayLightest;
+	border-bottom: 1px solid $gray-lightest;
 	padding-bottom: 10px;
 }
 .media-wrap, .media {
 	display: block;
 	position: relative;
-	max-width: $mediaLinkWidth + 2 * $mediaLinkPadding;
+	max-width: $media-link-width + 2 * $media-link-padding;
 	.media-actionmenu {
 		display: none;
 		position: absolute;
 		top: 0;
 		right: 0;
-		z-index: $hoverZIndex + 1;
+		z-index: $hover-z-index + 1;
 	}
 }
 .media-object {
-	border: 1px solid $grayLightest;
+	border: 1px solid $gray-lightest;
 }
 .media-description {
-	font-size: $fontSizeSmall;
-	line-height: $baseLineHeight * .75;
-	color: $grayLight;
+	font-size: $font-size-small;
+	line-height: $line-height-base * .75;
+	color: $gray-light;
 	padding: 10px;
 }
 .media {
@@ -108,8 +108,8 @@ li.media {
 	}
 }
 ul.media-list {
-	margin-top: $mediaMargin;
-	margin-bottom: $mediaMargin;
+	margin-top: $media-margin;
+	margin-bottom: $media-margin;
 	li > a.media {
 		margin-bottom: 0;
 		border-radius: 0;
@@ -124,10 +124,10 @@ ul.media-list {
 		}
 	}
 	li:first-child > a.media {
-		@include border-top-radius($mediaBorderRadius);
+		@include border-top-radius($media-border-radius);
 	}
 	li:last-child > a.media {
-		@include border-bottom-radius($mediaBorderRadius);
+		@include border-bottom-radius($media-border-radius);
 	}
 }
 

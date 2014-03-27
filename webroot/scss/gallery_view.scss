@@ -1,17 +1,16 @@
-$galleryViewControlSize:	 	140px !default;
-$galleryInfoControlSize: 		40px !default;
-$galleryViewBorderRadius:		4px !default;
-$galleryViewBodyHeight:			500px !default;
+$gallery-view-control-size:	 		140px !default;
+$gallery-info-control-size: 		40px !default;
+$gallery-view-border-radius:		4px !default;
+$gallery-view-body-height:			500px !default;
 
-@import "bootstrap/variables";
+@import "bootstrap_import";
+
 @import "variables";
+@import "mixins";
 
 //@import "ajax-loading";
 
-@import "bootstrap/mixins";
-@import "mixins";
-
-#gallery-view-layout {
+#galleryviewlayout {
 	.gallery-view-image {
 		img {
 			max-width: 960px;
@@ -34,7 +33,7 @@ $galleryViewBodyHeight:			500px !default;
 .gallery-view-image {
 	clear: both;
 	text-align: center;
-	background-color: #EEE;
+	background-color: #eee;
 	position: relative;
 	img {
 		max-width: 100%;
@@ -66,7 +65,7 @@ a.gallery-view-control {
 		left: 0;
 	}
 	&:hover {
-		@include background-opacity(#FFF, .25);
+		@include background-opacity(#fff, .25);
 		span {
 			opacity: 1;
 		}
@@ -74,18 +73,18 @@ a.gallery-view-control {
 	position: absolute;
 	top: 0;
 	bottom: 0;
-	width: $galleryViewControlSize / 2;
+	width: $gallery-view-control-size / 2;
 	span {
 		position: absolute;
 		top: 50%;
 		display: block;
-		font-size: $galleryViewControlSize;
+		font-size: $gallery-view-control-size;
 		font-weight: bold;
-		width: $galleryViewControlSize / 2;
-		height: $galleryViewControlSize;
-		line-height: $galleryViewControlSize * .75;
-		margin-top: -#{$galleryViewControlSize / 2};
-		color: #CCC;
+		width: $gallery-view-control-size / 2;
+		height: $gallery-view-control-size;
+		line-height: $gallery-view-control-size * .75;
+		margin-top: -#{$gallery-view-control-size / 2};
+		color: #ccc;
 		opacity: .5;
 	}
 }
@@ -116,7 +115,7 @@ a.gallery-view-control {
 		max-height: none;
 	}
 	
-	border-radius: $galleryViewBorderRadius;
+	border-radius: $gallery-view-border-radius;
 	
 	.modal-header {
 		.modal-header-title {
@@ -126,7 +125,7 @@ a.gallery-view-control {
 	}
 	.modal-body {
 		padding: 0;
-		padding-bottom: $galleryViewBorderRadius;
+		padding-bottom: $gallery-view-border-radius;
 		overflow: hidden;
 		height: auto;
 	}
@@ -144,7 +143,7 @@ a.gallery-view-control {
 		left: 0;
 		padding: 10px;
 		margin: 10px;
-		@include background-opacity(#FFF,.5);
+		@include background-opacity(#fff,.5);
 	}
 	
 	.gallery-view-thumbnails {
@@ -152,12 +151,12 @@ a.gallery-view-control {
 	}
 	.gallery-view-thumbnails-control {
 		position: absolute;
-		line-height: $baseLineHeight;
-		top: -#{$baseLineHeight};
-		left: $baseLineHeight;
-		@include border-top-radius($baseLineHeight);
+		line-height: $line-height-base;
+		top: -#{$line-height-computed};
+		left: $line-height-computed;
+		@include border-top-radius($line-height-computed);
 		background-color: white;
-		padding: 0 #{$baseLineHeight / 2};
+		padding: 0 #{$line-height-computed / 2};
 	}
 	/*
 	.gallery-view-thumbnails {
@@ -191,21 +190,21 @@ a.gallery-view-control {
 	
 	.gallery-view-infos-control {
 		position: absolute;
-		left: -#{$galleryInfoControlSize};
-		width: $galleryInfoControlSize;
+		left: -#{$gallery-info-control-size};
+		width: $gallery-info-control-size;
 		top: 40px;
-		font-size: $galleryInfoControlSize;
+		font-size: $gallery-info-control-size;
 		text-align: center;
-		height: $galleryInfoControlSize;
-		line-height: $galleryInfoControlSize * .75;
+		height: $gallery-info-control-size;
+		line-height: $gallery-info-control-size * .75;
 		background-color: white;
 		text-decoration: none;
 		
-		border-top-left-radius: $galleryInfoControlSize;
-		border-bottom-left-radius: $galleryInfoControlSize;
+		border-top-left-radius: $gallery-info-control-size;
+		border-bottom-left-radius: $gallery-info-control-size;
 		
 		&:hover {
-			background-color: #CCC;
+			background-color: #ccc;
 		}
 	}
 }
@@ -229,7 +228,7 @@ a.gallery-view-control {
 	}
 	@for $i from 1 through 12 {
 		.thumbnails#{$i} {
-			li {
+			.thumbnail {
 				margin: .5% !important;
 				width: #{100/$i - 1}% !important;
 				float: left;
@@ -242,7 +241,7 @@ a.gallery-view-control {
 		}
 	}
 	.active {
-		background-color: $linkColorHover;
+		background-color: $link-hover-color;
 		a {
 			opacity: .5;
 		}

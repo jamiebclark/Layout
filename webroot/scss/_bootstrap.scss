@@ -1,5 +1,13 @@
 // Extends core Bootstrap styles
 
+.pagination.pagination-centered {
+	display: block;
+	text-align: center;
+	li {
+		display: inline-block;
+	}
+}
+
 #container {
 	//border: 1px solid red;	//Used to debug page width
 }
@@ -21,23 +29,23 @@ p.test-class {
 div.alert {
 	margin-left: auto;
 	margin-right: auto;
-	margin-top: $baseLineHeight / 2;
-	margin-bottom: $baseLineHeight / 2;
-	padding: $paddingLarge;
+	margin-top: $line-height-computed / 2;
+	margin-bottom: $line-height-computed / 2;
+	padding: $padding-large-vertical $padding-large-horizontal;
 }
 
 // Modal
 // -------------------------
-$modalWidthWide: 760px;
-$modalWidthSlim: 360px;
-@mixin modalWidth($class, $w) {
-	.modal.#{$class} {
+$modal-width-wide: 760px;
+$modal-width-slim: 360px;
+@mixin modal-width($class, $w) {
+	.modal.#{$class} .modal-dialog {
 		width: $w;
-		margin-left: -1 * $w / 2;
+		//margin-left: -1 * $w / 2;
 	}
 }
-@include modalWidth(modal-wide, $modalWidthWide);
-@include modalWidth(modal-slim, $modalWidthSlim);
+@include modal-width(modal-wide, $modal-width-wide);
+@include modal-width(modal-slim, $modal-width-slim);
 .modal-body-submit {
 	display: none;
 }
@@ -45,7 +53,11 @@ $modalWidthSlim: 360px;
 	position: relative;
 	min-height: 200px;
 }
-
+.modal-header {
+	h1, h2, h3, h4, h5 {
+		margin: 0;
+	}
+}
 @media (max-width: pem(767)) {
 	.modal {
 		width: 100% !important;

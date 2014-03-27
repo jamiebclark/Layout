@@ -143,6 +143,8 @@
 				boxHeight = minHeight;
 			}
 			
+			console.log('Box: ' + boxWidth + ', ' + boxHeight);
+			
 			var boxWidthOuter = boxWidth + marginW * 2,
 				boxHeightOuter = boxHeight + marginH * 2;
 			var css = {
@@ -161,12 +163,16 @@
 				css['margin-top'] = 0;
 				css['top'] = '10px';
 			} 
-			$modal.css(css);
+			css = {'width': boxWidth, 'height' : boxHeight};
+			//$dialog.css(css);
 			var bodyPadding = $body.outerHeight() - $body.height();
 			var bodyHeight = $modal.innerHeight() - $header.outerHeight() - $thumbnails.outerHeight() - bodyPadding;
 			$('img,iframe,embed', $imageHolder).each(function() {
 				var w, h, tag = this.nodeName.toLowerCase();
 				if (tag == 'img') {
+					var img = $(this)[0];
+					console.log('Natural Dimensions: ' + naturalWidth + ', ' + naturalHeight);
+					
 					w = this.offsetWidth;
 					h = this.offsetHeight;
 				} else {
@@ -182,6 +188,7 @@
 					newWidth = boxWidth;
 					newHeight = newWidth / imageSizeRatio;
 				}
+				console.log([newHeight, newWidth, w, h, tag]);
 				if (newWidth && newHeight) {
 					$(this).show().stop().animate({'width':newWidth,'height':newHeight});
 				}
@@ -242,6 +249,9 @@
 		
 		function init() {
 			$modal = $('#gallery-modal');
+			$dialog = $('.modal-dialog', $modal);
+			$content = $('.modal-content', $modal);
+			
 			newModal = !$modal.length;
 			$header = $('.modal-header', $modal).first();
 			$headerTitle = $('.modal-header-title', $header).first();
@@ -249,10 +259,13 @@
 			if (newModal) {
 				$modal = $('<div></div>', {
 						'id': 'gallery-modal',
-						'class': 'modal modal-wide hide fade',
+						'class': 'modal fade',
 						'aria-hidden': 'true'
 					}).modal().appendTo($('body'));
-				$header = $('<div class="modal-header"></div>').appendTo($modal);
+				var $dialog = $('<div class="modal-dialog modal-lg"></div>').appendTo($modal),
+					$content = $('<div class="modal-content"></div>').appendTo($dialog);
+				
+				$header = $('<div class="modal-header"></div>').appendTo($content);
 				$header.append($('<button></button', {
 					'type': 'button',
 					'class': 'close',
@@ -261,7 +274,7 @@
 					'html': '&times;'
 				}));				
 				$headerTitle = $('<h3 class="modal-header-title"></h3>').appendTo($header);
-				$body = $('<div class="modal-body"></div>').appendTo($modal);
+				$body = $('<div class="modal-body"></div>').appendTo($content);
 			} else {
 				$body.html('');
 			}
@@ -346,12 +359,31 @@
 				$info.trigger('hide');
 			}
 			$image.bind('load', function() {
+				console.log('Loaded!');
+				$("<img/>")
+					.attr('src', $(this).attr('src'))
+					.load(function() {
+						console.log('Loaded Copy');
+						console.log(this.width);
+						naturalWidth = this.width;
+						naturalHeight = this.height;
+					});
+
 				resize();
 			});
 			if (!$image.length) {
 				resize();
 			}
 			if (!$this.data('gallery-view-modal-init')) {
+				$('img', $imageHolder).bind('load', function() {
+					$("<img/>")
+						.attr('src', $(this).attr('src'))
+						.load(function() {
+							naturalWidth = this.width;
+							naturalHeight = this.height;
+						});
+				});
+
 				$(window).resize(function() {
 					resize();
 				});
@@ -363,6 +395,8 @@
 		var $this = $(this),
 			$data = $this,
 			$modal,
+			$dialog,
+			$content,
 			newModal,
 			$header,
 			$headerTitle,
@@ -385,7 +419,11 @@
 			maxWidth = 1020,
 			minHeight = 500,
 			maxHeight = 900,
-			imageSizeRatio;
+			imageSizeRatio,
+			
+			naturalWidth = 0,
+			naturalHeight = 0;
+
 
 		if (arguments && arguments[0] && arguments[0] == 'get') {
 			get(arguments[1]);
@@ -413,7 +451,7 @@
 				$thumbnails = $('.gallery-view-thumbnails', $view),
 				$controls = $('.gallery-view-control', $view),
 				$next = $('.gallery-view-control.next', $view),
-				$prev = $('.gallery-view-control.prev', $view);				
+				$prev = $('.gallery-view-control.prev', $view);
 
 			if (!$view.data('gallery-view-init')) {
 				$('img', $display).bind('load', function() {

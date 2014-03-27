@@ -3,8 +3,8 @@ App::uses('LayoutAppHelper', 'Layout.View/Helper');
 App::uses('AssetMinify', 'Layout.Vendor');
 
 class AssetHelper extends LayoutAppHelper {
-	var $name = 'Asset';
-	var $helpers = array('Html');
+	public $name = 'Asset';
+	public $helpers = array('Html');
 	
 	//Assets to be loaded whenever helper is called, broken down by category
 	public $defaultAssets = array(
@@ -17,7 +17,7 @@ class AssetHelper extends LayoutAppHelper {
 		),
 		'bootstrap' => array(
 			'css' => array('Layout.bootstrap', 'Layout.bootstrap-responsive'),
-			'js' => array('Layout.bootstrap/bootstrap.min'),
+			'js' => array('Layout.bootstrap3.0/bootstrap.min'),
 		),
 		'default' => array(
 			'css' => array('Layout.style'),
@@ -25,7 +25,7 @@ class AssetHelper extends LayoutAppHelper {
 		)
 	);
 	
-	public $minify = true;
+	public $minify = false;
 	
 	//After constructor, all assets will be stored here
 	private $_defaultAssets = array();

@@ -10,12 +10,12 @@ echo $this->element('Layout.gallery_view/set');
 				<?php echo $this->viewVars['galleryViewHeading']; ?>
 			</div>
 		<?php endif; ?>
-		<div class="row-fluid">
+		<div class="row">
 			<?php if ($info =  $this->fetch('galleryViewInfos')): ?>
-				<div class="span8">
+				<div class="col-sm-8">
 					<?php echo $this->fetch('galleryViewImages'); ?>
 				</div>
-				<div class="span4">
+				<div class="col-sm-4">
 					<?php echo $info; ?>
 				</div>
 			<?php else:

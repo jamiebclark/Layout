@@ -1,6 +1,6 @@
 $shadow-padding: 5px;
 $shadow-radius: 5px;
-$shadow-color: #DDD;
+$shadow-color: #ddd;
 
 @mixin box-shadow($x: $shadow-padding, $y: $shadow-padding, $radius: $shadow-radius, $color: $shadow-color, $inset: 0) {
 	@if ($inset == 1) {

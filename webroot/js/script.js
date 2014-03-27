@@ -386,14 +386,16 @@ documentReady(function() {
 			if (!$ajaxWindow.length) {
 				$ajaxWindow = $('<div></div>', {
 					'id': 'ajax-modal',
-					'class': 'modal hide fade modal-wide'
+					'class': 'modal fade'
 				});
-				var $ajaxWindowHeader = $('<div class="modal-header"></div>')
-						.appendTo($ajaxWindow),
+				var $ajaxDialog = $('<div class="modal-dialog modal-lg"></div>').appendTo($ajaxWindow),
+					$ajaxContent = $('<div class="modal-content"></div>').appendTo($ajaxDialog),	
+					$ajaxWindowHeader = $('<div class="modal-header"></div>')
+						.appendTo($ajaxContent),
 					$ajaxWindowBody = $('<div class="modal-body"></div>')
-						.appendTo($ajaxWindow),
+						.appendTo($ajaxContent),
 					$ajaxWindowFooter = $('<div class="modal-footer"></div>')
-						.appendTo($ajaxWindow);
+						.appendTo($ajaxContent);
 				$ajaxWindowHeader.append($('<button></button>', {
 					'type': 'button',
 					'class': 'close',
@@ -410,6 +412,7 @@ documentReady(function() {
 						$ajaxWindow.modal('hide');
 					}
 				}).appendTo($ajaxWindowFooter);
+				
 				
 				$('<a></a>', {
 					'html': 'Update',

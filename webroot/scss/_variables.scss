@@ -1,164 +1,182 @@
-$isLayoutExtended:				false !default;		// If you are extending the layout style rather than including it, set this to true
-$isMinified:					false !default;
+// If you are extending the layout style rather than including it, set this to true
+$is-layout-extended:				false !default;
+
+$is-minified:					false !default;
 $sides:							top, right, bottom, left;
 
 // Colors
-// ---------------------
-$grayLightest: 					#F8F8F8 !default;
+// --------------------- 
+$gray-lightest: 					#f8f8f8 !default;
+
+// Accent colors (From Bootstrap 2.X)
+// -------------------------
+$blue:							#049cdb !default;
+$blue-dark:						#0064cd !default;
+$green:							#46a546 !default;
+$red:							#9d261d !default;
+$yellow:        		        #ffc40d !default;
+$orange:        		        #f89406 !default;
+$pink:           		    	#c3325f !default;
+$purple:						#7a43b6 !default;
+
 
 // Directories
-$layoutBaseDir:					"../";
-$imgDir:						"../img/" !default;
+$layout-base-dir:				"../";
+$img-dir:						"../img/" !default;
 
-@if $isLayoutExtended == true {
-	$layoutBaseDir:				"../layout/";
+@if $is-layout-extended == true {
+	$layout-base-dir:			"../layout/";
 }
-@if $isMinified == true {
-	$imgDir:					"../../img/";
+@if $is-minified == true {
+	$img-dir:					"../../img/";
 }
 
-$fontDir: 						false !default;
-@if ($fontDir == false) {
-	$fontDir:					"#{$layoutBaseDir}files/fonts/";
+$font-dir: 						false !default;
+@if ($font-dir == false) {
+	$font-dir:					"#{$layout-base-dir}files/fonts/";
 }
-	
+
+//Bootstrap Glyphicons
+$icon-font-path: 				"#{$font-dir}glyphicons/";
+
 
 // Variables
 // ---------------------
-$textColor: 					#444 !default;
-$textColorLight:				#666 !default;
-$textColorLighter:				#999 !default;
-$textColorExtraLight:			#CCC !default;
+$text-color: 					#444 !default;
+$text-color-light:				#666 !default;
+$text-color-lighter:			#999 !default;
+$text-color-extra-light:		#ccc !default;
 
-$shadowPadding: 				5px !default;
-$shadowRadius: 					5px !default;
-$shadowColor: 					#DDD !default;
-$shadow:						$shadowPadding $shadowPadding $shadowRadius $shadowColor !default;
+$shadow-padding: 				5px !default;
+$shadow-radius: 				5px !default;
+$shadow-color: 					#ddd !default;
+$shadow:						$shadow-padding $shadow-padding $shadow-radius $shadow-color !default;
 
-$inputPaddingTop: 				4px !default;
-$inputPaddingLeft: 				6px !default;
-$inputBorderInner: 				$grayLighter !default;
-$inputSlimWidth:				80px !default;
+$input-padding-top: 			4px !default;
+$input-padding-left: 			6px !default;
+$input-border-inner: 			$gray-lighter !default;
+$input-slim-width:				80px !default;
 
-$inactiveColor:					#999 !default;
-$inactiveBackground: 			$grayLighter !default;
+$inactive-color:				#999 !default;
+$inactive-background: 			$gray-lighter !default;
 
 // Breakout sizing
 // --------------------------
-$paddingBreakoutLarge:			60px;
-$paddingBreakoutMid:			40px 60px;
-$paddingBreakoutSmall:			20px 40px;
+$padding-breakout-large:		60px;
+$padding-breakout-mid:			40px 60px;
+$padding-breakout-small:		20px 40px;
 
 // Window 
 // ------------------
-$windowBorderColor:				#999 !default;
-$windowBackgroundColor:			#FFF !default;
+$window-border-color:			#999 !default;
+$window-background-color:		#fff !default;
 
 // Hover Content
 // ---------------------
-$hoverWindowBorder: 			1px;
-$hoverWindowBorderColor:		$windowBorderColor !default;
-$hoverWindowPadding: 			10px;
-$hoverWindowWidthWider: 		660px !default;
-$hoverWindowWidthWide: 			460px !default;
-$hoverWindowWidthSlim: 			240px !default;
+$hover-window-border: 			1px;
+$hover-window-border-color:		$window-border-color !default;
+$hover-window-padding: 			10px;
+$hover-window-width-wider: 		660px !default;
+$hover-window-width-wide: 		460px !default;
+$hover-window-width-slim: 		240px !default;
 
-$hoverArrowHeight:				10px !default;
-$hoverArrowColor:				white !default;//$hoverWindowBorderColor;
-$hoverArrowBorder:				$hoverWindowBorder !default;
+$hover-arrow-height:			10px !default;
+$hover-arrow-color:				white !default;//$hover-window-border-color;
+$hover-arrow-border:			$hover-window-border !default;
 
-$hoverZIndex:					1000;
+$hover-z-index:					1000;
 
 // Thumbnails
 // ------------------------
-$thumbnailTiny:					$baseLineHeight !default;
-$thumbnailSmaller:				40px !default;
-$thumbnailSmall:				80px !default;
-$thumbnailMid:					160px !default;
-$thumbnailLarge:				240px !default;
-$thumbnailLarger:				320px !default;
-$thumbnailTextColor:			$textColor !default;
-$thumbnailTextHover:			$linkColorHover !default;
-$thumbnailTextBackground:		#F8F8F8 !default;
+$thumbnail-tiny:				$font-size-base !default;
+$thumbnail-smaller:				40px !default;
+$thumbnail-small:				80px !default;
+$thumbnail-mid:					160px !default;
+$thumbnail-large:				240px !default;
+$thumbnail-larger:				320px !default;
+$thumbnail-text-color:			$text-color !default;
+$thumbnail-text-hover:			$link-hover-color !default;
+$thumbnail-text-background:		#f8f8f8 !default;
 
-$thumbnailBorder:				$navbarBorder !default;
-$thumbnailBorderHover:			$linkColorHover !default;
+$thumbnail-border:				$navbar-default-border !default;
+$thumbnail-border-hover:			$link-hover-color !default;
 
 
 // Iconic
 // ------------------------
-$iconicListFontSize:			14px !default;
-$iconicListPadding:				2px !default;
-$iconicListSize:				$iconicListFontSize + 2 * $iconicListPadding !default;
+$iconic-list-font-size:			14px !default;
+$iconic-list-padding:				2px !default;
+$iconic-list-size:				$iconic-list-font-size + 2 * $iconic-list-padding !default;
 
 // Table
 // -----------------------------
-$rowInactiveColor: 				$gray !default;
-$rowInactiveBackground:			#CCC !default;
-$rowActiveBackground:			$infoBackground !default;
-$rowHoverBackground:			#F8F8F8 !default;
+$row-inactive-color: 				$gray !default;
+$row-inactive-background:			#ccc !default;
+$row-active-background:			$state-info-bg !default;
+$row-hover-background:			#f8f8f8 !default;
 
-$tableSortBgColor: 				$grayLighter !default;
-$tableSortBorderColor: 			$tableSortBgColor !default;
-$tableSortRounded: 				$baseBorderRadius !default;
+$table-sort-bg-color: 				$gray-lighter !default;
+$table-sort-border-color: 			$table-sort-bg-color !default;
+$table-sort-rounded: 				$border-radius-base !default;
 
 // Content Box
 // ----------------
-$contentBoxBackground:			transparent !default;
-$contentBoxShadow:				0 !default;
-$contentBoxBorderColor: 		$navbarBorder !default;
-$contentBoxBorderRadius: 		$baseBorderRadius !default;
-$contentBoxBorder: 				1px solid $contentBoxBorderColor !default;
-$contentBoxHeadingPadding:		$paddingSmall !default;
-$contentBoxHeadingBackground:	inherit !default;
-$contentBoxHeadingFont:			inherit !default;
-$contentBoxHeadingSize:			20px !default;
-$contentBoxHeadingLineHeight:	40px !default;
-$contentBoxDividerBorder:		1px solid #D4D4D4 !default;
-$contentBoxBodyPadding: 		10px !default;
+$content-box-background:			transparent !default;
+$content-box-shadow:				0 !default;
+$content-box-border-color: 		$navbar-default-border !default;
+$content-box-border-radius: 		$border-radius-base !default;
+$content-box-border: 				1px solid $content-box-border-color !default;
+$content-box-heading-padding-vertical:		$padding-small-vertical !default;
+$content-box-heading-padding-horizontal: 	$padding-small-horizontal !default;
+$content-box-heading-background:	inherit !default;
+$content-box-heading-font:			inherit !default;
+$content-box-heading-size:			20px !default;
+$content-box-heading-line-height:	40px !default;
+$content-box-divider-border:		1px solid #d4d4d4 !default;
+$content-box-body-padding: 		10px !default;
 
 // Input Thumbnail
 // ----------------------
-$inputThumbWidth: 				160px !default;
-$inputThumbHeight: 				160px !default;
-$inputThumbColor: 				$linkColor; //$color1 !default;
-$inputThumbColorHover: 			$linkColorHover; //$color2 !default;
-$inputThumbFullColor: 			$linkColor;	//$color3 !default;
-$inputThumbDeleteColor:			$gray !default;
+$input-thumb-width: 				160px !default;
+$input-thumb-height: 				160px !default;
+$input-thumb-color: 				$link-color; //$color1 !default;
+$input-thumb-color-hover: 			$link-hover-color; //$color2 !default;
+$input-thumb-full-color: 			$link-color;	//$color3 !default;
+$input-thumb-delete-color:			$gray !default;
 
 // Media
 // -------------
-$mediaMargin:			10px !default;
-$mediaBorderRadius:		$baseBorderRadius !default;
-$mediaLinkWidth: 		760px !default;
-$mediaLinkPadding: 		10px !default;
-$mediaLinkColor: 		#999 !default;
-$mediaLinkColorHover: 	#666 !default;
-$mediaLinkBorder:		#CCC !default;
-$mediaLinkBorderHover:	#999 !default;
+$media-margin:			10px !default;
+$media-border-radius:		$border-radius-base !default;
+$media-link-width: 		760px !default;
+$media-link-padding: 		10px !default;
+$media-link-color: 		#999 !default;
+$media-link-color-hover: 	#666 !default;
+$media-link-border:		#ccc !default;
+$media-link-border-hover:	#999 !default;
 
 // FORM
 // -------------------
-$requiredText:			$textColor !default;
-$requiredBackground:	#FFFCF6 !default;
-$requiredBorder:		orange !default;
+$required-text:			$text-color !default;
+$required-background:	#fffcf6 !default;
+$required-border:		orange !default;
 
 
 // Select Collapse
 // -----------------------
-$selectCollapseColorActive:				$dropdownLinkColorActive !default;
-$selectCollapseColorHover:				$dropdownLinkColorHover !default;
-$selectCollapseBackgroundActive:		$dropdownLinkBackgroundActive !default;
-$selectCollapseBackgroundHover:			$dropdownLinkBackgroundHover !default;
-$selectCollapseOptionColor:				$textColor !default;
-$selectCollapseOptionColorHover:		$textColor !default;
-$selectCollapseOptionBackgroundHover:	$infoBackground !default;
-$selectCollapseOptionPaddingTop:		0 !default;
-$selectCollapseOptionPaddingLeft:		4px !default;
-$selectCollapseLineHeight:				16px !default;
-$selectCollapseOptionHeight:			$selectCollapseLineHeight + 2 * $selectCollapseOptionPaddingTop !default;
-$selectCollapseBulletWidth:				$selectCollapseLineHeight !default;
-$selectCollapseSize:					12px !default;
+$select-collapse-color-active:				$dropdown-link-active-color !default;
+$select-collapse-color-hover:				$dropdown-link-hover-color !default;
+$select-collapse-background-active:		$dropdown-link-active-bg !default;
+$select-collapse-background-hover:			$dropdown-link-hover-bg !default;
+$select-collapse-option-color:				$text-color !default;
+$select-collapse-option-color-hover:		$text-color !default;
+$select-collapse-option-background-hover:	$state-info-bg !default;
+$select-collapse-option-padding-top:		0 !default;
+$select-collapse-option-padding-left:		4px !default;
+$select-collapse-line-height:				16px !default;
+$select-collapse-option-height:			$select-collapse-line-height + 2 * $select-collapse-option-padding-top !default;
+$select-collapse-bullet-width:				$select-collapse-line-height !default;
+$select-collapse-size:					12px !default;
 
-$zindexSelectCollapseMask:				$zindexModal + 10 !default;
-$zindexSelectCollapse:					$zindexSelectCollapseMask + 10 !default;
+$zindex-select-collapse-mask:				$zindex-modal + 10 !default;
+$zindex-select-collapse:					$zindex-select-collapse-mask + 10 !default;

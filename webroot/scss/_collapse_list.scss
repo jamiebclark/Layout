@@ -1,10 +1,10 @@
 @import "templates";
 
-$toggleSize: 20px;
-$togglePadding: 10px;
+$toggle-size: 20px;
+$toggle-padding: 10px;
 
-$collapseItemPaddingTop: 5px;
-$collapseItemPaddingLeft: 10px;
+$collapse-item-padding-top: 5px;
+$collapse-item-padding-left: 10px;
 
 $ns: 'collapse-list';
 .#{$ns} {
@@ -22,14 +22,14 @@ $ns: 'collapse-list';
 li.#{$ns}-item {
 	position: relative;
 	padding: 0 !important;
-	padding-left: $toggleSize + 2 * $togglePadding !important;
+	padding-left: $toggle-size + 2 * $toggle-padding !important;
 	
-	border-top: 1px solid #EEE;
+	border-top: 1px solid #eee;
 	
 	&.dragging {
 		border: 1px solid red;
 		background-color: white;
-		@include border-radius($baseBorderRadius);
+		border-radius: $border-radius-base;
 		cursor: move !important;
 		z-index: 3000;
 		@include opacity(75);
@@ -38,14 +38,14 @@ li.#{$ns}-item {
 		border-top: 4px solid blue;
 	}
 	.divider {
-		border-color: #EEE;
+		border-color: #eee;
 	}
 	label {
 		font-size: 1em;
 		line-height: normal;
 		font-weight: normal;
 	}
-	.layoutInfoTable {
+	.layout-info-table {
 		table {
 			&, th {
 				width: auto;
@@ -54,20 +54,20 @@ li.#{$ns}-item {
 	}
 }
 .#{$ns}-item-title {
-	min-height: $toggleSize + 2 * $togglePadding;
+	min-height: $toggle-size + 2 * $toggle-padding;
 	margin: 0;
 	margin-bottom: 0 !important;
-	padding: $collapseItemPaddingTop $collapseItemPaddingLeft;
+	padding: $collapse-item-padding-top $collapse-item-padding-left;
 	&.selected {
-		background: #EEE !important;
+		background: #eee !important;
 	}
 	&.navbar {
-		.navbar-inner {
+		.navbar-nav {
 			border: 0;
 			background: transparent !important;
 			padding: 0;
 		}
-		.brand {
+		.navbar-brand {
 			padding: 0;
 			margin: 0;
 		}
@@ -78,7 +78,7 @@ li.#{$ns}-item {
 	display: block;
 	float: none;
 	&.hover .#{$ns}-item-title {
-		background: #F8F8F8;
+		background: #f8f8f8;
 	}
 }
 
@@ -86,24 +86,24 @@ li.#{$ns}-item {
 	margin: 0;
 	
 	position: absolute;
-	top: $collapseItemPaddingTop;
-	left: $togglePadding;
+	top: $collapse-item-padding-top;
+	left: $toggle-padding;
 
 	font-family: Arial;
 	display: block;
 	border: 1px solid;
-	@include border-radius($toggleSize);
+	border-radius: $toggle-size;
 
 	&, span {
-		font-size: $toggleSize;
-		width: $toggleSize;;
-		line-height: $toggleSize;;
+		font-size: $toggle-size;
+		width: $toggle-size;;
+		line-height: $toggle-size;;
 		display: block;
 		text-align: center;
 	}
 	&.hover {
 		cursor: pointer;
-		color: $linkColorHover;
+		color: $link-hover-color;
 	}
 	input {
 		width: auto;

@@ -1,4 +1,4 @@
-@mixin setThumbnailSize($type, $size) {
+@mixin set-thumbnail-size($type, $size) {
 	.thumbnail-#{$type} {
 		width: $size;
 		&.media-object.iconic {
@@ -12,12 +12,12 @@
 		}
 	}
 }
-@include setThumbnailSize(tiny, $thumbnailTiny);
-@include setThumbnailSize(small, $thumbnailSmall);
-@include setThumbnailSize(smaller, $thumbnailSmaller);
-@include setThumbnailSize(mid, $thumbnailMid);
-@include setThumbnailSize(large, $thumbnailLarge);
-@include setThumbnailSize(larger, $thumbnailLarger);
+@include set-thumbnail-size(tiny, $thumbnail-tiny);
+@include set-thumbnail-size(small, $thumbnail-small);
+@include set-thumbnail-size(smaller, $thumbnail-smaller);
+@include set-thumbnail-size(mid, $thumbnail-mid);
+@include set-thumbnail-size(large, $thumbnail-large);
+@include set-thumbnail-size(larger, $thumbnail-larger);
 
 .thumbnail {
 	.caption {
@@ -42,9 +42,9 @@ ul.thumbnails {
 }
 .caption-description {
 	line-height: 1;
-	padding: $paddingSmall;
+	padding: $padding-small-vertical $padding-small-horizontal;
 	padding-top: 0;
-	color: $grayLight;
+	color: $gray-light;
 }
 .thumbnail-text {
 	float: left;
@@ -53,21 +53,21 @@ ul.thumbnails {
 	display: block;
 	vertical-align: middle;
 	text-align: center;
-	color: $thumbnailTextColor;
-	border: 1px solid $thumbnailBorder;
-	background: $thumbnailTextBackground;
+	color: $thumbnail-text-color;
+	border: 1px solid $thumbnail-border;
+	background: $thumbnail-text-background;
 }
 a:hover {
 	.thumbnail-text {
-		color: $thumbnailTextHover;
-		border-color: $thumbnailBorderHover;
+		color: $thumbnail-text-hover;
+		border-color: $thumbnail-border-hover;
 	}
 }
 a.thumbnail:hover {
 	text-decoration: none !important;
 	.caption {
 		.caption-title, .caption-description {
-			color: $linkColorHover;
+			color: $link-hover-color;
 		}
 	}
 }

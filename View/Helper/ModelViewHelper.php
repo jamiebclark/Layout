@@ -7,9 +7,9 @@ App::uses('InflectorPlus', 'Layout.Lib');
  *
  **/
 class ModelViewHelper extends LayoutAppHelper {
-	var $name = 'ModelView';
+	public $name = 'ModelView';
 	
-	var $defaultHelpers = array(
+	public $defaultHelpers = array(
 		'Html', 
 		'Layout.AddressBook',
 		'Layout.Asset', 
@@ -21,32 +21,31 @@ class ModelViewHelper extends LayoutAppHelper {
 		'Text',
 	);
 	
-	var $modelName;
-	
-	var $blankTitle = 'No Title';
+	protected $modelName;
+	protected $blankTitle = 'No Title';
 	
 	//As long as modelName is set, these should be taken care of
-	var $controller;				//Controller to redirect
-	var $primaryKey = 'id';
-	var $displayField = 'title';	//displayField from Model
-	var $descriptionField = null;	//field that is the body description
-	var $cssClass;
-	var $modelAlias;
-	var $modelHuman;
-	var $modelPlugin;
+	protected $controller;				//Controller to redirect
+	protected $primaryKey = 'id';
+	protected $displayField = 'title';	//displayField from Model
+	protected $descriptionField = null;	//field that is the body description
+	protected $cssClass;
+	protected $modelAlias;
+	protected $modelHuman;
+	protected $modelPlugin;
 
 	
-	var $imageField = 'filename';
+	protected $imageField = 'filename';
 
-	var $imageDir;
-	var $thumbDir = 'profiles/';	//Base directory where thumbnails are stored
-	var $defaultDir = 'mid';		//Default sub-directory of thumbnail
-	var $defaultMediaDir = 'small';	//Default sub-directory of an image used in a media HTML object
-	var $defaultImageFile = '0.jpg';
+	protected $imageDir;
+	protected $thumbDir = 'profiles/';	//Base directory where thumbnails are stored
+	protected $defaultDir = 'mid';		//Default sub-directory of thumbnail
+	protected $defaultMediaDir = 'small';	//Default sub-directory of an image used in a media HTML object
+	protected $defaultImageFile = '0.jpg';
 
-	var $thumbType = 'image';
-	var $dateStartField = 'started';
-	var $dateEndField = 'stopped';
+	protected $thumbType = 'image';
+	protected $dateStartField = 'started';
+	protected $dateEndField = 'stopped';
 	
 	//Whether the urls should be formatted to include slugs: array('controller','action', 'id' => $id, 'slug' => $slug)
 	// Should be set up in Config/router first
@@ -58,7 +57,7 @@ class ModelViewHelper extends LayoutAppHelper {
 	protected $_actions = array();
 
 	// Actions translated to their Iconic icon name
-	var $actionIcons = array(
+	protected $actionIcons = array(
 		'index' => 'list',
 		'active' => 'check_alt',
 		'add' => 'plus',
@@ -76,7 +75,7 @@ class ModelViewHelper extends LayoutAppHelper {
 	);
 	
 	// Actions that automatically translate to array
-	var $autoActions = array(
+	protected $autoActions = array(
 		'index', 'edit', 'delete', 'view', 'add', 
 		'move_up', 'move_down', 'move_top', 'move_bottom', 'settings',
 		'spam', 'clock',
@@ -84,10 +83,10 @@ class ModelViewHelper extends LayoutAppHelper {
 	);
 	
 	// The fields passed to each getAutoAction function
-	var $autoActionFields = array('id', 'url', 'active');
+	protected $autoActionFields = array('id', 'url', 'active');
 
 
-	function __construct(View $view, $settings = array()) {
+	public function __construct(View $view, $settings = array()) {
 		$helpers = $this->defaultHelpers;
 		if (!empty($this->helpers)) {
 			$helpers = array_merge($helpers, $this->helpers);
@@ -148,7 +147,7 @@ class ModelViewHelper extends LayoutAppHelper {
  * @param array $url
  * @return int|null The primary key, or null if not found
  **/ 
-	function getUrlId($url) {
+	public function getUrlId($url) {
 		$id = null;
 		if (!empty($url[$this->primaryKey])) {
 			$id = $url[$this->primaryKey];
@@ -352,7 +351,7 @@ class ModelViewHelper extends LayoutAppHelper {
 					if (empty($linkUrl['controller']) || $linkUrl['controller'] == $this->controller && !isset($linkUrl[0])) {
 						$linkUrl[0] = $id;
 					}
-					$linkOptions = $this->addClass($linkOptions, 'btn');
+					$linkOptions = $this->addClass($linkOptions, 'btn btn-default');
 					$linkOptions['escape'] = false;
 					if (!empty($attrs['icons']) && isset($linkOptions['icon'])) {
 						$oTitle = $linkTitle;
@@ -374,7 +373,7 @@ class ModelViewHelper extends LayoutAppHelper {
 					*/
 					$menu[] = $this->Html->link($linkTitle, $linkUrl, $linkOptions, $linkPost);
 				} else {
-					$menu[] = $this->Html->tag('span', $menuItem, array('class' => 'btn'));
+					$menu[] = $this->Html->tag('span', $menuItem, array('class' => 'btn btn-default'));
 				}
 			}
 		}
@@ -850,10 +849,34 @@ class ModelViewHelper extends LayoutAppHelper {
 		return '';
 	}
 
+	private function _getColSizeClass($options = array(), $unset = true) {
+		$class = '';
+		//Converts from Bootstrap 2.X spanN classes
+		if (isset($options['span'])) {
+			$options['col-sm'] = $options['span'];
+			if ($unset) {
+				unset($options['span']);
+			}
+		}
+		$suffixes = array('', '-offset');
+		//Cycles through all of the column size types
+		foreach ($this->Layout->colSizes as $sizeKey) {
+			foreach ($suffixes as $suffix) {
+				$key = $sizeKey . $suffix;
+				if (isset($options[$key])) {
+					$class .= sprintf(' %s-%d', $key, $options[$key]);
+					if ($unset) {
+						unset($options[$key]);
+					}
+				}
+			}
+		}
+		return trim($class);
+	}
+	
 	function thumbnails($results, $options = array()) {
 		$options = array_merge(array(
 			'id' => null,
-			'span' => null,
 			'urlAdd' => null,
 		), $options);
 		$options = $this->addClass($options, 'photo-thumbnails');
@@ -862,37 +885,19 @@ class ModelViewHelper extends LayoutAppHelper {
 		unset($options['class']);
 		
 		$out = '';
-		$class = !empty($span) ? "span$span" : null;
+		$class = $this->_getColSizeClass($options);
 
-		if (!empty($span) && empty($sub)) {
-			$cols = round (12 / $span);
-			$col = 0;
-			$count = count($results) - 1;
-			$row = array();
-			foreach ($results as $k => $result) {
-				$row[] = $result;
-				if (++$col >= $cols || $k == $count) {
-					$out .= $this->thumbnails($row, array('sub' => true) + $options);
-					$row = array();
-					$col = 0;
-				}
+		foreach ($results as $result) {
+			$modelResult = $this->_getResult($result);
+			$thumbnailOptions = !empty($options['thumbnailOptions']) ? $options['thumbnailOptions'] : array();
+			$thumbnailOptions += $options;
+			unset($thumbnailOptions['thumbnailOptions']);
+			if ($modelResult['id'] == $id) {
+				$thumbnailOptions = $this->addClass($thumbnailOptions, 'active');
 			}
-		} else {
-			foreach ($results as $result) {
-				$modelResult = $this->_getResult($result);
-				$thumbnailOptions = !empty($options['thumbnailOptions']) ? $options['thumbnailOptions'] : array();
-				$thumbnailOptions += $options;
-				unset($thumbnailOptions['thumbnailOptions']);
-				if ($modelResult['id'] == $id) {
-					$thumbnailOptions = $this->addClass($thumbnailOptions, 'active');
-				}
-				$out .= $this->Html->tag('li', 
-					$this->thumbnail($result, $thumbnailOptions),
-					compact('class')
-				);
-			}
-			$out = $this->Html->tag('ul', $out, array('class' => 'thumbnails'));
+			$out .= $this->Html->div($class, $this->thumbnail($result, $thumbnailOptions));
 		}
+		$out = $this->Html->div('row', $out);
 		if (!isset($paginate) || $paginate !== false) {
 			$paginate = $this->Layout->paginateNav();
 		} else {
@@ -903,7 +908,6 @@ class ModelViewHelper extends LayoutAppHelper {
 		}
 		return $out;
 	}
-	
 	
 	/**
 	 * Sets the basic options to pass on to Image helper to create a profile thumbnail

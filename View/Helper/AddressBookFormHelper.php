@@ -5,7 +5,7 @@
  **/App::uses('LayoutAppHelper', 'Layout.View/Helper');
 class AddressBookFormHelper extends LayoutAppHelper {
 	var $name = 'AddressBookForm';
-	var $helpers = array('Form', 'Layout.FormLayout');
+	var $helpers = array('Form', 'Layout.Layout', 'Layout.FormLayout');
 	
 	
 	private $numericCount = 0;
@@ -98,9 +98,11 @@ class AddressBookFormHelper extends LayoutAppHelper {
 			if ($i == 1) {
 				$aLabel = 'Street Address';
 				$aPlaceholder = null;
+				$offset = false;
 			}
 			if ($addline == 2 && $i == 2) {
 				$aPlaceholder = 'Apt. or Suite#';
+				$offset = true;
 			}
 			$inputRows[] = array(	
 				$addressPrefix . ($numerical ? $numeric++ : "addline$i") =>  $this->_inputOptions($inputOptions, "addline$i", array(
@@ -108,6 +110,7 @@ class AddressBookFormHelper extends LayoutAppHelper {
 					'label' => $aLabel, 
 					'placeholder' => $aPlaceholder,
 					'div' => 'addressbookform-addline',
+					'offset' => $offset,
 				)
 			));
 		}
@@ -115,7 +118,7 @@ class AddressBookFormHelper extends LayoutAppHelper {
 			$this->_numericField('city', $numerical, $addressPrefix) => $this->_inputOptions($inputOptions, 'city', array(
 				'label' => 'City',
 				'type' => 'text',
-				'span' => 8,
+				'col-sm' => 8,
 				'div' => 'addressbookform-city',
 			)),
 			$this->_numericField('state', $numerical, $addressPrefix) =>  $this->_inputOptions($inputOptions, 'state', array(
@@ -128,7 +131,7 @@ class AddressBookFormHelper extends LayoutAppHelper {
 			$this->_numericField('zip', $numerical, $addressPrefix) => array(
 				'label' => 'Zip',
 				'type' => 'text',
-				'span' => 8,
+				'col-sm' => 8,
 				'div' => 'addressbookform-zip',
 			),
 			$this->_numericField('country', $numerical, $addressPrefix) => array(
@@ -138,7 +141,9 @@ class AddressBookFormHelper extends LayoutAppHelper {
 				'div' => 'addressbookform-country',
 			),
 		);
-		$out .= $this->FormLayout->inputRows($inputRows, compact('fieldset', 'legend', 'span', 'placeholder'));
+		$out .= $this->FormLayout->inputRows($inputRows, 
+			compact('fieldset', 'legend', 'placeholder') + $this->Layout->colSizes
+		);
 		$out = $before . $out . $after;
 		return $this->Html->div('input-address', $out);
 	}
@@ -172,6 +177,8 @@ class AddressBookFormHelper extends LayoutAppHelper {
 		}
 		$hasLabel = !empty($label);
 		$out = '';
+		
+		$this->Form->pauseColWidth();
 		foreach ($inputs as $name => $options) {
 			if (!is_array($options)) {
 				$name = $options;
@@ -195,18 +202,26 @@ class AddressBookFormHelper extends LayoutAppHelper {
 			if (!empty($data[$name])) {
 				$options['value'] = $data[$name];
 			}
+			$options = $this->addClass($options, 'input-lg');
 			$out .= $this->Form->input($prefix . $name, $options);
 		}
+		$this->Form->pauseColWidth(false);
+		
 		$out = $this->Html->div("$ns-inner contain-label", $out);
 		if ($hasLabel) {
-			$label = $this->Html->tag('label', $label);
+			$label = $this->Html->tag('label', $label, $this->Form->addColWidthClass(
+				array('class' => "$ns-label control-label"), 
+				true
+			));
 			//$label = $this->Html->div("$ns-small", $this->Html->tag('label', '&nbsp;')) . $label;
-			$label = $this->Html->div("$ns-label control-label", $label);
-			$out = $label . $this->Html->div("$ns-content", $out);
+			$out = $label . $this->Html->tag('div', 
+				$out, 
+				$this->Form->addColWidthClass(array('class' => "$ns-content"))
+			);
 		}
 		return $this->Html->div($ns, $out);
 	}
-
+	
 	private function _numericField($fieldName, $isNumeric, $prefix = '') {
 		return $prefix . (($isNumeric) ? $this->numericCount++ : $fieldName);
 	}

@@ -4,25 +4,25 @@
 // ----------------------
 .help-block, .help-inline {
 	font-style: italic;
-	color: lighten($textColor, 25%);
+	color: lighten($text-color, 25%);
 }
 
 // Templates
 // -------------
 %number-input {
-	width: $inputSlimWidth;
+	width: $input-slim-width;
 	text-align: right;
 }
 %input-container {
 	overflow: hidden;
-	border: 1px solid $inputBorder;
-	@include border-radius($baseBorderRadius);
-	margin-bottom: $baseLineHeight / 2;
+	border: 1px solid $input-border;
+	border-radius: $border-radius-base;
+	margin-bottom: $line-height-computed / 2;
 }
 
 .input-list, .input-choices, .input-autocomplete-multi {
 	.input-list, .input-choices, .input-autocomplete-multi {
-		border-color: #EFEFEF;//lighten($inputBorder, /25);
+		border-color: #efefef;//lighten($input-border, /25);
 	}
 }
 
@@ -44,16 +44,16 @@
 	input[type="tel"],
 	input[type="color"],
 	.uneditable-input {
-		@include inputFontSize($fontSizeLarge);
+		@include input-font-size($font-size-large);
 	}
 }
 .input-lg {
-	@include inputFontSize($fontSizeLarge);
+	@include input-font-size($font-size-large);
 }
 
 .form-inactive {
-	background: $inactiveBackground;
-	color: $inactiveColor;
+	background: $inactive-background;
+	color: $inactive-color;
 }
 
 // Custom Inputs
@@ -62,7 +62,7 @@
 	@extend %number-input;
 }
 .input-year {
-	width: $inputSlimWidth;
+	width: $input-slim-width;
 }
 .input-copy {
 	&:hover {
@@ -108,18 +108,18 @@ form.submitted-overlay {
 
 .submitted-overlay-mask-content {
 	position: fixed;
-	border-radius: $baseBorderRadius;
+	border-radius: $border-radius-base;
 	@include box-shadow(0 3px 7px rgba(0,0,0,0.3));
 	
 	color: #666;
-	text-shadow: 0 -1px 0 #666, 0 1px 0 #FFF;
+	text-shadow: 0 -1px 0 #666, 0 1px 0 #fff;
 
 	left: 50%;
 	top: 50%;
 	width: 400px;
 	margin-left: -200px;
 	
-	background-color: #CCC;
+	background-color: #ccc;
 	padding: 20px;
 	
 	@include wheel(32px);
@@ -129,38 +129,40 @@ form.submitted-overlay {
 
 // Date / Time Inputs
 // ---------------------
-$inputDateWidth: 	$inputSlimWidth;
-$inputTimeWidth: 	60px;
+$input-date-width: 	$input-slim-width;
+$input-time-width: 	60px;
 .datepicker {
-	width: $inputDateWidth;
+	width: $input-date-width;
 }
 .timepicker {
-	width: $inputTimeWidth;
+	width: $input-time-width;
 }
 .datepair {
 	@include clearfix;
 	.input-date, .input-time {
 		float: left;
 		label {
-			color: #CCC;
+			color: #ccc;
 		}
 	}
 }
 .datepair-between, .datepair .control-date-all-day {
 	float: left;
-	padding: $baseLineHeight 10px 0 10px;
-	line-height: $baseLineHeight + 2 * $inputPaddingTop + 2;
+	padding: $line-height-computed 10px 0 10px;
+	line-height: $line-height-base + 2 * $input-padding-top + 2;
 }
+/*
 .input-date-control {
 	display: inline-block;
 	vertical-align: top;
 	.btn {
-		padding: $inputPaddingTop 4px;
+		padding: $input-padding-top 4px;
 	}
 	.iconic {
-		font-size: $baseFontSize;
+		font-size: $font-size-base;
 	}
 }
+*/
 .input-datetime {
 	.controls {
 		display: inline-block;
@@ -172,8 +174,8 @@ $inputTimeWidth: 	60px;
 			label {
 				width: auto;
 				margin: 0;
-				line-height: $baseLineHeight;
-				padding: #{$inputPaddingTop + 1} $inputPaddingLeft;
+				line-height: $line-height-base;
+				padding: #{$input-padding-top + 1} $input-padding-left;
 			} 
 			.controls {
 				margin-left: 0;
@@ -200,18 +202,18 @@ $inputTimeWidth: 	60px;
 
 // Input Choices
 // ----------------------
-$inputChoiceActiveColor: 		$btnPrimaryBackground !default;
-$inputChoiceActiveTextColor: 	white !default;
-$inputContainerControlBgColor:	#EEE;
+$input-choice-active-color: 		$btn-primary-bg !default;
+$input-choice-active-text-color: 	white !default;
+$input-container-control-bg-color:	#eee;
 
 .input-choices {
 	@extend %input-container;
 }
 .input-choice-active {
 	.input-choice-control {
-		background-color: $inputChoiceActiveColor;
+		background-color: $input-choice-active-color;
 		&, label {
-			color: $inputChoiceActiveTextColor;
+			color: $input-choice-active-text-color;
 		}
 	}
 }
@@ -221,24 +223,25 @@ $inputContainerControlBgColor:	#EEE;
 	}
 }
 .input-choice-control {
-	padding: $paddingSmall;
-	background-color: $inputContainerControlBgColor;
+	padding: $padding-small-vertical $padding-small-horizontal;
+	background-color: $input-container-control-bg-color;
 	label {
-		font-size: $fontSizeLarge;
+		font-size: $font-size-large;
+		margin: 0;
 	}
 }
 .input-choice-content {
-	padding: $paddingLarge;
+	padding: $padding-large-vertical $padding-large-horizontal;
 	@extend %overflow;
 }
 
 .input-choice-input {
 	label {
-		font-size: $fontSizeLarge;
+		font-size: $font-size-large;
 		font-weight: normal;
 		float: none;
 		display: block;
-		padding: $paddingLarge;
+		padding: $padding-large-vertical $padding-large-horizontal;
 		padding-left: 30px;
 		margin: 0;
 	}
@@ -247,25 +250,31 @@ $inputContainerControlBgColor:	#EEE;
 
 // Input List
 // ---------------------
+$input-list-remove-width: 				30px;
+$input-list-item-padding-horizontal: 	6px;
+
 .input-list {
 	@extend %input-container;
 }
 .input-list-title, .input-list-control {
-	padding: $paddingSmall;
+	padding: $padding-small-vertical $padding-small-horizontal;
 }
 .input-list-inner {
-	padding: $paddingLarge;
+	padding: $padding-large-vertical $padding-large-horizontal;
 }
 .input-list-control {
-	background-color: $inputContainerControlBgColor;
+	background-color: $input-container-control-bg-color;
 }
 .input-list-item {
-	border-bottom: 1px dotted #F8F8F8;
+	position: relative;
+	border-bottom: 1px dotted #f8f8f8;
+	min-height: $input-list-remove-width + $input-list-item-padding-horizontal * 2;
+	
 	&:last {
 		border-bottom: 0;
 	}
 	&.remove {
-		background-color: #EEE;
+		background-color: #eee;
 		.input-list-item-inner {
 			overflow: hidden;
 			@include opacity(25);
@@ -279,7 +288,15 @@ $inputContainerControlBgColor:	#EEE;
 		margin-bottom: 0;
 	}
 }
+.input-list-item-inner {
+	margin-right: 	$input-list-remove-width + 2 * $input-list-item-padding-horizontal;
+	margin-left: 	$input-list-item-padding-horizontal;
+}
 .input-list-item-remove {
+	position: absolute;
+	top: 0;
+	right: $input-list-item-padding-horizontal;
+	
 	text-align: center;
 	input {
 		position: absolute;
@@ -288,15 +305,16 @@ $inputContainerControlBgColor:	#EEE;
 		left: -999px;
 	}
 	label {
-		color: #CCC;
+		color: #ccc;
 		border: 1px solid #666;
 		background-color: #f8f8f8;
 		text-align: center;
 		
 		font-size: 20px;
-		width: 30px;
-		line-height: 30px;
-		margin: 10px;
+		width: $input-list-remove-width;
+		max-width: 100%;
+		line-height: $input-list-remove-width;
+		margin: 0;
 		
 		float: right;
 		position: relative;
@@ -348,7 +366,7 @@ textarea, input {
 		font-weight: normal;
 		text-decoration: none !important;
 		&:hover {
-			background-color: $linkColorHover;
+			background-color: $link-hover-color;
 			color: white !important;
 		}
 	}
@@ -365,10 +383,10 @@ textarea, input {
 .input-autocomplete-multi {
 	@extend %input-container;
 	.input-autocomplete {
-		border-bottom: 1px solid #EEE;
+		border-bottom: 1px solid #eee;
 	}
 	.input-autocomplete, .input-autocomplete-multi-values {
-		padding: $paddingSmall;
+		padding: $padding-small-vertical $padding-small-horizontal;
 	}		
 }
 
@@ -376,15 +394,15 @@ textarea, input {
 // Select Collapse
 // ---------------------------------
 .select-collapse-mask {
-	z-index: $zindexSelectCollapseMask;
+	z-index: $zindex-select-collapse-mask;
 	&.expanded {
-		z-index: $zindexSelectCollapseMask + 1;
+		z-index: $zindex-select-collapse-mask + 1;
 	}
 }
 .select-collapse-window { 
-	border: 1px solid $windowBorderColor;
+	border: 1px solid $window-border-color;
 	//@include box-shadow($shadow);
-	z-index: $zindexSelectCollapse;
+	z-index: $zindex-select-collapse;
 	box-shadow: $shadow;
 	background-color: white;
 	position: absolute;	
@@ -395,19 +413,19 @@ textarea, input {
 	}
 	
 	a {
-		font-size: $selectCollapseSize;
+		font-size: $select-collapse-size;
 		font-weight: normal;
 		display: block;
-		line-height: $selectCollapseLineHeight;
+		line-height: $select-collapse-line-height;
 		&:hover {
-			background-color: $selectCollapseBackgroundHover;
-			color: $selectCollapseColorHover;
+			background-color: $select-collapse-background-hover;
+			color: $select-collapse-color-hover;
 			text-decoration: none !important;
 		}
 	}
 	ul {
 		ul {
-			margin-left: $selectCollapseBulletWidth;
+			margin-left: $select-collapse-bullet-width;
 			display: none;
 		}
 		&.expanded {
@@ -418,36 +436,36 @@ textarea, input {
 .select-collapse-option {
 	display: block;
 	position: relative;
-	padding-left: $selectCollapseBulletWidth;
+	padding-left: $select-collapse-bullet-width;
 	a {
-		color: $selectCollapseOptionColor;
+		color: $select-collapse-option-color;
 	}
 	.hover, &:hover {
-		background: $selectCollapseOptionBackgroundHover;
+		background: $select-collapse-option-background-hover;
 	}
 	&.active {
-		background: $selectCollapseBackgroundActive;
+		background: $select-collapse-background-active;
 		a {
-			color: $selectCollapseColorActive;
+			color: $select-collapse-color-active;
 		}
 	}
 }
 .select-collapse-link {
-	padding: $selectCollapseOptionPaddingTop $selectCollapseOptionPaddingLeft;
+	padding: $select-collapse-option-padding-top $select-collapse-option-padding-left;
 }
 
 .select-collapse-bullet {
 	position: absolute;
 	left: 0;
 	top: 0;
-	width: $selectCollapseBulletWidth;
-	height: $selectCollapseOptionHeight;
+	width: $select-collapse-bullet-width;
+	height: $select-collapse-option-height;
 
 	padding: 0;
 	margin: 0;
 	
 	text-align: center;
-	background-color: #CCC;
+	background-color: #ccc;
 	font-weight: bold !important;
 	&:hover {
 		background-color: #666;
@@ -470,14 +488,14 @@ textarea, input {
 	bottom: 0;	
 }
 .input-centerfocus-placeholder.focused {
-	background-color: #CCC;
+	background-color: #ccc;
 }
 .input-centerfocus-label.focused {
 	position: fixed;
 	z-index: 1001;
 	background-color: white;
-	border: 1px solid #EEE;
-	padding: $paddingSmall;
+	border: 1px solid #eee;
+	padding: $padding-small-vertical $padding-small-horizontal;
 	padding-left: 0;
 	padding-right: 0;
 	text-align: center;

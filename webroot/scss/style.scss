@@ -1,7 +1,6 @@
 //@import "variables";
 
-@import "bootstrap2.3/bootstrap/variables";
-@import "bootstrap2.3/bootstrap/mixins";
+@import "bootstrap_import";
 
 @import "variables"; 
 @import "mixins";
@@ -26,9 +25,12 @@
 @import "table";
 @import "thumbnails";
 
+
 // Extend Bootstrap
 // -----------------------
 @import "bootstrap";
+@import "bootstrap3.0/bootstrap";
+
 
 // Page Styling
 // -----------------
@@ -53,7 +55,7 @@ h3, h4 {
 
 .dl-info {
 	dd {
-		margin-bottom: $baseLineHeight;
+		margin-bottom: $line-height-computed;
 	}
 }
 .dl-inline {
@@ -61,7 +63,7 @@ h3, h4 {
 	margin: 0;
 	dt, dd {
 		float: left;
-		padding: $paddingSmall;
+		padding: $padding-small-vertical $padding-small-horizontal;
 		margin: 0;
 	}
 	dd {
@@ -75,15 +77,15 @@ h3, h4 {
 
 div.lead {
 	li {
-		line-height: 1.5 * $baseLineHeight;
-		margin-bottom: $baseLineHeight / 4;
+		line-height: 1.5 * $line-height-base;
+		margin-bottom: $line-height-computed / 4;
 	} 
 }
 
 .phpcode {
 	code {
 		display: block;
-		padding: $paddingLarge;
+		padding: $padding-large-vertical $padding-large-horizontal;
 	}
 }
 
@@ -94,15 +96,15 @@ div.lead {
 	.breadcrumb {
 		margin-bottom: 0;
 	}
-	margin-bottom: $baseLineHeight / 2;
+	margin-bottom: $line-height-computed / 2;
 }
 
 // Form
 // ------------------------
 :required {
-	border-color: $requiredBorder !important;
-	background-color: $requiredBackground !important;
-	color: $requiredText !important;
+	border-color: $required-border !important;
+	background-color: $required-background !important;
+	color: $required-text !important;
 }
 
 // Lists
@@ -114,12 +116,12 @@ div.lead {
 	}
 }
 .nav-layout-header {
-	border-top: 1px solid $navbarBorder;
-	@include gradient-vertical(#F8F8F8, $white);
-	padding: $paddingSmall;
+	border-top: 1px solid $navbar-default-border;
+	@include gradient-vertical(#f8f8f8, #fff);
+	padding: $padding-small-vertical $padding-small-horizontal;
 }
 .nav-pills {
-	span.brand {
+	span.navbar-brand {
 		padding: 8px 12px;
 		margin-top: 2px;
 		line-height: 14px;
@@ -132,36 +134,36 @@ div.lead {
 .layout-id-menu {
 	display: block !important;
 	.btn {
-		font-size: $fontSizeSmall;
-		padding: $paddingSmall;
+		font-size: $font-size-small;
+		padding: $padding-small-vertical $padding-small-horizontal;
 	}
 }
 
 // Padding Breakout
 // --------------------
 .breakout-large {
-	padding: $paddingBreakoutLarge;
+	padding: $padding-breakout-large;
 }
 .breakout-mid {
-	padding: $paddingBreakoutMid;
+	padding: $padding-breakout-mid;
 }
 .breakout-small {
-	padding: $paddingBreakoutSmall;
+	padding: $padding-breakout-small;
 }
 
 // Content Box
 // ----------------
 .contentbox {
 	clear: both;
-	border: $contentBoxBorder;
-	background: $contentBoxBackground;
-	margin-bottom: $baseLineHeight;
-	@include border-radius($contentBoxBorderRadius);
+	border: $content-box-border;
+	background: $content-box-background;
+	margin-bottom: $line-height-computed;
+	border-radius: $content-box-border-radius;
 	
-	@if $contentBoxShadow != 0 {
-		-moz-box-shadow: $contentBoxShadow;
-		-webkit-box-shadow: $contentBoxShadow;
-		box-shadow: $contentBoxShadow;
+	@if $content-box-shadow != 0 {
+		-moz-box-shadow: $content-box-shadow;
+		-webkit-box-shadow: $content-box-shadow;
+		box-shadow: $content-box-shadow;
 	}
 	&.list {
 		.contentbox-body {
@@ -176,13 +178,14 @@ div.lead {
 }
 .contentbox-heading {
 	margin-bottom: 0 !important;
-	border-bottom: $contentBoxDividerBorder;
-	.navbar-inner {
+	border-bottom: $content-box-divider-border;
+	.navbar {
 		box-shadow: 0 0 0 0;
 		min-height: 0;
-		.brand {
+		.navbar-brand {
 			padding-top: 5px;
 			padding-bottom: 5px;
+			height: auto;
 		}
 	}
 }
@@ -193,19 +196,19 @@ h4.contentbox-heading,
 .contentbox-heading .navbar-inner {
 	border: 0;
 	margin: 0;
-	@include border-radius(0);
-	padding: $contentBoxHeadingPadding;
-	background: $contentBoxHeadingBackground;
-	font-family: $contentBoxHeadingFont;
-	font-size: $contentBoxHeadingSize;
+	border-radius: 0;
+	padding: $content-box-heading-padding-vertical $content-box-heading-padding-horizontal;
+	background: $content-box-heading-background;
+	font-family: $content-box-heading-font;
+	font-size: $content-box-heading-size;
 }
 h2.contentbox-heading, 
 h3.contentbox-heading, 
 h4.contentbox-heading {
-	line-height: $contentBoxHeadingLineHeight;
+	line-height: $content-box-heading-line-height;
 }
 .contentbox-body {
-	padding: $contentBoxBodyPadding;
+	padding: $content-box-body-padding;
 }
 
 
@@ -219,12 +222,12 @@ h4.contentbox-heading {
 // Toggle
 // ----------------------
 .layout-toggle {
-	margin-bottom: $baseLineHeight / 2;
-	border: 1px solid $inputBorder;
+	margin-bottom: $line-height-computed / 2;
+	border: 1px solid $input-border;
 	fieldset {
 		background-color: transparent;
 		border: 0;
-		padding: $paddingLarge;
+		padding: $padding-large-vertical $padding-large-horizontal;
 	}
 }
 .layout-toggle-control {
@@ -234,11 +237,11 @@ h4.contentbox-heading {
 	label {
 		position: relative;
 		z-index: 2;
-		font-size: $fontSizeLarge;
+		font-size: $font-size-large;
 		font-weight: normal;
 		float: none;
 		display: block;
-		padding: $paddingLarge;
+		padding: $padding-large-vertical $padding-large-horizontal;
 		padding-left: 30px;
 		margin: 0;
 	}
@@ -248,27 +251,30 @@ h4.contentbox-heading {
 		z-index: 1;
 		right: 6px;
 		bottom: 3px;
-		font-size: $fontSizeLarge;
+		font-size: $font-size-large;
 		color: $gray;
 		line-height: 1;
 	}
 	&:hover {
-		border-color: $linkColorHover;
-		background-color: #F8F8F8;
+		border-color: $link-hover-color;
+		background-color: #f8f8f8;
 		.ell {
-			color: $linkColorHover;
+			color: $link-hover-color;
 		}
 	}
 }
 .layout-toggle-content {
-	border-top: 1px solid #F8F8F8;
+	border-top: 1px solid #f8f8f8;
 	padding-top: .5em;
 	background-color: white;
-	padding: $paddingLarge;
+	padding: $padding-large-vertical $padding-large-horizontal;
+	.row {
+		margin: 0;
+	}
 }
 .form-horizontal {
 	.layout-toggle-control {
-		padding-left: $horizontalComponentOffset - 20px;
+		padding-left: $component-offset-horizontal - 20px;
 	}
 	.layout-toggle-content {
 		padding-left: 0;
@@ -286,7 +292,7 @@ h4.contentbox-heading {
 }
 
 .neighbors {
-	font-size: $fontSizeLarge;
+	font-size: $font-size-large;
 }
 .neighbors-up {
 	text-align: center;

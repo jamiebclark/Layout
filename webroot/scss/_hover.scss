@@ -1,7 +1,7 @@
 .hover-layout {
 	position: relative;
 	&.hovering {
-		z-index: $hoverZIndex;
+		z-index: $hover-z-index;
 	}
 	.hover-over {
 		padding: 0 !important;
@@ -16,22 +16,22 @@
 
 .hover-window {
 	position: absolute;
-	padding: $hoverWindowPadding;
-	border: $hoverWindowBorder solid $hoverWindowBorderColor;
-	@include gradient-vertical(#FFF,#EEE);
-	@include box-shadow($shadowPadding, $shadowPadding, $shadowRadius, $shadowColor);
-	border-radius: $borderRadiusSmall;
-	color: $hoverWindowBorderColor;
+	padding: $hover-window-padding;
+	border: $hover-window-border solid $hover-window-border-color;
+	@include gradient-vertical(#fff,#eee);
+	@include box-shadow($shadow-padding, $shadow-padding, $shadow-radius, $shadow-color);
+	border-radius: $border-radius-small;
+	color: $hover-window-border-color;
 }
 .hover-window-title,.hover-window-title-control {
-	font-size: $baseFontSize;
-	line-height: $baseLineHeight;
-	padding: 4px $hoverWindowPadding;
-	margin: -#{$hoverWindowPadding};
+	font-size: $font-size-base;
+	line-height: $line-height-base;
+	padding: 4px $hover-window-padding;
+	margin: -#{$hover-window-padding};
 	margin-bottom: 4px;
 }
 .hover-window-title {
-	border-bottom: 1px solid lighten($hoverWindowBorderColor, 10%);
+	border-bottom: 1px solid lighten($hover-window-border-color, 10%);
 }
 .hover-window-title-control {
 	display: block;
@@ -41,33 +41,33 @@
 	}
 }
 
-@mixin arrowBorder($side) {
+@mixin arrow-border($side) {
 	$adjust: top;
-	$verticalAdjust: false;
+	$vertical-adjust: false;
 	@if ($side == top or $side == bottom) {
 		$adjust: left;
 		@if ($side == top) {
-			$verticalAdjust: top;
+			$vertical-adjust: top;
 		} @else {
-			$verticalAdjust: bottom;
+			$vertical-adjust: bottom;
 		}
 	}
 	.hover-arrow, .hover-arrow-border {
-		@include arrow($side, $hoverArrowHeight, $hoverArrowColor);
-		//height: $hoverArrowHeight;
+		@include arrow($side, $hover-arrow-height, $hover-arrow-color);
+		//height: $hover-arrow-height;
 		z-index: 50;
-		#{$adjust}: $baseLineHeight;
-		@if ($verticalAdjust != false) {
-			#{$verticalAdjust}: $hoverArrowBorder;
+		#{$adjust}: $line-height-computed;
+		@if ($vertical-adjust != false) {
+			#{$vertical-adjust}: $hover-arrow-border;
 		}
 	}
 	.hover-arrow-border {
-		@include arrow($side, $hoverArrowHeight + $hoverArrowBorder, $hoverWindowBorderColor);
-		//height: $hoverArrowHeight;
-		#{$adjust}: $baseLineHeight - $hoverArrowBorder;
+		@include arrow($side, $hover-arrow-height + $hover-arrow-border, $hover-window-border-color);
+		//height: $hover-arrow-height;
+		#{$adjust}: $line-height-computed - $hover-arrow-border;
 		z-index: 49;
-		@if ($verticalAdjust != false) {
-			#{$verticalAdjust}: -#{$hoverArrowBorder};
+		@if ($vertical-adjust != false) {
+			#{$vertical-adjust}: -#{$hover-arrow-border};
 		}
 	}
 }
@@ -86,11 +86,11 @@
 		margin: 0;
 	}
 
-	@include arrowBorder("top");
+	@include arrow-border("top");
 		
 	.hover-window {
 		margin: 0;
-		margin-top: $hoverArrowHeight;
+		margin-top: $hover-arrow-height;
 		position: relative;
 		z-index: 2;
 	}
@@ -98,34 +98,34 @@
 		width: auto;
 	}
 	&.width-wider {
-		width: $hoverWindowWidthWider;
+		width: $hover-window-width-wider;
 	}
 	&.width-wide {
-		width: $hoverWindowWidthWide;
+		width: $hover-window-width-wide;
 	}
 	&.width-slim {
-		width: $hoverWindowWidthSlim;
+		width: $hover-window-width-slim;
 	}
 
 	&.position-down {
 		top: auto;
 		bottom: 20px;
-		@include arrowBorder(bottom);
+		@include arrow-border(bottom);
 		.hover-window {
 			margin-top: 0;
-			margin-bottom: $hoverArrowHeight;
+			margin-bottom: $hover-arrow-height;
 		}
 	}
 	&.position-right {
 		left: auto;
 		right: 0;
-		@include arrowBorder(left);
+		@include arrow-border(left);
 	}
 	
 	&.hover-left {
 		top: auto;
 		bottom: auto;
-		@include arrowBorder(right);
+		@include arrow-border(right);
 		.hover-window {
 			margin-top: 0;
 		}

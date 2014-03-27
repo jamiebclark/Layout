@@ -4,52 +4,52 @@
 
 // Calendar Colors
 // -------------------------------
-$calendarGrey: 				#CCC !default;
+$calendar-grey: 				#ccc !default;
 
-$dateLinkHoverColor:		$color2 !default;
+$date-link-hover-color:		$color2 !default;
 
-$dayHoverColor:				$color1 !default;
-$dayActiveColor:			$color3-light !default;
+$day-hover-color:				$color1 !default;
+$day-active-color:			$color3-light !default;
 
-$daySize: 					1em !default;
-$dayHeight: 				2 * $daySize !default;
-$dayWidth: 					2 * $daySize !default;
+$day-size: 					1em !default;
+$day-height: 				2 * $day-size !default;
+$day-width: 					2 * $day-size !default;
 
 
 // Calendar Date
 // -----------------------------------
-$calendardateBorderColor:		#CCC !default;
+$calendardate-border-color:		#ccc !default;
 
-$calendardateMonthSize:			30px !default;
-$calendardateMonthSmallSize:	20px !default;
-$calendardateMonthBackground:	$color1 !default;
-$calendardateMonthColor:		white !default;
-$calendardateMonthHeight:		40px !default;
+$calendardate-month-size:			30px !default;
+$calendardate-month-small-size:	20px !default;
+$calendardate-month-background:	$color1 !default;
+$calendardate-month-color:		white !default;
+$calendardate-month-height:		40px !default;
 
-$calendardateDaySize:			80px !default;
-$calendardateDaySmallSize:		40px !default;
-$calendardateDayBackground1:	#FFF;	
-$calendardateDayBackground2:	#EEE;
-$calendardateDayColor:			inherit !default;
-$calendardateDayHeight:			90px !default;
+$calendardate-day-size:			80px !default;
+$calendardate-day-small-size:		40px !default;
+$calendardate-day-background1:	#fff;	
+$calendardate-day-background2:	#eee;
+$calendardate-day-color:			inherit !default;
+$calendardate-day-height:			90px !default;
 
-$calendardateYearSize:			20px !default;
-$calendardateYearBackground:	transparent !default;
-$calendardateYearColor:			inherit !default;
-$calendardateYearHeight:		30px !default;
+$calendardate-year-size:			20px !default;
+$calendardate-year-background:	transparent !default;
+$calendardate-year-color:			inherit !default;
+$calendardate-year-height:		30px !default;
 
-$calendardateWidth:				$calendardateMonthHeight + $calendardateDayHeight;
+$calendardate-width:				$calendardate-month-height + $calendardate-day-height;
 
 // Deadline
 // --------------------------------------------------
-$deadlinePast: 					#780000 !default;
-$deadlinePastBackground: 		#FFECEC !default;
-$deadlineUpcoming: 				orange !default;
-$deadlineUpcomingBackground: 	lighten($deadlineUpcoming, 40%) !default;
-$deadlineComplete: 				#CCC !default;
-$deadlineCompleteBackground: 	transparent !default;
-$deadlineFar:					#999 !default;
-$deadlineFarBackground:			transparent !default;
+$deadline-past: 					#780000 !default;
+$deadline-past-background: 		#ffecec !default;
+$deadline-upcoming: 				orange !default;
+$deadline-upcoming-background: 	lighten($deadline-upcoming, 40%) !default;
+$deadline-complete: 				#ccc !default;
+$deadline-complete-background: 	transparent !default;
+$deadline-far:					#999 !default;
+$deadline-far-background:			transparent !default;
 
 
 
@@ -73,40 +73,40 @@ $deadlineFarBackground:			transparent !default;
 	clear: both;
 }
 .calendardate-month, .calendardate-day {
-	border: 1px solid $calendardateBorderColor;
+	border: 1px solid $calendardate-border-color;
 }
 .calendardate-month {
-	background-color: $calendardateMonthBackground;
+	background-color: $calendardate-month-background;
 	border-bottom: 0;
-	color: $calendardateMonthColor;
-	line-height: $calendardateMonthHeight;
-	font-size: $calendardateMonthSize;
+	color: $calendardate-month-color;
+	line-height: $calendardate-month-height;
+	font-size: $calendardate-month-size;
 	&.multi {
-		font-size: $calendardateMonthSmallSize;
+		font-size: $calendardate-month-small-size;
 	}
 }
 .calendardate-day {
-	@include gradient-vertical($calendardateDayBackground1, $calendardateDayBackground2);
+	@include gradient-vertical($calendardate-day-background1, $calendardate-day-background2);
 	border-top: 0;
-	line-height: $calendardateDayHeight;
-	font-size: $calendardateDaySize;
+	line-height: $calendardate-day-height;
+	font-size: $calendardate-day-size;
 	&.multi {
-		font-size: $calendardateDaySmallSize;
+		font-size: $calendardate-day-small-size;
 	}
 }
 .calendardate-year {
-	color: $calendardateYearColor;
-	font-size: $calendardateYearSize;
-	line-height: $calendardateYearHeight;
-	background: $calendardateYearBackground;
+	color: $calendardate-year-color;
+	font-size: $calendardate-year-size;
+	line-height: $calendardate-year-height;
+	background: $calendardate-year-background;
 }
 
 .calendardate {
 	float: left;
-	margin: $baseLineHeight 0;
-	width: $calendardateWidth;
+	margin: $line-height-computed 0;
+	width: $calendardate-width;
 	border: 0 !important;
-	@include border-radius($baseBorderRadius);
+	border-radius: $border-radius-base;
 	
 	span {
 		float: left;
@@ -137,15 +137,15 @@ $deadlineFarBackground:			transparent !default;
 	}
 	&.grey {
 		&, .calendardate-month, .calendardate-day, .calendardate-year {
-			border-color: $calendarGrey;
-			color: $calendarGrey;
+			border-color: $calendar-grey;
+			color: $calendar-grey;
 		}
 		.calendardate-month {
-			background-color: $calendarGrey;
+			background-color: $calendar-grey;
 			color: white;
 		}
 		.calendardate-day {
-			@include gradient-vertical(#FFF,#FFF);
+			@include gradient-vertical(#fff,#fff);
 
 		}
 	}
@@ -157,12 +157,12 @@ $deadlineFarBackground:			transparent !default;
 a:hover {
 	.calendardate {
 		.calendardate-day, .calendardate-month {
-			border-color: $dateLinkHoverColor;
+			border-color: $date-link-hover-color;
 		}
 	}
 }
 
-.weekLinks {
+.week-links {
 	margin: .5em 0 .5em;
 	&, .days a {
 		text-decoration: none;
@@ -172,17 +172,17 @@ a:hover {
 		a {
 			@include clearfix;
 			display: block;
-			@include border-radius($borderRadiusLarge);
+			border-radius: $border-radius-large;
 			
 			&:hover {
-				background-color: $dayHoverColor !important;
+				background-color: $day-hover-color !important;
 				font {
 					color: white;
 				}
 			}
 			
 			&.current {
-				background-color: $dayActiveColor; 
+				background-color: $day-active-color; 
 				font {
 					font-weight: bold!important;
 				}
@@ -191,9 +191,9 @@ a:hover {
 		font {
 			display: block;
 			float: left;
-			width: $dayWidth;
-			line-height: $dayHeight;
-			font-size: $daySize;
+			width: $day-width;
+			line-height: $day-height;
+			font-size: $day-size;
 			font-weight: normal;
 			color: #666;
 			text-align: center;
@@ -203,23 +203,23 @@ a:hover {
 
 	.head, .week {
 		clear: both;
-		line-height: $dayHeight;
+		line-height: $day-height;
 		margin: 0 auto;
-		width: 7 * $dayWidth;
+		width: 7 * $day-width;
 	}
 	.head {
 		text-align: center;
-		font-size: $daySize;
+		font-size: $day-size;
 		font-weight: bold;
 		background-color: $color3;
-		height: $dayHeight;
+		height: $day-height;
 		color: white;
 		position: relative;
 		
 		.nav {
 			display: block;
-			line-height: $dayHeight;
-			width: $dayWidth;
+			line-height: $day-height;
+			width: $day-width;
 			text-align: center;
 
 			font-weight: bold !important;
@@ -242,8 +242,8 @@ a:hover {
 		.prev {
 			left: 0;
 		}
-		.monthNav {
-			font-size: $daySize;
+		.month-nav {
+			font-size: $day-size;
 			font-weight: bold;
 			color: white;
 			text-decoration: none;
@@ -254,11 +254,11 @@ a:hover {
 	}
 }
 
-.dateBox {
+.date-box {
 	float: left;
 	width: 20px!important;
 	border: 1px solid black;
-	background-color: #4B71A3;
+	background-color: #4b71a3;
 	padding: 2px;
 	padding-top: 0;
 	margin-bottom: 5px;
@@ -280,7 +280,7 @@ a:hover {
 	}
 }
 	
-.eventsList {
+.events-list {
 	&, ul, li {
 		margin: 0;
 		padding: 0;
@@ -292,13 +292,13 @@ a:hover {
 		float: left;
 		width: 100%;
 		li {
-			border-bottom: 1px solid #EEE;
+			border-bottom: 1px solid #eee;
 			padding: 5px 0 9px 30px;
 			float: none;
 			width: auto;
 		}
 	}
-	div.liBody {
+	div.li-body {
 		margin: 0;
 		padding: 4px 10px 5px 0;
 	}
@@ -340,15 +340,15 @@ a:hover {
 		margin: 0;
 		padding: 10px;
 	}
-	.imgList20  li {
+	.img-list20  li {
 		//margin-left: 10px;
 		//margin-right: 10px;
 		margin: 0;
 	}
-	.dateFooter {
+	.date-footer {
 		font-size: 10px;
 		line-height: 10px;
-		color: #CCC;
+		color: #ccc;
 	}
 	&.side {
 		.date {
@@ -358,16 +358,16 @@ a:hover {
 			margin: 0;
 			text-align: right;
 
-			.day, .dateBox span, .dateBox font {
+			.day, .date-box span, .date-box font {
 				display: inline;
 				padding: 0;
 				margin: 0;
 				margin-right: 5px;
 				font-size: 12px;
 				background-color: transparent;
-				color: #CCC;
+				color: #ccc;
 			}
-			.dateBox {
+			.date-box {
 				width: auto;
 				float: left;
 				border: 0;
@@ -380,57 +380,57 @@ a:hover {
 	}
 }
 
-.eventMonth {
+.event-month {
 	tr.sel td {
-		background-color: #E5ECF9;
+		background-color: #e5ecf9;
 	}
 	td.sel {
-		background-color: #CFDEF7!important;
+		background-color: #cfdef7!important;
 	}
 	td.today {
-		background-color: #FFE9BA!important;
+		background-color: #ffe9ba!important;
 	}
 }
-.eventWeek {
-	ul, li.eventDay {
+.event-week {
+	ul, li.event-day {
 		list-style-type: none;
 		padding: 0;
 		margin: 0;
 	}	
-	li .eventDay {
+	li .event-day {
 		margin-bottom: 10px;
 	}
 }
-.eventDay {
-	border: 1px solid #EFEFEF;
+.event-day {
+	border: 1px solid #efefef;
 	padding: 9px;
-	.eventDayItem {
+	.event-day-item {
 		margin-bottom: 10px;
 	}
 }
 
-$calBoxW: 2em;
+$cal-box-w: 2em;
 
-.eventBox {
+.event-box {
 	table {
 		margin: 0 auto;
 		width: auto;
 	}
 	th, td {
 		padding: 0;
-		height: $calBoxW;
-		width: $calBoxW;
+		height: $cal-box-w;
+		width: $cal-box-w;
 		text-align: center;
 		font-size: 11px;
 	}
 	td {
 		a {
 			display: block;
-			line-height: $calBoxW;
+			line-height: $cal-box-w;
 			text-decoration: none;
 			font-weight: bold;
 			color: #333;
-			background-color: #EFFBFC;
+			background-color: #effbfc;
 			&:hover {
 				text-decoration: underline;
 			}
@@ -440,17 +440,17 @@ $calBoxW: 2em;
 			}
 		}
 		&.n {
-			color: #CCC;			
+			color: #ccc;			
 			a {
-				color: #CCC;
+				color: #ccc;
 			}
 		}
 	}
 	.week {
-		border-right: 1px solid #CCC;
+		border-right: 1px solid #ccc;
 		a {
 			font-weight: normal;
-			color: #CCC;
+			color: #ccc;
 			background-color: transparent;
 		}
 	}
@@ -469,7 +469,7 @@ $calBoxW: 2em;
 			font-size: 10px;
 			line-height: 15px;
 			padding: 4px;
-			border-bottom: #CCC;
+			border-bottom: #ccc;
 			text-align: left;
 		}
 		a {
@@ -480,9 +480,9 @@ $calBoxW: 2em;
 
 }
 	
-.eventMain {
+.event-main {
 	td, th, table {
-		border: 1px solid #EEE;
+		border: 1px solid #eee;
 	}
 	table {
 		width: 100%;
@@ -492,7 +492,7 @@ $calBoxW: 2em;
 	td, th {
 		vertical-align: top;
 		padding: 0;
-		background-color: #FFF;
+		background-color: #fff;
 		border-top: 0;
 		border-left: 0;
 		width: 14%;
@@ -512,11 +512,11 @@ $calBoxW: 2em;
 			display: block;
 			text-align: right;
 			font-size: 9px;
-			background-color: #E5ECF9;
+			background-color: #e5ecf9;
 			padding: 0 4px;
 		}
 		&.n {
-			background-color: #EAF2FF;
+			background-color: #eaf2ff;
 		}
 		ul, li {
 			@include reset-list;
@@ -572,7 +572,7 @@ $calBoxW: 2em;
 		@if ($background == 'transparent') {
 			background: $background;
 		} @else {
-			@include gradient-vertical(#FFF, $background);
+			@include gradient-vertical(#fff, $background);
 		}
 	}
 }
@@ -581,10 +581,10 @@ $calBoxW: 2em;
 	font-weight: normal;
 }
 
-@include deadline(deadline-complete, $deadlineComplete, $deadlineCompleteBackground);
-@include deadline(deadline-upcoming, $deadlineUpcoming, $deadlineUpcomingBackground);
-@include deadline(deadline-past, $deadlinePast, $deadlinePastBackground);
-@include deadline(deadline-far, $deadlineFar, $deadlineFarBackground);
+@include deadline(deadline-complete, $deadline-complete, $deadline-complete-background);
+@include deadline(deadline-upcoming, $deadline-upcoming, $deadline-upcoming-background);
+@include deadline(deadline-past, $deadline-past, $deadline-past-background);
+@include deadline(deadline-far, $deadline-far, $deadline-far-background);
 .deadline-complete {
 	text-decoration: line-through;
 }

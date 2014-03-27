@@ -6,14 +6,16 @@
 App::uses('LayoutAppHelper', 'Layout.View/Helper');
 
 class FormLayoutHelper extends LayoutAppHelper {
-	var $helpers = array(
+	public $name = 'FormLayout';
+	public $helpers = array(
 		'Layout.Asset',
 		'Html', 
 		'Form', 
 		'Layout.Layout', 
 		'Layout.Iconic'
 	);
-	var $buttonIcons = array(
+
+	public $buttonIcons = array(
 		'add' => 'plus',
 		'update' => 'check',
 		'cancel' => 'minus_alt',
@@ -21,19 +23,18 @@ class FormLayoutHelper extends LayoutAppHelper {
 		'prev' => 'arrow_left',
 		'upload' => 'arrow_up',
 	);
+
+	public $toggleCount = 0;
+	private $_inputCount = array();
 	
-	var $toggleCount = 0;
-	
-	var $_inputCount = array();
-	
-	function __construct($View, $settings = array()) {
+	public function __construct($View, $settings = array()) {
 		parent::__construct($View, $settings);
 
 		//Adds new suffixes to account for inputDate and timeInput
 		$this->Form->_fieldSuffixes = array_merge($this->Form->_fieldSuffixes, array('date', 'time'));
 	}
 	
-	function beforeRender($viewFile) {
+	public function beforeRender($viewFile) {
 		parent::beforeRender($viewFile);
 		$this->Asset->js(array(
 			'Layout.form_layout',
@@ -322,7 +323,7 @@ class FormLayoutHelper extends LayoutAppHelper {
 		);
 		$options = array_merge(array(
 			'label' => null,
-			'div' => 'input-autocomplete',
+			'div' => 'input-autocomplete form-group',
 			'value' => null,
 		), $custom, $options);
 		extract($options);
@@ -400,7 +401,7 @@ class FormLayoutHelper extends LayoutAppHelper {
 			'escape' => false,
 			'type' => 'submit',
 		), $options);
-		$options = $this->addClass($options, 'btn');
+		$options = $this->addClass($options, 'btn btn-default');
 		return $this->Form->button($name, $options);
 	}
 	
@@ -456,17 +457,16 @@ class FormLayoutHelper extends LayoutAppHelper {
 				$options['type'] = 'tel';
 			break;
 			case 'url':
-				$options['prepend'] = '<i class="icon-globe"></i>';
+				$options['prepend'] = '<i class="glyphicon glyphicon-globe"></i>';
 				$options['type'] = 'text';
 			break;
 		}
 		
 		if (isset($options['inputAppend'])) {
-			$options = $this->addClass($options, 'input-append', 'div');
-			$options = $this->addClass($options, $this->_buttonInner($options['inputAppend']), 'after');
+			$options['appendButton'] = $this->_buttonInner($options['inputAppend']);
 			unset($options['inputAppend']);
 		}
-		
+
 		if ($search = Param::keyCheck($options, 'search', true)) {
 			if (!isset($options['form'])) {
 				$options['form'] = true;
@@ -518,9 +518,12 @@ class FormLayoutHelper extends LayoutAppHelper {
 			$options['after'] .= $this->submit($submit[0], $submit[1]);
 			$options = $this->addClass($options, 'contain-button', 'div');
 		}
+		
+		
 		if (empty($input)) {
 			$input = $this->Form->input($name, $options);
 		}
+		
 		return $beforeInput . $input . $afterInput;
 	}
 	
@@ -689,7 +692,7 @@ class FormLayoutHelper extends LayoutAppHelper {
 	}
 
 	public function submitPrimary($text = null, $attrs = array()) {
-		$attrs = $this->addClass($attrs, 'btn-primary btn-large');
+		$attrs = $this->addClass($attrs, 'btn-primary btn-lg');
 		return $this->Html->div('form-actions', $this->submit($text, $attrs));
 	}
 	
@@ -847,6 +850,15 @@ class FormLayoutHelper extends LayoutAppHelper {
 	function inputRows($rows, $options = array()) {
 		$out = '';
 		foreach ($rows as $row) {
+			if ($found = $this->_getColSize($row, null)) {
+				break;
+			}
+		}
+		if (empty($found)) {
+			$found = 'col-md';
+		}
+		
+		foreach ($rows as $row) {
 			$out .= $this->inputRow($row, $options);
 		}
 		if (!empty($options['before'])) {
@@ -858,34 +870,74 @@ class FormLayoutHelper extends LayoutAppHelper {
 		return $out;
 	}
 	
-	function inputRow($row, $options = array()) {
-		$options = array_merge(array(
-			'span' => 12,
-			'placeholder' => false,
-			'label' => true,
-		), $options);
-		extract($options);
-		$spanTotal = $span;
-		$inputs = array('fieldset' => false);
-		$rowTotal = count($row);
-		$rowCount = $spanCount = 0;
+	private function _getColSize($row, $default = 'col-md') {
+		$found = $default;
 		foreach ($row as $fieldName => $inputOptions) {
 			if (is_numeric($fieldName)) {
 				$fieldName = $inputOptions;
 				$inputOptions = array();
 			}
-			if (isset($inputOptions['span'])) {
-				$span = $inputOptions['span'];
-				unset($inputOptions['span']);
-			} else if ($spanCount < $spanTotal) {
-				$span = floor(($spanTotal - $spanCount) / ($rowTotal - $rowCount));
-			} else {
-				$span = 4;
+			foreach ($this->Layout->colSizes as $sizeKey) {
+				if (isset($inputOptions[$sizeKey])) {
+					$found = $sizeKey;
+					break 2;
+				}
 			}
-			$spanCount += $span;
-			$spanClass = 'control-group span' . $span;
-			$inputOptions = $this->addClass($inputOptions, $spanClass, 'div');
-			$inputOptions = $this->addClass($inputOptions, 'input-block-level');
+		}
+		return $found;	
+	}
+	
+	function inputRow($row, $options = array()) {
+		$options = array_merge(array(
+			'placeholder' => false,
+			'label' => true,
+		), $options);
+		extract($options);
+		
+		$colTotal = 12;
+		$inputs = array('fieldset' => false);
+		
+		$rowTotal = count($row);
+		$rowCount = 0;
+
+		$colCount = array();
+		
+		$found = $this->_getColSize($row);
+		$colCount[$found] = 0;
+		
+		foreach ($row as $fieldName => $inputOptions) {
+			if (is_numeric($fieldName)) {
+				$fieldName = $inputOptions;
+				$inputOptions = array();
+			}
+			$colClass = 'control-group';
+
+			foreach (array('col', 'span') as $key) {
+				if (isset($inputOptions[$key])) {
+					$inputOptions['col-md'] = $inputOptions[$key];
+					unset($inputOptions[$key]);
+				}
+			}
+			
+			foreach ($this->Layout->colSizes as $sizeKey) {
+				if (isset($inputOptions[$sizeKey])) {
+					$col = $inputOptions[$sizeKey];
+					unset($inputOptions[$sizeKey]);
+				} else if (isset($colCount[$sizeKey]) && $colCount[$sizeKey] < $colTotal) {
+					$col = floor(($colTotal - $colCount[$sizeKey]) / ($rowTotal - $rowCount));
+				} else {
+					$col = false;
+				}
+				if ($col !== false) {
+					if (!isset($colCount[$sizeKey])) {
+						$colCount[$sizeKey] = 0;
+					}
+					$colCount[$sizeKey] += $col;
+					$colClass .= sprintf(' %s-%d', $sizeKey, $col);
+				}
+			}
+			$inputOptions = $this->addClass($inputOptions, $colClass, 'div');
+			
 			if ($placeholder) {
 				if (!empty($inputOptions['label'])) {
 					$inputOptions['placeholder'] = $inputOptions['label'];
@@ -900,7 +952,8 @@ class FormLayoutHelper extends LayoutAppHelper {
 			$inputs[$fieldName] = $inputOptions;
 			$rowCount++;
 		}
-		return $this->Html->div('row-fluid', $this->inputs($inputs));
+		
+		return $this->Html->div('row', $this->inputs($inputs));
 		//return $this->Html->div('controls controls-row', $this->Form->inputs($inputs));
 	}
 	
@@ -1100,9 +1153,9 @@ class FormLayoutHelper extends LayoutAppHelper {
 	function inputDate($fieldName, $options = array()) {
 		$options = array_merge(array(
 				'placeholder' => 'mm/dd/yyyy',
-				'div' => 'control-group input-date',
+				'div' => 'input-group input-date',
 				'default' => null,
-				//'prepend' => '<i class="icon-calendar"></i>',
+				//'prepend' => '<i class="glyphicon glyphicon-calendar"></i>',
 				'control' => array('today', 'clear'),
 			), $this->addClass($options, 'date datepicker'));
 		if ($dataValue = $this->getDateFieldValue($fieldName)) {
@@ -1114,26 +1167,27 @@ class FormLayoutHelper extends LayoutAppHelper {
 		}
 		if ($control = Param::keyCheck($options, 'control', true)) {
 			$control = array_flip($control);
-			$after = '';
+			$appendButton = '';
 			if (isset($control['today'])) {
-				$after .= $this->Html->link($this->Iconic->icon('arrow_down_alt1'),	'#', array(
-					'class' => 'input-date-today btn',
+				$appendButton .= $this->Html->link($this->Iconic->icon('arrow_down_alt1'),	'#', array(
+					'class' => 'input-date-today btn btn-default',
 					'title' => 'Today',
 					'escape' => false,
 					'tabIndex' => -1,					
 				));
 			}
 			if (isset($control['clear'])) {
-				$after .= $this->Html->link($this->Iconic->icon('x_alt'), '#', array(
-					'class' => 'input-date-clear btn',
+				$appendButton .= $this->Html->link($this->Iconic->icon('x_alt'), '#', array(
+					'class' => 'input-date-clear btn btn-default',
 					'title' => 'Clear',
 					'escape' => false,
 					'tabIndex' => -1,
 				));
 			}
 			//$options['input-append'] = $this->Html->div('btn-group', $after);
-			$after = $this->Html->div('input-date-control', $this->Html->div('btn-group', $after));
-			$options = $this->addClass($options, $after, 'after');
+			$appendButton = $this->Html->div('input-date-control', $appendButton);
+			$options = $this->addClass($options, $appendButton, 'appendButton');
+			$options = $this->addClass($options, 'input-group');
 		}
 		if (!isset($options['label']) || (empty($options['label']) && $options['label'] !== false)) {
 			$options['label'] = $this->getLabelText($fieldName);
@@ -1147,7 +1201,7 @@ class FormLayoutHelper extends LayoutAppHelper {
 			'placeholder' => '0:00pm',
 			'div' => 'control-group input-time',
 			'default' => null,
-			//'prepend' => '<i class="icon-time"></i>',
+			//'prepend' => '<i class="glyphicon glyphicon-time"></i>',
 		), $this->addClass($options, 'time timepicker'));
 		if ($dataValue = $this->getFieldValue($fieldName, 'time')) {
 			$options['default'] = $dataValue;
@@ -1166,15 +1220,24 @@ class FormLayoutHelper extends LayoutAppHelper {
 		if ($flip) {
 			list($function, $secondFunction) = array($secondFunction, $function);
 		}
-		$secondOptions = array_merge($secondOptions, array('label' => false, 'div' => false));
-		$options['after'] = $this->{$secondFunction}($fieldName, $secondOptions);
+		if (!empty($options['after'])) {
+			$secondOptions['label'] = false;
+			$secondOptions = $this->addClass($options, $options['after'], 'after');
+			unset($options['after']);
+		}
+		
+		//$options['after'] = $this->{$secondFunction}($fieldName, $secondOptions);
 		if (!empty($options['allDay']) || !empty($options['isAllDay'])) {
 			$options['after'] .= $this->_inputDateAllDay($fieldName, !empty($options['isAllDay']));
 			unset($options['allDay']);
 			unset($options['isAllDay']);
-		} 
-		$out .= $this->{$function}($fieldName, $options);
-		return $this->Html->div('input-datetime', $out);	
+		}
+		$col1 = $function == 'inputDate' ? 8 : 4;
+		$col2 = 12 - $col1;
+		
+		$out .= $this->Html->div('col-sm-' . $col1, $this->{$function}($fieldName, $options));
+		$out .= $this->Html->div('col-sm-' . $col2, $this->{$secondFunction}($fieldName, $secondOptions));
+		return $this->Html->div('input-datetime row', $out);	
 	}
 	
 	function dateInputOLD($fieldName, $options = array()) {
@@ -1515,10 +1578,11 @@ class FormLayoutHelper extends LayoutAppHelper {
 		extract($options);
 		$out = $before;
 		if (!empty($label)) {
-			$out .= $this->Html->tag('label', $label, array('class' => 'control-label'));
+			$out .= $this->Html->tag('label', $label, $this->Form->addColWidthClass(array('class' => 'control-label'), true));
 		}
 		$value = $between . $value . $after;
-		$out .= $this->Html->div('controls', $this->Html->div($class, $value));
+		$class .= ' ' . $this->Form->colWidthClass();
+		$out .= $this->Html->div($class, $value);
 		if (!empty($div)) {
 			$out = $this->Html->div($div, $out);
 		}

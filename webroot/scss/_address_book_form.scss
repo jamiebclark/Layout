@@ -7,14 +7,14 @@
 
 // Input Name
 // --------------------------------
-$inputNameWidth: 		100px;
-$inputNameWidthSmall: 	40px;
-$ns: 					"input-name";	//Namespace
-@mixin setInputNameInputWidth($width) {
+$input-name-width: 				100px;
+$input-name-width-small: 		40px;
+$ns: 							"input-name";	//Namespace
+@mixin set-input-name-input-width($width) {
 	width: $width !important;
 	input, label {
-		padding: $inputPaddingTop $inputPaddingLeft;
-		width: $width - 2 * $inputPaddingLeft;
+		padding: $input-padding-top $input-padding-left;
+		// width: $width - 2 * $input-padding-left;
 	}
 }
 .#{$ns}, .#{$ns}-options {
@@ -23,16 +23,16 @@ $ns: 					"input-name";	//Namespace
 .#{$ns} {
 	.#{$ns}-inner {
 		@extend %overflow;
-		div.controls {
+		div.form-group {
 			margin: 0 !important;
 		}
 		> div {
 			float: left;
-			@include setInputNameInputWidth($inputNameWidth);
+			@include set-input-name-input-width($input-name-width);
 			clear: none !important;
 			margin-right: .25em;
 			&.#{$ns}-small {
-				@include setInputNameInputWidth($inputNameWidthSmall);
+				@include set-input-name-input-width($input-name-width-small);
 			}
 			&.required {
 				&:after {
@@ -53,19 +53,23 @@ $ns: 					"input-name";	//Namespace
 		}
 		label {
 			text-align: left;
-			font-size: .9em;
+			font-size: .6em;
+			font-weight: normal;
 		}
 		input {
 			margin-right: .5em;
-			@include inputFontSize($fontSizeLarge);
+			//@include input-font-size($font-size-large);
 		}
 	}
 }
+
+/*
 .form-horizontal {
 	.#{$ns}-inner, .#{$ns}-options {
-		margin-left: $horizontalComponentOffset;
+		margin-left: $component-offset-horizontal;
 	}
 }
+*/
 
 .#{$ns}-options {
 	em {
@@ -83,8 +87,8 @@ $ns: 					"input-name";	//Namespace
 		clear: none;
 		float: left;
 		text-align: left;
-		padding: $paddingSmall;
-		line-height: $baseLineHeight;
+		padding: $padding-small-vertical $padding-small-horizontal;
+		line-height: $line-height-base;
 		input {
 			margin: 4px !important;
 		}
@@ -99,9 +103,9 @@ $ns: 					"input-name";	//Namespace
 		label {
 			display: none;
 		}
-		.controls {
+		> div {
 			margin-left: 0;
+			width: 100%;
 		}
 	}
 }
-			

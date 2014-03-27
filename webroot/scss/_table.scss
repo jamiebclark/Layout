@@ -2,20 +2,20 @@
 tr {
 	&.row-hover {
 		&, td {
-			background-color: $rowHoverBackground;
+			background-color: $row-hover-background;
 		}
 	}
 	&.inactive, &.row-inactive {
 		&, td {
-			background-color: $rowInactiveBackground;
+			background-color: $row-inactive-background;
 			& {
-				color: $rowInactiveColor;
+				color: $row-inactive-color;
 			}
 		}
 	}
 	&.active, &.row-active {
 		&, td {
-			background-color: $rowActiveBackground;
+			background-color: $row-active-background;
 		}
 	}
 	&.row-total {
@@ -28,18 +28,18 @@ tr {
 
 td.dt {
 	text-align: right;
-	color: $textColorLighter;
+	color: $text-color-lighter;
 }
 
 .table-with-checked {
-	padding: $paddingSmall;
+	padding: $padding-small-vertical $padding-small-horizontal;
 	&.fixed {
 		position: fixed;
 		right: 0;
 		left: 0;
 		bottom: 0;
-		background-color: $grayLighter;
-		border-top: 1px solid $tableBorder;
+		background-color: $gray-lighter;
+		border-top: 1px solid $table-border-color;
 		z-index: 5000;
 	}
 }
@@ -49,21 +49,21 @@ td.dt {
 
 .table-nav {
 	@include clearfix();
-	min-height: $baseLineHeight;
+	min-height: $line-height-computed;
 	margin: 0;
-	padding: $baseLineHeight / 2;
-	background-color: $grayLightest;	
+	padding: $line-height-computed / 2;
+	background-color: $gray-lightest;	
 	
 	> div {
 		margin: 0;
 	}
 	&.table-nav-top {
 		margin-bottom: 0;
-		@include border-top-radius($baseBorderRadius);
+		@include border-top-radius($border-radius-base);
 	}
 	&.table-nav-bottom {
 		margin-top: 0;
-		@include border-bottom-radius($baseBorderRadius);
+		@include border-bottom-radius($border-radius-base);
 	}
 }
 
@@ -80,9 +80,9 @@ td.dt {
 		position: relative;
 		z-index: 1000;
 		&.hover {
-			border-radius: $tableSortRounded;
-			background-color: $tableSortBgColor;
-			border-color: $tableSortBorderColor;
+			border-radius: $table-sort-rounded;
+			background-color: $table-sort-bg-color;
+			border-color: $table-sort-border-color;
 		}
 		&.selected {
 			color: orange;
@@ -92,9 +92,9 @@ td.dt {
 	
 	.table-sort {
 		padding: 5px 2px;
-		border: 1px solid $tableSortBorderColor;
-		border-radius: $tableSortRounded;
-		background-color: $tableSortBgColor;
+		border: 1px solid $table-sort-border-color;
+		border-radius: $table-sort-rounded;
+		background-color: $table-sort-bg-color;
 		
 		width: 120px;
 
@@ -109,7 +109,7 @@ td.dt {
 			font-size: 10px;
 			text-align: left;
 			
-			border-radius: $tableSortRounded;
+			border-radius: $table-sort-rounded;
 			
 			&:hover {
 				background-color: white;

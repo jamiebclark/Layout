@@ -1,17 +1,17 @@
-//Converts pixels to em (to overcome WebKit but with browser zoom)
+//Converts pixels to em (to overcome Web-kit but with browser zoom)
 @function pem($pixels) {
 	@return #{$pixels/16.0}em;
 }
 
-@mixin inputFontSize($fontSize) {
-	$lineHeight: $fontSize + 4px;
-	font-size: $fontSize;
-	line-height: $lineHeight;
-	height: $lineHeight + 2 * 1 + 2 * $inputPaddingTop;
+@mixin input-font-size($font-size) {
+	$line-height: $font-size + 4px;
+	font-size: $font-size;
+	line-height: $line-height;
+	height: $line-height + 2 * 1 + 2 * $input-padding-top;
 }
 
 
-@function oppositeSide($side) {
+@function opposite-side($side) {
 	@if $side == 'left' {
 		@return 'right';
 	} @else if $side == 'right' {
@@ -24,32 +24,32 @@
 	@return '';
 }
 
-@mixin arrow($arrowSide, $arrowHeight, $color) {
+@mixin arrow($arrow-side, $arrow-height, $color) {
 	width: 0;
 	height: 0;
 	position: absolute;
 
 	@each $side in $sides {
-		$borderWidth: $arrowHeight;
-		$borderColor: transparent;
-		$sidePosition: auto;
+		$border-width: $arrow-height;
+		$border-color: transparent;
+		$side-position: auto;
 		
-		@if ($side == $arrowSide) {
-			$borderWidth: 0;
-			$sidePosition: -1 * ($arrowHeight - 1);
-		} @else if ($side == oppositeSide($arrowSide)) {
-			$borderColor: $color;
+		@if ($side == $arrow-side) {
+			$border-width: 0;
+			$side-position: -1 * ($arrow-height - 1);
+		} @else if ($side == opposite-side($arrow-side)) {
+			$border-color: $color;
 		}			
-		border-#{$side}: $borderWidth solid $borderColor;
-		#{$side}: $sidePosition;
+		border-#{$side}: $border-width solid $border-color;
+		#{$side}: $side-position;
 	}
 
-	@if ($arrowSide == 'top') {
-		left: $baseLineHeight;
-	} @else if ($arrowSide == 'bottom') {
-		left: $baseLineHeight;
+	@if ($arrow-side == 'top') {
+		left: $line-height-computed;
+	} @else if ($arrow-side == 'bottom') {
+		left: $line-height-computed;
 	} @else {
-		top: $baseLineHeight;
+		top: $line-height-computed;
 	}
 }
 

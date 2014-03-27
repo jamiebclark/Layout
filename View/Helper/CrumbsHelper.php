@@ -1,8 +1,8 @@
 <?php
 App::uses('InflectorPlus', 'Layout.Lib');App::uses('Prefix', 'Layout.Lib');
 App::uses('LayoutAppHelper', 'Layout.View/Helper');class CrumbsHelper extends LayoutAppHelper {
-	var $name = 'Crumbs';
-	var $helpers = array('Html', 'Layout.Iconic');
+	public $name = 'Crumbs';
+	public $helpers = array('Html', 'Layout.Iconic');
 	
 	public $hide = false;
 	public $title; //Title of the current page being view with crumbs
@@ -26,6 +26,8 @@ App::uses('LayoutAppHelper', 'Layout.View/Helper');class CrumbsHelper extends L
 	*/
 	var $crumbTypes = array('base', 'default', 'parent', 'controller', 'path', 'action', 'userSet');
 	var $legacyTypes = array('default');
+
+	public $divider = null; //'&gt;''
 	
 	var $_crumbs = array();
 	
@@ -131,7 +133,10 @@ App::uses('LayoutAppHelper', 'Layout.View/Helper');class CrumbsHelper extends L
 			if ($this->bootstrap) {
 				$out = '';
 				foreach ($crumbs as $crumb) {
-					$out .= $this->Html->tag('li', $crumb . '<span class="divider">&gt;</span>');
+					if (!empty($this->divider)) {
+						$crumb .= $this->Html->tag('span', $this->divider, array('class' => 'divider'));
+					}
+					$out .= $this->Html->tag('li', $crumb);
 				}
 				return $this->Html->tag('ul', $out, array('class' => 'breadcrumb'));
 			} else {

@@ -1,10 +1,10 @@
 .layout-quote {
 	> a {
 		text-decoration: none;
-		color: $textColor;
+		color: $text-color;
 		&:hover {
 			text-decoration: underline;
-			color: $linkColorHover;
+			color: $link-hover-color;
 		}
 	}
 }
@@ -13,7 +13,7 @@
 		width: 100%;
 		td {
 			width: 50%;
-			padding: $paddingLarge;
+			padding: $padding-large-vertical $padding-large-horizontal;
 		}
 	}
 }

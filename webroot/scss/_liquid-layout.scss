@@ -1,12 +1,12 @@
 
-$liquidLeftColumn: 			200px;
-$liquidRightColumn: 		300px;
-$liquidOuterPadding: 		0;
-$liquidFullScreen: 			960px;
-$liquidBorderColor: 		#F8F8F8;
+$liquid-left-column: 			200px;
+$liquid-right-column: 		300px;
+$liquid-outer-padding: 		0;
+$liquid-full-screen: 			960px;
+$liquid-border-color: 		#f8f8f8;
 
-$liquidSidePadding:			10px;
-$liquidSideMargin:			5px;
+$liquid-side-padding:			10px;
+$liquid-side-margin:			5px;
 
 $ns: 						"liquid-layout";	//namespace
 .#{$ns} {
@@ -34,38 +34,38 @@ $ns: 						"liquid-layout";	//namespace
 		bottom: 0;
 	}
 	.#{$ns}-left {
-		width: $liquidLeftColumn;
-		padding-left: $liquidOuterPadding;
+		width: $liquid-left-column;
+		padding-left: $liquid-outer-padding;
 	}
 	.#{$ns}-right {
-		width: $liquidRightColumn;
-		padding-left: $liquidOuterPadding;
+		width: $liquid-right-column;
+		padding-left: $liquid-outer-padding;
 		left: auto;
 		right: 0;
 	}
 	.#{$ns}-content {
 		width: auto;
-		min-width: $liquidFullScreen;
+		min-width: $liquid-full-screen;
 	}
 	&.has-left {
 		.#{$ns}-content {
-			margin-left: $liquidLeftColumn + $liquidOuterPadding + $liquidSideMargin;
-			min-width: $liquidFullScreen - $liquidLeftColumn - $liquidOuterPadding;
-			padding-left: $liquidSidePadding;
-			border-left: 1px solid $liquidBorderColor;
+			margin-left: $liquid-left-column + $liquid-outer-padding + $liquid-side-margin;
+			min-width: $liquid-full-screen - $liquid-left-column - $liquid-outer-padding;
+			padding-left: $liquid-side-padding;
+			border-left: 1px solid $liquid-border-color;
 		}
 	}
 	&.has-right {
 		.#{$ns}-content {
-			margin-right: $liquidRightColumn + $liquidOuterPadding + $liquidSideMargin;
-			min-width: $liquidFullScreen - $liquidRightColumn - $liquidOuterPadding;
-			padding-right: $liquidSidePadding;
-			border-right: 1px solid $liquidBorderColor;
+			margin-right: $liquid-right-column + $liquid-outer-padding + $liquid-side-margin;
+			min-width: $liquid-full-screen - $liquid-right-column - $liquid-outer-padding;
+			padding-right: $liquid-side-padding;
+			border-right: 1px solid $liquid-border-color;
 		}
 	}
 	&.has-left.has-right {
 		.#{$ns}-content {
-			min-width: $liquidFullScreen - $liquidRightColumn - $liquidRightColumn - 2 * $liquidOuterPadding;
+			min-width: $liquid-full-screen - $liquid-right-column - $liquid-right-column - 2 * $liquid-outer-padding;
 		}
 	}
 }

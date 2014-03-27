@@ -1,35 +1,35 @@
 <?php
 class GalleryViewHelper extends AppHelper {
-	var $name = 'GalleryView';
-	var $helpers = array('Layout.Asset', 'Layout.ModelView');
+	public $name = 'GalleryView';
+	public $helpers = array('Layout.Asset', 'Layout.ModelView');
 	
 	var $modelName;
 	
-	function __construct($View, $settings = array()) {
+	public function __construct($View, $settings = array()) {
 		$this->modelName = Inflector::classify($View->request->params['controller']);
 		$this->helpers[] = $this->modelName;
 		parent::__construct($View, $settings);
 	}
 	
-	function beforeRender($viewFile) {
+	public function beforeRender($viewFile) {
 		$this->Asset->css('Layout.gallery_view'); 
 		$this->Asset->js('Layout.gallery_view'); 
 		return parent::beforeRender($viewFile);
 	}
 	
-	function thumbnails($result, $neighbors = null, $options = array()) {
+	public function thumbnails($result, $neighbors = null, $options = array()) {
 		$thumbs = $this->getThumbnails($result, $neighbors);
 		$count = count($thumbs);
 		$out = '';
 		if ($count > 1) {
-			$options = $this->addClass($options, 'row-fluid thumbnails' . $count);
+			$options = $this->addClass($options, 'row thumbnails' . $count);
 			$options['id'] = $result[$this->modelName]['id'];
 			$out = $this->{$this->modelName}->thumbnails($thumbs, $options);
 		}
 		return $out;
 	}
 	
-	function getThumbnails($result, $neighbors = null, $options = array()) {
+	public function getThumbnails($result, $neighbors = null, $options = array()) {
 		$options = array_merge(array(
 			'alias' => $this->modelName,
 		), $options);
@@ -42,15 +42,15 @@ class GalleryViewHelper extends AppHelper {
 		return array_merge($prev, $current, $next);
 	}
 	
-	function getNeighborUrls($result, $neighbors = null, $options = array()) {
+	public function getNeighborUrls($result, $neighbors = null, $options = array()) {
 		return $this->getNeighborInfo('url', $result, $neighbors, $options);
 	}
 	
-	function getNeighborIds($result, $neighbors = null, $options = array()) {
+	public function getNeighborIds($result, $neighbors = null, $options = array()) {
 		return $this->getNeighborInfo('id', $result, $neighbors, $options);
 	}
 	
-	function getNeighborInfo($return = 'url', $result, $neighbors = null, $options = array()) {
+	public function getNeighborInfo($return = 'url', $result, $neighbors = null, $options = array()) {
 		$options = array_merge(array(
 			'urlAdd' => array(),
 			'keys' => false,
@@ -85,5 +85,4 @@ class GalleryViewHelper extends AppHelper {
 		}
 		return $keys ? compact('next', 'prev') : array($next, $prev);	
 	}
-	
 }
