@@ -984,7 +984,7 @@ class LayoutHelper extends LayoutAppHelper {
 	}
 
 	function navBar($menuItems, $title = null, $attrs = array()) {
-		$attrs = $this->addClass($attrs, 'navbar');
+		$attrs = $this->addClass($attrs, 'navbar navbar-default');
 		$class = Param::keyCheck($attrs, 'class', true);
 		$out = '';
 		if (!empty($title)) {

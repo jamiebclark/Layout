@@ -74,11 +74,12 @@ documentReady(function() {
 	$.fn.inputDateAllDay = function() {
 		return this.each(function() {
 			var $input = $(this),
-				$parent = $input.closest('.control-date-all-day').parent().closest('div'),
+				$parent = $input.closest('.datepair'),
 				$timeInputs = $('input[name*="time"]', $parent);
 
 			if (!$input.data('all-day-init')) {
 				function click() {
+					console.log($input.attr('name'));
 					var timeCount = 0;
 					$timeInputs.each(function() {
 						$(this).data('stored-val', $(this).val()).hide();
@@ -158,7 +159,7 @@ documentReady(function() {
 	};
 })(jQuery);
 
-$(document).ready(function() {
+documentReady(function() {
 	$('.input-date-all-day').inputDateAllDay();
 	$('.input-date,.input-time').inputDate();
 });

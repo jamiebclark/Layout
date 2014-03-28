@@ -1050,12 +1050,18 @@ class FormLayoutHelper extends LayoutAppHelper {
 			array_pop($name);
 			$prefix = implode('.', $name) . '.';
 		}	
-		return $this->input($prefix . 'all_day', compact('default') + array(
+
+		$input = $this->input($prefix . 'all_day', compact('default') + array(
 			'class' => 'input-date-all-day',
-			'div' => 'control-date-all-day',
 			'type' => 'checkbox',
-			'label' => 'All Day',
+			'div' => false,
+			'label' => false,
 		));
+		return sprintf('<div class="%s"><label class="checkbox">%s%s</label></div>', 
+			'control-date-all-day', 
+			$input, 
+			'All Day'
+		);
 	}
 	
 	function inputDatetimePair($startFieldName, $endFieldName, $options = array()) {
@@ -1215,29 +1221,52 @@ class FormLayoutHelper extends LayoutAppHelper {
 		$out = '';
 		$flip = Param::keyCheck($options, 'flip', true);
 		$secondOptions = $options;
-		$function = 'inputDate';
-		$secondFunction = 'inputTime';
+		//$secondOptions['div'] = false;
+		$secondOptions['label'] = false;
+		
+		$type1 = 'date';
+		$type2 = 'time';
 		if ($flip) {
-			list($function, $secondFunction) = array($secondFunction, $function);
+			list($type1, $type2) = array($type2, $type1);
 		}
+		$function1 = 'input' . ucfirst($type1);
+		$function2 = 'input' . ucfirst($type2);
+		
+		$secondOptions = $this->addClass($secondOptions, "input-datetime-$type2");
+		
 		if (!empty($options['after'])) {
-			$secondOptions['label'] = false;
 			$secondOptions = $this->addClass($options, $options['after'], 'after');
 			unset($options['after']);
 		}
 		
-		//$options['after'] = $this->{$secondFunction}($fieldName, $secondOptions);
+		//$options['after'] = $this->{$function2}($fieldName, $secondOptions);
 		if (!empty($options['allDay']) || !empty($options['isAllDay'])) {
 			$options['after'] .= $this->_inputDateAllDay($fieldName, !empty($options['isAllDay']));
 			unset($options['allDay']);
 			unset($options['isAllDay']);
 		}
-		$col1 = $function == 'inputDate' ? 8 : 4;
-		$col2 = 12 - $col1;
 		
-		$out .= $this->Html->div('col-sm-' . $col1, $this->{$function}($fieldName, $options));
-		$out .= $this->Html->div('col-sm-' . $col2, $this->{$secondFunction}($fieldName, $secondOptions));
-		return $this->Html->div('input-datetime row', $out);	
+		//Extract Label
+		$label = !empty($options['label']) ? $options['label'] : false;
+		if (false !== $label) {
+			if (!is_array($label)) {
+				$label = array('text' => $label);
+			}
+			$label = $this->addClass($label, 'control-label');
+			$label = $this->Form->addColWidthClass($label, true);
+			$text = $label['text'];
+			unset($label['text']);
+			$label = $this->Form->label($fieldName, $text, $label);
+		}
+		$options['label'] = false;
+
+		$this->Form->pauseColWidth();
+		$out .= $this->{$function1}($fieldName, $options);
+		$out .= $this->{$function2}($fieldName, $secondOptions);
+		//$out = $this->Html->div('input-datetime-row row', $out);
+		$this->Form->pauseColWidth(false);
+		
+		return $this->Html->div('input-datetime', $label . $this->Html->div('input-datetime-control', $out));	
 	}
 	
 	function dateInputOLD($fieldName, $options = array()) {
