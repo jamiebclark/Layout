@@ -600,7 +600,7 @@ documentReady(function() {
 			}
 			if (!$(this).data('scroll-init')) {
 				var $scroll = $(this),
-					$container = $scroll.closest('.row,.row-fluid'),
+					$container = $scroll.closest('.row'),
 					height,
 					width,
 					pos,

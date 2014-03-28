@@ -364,7 +364,7 @@ class LayoutHelper extends LayoutAppHelper {
 	
 	function neighbors($prev = null, $next = null, $up = null, $options = array()) {
 		$return = '';
-		$class = 'neighbors row-fluid';
+		$class = 'neighbors row';
 		
 		if (is_array($prev)) {
 			$prevOptions = $prev;

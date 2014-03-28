@@ -639,7 +639,7 @@ class FormLayoutHelper extends LayoutAppHelper {
 		unset($attrs['imgPosition']);
 		$text = $this->buttonIcon($type) . $text;
 		
-		$attrs = $this->addClass($attrs, 'btn');
+		$attrs = $this->addClass($attrs, 'btn btn-default');
 		if ($url = Param::keyCheck($attrs, 'url', true)) {
 			$button = $this->Html->link($text, $url, $attrs);
 		} else {
