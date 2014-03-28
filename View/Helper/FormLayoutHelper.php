@@ -1191,7 +1191,7 @@ class FormLayoutHelper extends LayoutAppHelper {
 				));
 			}
 			//$options['input-append'] = $this->Html->div('btn-group', $after);
-			$appendButton = $this->Html->div('input-date-control', $appendButton);
+			$appendButton = array($appendButton, array('class' => 'input-date-control'));
 			$options = $this->addClass($options, $appendButton, 'appendButton');
 			$options = $this->addClass($options, 'input-group');
 		}
