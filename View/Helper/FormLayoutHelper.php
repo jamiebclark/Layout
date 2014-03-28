@@ -462,11 +462,6 @@ class FormLayoutHelper extends LayoutAppHelper {
 			break;
 		}
 		
-		if (isset($options['inputAppend'])) {
-			$options['appendButton'] = $this->_buttonInner($options['inputAppend']);
-			unset($options['inputAppend']);
-		}
-
 		if ($search = Param::keyCheck($options, 'search', true)) {
 			if (!isset($options['form'])) {
 				$options['form'] = true;
@@ -484,20 +479,9 @@ class FormLayoutHelper extends LayoutAppHelper {
 			$options = $this->addClass($options, 'search-input', 'div');
 		}
 		
-		if ($form = Param::keyCheck($options, 'form', true)) {
-			list($formName, $formOptions) = array(null, array());
-			if (is_array($form)) {
-				$formOptions = $form;
-			} else {
-				$formName = $form;
-			}
-
-			
-			$beforeInput = $this->Form->create($formName === true ? null : $formName, $formOptions);
-			$afterInput = $this->Form->end();
-		}
-		
 		if ($submit = Param::keyCheck($options, 'submit', true)) {
+			$options['inputAppend'] = $submit;
+			/*
 			$default = array('div' => false, null);
 			if (is_array($submit)) {
 				if (!isset($submit[1])) {
@@ -517,7 +501,27 @@ class FormLayoutHelper extends LayoutAppHelper {
 			}
 			$options['after'] .= $this->submit($submit[0], $submit[1]);
 			$options = $this->addClass($options, 'contain-button', 'div');
+			*/
 		}
+		
+		if (isset($options['inputAppend'])) {
+			$options['appendButton'] = $this->_buttonInner($options['inputAppend']);
+			unset($options['inputAppend']);
+		}
+
+		if ($form = Param::keyCheck($options, 'form', true)) {
+			list($formName, $formOptions) = array(null, array());
+			if (is_array($form)) {
+				$formOptions = $form;
+			} else {
+				$formName = $form;
+			}
+
+			
+			$beforeInput = $this->Form->create($formName === true ? null : $formName, $formOptions);
+			$afterInput = $this->Form->end();
+		}
+		
 		
 		
 		if (empty($input)) {
