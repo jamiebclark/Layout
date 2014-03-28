@@ -787,7 +787,7 @@ documentReady(function() {
 			$(this).closest('form').find('label[for="'+oldId+'"]').attr('for',newId);
 			/*
 			$(this).parent('label[for="'+oldId+'"]').attr('for', newId);
-			$(this).closest('.control-group').find('label[for="'+oldId+'"]').attr('for',newId);
+			$(this).closest('.form-group').find('label[for="'+oldId+'"]').attr('for',newId);
 			$(this).next('label[for="'+oldId+'"]').attr('for',newId);
 			$(this).prev('label[for="'+oldId+'"]').attr('for',newId);
 			*/

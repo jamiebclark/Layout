@@ -910,7 +910,7 @@ class FormLayoutHelper extends LayoutAppHelper {
 				$fieldName = $inputOptions;
 				$inputOptions = array();
 			}
-			$colClass = 'control-group';
+			$colClass = 'form-group';
 
 			foreach (array('col', 'span') as $key) {
 				if (isset($inputOptions[$key])) {
@@ -1199,7 +1199,7 @@ class FormLayoutHelper extends LayoutAppHelper {
 	function inputTime($fieldName, $options = array()) {
 		$options = array_merge(array(
 			'placeholder' => '0:00pm',
-			'div' => 'control-group input-time',
+			'div' => 'form-group input-time',
 			'default' => null,
 			//'prepend' => '<i class="glyphicon glyphicon-time"></i>',
 		), $this->addClass($options, 'time timepicker'));
@@ -1571,7 +1571,7 @@ class FormLayoutHelper extends LayoutAppHelper {
 			'after' => '',
 			'between' => '',
 		), $options);
-		$options = $this->addClass($options, 'control-group', 'div');
+		$options = $this->addClass($options, 'form-group', 'div');
 		if (empty($options['editable'])) {
 			$options = $this->addClass($options, 'uneditable-input');
 		}
