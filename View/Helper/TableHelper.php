@@ -468,9 +468,13 @@ class TableHelper extends LayoutAppHelper {
 		unset($options['after']);
 		unset($options['before']);
 		
-		$rowsOut = array();
+		$t = array(
+			'head' => array(),
+			'body' => array(),
+			'foot' => array(),
+		);
 		if (!empty($headers)) {
-			$rowsOut[] = $this->Html->tableHeaders($headers);
+			$t['head'][] = $this->Html->tableHeaders($headers);
 		}
 		if (!empty($rows)) {
 			extract($tableCellOptions);
@@ -499,12 +503,21 @@ class TableHelper extends LayoutAppHelper {
 					if (is_array($cell)) {
 						list($cell, $cellOptions) = $cell + array(null, null);
 					}
-					$tag = Param::keyCheck($cellOptions, 'th', true) ? 'th' : 'td';
-					$cellsOut[] = $this->Html->tag($tag, $cell, $cellOptions);
+					$isHead = Param::keyCheck($cellOptions, 'th', true);
+					$tag =  $isHead ? 'th' : 'td';
+					$cellsOut[$isHead ? 'head' : 'body'][] = $this->Html->tag($tag, empty($cell) ? ' ' : $cell, $cellOptions);
 				}
-				$rowsOut[] = $this->Html->tag('tr', implode('', $cellsOut), $trOptions);
+				foreach ($cellsOut as $key => $row) {
+					$t[$key][] = $this->Html->tag('tr', implode('', $row), $trOptions);
+				}
 			}
-			$return .= $this->Html->tag('table', implode("\n", $rowsOut), $options) . "\n";
+			$out = '';
+			foreach ($t as $key => $rows) {
+				if (!empty($rows)) {
+					$out .= $this->Html->tag("t$key", implode("\n", $rows));
+				}
+			}
+			$return .= $this->Html->tag('table', $out, $options) . "\n";
 		}
 		$return .= $after . $tableNavBottom;
 	
