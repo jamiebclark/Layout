@@ -1163,7 +1163,7 @@ class FormLayoutHelper extends LayoutAppHelper {
 	function inputDate($fieldName, $options = array()) {
 		$options = array_merge(array(
 				'placeholder' => 'mm/dd/yyyy',
-				'div' => 'input-group input-date',
+				'div' => 'form-group input-date',
 				'default' => null,
 				//'prepend' => '<i class="glyphicon glyphicon-calendar"></i>',
 				'control' => array('today', 'clear'),
