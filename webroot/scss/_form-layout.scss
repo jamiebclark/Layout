@@ -58,9 +58,21 @@
 
 // Custom Inputs
 // ---------------
-.input-id, .input-cash, .input-number, input[type="number"] {
-	@extend %number-input;
+
+.input-id, .input-cash, .input-number, input[type="number"],
+.form-group-id, .form-group-cash, .form-group-number {
+	max-width: 240px;
+	text-align: right;
 }
+.input-group {
+	//Resets width if it's part of an input-group
+	.input-id, .input-cash, .input-number, input[type="number"] {
+		//width: 100% !important;
+		max-width: none;
+	}
+}
+
+
 .input-year {
 	width: $input-slim-width !important;
 }

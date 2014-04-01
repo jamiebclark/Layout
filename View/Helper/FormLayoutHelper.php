@@ -405,10 +405,10 @@ class FormLayoutHelper extends LayoutAppHelper {
 		return $this->Form->button($name, $options);
 	}
 	
-	public function input($name, $options = array()) {
+	public function input($fieldName, $options = array()) {
 		$beforeInput = '';
 		$afterInput = '';
-		$options = array_merge(array('type' => null), $options);
+		$options = array_merge(array('type' => null), $this->Form->_inputDefaults, (array)$options);
 
 		/*
 		//Removed for addition of Bootstrap
@@ -423,28 +423,28 @@ class FormLayoutHelper extends LayoutAppHelper {
 		switch ($options['type']) {
 			case 'id':
 				$options['type'] = 'number';
-				$options = $this->addClass($options, 'input-id');
+				$typeTrack = 'id';				
 				$options['prepend'] = '#';
 			break;
 			case 'cash': 
 				$options['type'] = 'text';
-				$options = $this->addClass($options, 'input-cash');
+				$typeTrack = 'cash';
 				$options['prepend'] = '$';
 				$options['placeholder'] = '0.00';
 				$options['step'] = 'any';
 			break;
 			case 'date':
-				$input = $this->inputDate($name, $options);
+				$input = $this->inputDate($fieldName, $options);
 			break;
 			case 'datetime':
-				$input = $this->inputDatetime($name, $options);
+				$input = $this->inputDatetime($fieldName, $options);
 			break;
 			case 'time':
-				$input = $this->inputTime($name, $options);
+				$input = $this->inputTime($fieldName, $options);
 			break;
 			case 'float':
 				$options['type'] = 'number';
-				$options = $this->addClass($options, 'input-number');
+				$typeTrack = 'number';
 				$options['placeholder'] = '0.0';
 				$options['step'] = 'any';
 			break;
@@ -453,13 +453,23 @@ class FormLayoutHelper extends LayoutAppHelper {
 			break;
 			case 'tel':
 			case 'phone':
-				$options['prepend'] = $this->Iconic->icon('iphone');
+				$options['prepend'] = '<i class="glyphicon glyphicon-phone"></i>';
 				$options['type'] = 'tel';
 			break;
 			case 'url':
 				$options['prepend'] = '<i class="glyphicon glyphicon-globe"></i>';
 				$options['type'] = 'text';
 			break;
+			case 'number':
+				$typeTrack = 'number';
+			break;
+		}
+		
+		if (!empty($typeTrack)) {
+			if (!empty($options['prepend']) || !empty($options['append'])) {
+				$options = $this->addClass($options, "form-group-$typeTrack", 'div');
+			}
+			$options = $this->addClass($options, "input-group-$typeTrack");
 		}
 		
 		if ($search = Param::keyCheck($options, 'search', true)) {
@@ -525,7 +535,7 @@ class FormLayoutHelper extends LayoutAppHelper {
 		
 		
 		if (empty($input)) {
-			$input = $this->Form->input($name, $options);
+			$input = $this->Form->input($fieldName, $options);
 		}
 		
 		return $beforeInput . $input . $afterInput;
