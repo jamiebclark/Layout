@@ -86,7 +86,7 @@ class ActivateComponent extends Component {
 			}
 		} else {
 			$msg = 'There was an error marking';
-			$class = 'alert-error';
+			$class = 'alert-danger';
 		}
 		$msg .= sprintf(' <a href="%s">%s</a> ', Router::url(array('action' => 'view', $id)), $settings['humanName']);
 		$msg .= $this->_pickSetting($settings, 'verb', $setOn);

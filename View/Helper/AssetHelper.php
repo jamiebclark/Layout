@@ -25,7 +25,7 @@ class AssetHelper extends LayoutAppHelper {
 		)
 	);
 	
-	public $minify = false;
+	public $minify = true;
 	
 	//After constructor, all assets will be stored here
 	private $_defaultAssets = array();
@@ -105,7 +105,9 @@ class AssetHelper extends LayoutAppHelper {
 	 * Outputs all stored assets
 	 *
 	 * @param bool $inline If the output should be outputted right away or wait until fetch
-	 * @param bool $repeat If true, skips any assets that have already been outputted
+	 * @param bool $repeat If false, skips any assets that have already been outputted
+	 * @param array $types Optionally specify type of asset to output
+	 * @return A string of all assets
 	 **/
 	function output($inline = false, $repeat = false, $types = array()) {
 		$eol = "\n\t";
@@ -118,8 +120,6 @@ class AssetHelper extends LayoutAppHelper {
 		foreach ($types as $type) {
 			if (!empty($this->_assets[$type])) {
 				$files = $this->_assets[$type];
-				
-				// debug($files);
 				if ($this->minify && in_array($type, $this->_minifyableTypes)) {
 					$AssetMinify = new AssetMinify();
 					$files = $AssetMinify->minify($files, $type);
@@ -207,6 +207,7 @@ class AssetHelper extends LayoutAppHelper {
 				$typeFiles[$file] = $config;
 			}
 		}
+		//debug($this->_assets);
 		return true;
 	}
 	

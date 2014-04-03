@@ -171,7 +171,7 @@ class ImageHelper extends LayoutAppHelper {
 		}
 		if ($src) {
 			$image = $this->Html->image($src, $this->narrowOptions($options, array(
-				'src', 'alt', 'class', 'id')));
+				'src', 'alt', 'class', 'id', 'width', 'height')));
 			if ($url) {
 				$linkOptions = array('escape' => false);
 				if (!empty($options['alt'])) {

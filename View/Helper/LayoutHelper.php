@@ -1650,7 +1650,7 @@ class LayoutHelper extends LayoutAppHelper {
 		$falseOptions = array_merge(
 			$trueOptions, 
 			array(
-				'class' => 'label label-important',
+				'class' => 'label label-danger',
 				'text' => 'No',
 			),
 			$falseOptions

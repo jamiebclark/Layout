@@ -58,15 +58,16 @@
 
 // Custom Inputs
 // ---------------
-
-.input-id, .input-cash, .input-number, input[type="number"],
-.form-group-id, .form-group-cash, .form-group-number {
+$special-inputs: '.input-group-id, .input-group-cash, .input-group-number, input[type="number"]';
+#{$special-inputs}, .form-group-id, .form-group-cash, .form-group-number {
 	max-width: 240px;
+}
+#{$special-inputs} {
 	text-align: right;
 }
 .input-group {
 	//Resets width if it's part of an input-group
-	.input-id, .input-cash, .input-number, input[type="number"] {
+	#{$special-inputs} {
 		//width: 100% !important;
 		max-width: none;
 	}
@@ -145,6 +146,10 @@ $input-date-width: 	170px;
 $input-time-width: 	80px;
 .datepicker {
 	width: $input-date-width;
+	
+}
+.ui-datepicker {
+	z-index: $zindex-modal + 50 !important;
 }
 .timepicker {
 	width: $input-time-width;

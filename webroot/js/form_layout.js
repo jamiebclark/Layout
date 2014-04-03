@@ -1704,7 +1704,7 @@ documentReady(function() {
 		return val.replace(/[^0-9\.]/g,'');
 	}
 	
-	$('input.input-cash').each(function() {
+	$('input.input-group-cash').each(function() {
 		$(this).change(function() {
 			$(this).val(numberSanitize($(this).val()));
 		});

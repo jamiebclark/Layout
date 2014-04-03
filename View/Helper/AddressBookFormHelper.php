@@ -18,7 +18,7 @@ class AddressBookFormHelper extends LayoutAppHelper {
 	
 	function inputGender($fieldName, $options = array()) {
 		return $this->Form->input($fieldName, array(
-			'div' => 'input-gender',
+			'div' => 'input-gender form-group',
 			'type' => 'radio',
 			'divControls' => 'input-multi-row',
 			'options' => array(
