@@ -675,7 +675,6 @@ documentReady(function() {
 			if (rgt) {
 				w += parseFloat(rgt);
 			}			
-			console.log([w,lft,rgt]);
 			$parent.css('width', w);
 			return $this;
 		});
