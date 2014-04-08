@@ -656,6 +656,35 @@ documentReady(function() {
 	$('.media').layoutMedia();
 });
 
+//Action Menu Fit
+(function($) {
+	$.fn.actionMenuFit = function() {
+		return this.each(function() {
+			var $this = $(this),
+				$parent = $this.parent('td'),
+				$children = $('> a', $this);
+				lft = $parent.css('padding-left'),
+				rgt = $parent.css('padding-right'),
+				w = 0;
+			$children.each(function() {
+				w += $(this).outerWidth();
+			});
+			if (lft) {
+				w += parseFloat(lft);
+			}
+			if (rgt) {
+				w += parseFloat(rgt);
+			}			
+			console.log([w,lft,rgt]);
+			$parent.css('width', w);
+			return $this;
+		});
+	};
+})(jQuery);
+$(window).load(function() {
+	$('.action-menu').actionMenuFit();
+});
+
 // Embed Fit
 (function($) {
 	$.fn.embedFit = function() {

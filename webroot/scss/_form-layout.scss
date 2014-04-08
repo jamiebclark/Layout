@@ -332,6 +332,7 @@ $input-list-item-padding-horizontal: 	6px;
 	position: relative;
 	border-bottom: 1px dotted #f8f8f8;
 	min-height: $input-list-remove-width + $input-list-item-padding-horizontal * 2;
+	margin-bottom: $line-height-computed;
 	
 	&:last {
 		border-bottom: 0;
