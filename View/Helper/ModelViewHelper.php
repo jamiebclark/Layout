@@ -734,7 +734,11 @@ class ModelViewHelper extends LayoutAppHelper {
 	function imageSrc($result, $options = array()) {
 		$result = $this->_getResult($result);
 		$options = $this->thumbOptions($result, $options);
-		return $this->Image->src($result, $options);
+		$src = $this->Image->src($result, $options);
+		if ($src[0] != '/') {
+			$src = Url::base() . '/img/' . $src;
+		}
+		return $src;
 	}
 	
 	function thumbText($result, $options = array()) {
