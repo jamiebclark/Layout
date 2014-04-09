@@ -162,6 +162,13 @@ class ImageHelper extends LayoutAppHelper {
 		if (!empty($options) && !is_array($options)) {
 			$options = array('dir' => $options);
 		}
+		$imgFields = array('src', 'alt', 'class', 'id', 'width', 'height');
+		foreach ($options as $key => $val) {
+			if (strpos($key, 'data-') === 0) {
+				$imgFields[] = $key;
+			}
+		}
+		
 		$url = Param::keyCheck($options, 'url', true, false);
 		$image = '';
 		if (!empty($options['src'])) {
@@ -170,8 +177,7 @@ class ImageHelper extends LayoutAppHelper {
 			$src = $this->src($file, $options);
 		}
 		if ($src) {
-			$image = $this->Html->image($src, $this->narrowOptions($options, array(
-				'src', 'alt', 'class', 'id', 'width', 'height')));
+			$image = $this->Html->image($src, $this->narrowOptions($options, $imgFields));
 			if ($url) {
 				$linkOptions = array('escape' => false);
 				if (!empty($options['alt'])) {
