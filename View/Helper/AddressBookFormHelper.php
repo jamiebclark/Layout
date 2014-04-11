@@ -4,8 +4,14 @@
  *
  **/App::uses('LayoutAppHelper', 'Layout.View/Helper');
 class AddressBookFormHelper extends LayoutAppHelper {
-	var $name = 'AddressBookForm';
-	var $helpers = array('Form', 'Layout.Layout', 'Layout.FormLayout');
+	public $name = 'AddressBookForm';
+	public $helpers = array(
+		'Form' => array(
+			'className' => 'TwitterBootstrap.BootstrapFormHelper',
+		), 
+		'Layout.Layout', 
+		'Layout.FormLayout'
+	);
 	
 	
 	private $numericCount = 0;

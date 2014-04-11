@@ -356,7 +356,8 @@ class FormLayoutHelper extends LayoutAppHelper {
 		}
 		
 		if (!empty($display) && empty($displayInput)) {
-			$displayInput = $this->Html->div('display fakeInput text', $hasValue ? $value : '', array('style'=> 'display:none;'));
+			//$displayInput = $this->Html->div('display fakeInput text', $hasValue ? $value : '', array('style'=> 'display:none;'));
+			$displayInput = $this->fakeInput($hasValue ? $value : '', array('class' => 'display text', 'style' => 'display: none'));
 		}
 		$idInput = !empty($idField) ? $this->Form->hidden($prefix . $idField) : '';
 
@@ -1092,11 +1093,23 @@ class FormLayoutHelper extends LayoutAppHelper {
 		$out  = $this->inputDatetime($startFieldName, $this->getPairOptions('first', array('label' => 'From') + $options));
 		//$out .= $this->Html->div('datepair-between', ' - ');
 		$out .= $this->inputDatetime($endFieldName, $this->getPairOptions('second', array('flip' => true, 'label' => 'To') + $options));
-		return $this->fakeInput($out, array(
+		/*return $this->fakeInput($out, array(
 			'div' => 'datepair datepair-time',
 			'label' => $options['label'],
 			'editable' => true,
 		) + compact('after'));
+		*/
+		if (!empty($options['label'])) {
+			$out = $options['label'] . $out;
+		}
+		return $this->Html->div('datepair datepair-time', $out . $after);
+		/*
+		, array(
+			'div' => ,
+			'label' => $options['label'],
+			'editable' => true,
+		) + compact('after'));
+		*/
 	}
 
  	/**
@@ -1113,11 +1126,10 @@ class FormLayoutHelper extends LayoutAppHelper {
 		$out  = $this->inputDate($startFieldName, $this->getPairOptions('first', array('label' => 'From') + $options));
 		//$out .= $this->Html->div('datepair-between', ' - ');
 		$out .= $this->inputDate($endFieldName, $this->getPairOptions('second', array('label' => 'To') + $options));
-		return $this->fakeInput($out, array(
-			'div' => 'datepair',
-			'label' => $options['label'],
-			'editable' => true,
-		));
+		if (!empty($options['label'])) {
+			$out = $options['label'] . $out;
+		}
+		return $this->Html->div('datepair', $out);
 	}
 
 	/**
@@ -1625,6 +1637,8 @@ class FormLayoutHelper extends LayoutAppHelper {
 		}
 		$value = $between . $value . $after;
 		$class .= ' ' . $this->Form->colWidthClass();
+		$class .= ' form-control';
+		
 		$out .= $this->Html->div($class, $value);
 		if (!empty($div)) {
 			$out = $this->Html->div($div, $out);

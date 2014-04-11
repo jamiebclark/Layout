@@ -34,6 +34,14 @@ div.alert {
 	padding: $padding-large-vertical $padding-large-horizontal;
 }
 
+// Form
+// -------------------------
+.input-multi-row {
+	label {
+		margin-top: 0 !important;
+	}
+}
+
 // Modal
 // -------------------------
 $modal-width-wide: 760px;

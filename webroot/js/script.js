@@ -406,7 +406,7 @@ documentReady(function() {
 				$('<a></a>', {
 					'html': 'Close',
 					'href' : '#',
-					'class' : 'btn',
+					'class' : 'btn btn-default',
 					'click': function(e) {
 						e.preventDefault();
 						$ajaxWindow.modal('hide');
@@ -442,17 +442,22 @@ documentReady(function() {
 						} else {
 							$footer.show();
 						}
-						var $bodyTitle = $('h1', $ajaxWindowBody).first();
+						var $bodyTitle = $('h1', $ajaxWindowBody).first(),
+							$bodyTitleParent = $bodyTitle.closest('.page-header');
+						
 						if ($bodyTitle) {
 							if (!customTitle) {
 								$('h3', $ajaxWindowHeader).html($bodyTitle.html());
 							}
 							$bodyTitle.remove();
+							if ($bodyTitleParent.empty()) {
+								$bodyTitleParent.remove();
+							}
 						}
 						
 						$('submit,button[type="submit"]').each(function() {
 							if (!$(this).attr('name')) {
-								$(this).addClass('modal-body-submit');
+								$(this).addClass('modal-body-submit').hide();
 							}
 						});
 						$('.form-actions:empty', $form).remove();

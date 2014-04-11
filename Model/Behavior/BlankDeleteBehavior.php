@@ -74,6 +74,8 @@ class BlankDeleteBehavior extends ModelBehavior {
 			$isAssociated = false;
 		}
 
+		debug(array($Model->alias, $passedData));
+		
 		$isBlank = false;
 		$data = array();
 		
