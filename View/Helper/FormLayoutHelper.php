@@ -1093,23 +1093,13 @@ class FormLayoutHelper extends LayoutAppHelper {
 		$out  = $this->inputDatetime($startFieldName, $this->getPairOptions('first', array('label' => 'From') + $options));
 		//$out .= $this->Html->div('datepair-between', ' - ');
 		$out .= $this->inputDatetime($endFieldName, $this->getPairOptions('second', array('flip' => true, 'label' => 'To') + $options));
-		/*return $this->fakeInput($out, array(
+		
+		return $this->fakeInput($out, array(
 			'div' => 'datepair datepair-time',
 			'label' => $options['label'],
 			'editable' => true,
+			'formControl' => false,
 		) + compact('after'));
-		*/
-		if (!empty($options['label'])) {
-			$out = $options['label'] . $out;
-		}
-		return $this->Html->div('datepair datepair-time', $out . $after);
-		/*
-		, array(
-			'div' => ,
-			'label' => $options['label'],
-			'editable' => true,
-		) + compact('after'));
-		*/
 	}
 
  	/**
@@ -1126,10 +1116,12 @@ class FormLayoutHelper extends LayoutAppHelper {
 		$out  = $this->inputDate($startFieldName, $this->getPairOptions('first', array('label' => 'From') + $options));
 		//$out .= $this->Html->div('datepair-between', ' - ');
 		$out .= $this->inputDate($endFieldName, $this->getPairOptions('second', array('label' => 'To') + $options));
-		if (!empty($options['label'])) {
-			$out = $options['label'] . $out;
-		}
-		return $this->Html->div('datepair', $out);
+		
+		return $this->fakeInput($out, array(
+			'div' => 'datepair',
+			'label' => $options['label'],
+			'formControl' => false,
+		));		
 	}
 
 	/**
@@ -1625,6 +1617,7 @@ class FormLayoutHelper extends LayoutAppHelper {
 			'before' => '',
 			'after' => '',
 			'between' => '',
+			'formControl' => true,
 		), $options);
 		$options = $this->addClass($options, 'form-group', 'div');
 		if (empty($options['editable'])) {
@@ -1637,7 +1630,9 @@ class FormLayoutHelper extends LayoutAppHelper {
 		}
 		$value = $between . $value . $after;
 		$class .= ' ' . $this->Form->colWidthClass();
-		$class .= ' form-control';
+		if ($formControl) {
+			$class .= ' form-control';
+		}
 		
 		$out .= $this->Html->div($class, $value);
 		if (!empty($div)) {
