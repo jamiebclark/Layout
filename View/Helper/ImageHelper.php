@@ -162,7 +162,7 @@ class ImageHelper extends LayoutAppHelper {
 		if (!empty($options) && !is_array($options)) {
 			$options = array('dir' => $options);
 		}
-		$imgFields = array('src', 'alt', 'class', 'id', 'width', 'height');
+		$imgFields = array('src', 'alt', 'class', 'id', 'width', 'height', 'fullBase');
 		foreach ($options as $key => $val) {
 			if (strpos($key, 'data-') === 0) {
 				$imgFields[] = $key;
