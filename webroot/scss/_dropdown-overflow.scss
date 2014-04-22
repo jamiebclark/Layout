@@ -1,0 +1,23 @@
+@import "variables";
+
+.dropdown-overflow {
+	min-height: $line-height-computed;
+	clear: both;
+}
+.dropdown-overflow > ul {
+	width: 100%;
+}
+.dropdown-overflow > ul, .dropdown-overflow > ul > li {
+	list-style-type: none;
+	padding: 0;
+	margin: 0;
+}
+.dropdown-overflow > ul > li {
+	float: left;
+	position: relative;
+	display: block;
+}
+.dropdown-overflow > ul > li > a {
+	display: block;
+	padding: $padding-base-vertical $padding-base-horizontal;
+}
