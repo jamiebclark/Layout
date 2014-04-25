@@ -142,8 +142,8 @@ form.submitted-overlay {
 
 // Date / Time Inputs
 // ---------------------
-$input-date-width: 	170px;
-$input-time-width: 	80px;
+$input-date-width: 	165px;
+$input-time-width: 	70px;
 .datepicker {
 	width: $input-date-width;
 	
@@ -261,6 +261,11 @@ $input-time-width: 	80px;
 	.input-datetime-control {
 		width: auto;
 	}
+}
+.input-datetime-control > .form-group {
+	float: left;
+	margin-left: 0 !important;
+	margin-right: 0 !important;
 }
 
 // Input Choices

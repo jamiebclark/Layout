@@ -1090,6 +1090,7 @@ class FormLayoutHelper extends LayoutAppHelper {
 		} else {
 			$after = '';
 		}
+		$options['div'] = 'col-sm-6';
 		$out  = $this->inputDatetime($startFieldName, $this->getPairOptions('first', array('label' => 'From') + $options));
 		//$out .= $this->Html->div('datepair-between', ' - ');
 		$out .= $this->inputDatetime($endFieldName, $this->getPairOptions('second', array('flip' => true, 'label' => 'To') + $options));
@@ -1174,14 +1175,16 @@ class FormLayoutHelper extends LayoutAppHelper {
 		return $fieldName;
 	}
 	
-	function inputDate($fieldName, $options = array()) {
+	public function inputDate($fieldName, $options = array()) {
 		$options = array_merge(array(
 				'placeholder' => 'mm/dd/yyyy',
-				'div' => 'form-group input-date',
 				'default' => null,
 				//'prepend' => '<i class="glyphicon glyphicon-calendar"></i>',
 				'control' => array('today', 'clear'),
 			), $this->addClass($options, 'date datepicker'));
+		if (!isset($options['div']) || $options['div'] !== false) {
+			$options = $this->addClass($options, 'form-group input-date', 'div');
+		}
 		if ($dataValue = $this->getDateFieldValue($fieldName)) {
 			$options['default'] = $dataValue;
 		}
@@ -1220,13 +1223,15 @@ class FormLayoutHelper extends LayoutAppHelper {
 		return $this->input("$fieldName.date", $options);
 	}
 
-	function inputTime($fieldName, $options = array()) {
+	public function inputTime($fieldName, $options = array()) {
 		$options = array_merge(array(
 			'placeholder' => '0:00pm',
-			'div' => 'form-group input-time',
 			'default' => null,
 			//'prepend' => '<i class="glyphicon glyphicon-time"></i>',
 		), $this->addClass($options, 'time timepicker'));
+		if (!isset($options['div']) || $options['div'] !== false) {
+			$options = $this->addClass($options, 'form-group input-time', 'div');
+		}
 		if ($dataValue = $this->getFieldValue($fieldName, 'time')) {
 			$options['default'] = $dataValue;
 		}
@@ -1235,9 +1240,14 @@ class FormLayoutHelper extends LayoutAppHelper {
 		return $this->input("$fieldName.time", $options);			
 	}
 	
-	function inputDatetime($fieldName, $options = array()) {
+	public function inputDatetime($fieldName, $options = array()) {
 		$out = '';
 		$flip = Param::keyCheck($options, 'flip', true);
+		
+		$options = $this->addClass($options, 'input-datetime', 'div');
+		$div = $options['div'];
+		unset($options['div']);
+		
 		$secondOptions = $options;
 		//$secondOptions['div'] = false;
 		$secondOptions['label'] = false;
@@ -1284,188 +1294,12 @@ class FormLayoutHelper extends LayoutAppHelper {
 		//$out = $this->Html->div('input-datetime-row row', $out);
 		$this->Form->pauseColWidth(false);
 		
-		return $this->Html->div('input-datetime', $label . $this->Html->div('input-datetime-control', $out));	
-	}
-	
-	function dateInputOLD($fieldName, $options = array()) {
-		$class = 'date-input';
-		if (strpos($fieldName, '.') === false && !empty($this->request->params['models'])) {
-			$model = current($this->request->params['models']);
-			$fieldName = $model['className'] . '.' . $fieldName; 
-		}
-		if (!empty($options['containerClass'])) {
-			$class .= ' ' .$options['containerClass'];
-		}
-		$options = $this->addClass($options, 'datepicker');
-		
-		//Option values that should be deleted instead of passed to the actual input
-		$unset = array('blank', 'control', 'empty');
-		
-		//Checks for default value
-		$value = $this->value(null, $fieldName);
-		if(is_array($value)) {
-			$value = $value['value'];
-		} 
-		$value = trim($value);
-		
-		if($value == '') {
-			if (!empty($options['value'])) {
-				$value = $options['value'];
-			} else if (!empty($options['default'])) {
-				$value = $options['default'];
-			} else if (empty($value) && empty($options['blank']) && empty($options['empty'])) {
-				$value = date('Y-m-d H:i:s');
-			} else {
-				$value = null;
-			}
-		}
-		
-		$hasClass = false;
-		$dateTime = true;
-		if (!empty($options['datetime'])) {
-			$dateTime = true;
-			$hasClass = true;
-		} else if (!empty($options['date'])) {
-			$hasClass = true;
-			$dateTime = false;
-		}
-		if (Param::falseCheck($options, 'time')) {
-			$dateTime = false;
-		}
-		if (!$hasClass) {
-			$options = $this->addClass($options, ($dateTime ? 'datetime' : 'date'));
-		}
-
-		$dateFormat = 'n/j/Y';
-		$timeFormat = 'g:ia';
-
-		if (!empty($options['dateFormat'])) {
-			$dateFormat = $options['dateFormat'];
-		}
-		if (!empty($options['timeFormat'])) {
-			$timeFormat = $options['timeFormat'];
-		}
-		$dateDisp = '';
-		$timeDisp = '';
-		
-		$stamp = !empty($value) ? strtotime($value) : false;
-		if ($stamp) {
-			$dateDisp = date($dateFormat,$stamp);
-			$timeDisp = date($timeFormat,$stamp);
-		}
-
-		$divClass = 'input text '.$class;
-		$divOption = array('class' => $divClass);
-		if (!empty($options['div'])) {
-			if ($options['div'] !== false) {
-				if (is_array($options['div'])) {
-					$options['div'] = array_merge($divOption, $options['div']);
-				} else {
-					$options['div'] = array('class' => $options['div']);
-				}
-			}
-		} else {
-			$options['div'] = $divOption;
-		}
-		
-		$options = array_merge(
-			array(
-				'class' => $class,
-				'type' => 'text',
-				'between' => $this->Html->div('calendarPickHolder'),
-				'value' => $dateDisp,
-				'label' => 'Date',
-				'div' => $divOption
-			), 
-			$options
-		);
-		$options['value'] = $dateDisp;
-				
-		$after = $this->Html->tag('div','&nbsp;',array('class' => 'calendarPick hidden'));
-		$after .= '</div>';
-		
-		if($dateTime) {
-			$fieldName = $fieldName;
-			$fieldName2 = $fieldName . '.timePick';
-			$fieldName .= '.datePick';
-			$timeLabel = 'Time';
-			if (!empty($options['timeLabel']) && strlen($options['timeLabel']) > 0) {
-				$timeLabel = $options['timeLabel'];
-				unset($options['timeLabel']);
-			} else {
-				$timeLabel = false;
-			}
-			$timeInput = $this->Form->input(
-				$fieldName2,
-				array(
-					'type' => 'text',
-					'div' => false,
-					'class' => 'time timepicker',
-					'value' => $timeDisp,
-					'label' => $timeLabel,
-					'between' => $this->Html->div('timePickHolder')
-				)
-			);
-			$timeInput .= $this->Html->div('timePick hidden','&nbsp;');
-			$timeInput .= "</div>\n";
-			
-			//$timeInput .= '<br/>';
-		
-			if (!empty($options['flip']) && $options['flip']) {
-				//Reverses the date / time to time / date
-				unset($options['flip']);
-				
-				$before = $timeInput . $this->Html->tag('span',null,'secondDate');
-				$after .= '</span>';
-				
-				if (!empty($options['before'])) {
-					$options['before'] .= $timeInput;
-				} else {
-					$options['before'] = $timeInput;
-				}
-			} else {
-				$after .= $this->Html->tag('span',$timeInput, 'secondDate');
-			}
-		}
-
-		if (!empty($options['after'])) {
-			$options['after'] = $after . $options['after'];
-		} else {
-			$options['after'] = $after;
-		}
-		
-		if (!empty($options['control'])) {
-			if (!is_array($options['control'])) {
-				$options['control'] = array($options['control']);
-			}
-			foreach ($options['control'] as $control) {
-				$disp = '';
-				$title = false;
-				if ($control == 'today') {
-					$title = 'Today';
-					$disp = $this->Html->image('icn/16x16/calendar_today.png');
-					$js = '$(this).setDateBuild(\''.date($dateFormat).'\',\''.date($timeFormat).'\');';
-				} else if ($control == 'clear') {
-					$title = 'Clear';
-					$disp = $this->Html->image('icn/16x16/calendar_delete.png');
-					$js = '$(this).setDateBuild(\'\',\'\');';
-				}
-				if ($disp != '') {
-					$options['after'] .= ' ' . $this->Html->link($disp, '#', array(
-						'title' => $title,
-						'escape' => false,
-						'class' => 'linkBtn',
-						'onclick' => $js . 'return false;',
-					));
-				}
-			}
-			unset($options['control']);
-		}
-		foreach ($unset as $key) {
-			unset($options[$key]);
-		}
-
-		return $this->Form->input($fieldName, $options);
+		return $this->fakeInput($this->Html->div('input-datetime-control', $out), array(
+			'label' => $text,
+			'editable' => true,
+			'formControl' => false,
+		) + compact('div'));
+//		return $this->Html->div('input-datetime', $label . $this->Html->div('input-datetime-control', $out));	
 	}
 	
 	function dateRange($name1, $name2, $options = array()) {
