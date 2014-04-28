@@ -181,7 +181,7 @@ $input-time-width: 	70px;
 .input-date > div > .input-group, .input-datetime-date {
 	max-width: $input-date-width;
 }
-.input-time > div > .input-group, .input-datetime-time  {
+.input-time > div , .input-datetime-time  {
 	max-width: $input-time-width;
 }
 
