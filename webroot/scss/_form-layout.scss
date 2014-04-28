@@ -178,10 +178,10 @@ $input-time-width: 	70px;
 	max-width: 500px;
 }
 
-.input-date > div, .input-datetime-date {
+.input-date > div > .input-group, .input-datetime-date {
 	max-width: $input-date-width;
 }
-.input-time > div, .input-datetime-time  {
+.input-time > div > .input-group, .input-datetime-time  {
 	max-width: $input-time-width;
 }
 
