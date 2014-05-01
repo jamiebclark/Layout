@@ -154,7 +154,9 @@ class FieldOrderBehavior extends ModelBehavior {
 				$orderField => $setCount,
 			);
 		}
-		return $Model->saveAll($data, array('callbacks' => false, 'validate' => false));
+		$success = $Model->saveAll($data, array('callbacks' => false, 'validate' => false));
+		$Model->read(null, $id);
+		return $success;
 	}
 
 	private function _getPeers(Model $Model, $id) {
