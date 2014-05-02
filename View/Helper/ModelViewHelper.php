@@ -122,6 +122,11 @@ class ModelViewHelper extends LayoutAppHelper {
  *
  **/
 	public function setModel($modelName) {
+		list($plugin, $model) = pluginSplit($modelName);
+		if (!empty($plugin)) {
+			$this->modelPlugin = $plugin;
+			$modelName = $model;
+		}
 		$this->modelName = $modelName;
 		$loadModel = $this->modelName;
 		if (!empty($this->modelPlugin)) {
