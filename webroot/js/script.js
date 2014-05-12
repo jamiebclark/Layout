@@ -455,7 +455,7 @@ documentReady(function() {
 							}
 						}
 						
-						$('submit,button[type="submit"]').each(function() {
+						$('submit,button[type="submit"]', $form).each(function() {
 							if (!$(this).attr('name')) {
 								$(this).addClass('modal-body-submit').hide();
 							}
