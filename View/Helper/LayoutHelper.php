@@ -929,7 +929,10 @@ class LayoutHelper extends LayoutAppHelper {
 		if (!empty($after)) {
 			$out .= $after;
 		}
-		return $this->Html->tag($tag, $out, compact('class'));		
+		if (!empty($tag)) {
+			$out = $this->Html->tag($tag, $out, compact('class'));
+		}
+		return $out;
 	}
 	
 	/*
