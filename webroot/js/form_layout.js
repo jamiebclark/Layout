@@ -79,7 +79,6 @@ documentReady(function() {
 
 			if (!$input.data('all-day-init')) {
 				function click() {
-					console.log($input.attr('name'));
 					var timeCount = 0;
 					$timeInputs.each(function() {
 						$(this).data('stored-val', $(this).val()).hide();
@@ -1433,16 +1432,26 @@ $(document).ready(function() {
 					.click(function() {toggle();});
 				
 				$(document).click(function() {
-					if (!$select.data('hovering') && !$mask.data('hovering') && !$div.data('hovering')) {
+					if (
+						$select.data('expanded') && 
+						!$select.data('hovering') && 
+						!$mask.data('hovering') && 
+						!$div.data('hovering')
+					) {
 						hide();
 					}
 				});
 				$select
 					.selectCollapseHoverTrack()
 					.click(function(e) {
+						$select.data('expanded', true).attr('disabled', 'disabled');
+
 						e.stopPropagation();
 						e.preventDefault();
 						toggle();
+					})
+					.hover(function(e) {
+						positionMask();
 					});
 				
 				$div.selectCollapseHoverTrack();
