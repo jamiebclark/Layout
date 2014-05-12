@@ -98,7 +98,9 @@ div.lead {
 	.breadcrumb {
 		margin-bottom: 0;
 	}
-	margin-bottom: $line-height-computed / 2;
+}
+#content-container {
+	margin-top: $line-height-computed;
 }
 
 // Form
