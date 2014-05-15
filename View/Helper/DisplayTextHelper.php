@@ -131,7 +131,7 @@ class DisplayTextHelper extends LayoutAppHelper {
 	public function evalPhp($text) {
 		extract($this->viewVars);
 		ob_start();
-		debug($text);
+		//debug($text);
 		eval("?>$text");
 		$text = ob_get_clean();
 		return $text;
@@ -167,7 +167,7 @@ class DisplayTextHelper extends LayoutAppHelper {
 	 * Generates a table of formatting commands and their result
 	 *
 	 **/
-	function cheatSheet() {
+	function cheatSheet($collapse = false) {
 		$out = $this->Html->tag('h2', 'Text Formatting Cheat Sheet');
 		if (!empty($this->constants)) {
 			$out .= $this->Html->tag('h3', 'Constants');
@@ -205,7 +205,11 @@ class DisplayTextHelper extends LayoutAppHelper {
 		$table .= $this->Html->tableCells($rows, array('class' => 'altrow'));
 		$out .= $this->Html->tag('table', $table, array('class' => 'displaytext-cheatsheet-shortcuts'));
 		
-		return $this->Html->div('displaytext-cheatsheet', $out);
+		$out = $this->Html->div('displaytext-cheatsheet', $out);
+		if ($collapse) {
+			$out = $this->Layout->toggle($collapse, null, 'DisplayText Cheat Sheet');
+		}
+		return $out;
 	}
 	
 	/**
