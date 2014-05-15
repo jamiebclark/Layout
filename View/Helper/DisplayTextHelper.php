@@ -249,8 +249,64 @@ class DisplayTextHelper extends LayoutAppHelper {
 		return $str;
 	}
 	
-	function smartFormat($str) {
+	/**
+	 * Converts the wiki markup for lists
+	 * Converts:
+	 * 		* List 1
+	 * 		* List 2
+	 *		** Sub List 1
+	 * 		** Sub List 2
+	 * To:
+	 *		<ul>
+	 *			<li>List 1</li>
+	 *			<li>List 2
+	 * 				<ul>
+	 *					<li>Sub List 1</li>
+	 *					<li>Sub List 2</li>
+	 *				</ul>
+	 *			</li>
+	 *		</ul>
+	 *			
+	 **/
+	public function listMarkup($text) {
+		$lines = explode("\n", $text);
+		$listTags = array();
+		$lastDepth = 0;
+		$text = '';
+		foreach ($lines as $line) {
+			if (preg_match('/([\*\#]+)[\s]*([^\r\n]+)/', $line, $matches)) {
+				list($full, $bullet, $line) = $matches;
+				$lineDepth = strlen($bullet);
+				if ($lineDepth > $lastDepth) {
+					for ($depth = $lastDepth; $depth < $lineDepth; $depth++) {
+						$tag = substr($bullet, $depth, 1) == '*' ? 'ul' : 'ol';
+						$listTags[$depth] = $tag;
+						$text .= sprintf('<%s>', $tag);
+					}
+				}
+				if ($lineDepth < $lastDepth) {
+					for ($depth = $lastDepth; $depth > $lineDepth; $depth--) {
+						$text .= sprintf('</%s>', array_pop($listTags));
+					}
+				}
+				$text .= sprintf('<li>%s</li>', $line);
+			} else {
+				$lineDepth = 0;
+				if ($lineDepth < $lastDepth) {
+					for ($depth = $lastDepth; $depth > $lineDepth; $depth--) {
+						$text .= sprintf('</%s>', array_pop($listTags));
+					}
+				}
+				$text .= $line;
+			}
+			$lastDepth = $lineDepth;
+		}
+		return $text;
+	}
+	
+	function smartFormat($text) {
 		$webroot = substr($this->_View->webroot,0,-1);
+		$text = $this->listMarkup($text);
 		$regx = array(
 			//Heading Items
 			'/^[=]{4}[\s]*(.*?)([\r\n]|[\n\r]|[\r]|[\n]|[=]{4})/m'				=>  "<h4>$1</h4>",
@@ -287,7 +343,7 @@ class DisplayTextHelper extends LayoutAppHelper {
 			$regx['#href="/#'] = 'href="'.$this->page_root.'/';
 		}
 		*/
-		return $this->pregReplaceArray($regx, $str);
+		return $this->pregReplaceArray($regx, $text);
 	}
 
 	/**
