@@ -568,6 +568,49 @@ documentReady(function() {
 
 //Scroll-fix
 (function($) {
+	$.fn.affixContent = function() {
+		var $this = $(this),
+			$content = $('#content'),
+			off = $content.offset(),
+			w = $(this).outerWidth(),
+			t = function() {
+				return (this.top = $this.parent().offset().top);
+			},
+			b = function() {
+				return (this.bottom = $('#footer').outerHeight(true));
+			},
+			styles = {
+				'position': '', 
+				'top': 'auto',
+				'width': w + "px"
+			};
+		function setStyles() {
+			if ($('body').outerWidth() < 500) {
+				styles.position = 'static';
+				styles.width = '';
+			}
+			$this.css(styles)
+			
+		}
+		$(this)
+			.affix({offset: {top: t, bottom: b}})
+			.on('affixed.bs.affix', function() {
+				styles.position = 'fixed';
+				styles.top = 0;
+				setStyles();
+			})
+			.on('affixed-top.bs.affix', function() {
+				styles.position = 'relative';
+				styles.top = 'auto';
+				setStyles();
+			})
+			.on('affixed-bottom.affix', function() {
+				styles.position = 'relative';
+				setStyles();
+			});
+			
+				
+	};
 	$.fn.scrollfix = function() {
 		return this.each(function() {
 			function fix() {
@@ -631,6 +674,7 @@ documentReady(function() {
 	};
 })(jQuery);
 documentReady(function() {
+	$('.affix-content').affixContent();
 	$('.scrollfix').scrollfix();
 });
 
