@@ -102,7 +102,6 @@ class Markup {
 			} else {
 				$lineDepth = 0;
 				if (!empty($listTags)) {
-					debug($listTags);
 					for ($depth = count($listTags); $depth > 0; $depth--) {
 						$text .= sprintf('</%s>', array_pop($listTags));
 					}
