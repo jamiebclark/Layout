@@ -5,6 +5,8 @@
  **/
 App::uses('Param', 'Layout.Lib');
 App::uses('TextCleanup', 'Layout.Lib');
+App::uses('Markup', 'Layout.Lib');
+
 App::uses('LayoutAppHelper', 'Layout.View/Helper');
 
 
@@ -61,7 +63,7 @@ class DisplayTextHelper extends LayoutAppHelper {
 			$text = $this->addConstants($text);
 		}
 		if (!Param::falseCheck($options, 'urls')) {
-			$text = $this->parseHref($text, !Param::falseCheck($options, 'shrinkUrls'));
+			$text = Markup::setLinks($text, !Param::falseCheck($options, 'shrinkUrls'));
 		}
 		if (!Param::falseCheck($options, 'smileys')) {
 			$text = $this->parseSmileys($text);
@@ -250,100 +252,14 @@ class DisplayTextHelper extends LayoutAppHelper {
 	}
 	
 	/**
-	 * Converts the wiki markup for lists
-	 * Converts:
-	 * 		* List 1
-	 * 		* List 2
-	 *		** Sub List 1
-	 * 		** Sub List 2
-	 * To:
-	 *		<ul>
-	 *			<li>List 1</li>
-	 *			<li>List 2
-	 * 				<ul>
-	 *					<li>Sub List 1</li>
-	 *					<li>Sub List 2</li>
-	 *				</ul>
-	 *			</li>
-	 *		</ul>
-	 *			
+	 * Sets all markup formatting
+	 *
 	 **/
-	public function listMarkup($text) {
-		$lines = explode("\n", $text);
-		$listTags = array();
-		$lastDepth = 0;
-		$text = '';
-		foreach ($lines as $line) {
-			if (preg_match('/([\*\#]+)[\s]*([^\r\n]+)/', $line, $matches)) {
-				list($full, $bullet, $line) = $matches;
-				$lineDepth = strlen($bullet);
-				if ($lineDepth > $lastDepth) {
-					for ($depth = $lastDepth; $depth < $lineDepth; $depth++) {
-						$tag = substr($bullet, $depth, 1) == '*' ? 'ul' : 'ol';
-						$listTags[$depth] = $tag;
-						$text .= sprintf('<%s>', $tag);
-					}
-				}
-				if ($lineDepth < $lastDepth) {
-					for ($depth = $lastDepth; $depth > $lineDepth; $depth--) {
-						$text .= sprintf('</%s>', array_pop($listTags));
-					}
-				}
-				$text .= sprintf('<li>%s</li>', $line);
-			} else {
-				$lineDepth = 0;
-				if ($lineDepth < $lastDepth) {
-					for ($depth = $lastDepth; $depth > $lineDepth; $depth--) {
-						$text .= sprintf('</%s>', array_pop($listTags));
-					}
-				}
-				$text .= $line;
-			}
-			$lastDepth = $lineDepth;
-		}
-		return $text;
-	}
-	
-	function smartFormat($text) {
+	public function smartFormat($text) {
 		$webroot = substr($this->_View->webroot,0,-1);
-		$text = $this->listMarkup($text);
-		$regx = array(
-			//Heading Items
-			'/^[=]{4}[\s]*(.*?)([\r\n]|[\n\r]|[\r]|[\n]|[=]{4})/m'				=>  "<h4>$1</h4>",
-			'/^[=]{3}[\s]*(.*?)([\r\n]|[\n\r]|[\r]|[\n]|[=]{3})/m'				=>  "<h3>$1</h3>",
-			'/^[=]{2}[\s]*(.*?)([\r\n]|[\n\r]|[\r]|[\n]|[=]{2})/m'				=>  "<h2>$1</h2>",
-			'/^[=]{1}[\s]*(.*?)([\r\n]|[\n\r]|[\r]|[\n]|[=]{1})/m'				=>  "<h1>$1</h1>",
-			
-//			'/&#039;&#039;&#039;([^"&#039;&#039;&#039;"]+)&#039;&#039;&#039;/'	=>  "<strong>$1</strong>",
-			'/[\']{3}(.*?)[\']{3}/s'										=>  "<strong>$1</strong>",
-//			'/&#039;&#039;([^"&#039;&#039;"]+)&#039;&#039;/'				=>  "<em>$1</em>",
-			'/[\']{2}(.*?)[\']{2}/s'										=>  "<em>$1</em>",
-			'/["]{3}(.*?)["]{3}/s'											=>  "<blockquote><div>&quot;$1&quot;</div></blockquote>",
-			'/["]{2}(.*?)["]{2}/s'											=>  "<blockquote><div>$1</div></blockquote>",
-			
-			//Updates List Items
-			'/[\r\n]+-[\s]+(.*?)[\r]*[\n]*[\r]*[\n]*$/sm'		=>	'<uli>$1</uli>',
-			'/[\r\n]+[\d]+\.[\s]+([^\r\n]+)[\r]*$/sm'			=>	'<oli>$1</oli>',
-			'#((?<!uli\>)<uli>.*?</uli>(?!\<uli))#m'			=>	'<ul>$1</ul>',
-			'#((?<!oli\>)<oli>.*?</oli>(?!\<oli))#m'			=>	'<ol>$1</ol>',
-			'/<[o|u]li>/'										=>	'<li>',
-			'/<\/[o|u]li>/'										=>	"</li>\r\n",
-			
-			'/\[(\/[^\s]+)\]/'									=>	'<a href="' . $webroot . '$1">$1</a>',
-			'/\[(\/[^\s]+)[\s]([^\]]+)\]/'						=>	'<a href="' . $webroot . '$1">$2</a>',
-			'/\[([http|\/|\.][^\s]+)\]/'						=>	'<a href="$1">$1</a>',
-			'/\[([http|\/|\.][^\s]+)[\s]([^\]]+)\]/'			=>	'<a href="$1">$2</a>',
-			//'/\{([http|\/|\.][^\s]+)[\s]([^\}]+)\}/'			=>	'<a href="$1">$2</a>',
-
-		);
-
-		/*
-		if($this->global_links) {
-			//Makes sure there are no local links if set
-			$regx['#href="/#'] = 'href="'.$this->page_root.'/';
-		}
-		*/
-		return $this->pregReplaceArray($regx, $text);
+		return Markup::set($text, compact('webroot') + array(
+			'wikiModel' => $this->wikiModel,
+		));
 	}
 
 	/**
@@ -392,7 +308,7 @@ class DisplayTextHelper extends LayoutAppHelper {
 					$attrs = null;
 				}
 				$width = is_numeric($attrs) ? $attrs : 1;
-				$column = $this->trimBreaks($column);
+				$column = Markup::trimBreaks($column);
 				if (empty($column)) {
 					continue;
 				}
@@ -416,19 +332,7 @@ class DisplayTextHelper extends LayoutAppHelper {
 		return $return;
 	}
 	
-	function pregReplaceArray($regx, $str) {
-		$str = "\n$str";
-		$str = preg_replace(array_keys($regx),$regx,$str,-1,$count);
-		return $this->trimBreaks($str);
-	}
 	
-	private function trimBreaks($str) {
-		$str = preg_replace(array(
-			'#^[\r\n]*(?:<br\s*/?>[\s\r\n]*)+#', 	//Breaks at beginning of string
-			'#(?:<br\s*/?>[\s\r\n]*)+[\r\n]*$#'		//Breaks at end of string
-		), '', $str);
-		return $str;
-	}
 	
 	function shortenStripTags($str) {
 	//If the blog article is being shortened, it strips out certain tags
@@ -683,16 +587,16 @@ class DisplayTextHelper extends LayoutAppHelper {
 		return $array;
 	}
 	
-	function tableOfContents($str, $options = array()) {
+	function tableOfContents(&$text, $options = array()) {
 		$options = array_merge(array(
 			'cutoff' => 3,
 		), $options);
 		
-		$str = $this->Html->div('parseWrapper', $str);
+		$text = $this->Html->div('parseWrapper', $text);
 		
 		$p = xml_parser_create();
 		xml_set_character_data_handler($p, array(&$this, 'xmlDataHandler'));
-		xml_parse_into_struct($p, $str, $elements, $index);
+		xml_parse_into_struct($p, $text, $elements, $index);
 		
 		$slugs = array();
 		
@@ -700,8 +604,9 @@ class DisplayTextHelper extends LayoutAppHelper {
 		$hIndex = 0;
 		$toc = '';	//Table of Contents
 		$bullet = array();
-		
-		$currentUrl = Router::url();
+		$url = Url::urlArray() + array('base' => false);
+		unset($url['#']);
+		$currentUrl = Router::url($url);
 		$count = 0;
 		foreach ($elements as $element) {
 			$element = array_merge(array(
@@ -749,16 +654,21 @@ class DisplayTextHelper extends LayoutAppHelper {
 						$bullet[$h]++;
 						
 						$element['attributes']['id'] = $slug;
-						$value .= ' ' . $this->Html->link('top', $currentUrl . '#top');
+						$value .= ' ' . $this->Html->link('top', $currentUrl . '#top', array('class' => 'top-link'));
 					}				
 					$return .= $this->Html->tag($element['tag'], $value, $element['attributes']);
 				}
 			}
 		}
+		$text = $return;
 		if ($count >= $options['cutoff']) {
-			$return = $this->Html->div('toc', $this->Html->tag('h2', 'Contents') . $toc) . $this->Html->tag('a', '&nbsp;', array('id' => 'top')) . $return;
+			return $this->Html->div('box toc',
+				$this->Html->tag('h2', 'Content', array('class' => 'toc-title box-header')) 
+				. $toc
+			);
+		} else {
+			return '';
 		}
-		return $return;
 	}
 	
 	function _asciiDebug($text) {

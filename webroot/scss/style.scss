@@ -14,6 +14,7 @@
 @import "calendar"; 
 @import "collapse_list";
 @import "content";
+@import "contentbox";
 @import "display-text";
 @import "dropdown-submenu";
 @import "form-layout";
@@ -153,66 +154,6 @@ div.lead {
 }
 .breakout-small {
 	padding: $padding-breakout-small;
-}
-
-// Content Box
-// ----------------
-.contentbox {
-	clear: both;
-	border: $content-box-border;
-	background: $content-box-background;
-	margin-bottom: $line-height-computed;
-	border-radius: $content-box-border-radius;
-	
-	@if $content-box-shadow != 0 {
-		-moz-box-shadow: $content-box-shadow;
-		-webkit-box-shadow: $content-box-shadow;
-		box-shadow: $content-box-shadow;
-	}
-	&.list {
-		.contentbox-body {
-			padding: 0;
-			
-			padding-left: 0;
-			padding-right: 0;
-			padding-bottom: 0;
-			padding-top: 0;
-		}
-	}
-}
-.contentbox-heading {
-	margin-bottom: 0 !important;
-	border-bottom: $content-box-divider-border;
-	.navbar {
-		box-shadow: 0 0 0 0;
-		min-height: 0;
-		.navbar-brand {
-			padding-top: 5px;
-			padding-bottom: 5px;
-			height: auto;
-		}
-	}
-}
-
-h2.contentbox-heading, 
-h3.contentbox-heading, 
-h4.contentbox-heading, 
-.contentbox-heading .navbar-inner {
-	border: 0;
-	margin: 0;
-	border-radius: 0;
-	padding: $content-box-heading-padding-vertical $content-box-heading-padding-horizontal;
-	background: $content-box-heading-background;
-	font-family: $content-box-heading-font;
-	font-size: $content-box-heading-size;
-}
-h2.contentbox-heading, 
-h3.contentbox-heading, 
-h4.contentbox-heading {
-	line-height: $content-box-heading-line-height;
-}
-.contentbox-body {
-	padding: $content-box-body-padding;
 }
 
 

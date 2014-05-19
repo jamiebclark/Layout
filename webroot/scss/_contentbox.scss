@@ -1,0 +1,137 @@
+// Box
+// (A more stripped down version of contentbox
+// -----------------
+$box-border:						$content-box-border;
+$box-bg:							$content-box-background;
+$box-radius:						$content-box-border-radius;
+$box-shadow:						$content-box-shadow;
+$box-padding-horizontal:			$padding-base-horizontal;
+$box-padding-vertical:				$padding-base-vertical;
+$box-header-bg:						$content-box-heading-background;
+$box-header-padding-horizontal:		$content-box-heading-padding-horizontal;
+$box-header-padding-vertical:		$content-box-heading-padding-vertical;
+$box-header-font:					$content-box-heading-font;
+$box-header-size:					$content-box-heading-size;
+$box-header-line-height:			$content-box-heading-line-height;
+
+$box-divider-border:				$content-box-divider-border;
+
+
+.box {
+	clear: both;
+	border: $box-border;
+	background: $box-bg;
+	margin-bottom: $line-height-computed;
+	border-radius: $box-radius;
+	padding: $box-padding-vertical $box-padding-horizontal;
+	@if $box-shadow != 0 {
+		-moz-box-shadow: $box-shadow;
+		-webkit-box-shadow: $box-shadow;
+		box-shadow: $box-shadow;
+	}	
+}
+.box-list {
+	padding: 0;
+	
+	padding-left: 0;
+	padding-right: 0;
+	padding-bottom: 0;
+	padding-top: 0;
+	.box-header {
+		margin-top: 0;
+		margin-left: 0;
+		margin-right: 0;
+		margin-bottom: 0;
+	}
+}
+.box-header {
+	border-bottom: $box-divider-border;
+	margin-top: #{-1 * $box-padding-vertical};
+	margin-right: #{-1 * $box-padding-horizontal};
+	margin-bottom: $box-padding-vertical;
+	margin-left: #{-1 * $box-padding-horizontal};
+	padding: $box-header-padding-vertical $box-header-padding-horizontal;
+	.navbar {
+		box-shadow: 0 0 0 0;
+		min-height: 0;
+		.navbar-brand {
+			padding-top: 5px;
+			padding-bottom: 5px;
+			height: auto;
+		}
+	}
+}
+h2.box-header, h3.box-header, h4.box-header, .box-header .navbar {
+	border: 0;
+	border-radius: 0;
+	padding: $box-header-padding-vertical $box-header-padding-horizontal;
+	background: $box-header-bg;
+	font-family: $box-header-font;
+	font-size: $box-header-size;
+}
+h2.box-header, 
+h3.box-header, 
+h4.box-header {
+	line-height: $box-header-line-height;
+}
+
+
+// Content Box
+// ----------------
+.contentbox {
+	clear: both;
+	border: $content-box-border;
+	background: $content-box-background;
+	margin-bottom: $line-height-computed;
+	border-radius: $content-box-border-radius;
+	
+	@if $content-box-shadow != 0 {
+		-moz-box-shadow: $content-box-shadow;
+		-webkit-box-shadow: $content-box-shadow;
+		box-shadow: $content-box-shadow;
+	}
+	&.list {
+		.contentbox-body {
+			padding: 0;
+			
+			padding-left: 0;
+			padding-right: 0;
+			padding-bottom: 0;
+			padding-top: 0;
+		}
+	}
+}
+.contentbox-heading {
+	margin-bottom: 0 !important;
+	border-bottom: $content-box-divider-border;
+	.navbar {
+		box-shadow: 0 0 0 0;
+		min-height: 0;
+		.navbar-brand {
+			padding-top: 5px;
+			padding-bottom: 5px;
+			height: auto;
+		}
+	}
+}
+
+h2.contentbox-heading, 
+h3.contentbox-heading, 
+h4.contentbox-heading, 
+.contentbox-heading .navbar-inner {
+	border: 0;
+	margin: 0;
+	border-radius: 0;
+	padding: $content-box-heading-padding-vertical $content-box-heading-padding-horizontal;
+	background: $content-box-heading-background;
+	font-family: $content-box-heading-font;
+	font-size: $content-box-heading-size;
+}
+h2.contentbox-heading, 
+h3.contentbox-heading, 
+h4.contentbox-heading {
+	line-height: $content-box-heading-line-height;
+}
+.contentbox-body {
+	padding: $content-box-body-padding;
+}
