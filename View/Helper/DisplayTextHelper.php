@@ -78,15 +78,19 @@ class DisplayTextHelper extends LayoutAppHelper {
 			$text = strip_tags($text, $this->allowableTags);
 		}
 
+		
 		if ($fragment = Param::keyCheck($options, 'fragment', true)) {
-			if (is_array($fragment)) {
-				$length = array_shift($fragment);
-				$fOptions = array_shift($fragment);
+			$options['truncate'] = $fragment;
+		}
+		if ($truncate = Param::keyCheck($options, 'truncate', true)) {
+			if (is_array($truncate)) {
+				$length = array_shift($truncate);
+				$fOptions = array_shift($truncate);
 			} else {
-				$length = $fragment;
+				$length = $truncate;
 				$fOptions = array();
 			}
-			$text = $this->fragment($text, $length, $fOptions);
+			$text = $this->truncate($text, $length, $fOptions);
 		}
 
 		
@@ -375,7 +379,7 @@ class DisplayTextHelper extends LayoutAppHelper {
 	* @return string Fragment
 	* @access public
 	*/
-	function fragment($text, $length, $options = array()) {
+	function truncate($text, $length, $options = array()) {
 		if (!is_array($options)) {
 			$options = array('ellipsis' => $options);
 		}
@@ -401,6 +405,11 @@ class DisplayTextHelper extends LayoutAppHelper {
 		$out = $out . (strlen($out) < strlen($text) ? $ellipsis : null);
 		return $this->closeOpenedTags($out);
 	}
+	//Legacy term
+	public function fragment($text, $length, $options = array()) {
+		return $this->truncate($text, $length, $options);
+	}
+
 	
 	function cash($number, $round = null) {
 		$number = html_entity_decode($number);

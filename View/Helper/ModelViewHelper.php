@@ -858,6 +858,29 @@ class ModelViewHelper extends LayoutAppHelper {
 		return '';
 	}
 
+/** 
+ * Outputs a breadcrumb list based on a getPath result
+ *
+ **/
+	public function pathBreadcrumb($resultPath, $options = array()) {
+		$options = array_merge(array(
+			'lastLink' => false,		//Should the last item be a link
+			'class' => 'breadcrumb',	
+			'url' => null, 				//Set an alternate url from the default one
+		), $options);
+		extract($options);
+		$count = count($resultPath) - 1;
+		$out = '';
+		foreach ($resultPath as $k => $result) {
+			if (!$lastLink && $k == $count) {
+				$out .= sprintf('<li class="active">%s</li>', $result[$this->modelName][$this->displayField]);
+			} else {
+				$out .= sprintf('<li>%s</li>', $this->link($result, compact('url')));
+			}
+		}
+		return $this->Html->tag('ol', $out, compact('class'));
+	}
+	
 	private function _getColSizeClass($options = array(), $unset = true) {
 		$class = '';
 		//Converts from Bootstrap 2.X spanN classes
