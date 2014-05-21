@@ -397,6 +397,9 @@ class FormLayoutHelper extends LayoutAppHelper {
 	}
 	
 	private function _buttonInner($name, $options = array()) {
+		if (empty($options) && is_array($name)) {
+			list($name, $options) = $name;
+		}
 		$options = array_merge(array(
 			'div' => false,
 			'escape' => false,
