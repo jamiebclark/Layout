@@ -663,7 +663,7 @@ class DisplayTextHelper extends LayoutAppHelper {
 						$bullet[$h]++;
 						
 						$element['attributes']['id'] = $slug;
-						$value .= ' ' . $this->Html->link('top', $currentUrl . '#top', array('class' => 'top-link'));
+						$value .= ' ' . $this->Html->link('Back to top', $currentUrl . '#top', array('class' => 'badge badge-default'));
 					}				
 					$return .= $this->Html->tag($element['tag'], $value, $element['attributes']);
 				}
