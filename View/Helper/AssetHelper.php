@@ -118,6 +118,10 @@ class AssetHelper extends LayoutAppHelper {
 			$types = array($types);
 		}
 		foreach ($types as $type) {
+			// Cut and paste those added with HtmlHelper
+			if (in_array($type, $this->_minifyableTypes)) {
+				$this->getBlockAssets($type);
+			}
 			if (!empty($this->_assets[$type])) {
 				$files = $this->_assets[$type];
 				if ($this->minify && in_array($type, $this->_minifyableTypes)) {
@@ -144,6 +148,33 @@ class AssetHelper extends LayoutAppHelper {
 		}
 		$out .= '<!--- END ASSETS -->'. $eol;
 		return $out;
+	}
+	
+	
+	/**
+	 * Checks a View block for posted assets and adds them to minify
+	 *
+	 * @param String $type The asset type (css|js)
+	 * @param String $blockName Optional alternate name of the block. Otherwise type will be used
+	 * @return bool True on success
+	 **/
+	private function getBlockAssets($type, $blockName = null) {
+		if (empty($blockName)) {
+			$blockName = $type;
+		}
+		$block = $this->_View->fetch($blockName);
+		if (!empty($block)) {
+			//debug(preg_match_all('/()/', $block, $matches));
+			//if (preg_match_all('/<href=[\'"]([^\'"]+)/', $matches
+			$block = '<xml>' . preg_replace('#([^/])>#', '$1/>', $block) . '</xml>';
+			$xml = new SimpleXMLElement($block);
+			foreach ($xml->link as $k => $link) {
+				$attr = current($link->attributes());
+				$this->_addFile($type, $attr['href']);
+			}
+		}
+		$this->_View->assign($blockName, '');		// Clear existing block
+		return true;
 	}
 	
 	//Converts type to the corresponding Html helper type
@@ -207,7 +238,7 @@ class AssetHelper extends LayoutAppHelper {
 				$typeFiles[$file] = $config;
 			}
 		}
-		//debug($this->_assets);
+		// debug($this->_assets);
 		return true;
 	}
 	

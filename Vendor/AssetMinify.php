@@ -120,6 +120,23 @@ class AssetMinify {
 			$plugin = null;
 			$file = $oFile;
 		}
+		
+		// Finds absolute file names
+		if (substr($file, 0, 1) == '/') {
+			$base = substr(Router::url('/'), 1, -1);
+			$parts = explode('/', $file);
+			// Checks to make sure absolute path fits into the Cake infrastructure
+			if ($parts[1] == $base && ($parts[2] == $type || $parts[3] == $type)) {
+				if ($parts[3] == $type) {
+					$plugin = Inflector::camelize($parts[2]);
+					$slice = 4;
+				} else {
+					$slice = 3;
+				}
+				$file = implode('/', array_slice($parts, $slice));
+			}
+		}
+
 		if ($forWeb) {
 			$root = Router::url('/');
 			if (!empty($plugin)) {
@@ -128,7 +145,9 @@ class AssetMinify {
 		} else {
 			$root = empty($plugin) ? WWW_ROOT : $this->_getPluginDir($plugin) . 'webroot' . $ds;
 		}
+			
 		$path = $root . $type . $ds . $file;
+
 		if (substr($path, -1 * strlen($type)) != $type) {
 			$path .= ".$type";
 		}
@@ -137,6 +156,7 @@ class AssetMinify {
 			array_pop($path);
 			$path = implode($ds, $path) . $ds;
 		}
+		//debug(compact('file', 'type', 'path', 'root'));
 		return $path;
 	}
 	

@@ -180,3 +180,7 @@ $select-collapse-size:					12px !default;
 
 $zindex-select-collapse-mask:				$zindex-modal + 10 !default;
 $zindex-select-collapse:					$zindex-select-collapse-mask + 10 !default;
+
+// JQuery + JQuery UI
+// ---------------------------------
+$zindex-jqueryui-front:						$zindex-modal + 10;
