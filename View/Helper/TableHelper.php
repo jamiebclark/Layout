@@ -207,6 +207,8 @@ class TableHelper extends LayoutAppHelper {
 		$text = 'Sort Result';
 		$named = !empty($this->request->params['named']) ? $this->request->params['named'] : array();
 		
+		$url = array('sort' => false, 'direction' => false, 'page' => false) + Url::urlArray();
+		
 		foreach ($sortMenu as $k => $sortOptions) {
 			$sortOptions += array(null, null, true);
 			list($title, $sort, $direction) = $sortOptions;
@@ -229,7 +231,7 @@ class TableHelper extends LayoutAppHelper {
 			} else {
 				$active = false;
 			}
-			$menu[] = array($title, compact('sort', 'direction'), compact('active'));
+			$menu[] = array($title, compact('sort', 'direction') + $url, compact('active'));
 		}
 		return $this->Layout->dropdown($text, $menu, $options);
 	}
@@ -410,7 +412,13 @@ class TableHelper extends LayoutAppHelper {
 		if (!empty($options['sort'])) {
 			$out .= $this->tableSortMenu($options['sort'], array('class' => 'pull-right'));
 		}
-		if (!empty($options['paginate'])) {
+		
+		$model = !empty($options['model']) ? $options['model'] : $this->Paginator->defaultModel();
+
+		if (
+			(!isset($options['paginate']) || $options['paginate'] !== false) &&
+			!empty($this->request->params['paging'][$model])
+		) {
 			$out .= $this->Layout->paginateNav();
 		}
 		if (!empty($out)) {
