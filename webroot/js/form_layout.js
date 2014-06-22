@@ -890,6 +890,7 @@ documentReady(function() {
 					$(this).prop('checked', true);
 				}				
 			});
+			$('.no-clone', $cloned).remove();
 			$(':input', $cloned).not(':hidden,:checkbox,:radio,:submit,:reset').each(function() {
 				var v = '';
 				if ($(this).data('clone-numbered-default')) {
