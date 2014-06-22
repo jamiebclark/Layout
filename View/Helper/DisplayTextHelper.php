@@ -30,8 +30,8 @@ class DisplayTextHelper extends LayoutAppHelper {
 		if (!empty($options['constants'])) {
 			$this->addConstant($options['constants']);
 		}
-		if (empty($GLOBALS['Layout.DisplayText']['methods'])) {
-			$GLOBALS['Layout.DisplayText']['methods'] = [];
+		if (empty($this->_textMethods)) {
+			$this->_textMethods = [];
 		}
 		parent::__construct($View, $options);
 	}
@@ -40,9 +40,9 @@ class DisplayTextHelper extends LayoutAppHelper {
 		$insert = array($method, $args, $flag);
 		//$key = serialize($insert);
 		if ($prepend) {
-			$GLOBALS['Layout.DisplayText']['methods'] = array_merge(array($insert), $GLOBALS['Layout.DisplayText']['methods']);
+			$this->_textMethods = array_merge(array($insert), $this->_textMethods);
 		} else {
-			$GLOBALS['Layout.DisplayText']['methods'][] = $insert;
+			$this->_textMethods[] = $insert;
 		}
 	}
 
@@ -55,9 +55,9 @@ class DisplayTextHelper extends LayoutAppHelper {
 	}
 
 	private function _renderTextMethods($text, $options = array()) {
-		foreach ($GLOBALS['Layout.DisplayText']['methods'] as $k => $vars) {
+		foreach ($this->_textMethods as $k => $vars) {
 			list($method, $args, $flag) = $vars;
-			if ($flag === false || (isset($options['flag']) && $options['flag'] === false)) {
+			if ($flag === false || (isset($options['flags'][$flag]) && $options['flags'][$flag] === false)) {
 				continue;
 			}
 			if (!empty($args)) {
@@ -81,10 +81,12 @@ class DisplayTextHelper extends LayoutAppHelper {
 		- urls : false for no auto-linked urls
 		- smileys : false for no emoticons
 		- html : false for no html tags
-		- multiNl : falst to remove multiple new line characters
+		- multiNl : false to remove multiple new line characters
 	 **
 	 **/
 	function text($text, $options = array()) {
+		$flags = [];
+		
 		$this->addTextMethod(array($this, '_asciiDebug'), null, !empty($_GET['ascii']));
 		$this->addTextMethod(array($this, 'smartFormat'), null, 'format');
 		
@@ -158,8 +160,8 @@ class DisplayTextHelper extends LayoutAppHelper {
 
 		$text = $this->_renderTextMethods($text, $options);
 
-		debug(count($GLOBALS['Layout.DisplayText']['methods']));
-		
+		debug(count($this->_textMethods));
+
 		return $text;
 	}
 	
