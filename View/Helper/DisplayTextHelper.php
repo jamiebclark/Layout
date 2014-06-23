@@ -160,7 +160,7 @@ class DisplayTextHelper extends LayoutAppHelper {
 
 		$text = $this->_renderTextMethods($text, $options);
 
-		debug(count($this->_textMethods));
+		//debug(count($this->_textMethods));
 
 		return $text;
 	}
