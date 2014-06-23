@@ -11,69 +11,27 @@ App::uses('LayoutAppHelper', 'Layout.View/Helper');
 
 
 class DisplayTextHelper extends LayoutAppHelper {
-	public $helpers = array(
+	var $helpers = array(
 		'Layout.Asset',
 		'Layout.Grid',
 		'Html', 
 		'Layout.Layout', 
 		'Layout.Iconic'
 	);
-	public $valid_tag_exp = ':A-Za-z0-9';	//Acceptable tag characters
-	public $allowableTags = '<br><hr><strong><em>';
+	var $valid_tag_exp = ':A-Za-z0-9';	//Acceptable tag characters
+	var $allowableTags = '<br><hr><strong><em>';
 	
-	public $constants = array();
+	var $constants = array();
 	
 	private $_textOptions = array(); 	//Stores options when buffering output
-	private $_textMethods = array();
-
-	public function __construct(View $View, $options = null) {
+	
+	function __construct(View $View, $options = null) {
 		if (!empty($options['constants'])) {
-			$this->addConstant($options['constants']);
-		}
-		if (empty($this->_textMethods)) {
-			$this->_textMethods = [];
-		}
+			$this->constants = array_merge($this->constants, $options['constants']);
+		}		
 		parent::__construct($View, $options);
 	}
 	
-	public function addTextMethod($method, $args = array(), $flag = null, $prepend = false) {
-		$insert = array($method, $args, $flag);
-		//$key = serialize($insert);
-		if ($prepend) {
-			$this->_textMethods = array_merge(array($insert), $this->_textMethods);
-		} else {
-			$this->_textMethods[] = $insert;
-		}
-	}
-
-	public function addConstant($find, $replace = null) {
-		if (is_array($find)) {
-			$this->constants = array_merge($this->constants, $find);
-		} else {
-			$this->constants[$find] = $replace;
-		}
-	}
-
-	private function _renderTextMethods($text, $options = array()) {
-		foreach ($this->_textMethods as $k => $vars) {
-			list($method, $args, $flag) = $vars;
-			if ($flag === false || (isset($options['flags'][$flag]) && $options['flags'][$flag] === false)) {
-				continue;
-			}
-			if (!empty($args)) {
-				if (is_array($args)) {
-					array_unshift($args, $text);	// Adds Text as first argument
-				} else {
-					$args = array($text, $args);
-				}
-			} else {
-				$args = array($text);
-			}
-			$text = call_user_func_array($method, $args);
-		}
-		return $text;
-	}
-
 	/**
 	 * Runs all functions on text
 	 $options accepts the following:
@@ -81,27 +39,40 @@ class DisplayTextHelper extends LayoutAppHelper {
 		- urls : false for no auto-linked urls
 		- smileys : false for no emoticons
 		- html : false for no html tags
-		- multiNl : false to remove multiple new line characters
+		- multiNl : falst to remove multiple new line characters
 	 **
 	 **/
 	function text($text, $options = array()) {
-		$flags = [];
+		if (Param::keyCheck($_GET, 'ascii')) {
+			$this->_asciiDebug($text);
+		}
 		
-		$this->addTextMethod(array($this, '_asciiDebug'), null, !empty($_GET['ascii']));
-		$this->addTextMethod(array($this, 'smartFormat'), null, 'format');
+		if (!Param::falseCheck($options, 'format')) {
+			$text = $this->smartFormat($text);
+		}
 		
 		$multiNl = !Param::falseCheck($options, 'multiNl');
 		$nlPad = Param::keyCheck($options, 'nlPad');
+		$text = $this->smartNl2br($text, compact('multiNl', 'nlPad'));
 		
-		$this->addTextMethod(array($this, 'smartNl2br'), compact('multiNl', 'nlPad'));
-		$this->addTextMethod(array($this, 'smartFormat'), null, 'format');
-		$this->addTextMethod(array($this, 'stripSpecialChars'));
-		$this->addTextMethod(array($this, 'addConstants'), null, 'format');
-		$this->addTextMethod(__NAMESPACE__ . '\Markup::setLinks', array(!Param::falseCheck($options, 'shrinkUrls')), 'urls');
+		if (!Param::falseCheck($options, 'format')) {
+			$text = $this->smartFormat($text);
+		}
+		$text = $this->stripSpecialChars($text);
+		if (!Param::falseCheck($options, 'format')) {
+			$text = $this->addConstants($text);
+		}
+		if (!Param::falseCheck($options, 'urls')) {
+			$text = Markup::setLinks($text, !Param::falseCheck($options, 'shrinkUrls'));
+		}
+		if (!Param::falseCheck($options, 'smileys')) {
+			$text = $this->parseSmileys($text);
+		}
+		
+		if (Param::keyValCheck($options, 'first')) {
+			$text = $this->firstParagraph($text);
+		}
 
-		$this->addTextMethod(array($this, 'parseSmileys'), null, 'smileys');
-		$this->addTextMethod(array($this, 'firstParagraph'), null, Param::keyValCheck($options, 'first'));
-		
 		//Setting 'html' to false will strip tags
 		if (Param::falseCheck($options, 'html')) {
 			$text = strip_tags($text, $this->allowableTags);
@@ -157,10 +128,6 @@ class DisplayTextHelper extends LayoutAppHelper {
 		if (Param::keyCheck($options, 'php')) {
 			$text = $this->evalPhp($text);
 		}
-
-		$text = $this->_renderTextMethods($text, $options);
-
-		//debug(count($this->_textMethods));
 
 		return $text;
 	}
