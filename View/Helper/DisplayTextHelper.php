@@ -11,27 +11,98 @@ App::uses('LayoutAppHelper', 'Layout.View/Helper');
 
 
 class DisplayTextHelper extends LayoutAppHelper {
-	var $helpers = array(
+	public $helpers = array(
 		'Layout.Asset',
 		'Layout.Grid',
 		'Html', 
 		'Layout.Layout', 
 		'Layout.Iconic'
 	);
-	var $valid_tag_exp = ':A-Za-z0-9';	//Acceptable tag characters
-	var $allowableTags = '<br><hr><strong><em>';
+	public $valid_tag_exp = ':A-Za-z0-9';	//Acceptable tag characters
+	public $allowableTags = '<br><hr><strong><em>';
 	
-	var $constants = array();
+	public $constants = array();
 	
 	private $_textOptions = array(); 	//Stores options when buffering output
-	
-	function __construct(View $View, $options = null) {
+	private $_textMethods = array();
+
+	public function __construct(View $View, $options = null) {
 		if (!empty($options['constants'])) {
-			$this->constants = array_merge($this->constants, $options['constants']);
-		}		
+			$this->addConstant($options['constants']);
+		}
+		if (empty($this->_textMethods)) {
+			$this->_textMethods = [];
+		}
+
 		parent::__construct($View, $options);
+
+		// Default Text Methods
+		$Helper = $this;
+		$this->registerTextMethod('format', [$this, 'smartFormat']);
+		$this->registerTextMethod('format', [$this, 'stripSpecialChars']);
+		$this->registerTextMethod('format', [$this, 'addConstants']);
+
+		App::uses('Markup', 'Layout.Lib');
+		$this->registerTextMethod('urls', ['Markup','setLinks'], ['shrinkUrls']);
+		$this->registerTextMethod('smileys', [$this, 'parseSmileys']);
+		$this->registerTextMethod('first', [$this, 'firstParagraph']);
+		
+		$this->registerTextMethod('striphtml', function($text) use ($Helper) {
+			return strip_tags($text, $Helper->allowableTags);
+		});
+
+		$this->registerTextMethod('truncate', [$this, 'truncate'], ['truncate']);
+		$this->registerTextMethod('surround', function($text, $surround) {
+			return "$surround$text$surround";
+		}, 'surround');
+
+		$this->registerTextMethod('php', [$this, 'evalPhp']);
 	}
 	
+	public function registerTextMethod($flag, $method, $args = [], $prepend = false) {
+		$method = [$flag, $method, $args];
+		//$key = serialize($method);
+		if ($prepend) {
+			$this->_textMethods = array_merge([$method], $this->_textMethods);
+		} else {
+			$this->_textMethods[] = $method;
+		}
+	}
+
+	public function addConstant($find, $replace = null) {
+		if (is_array($find)) {
+			$this->constants = array_merge($this->constants, $find);
+		} else {
+			$this->constants[$find] = $replace;
+		}
+	}
+
+	private function _renderTextMethods($text, $options = []) {
+		foreach ($this->_textMethods as $k => $vars) {
+			list($flag, $method, $args) = $vars;
+			if ($flag === false || (isset($options['flags'][$flag]) && $options['flags'][$flag] === false)) {
+				continue;
+			}
+			$passArgs = [$text];
+			if (!empty($args)) {
+				if (!is_array($args)) {
+					$args = [$args];
+				}
+				foreach ($args as $arg) {
+					$passArgs[$arg] = isset($options[$arg]) ? $options[$arg] : null;
+				}
+			}
+			//debug(compact('method','passArgs'));
+			debug(count($method));
+			if (is_array($method) && !is_object($method[0])) {
+				$text = forward_static_call_array($method, $passArgs);
+			} else {
+				$text = call_user_func_array($method, $passArgs);
+			}
+		}
+		return $text;
+	}
+
 	/**
 	 * Runs all functions on text
 	 $options accepts the following:
@@ -39,65 +110,35 @@ class DisplayTextHelper extends LayoutAppHelper {
 		- urls : false for no auto-linked urls
 		- smileys : false for no emoticons
 		- html : false for no html tags
-		- multiNl : falst to remove multiple new line characters
+		- multiNl : false to remove multiple new line characters
 	 **
 	 **/
 	function text($text, $options = array()) {
-		if (Param::keyCheck($_GET, 'ascii')) {
-			$this->_asciiDebug($text);
-		}
-		
-		if (!Param::falseCheck($options, 'format')) {
-			$text = $this->smartFormat($text);
-		}
-		
-		$multiNl = !Param::falseCheck($options, 'multiNl');
-		$nlPad = Param::keyCheck($options, 'nlPad');
-		$text = $this->smartNl2br($text, compact('multiNl', 'nlPad'));
-		
-		if (!Param::falseCheck($options, 'format')) {
-			$text = $this->smartFormat($text);
-		}
-		$text = $this->stripSpecialChars($text);
-		if (!Param::falseCheck($options, 'format')) {
-			$text = $this->addConstants($text);
-		}
-		if (!Param::falseCheck($options, 'urls')) {
-			$text = Markup::setLinks($text, !Param::falseCheck($options, 'shrinkUrls'));
-		}
-		if (!Param::falseCheck($options, 'smileys')) {
-			$text = $this->parseSmileys($text);
-		}
-		
-		if (Param::keyValCheck($options, 'first')) {
-			$text = $this->firstParagraph($text);
-		}
+		$options = array_merge([ 
+			'html' => true,						// Allow HTML output
+			'php' => false,						// Evaluate PHP
+			'ascii' => !empty($_GET['ascii']),	// Output ASCII value for each character
+			'multiNl' => true,					// Allow multiple new lines
+			'nlPad' => true, 					// Pad each new line
+			'stripSpecialChars' => true,		// Strip unneccessary characters
+			'first' => false, 					// Only get the first paragrah
+			'before' => '',
+			'after' => '',
+			'div' => null,
+			'tag' => null,
+			'class' => null,
+		], $options);
 
-		//Setting 'html' to false will strip tags
-		if (Param::falseCheck($options, 'html')) {
-			$text = strip_tags($text, $this->allowableTags);
-		}
-
-		
+		$options['striphtml'] = $options['html'] === false;
+			
+		// Legacy term for truncate		
 		if ($fragment = Param::keyCheck($options, 'fragment', true)) {
 			$options['truncate'] = $fragment;
 		}
-		if ($truncate = Param::keyCheck($options, 'truncate', true)) {
-			if (is_array($truncate)) {
-				$length = array_shift($truncate);
-				$fOptions = array_shift($truncate);
-			} else {
-				$length = $truncate;
-				$fOptions = array();
-			}
-			$text = $this->truncate($text, $length, $fOptions);
-		}
 
-		
-		if ($surround = Param::keyCheck($options, 'surround', true)) {
-			$text = $surround . $text . $surround;
-		}
-		
+		$this->smartNl2br($text, ['multiNl' => $options['multiNl'], 'nlPad' => $options['nlPad']]);
+		$this->registerTextMethod('nl2br', array($this, 'smartNl2br'), ['multiNl', 'nlPad']);
+
 		if (empty($text) && !empty($options['empty'])) {
 			$this->addClass($options, 'emtpy');
 			$text = $options['empty'];
@@ -125,9 +166,15 @@ class DisplayTextHelper extends LayoutAppHelper {
 			$text = $before . $text . $after;
 		}
 		
+		/*
 		if (Param::keyCheck($options, 'php')) {
 			$text = $this->evalPhp($text);
 		}
+		*/
+
+		$text = $this->_renderTextMethods($text, $options);
+
+		//debug(count($this->_textMethods));
 
 		return $text;
 	}
@@ -380,6 +427,10 @@ class DisplayTextHelper extends LayoutAppHelper {
 	* @access public
 	*/
 	function truncate($text, $length, $options = array()) {
+		if (is_array($length)) {
+			list($length, $options) = $length + [null, null];
+		}
+
 		if (!is_array($options)) {
 			$options = array('ellipsis' => $options);
 		}
