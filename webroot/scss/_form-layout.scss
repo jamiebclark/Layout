@@ -59,9 +59,15 @@
 // Custom Inputs
 // ---------------
 $special-inputs: '.input-group-id, .input-group-cash, .input-group-number, input[type="number"]';
-#{$special-inputs}, .form-group-id, .form-group-cash, .form-group-number {
+#{$special-inputs} {
 	max-width: 240px;
 }
+.form-group-id, .form-group-cash, .form-group-number {
+	> div {
+		max-width: 240px;
+	}
+}
+
 #{$special-inputs} {
 	text-align: right;
 }
