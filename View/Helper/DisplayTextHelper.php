@@ -56,16 +56,67 @@ class DisplayTextHelper extends LayoutAppHelper {
 			return "$surround$text$surround";
 		}, 'surround');
 
+		$this->registerTextMethod('nl2br', array($this, 'smartNl2br'), function ($options) {
+			return [['multiNl' => $options['multiNl'], 'nlPad' => $options['nlPad']]];
+		});
+
 		$this->registerTextMethod('php', [$this, 'evalPhp']);
 	}
 	
-	public function registerTextMethod($flag, $method, $args = [], $prepend = false) {
-		$method = [$flag, $method, $args];
+/**
+ * Registers a new text method to be called on the text() function
+ *
+ * @param string $flag A reference name to group the method under
+ * @param Array|Callable $method The method to be called
+ * @param Array|Callable $args The list of arguments, or a function to generate the list of arguments
+ * @param string|Boolean $positionRule A rule to dictate where the method will be placed [first, last, before, after]
+ * @param string|Boolean $positionFlag A flag reference if the position rule is before or after
+ * @return void
+ **/
+	public function registerTextMethod($flag, $method, $args = [], $positionRule = false, $positionFlag = false) {
+		$method = [$method, $args];
 		//$key = serialize($method);
-		if ($prepend) {
-			$this->_textMethods = array_merge([$method], $this->_textMethods);
+		$flags = array_keys($this->_textMethods);
+		$flagPos = array_flip($flags);
+		$pos = null;
+		if (empty($this->_textMethods[$flag]) && !empty($positionRule)) {
+			if ($positionRule == 'first' || ($positionRule == 'before' && empty($positionFlag))) {
+				$pos = 0;
+			} else if ($positionRule == 'last' || ($positionRule == 'after' && empty($positionFlag))) {
+				$pos = null;
+			} else if ($positionRule == 'before' || $positionRule == 'after') {
+				$foundFlagPos = [];
+				if (is_array($positionFlag)) {
+					foreach ($positionFlag as $k => $f) {
+						if (!empty($flagPos[$f])) {
+							$foundFlagPos[] = $flagPos[$f];
+							unset($positionFlag[$k]);
+						}
+					}
+					if (!empty($positionFlag)) {
+						throw new Exception ('Could not location position to add new text method to displayText Helper');
+					}
+				} else {
+					if (!empty($flagPos[$positionFlag])) {
+						$foundFlagPos[] = $flagPos[$positionFlag];
+					}
+				}
+				if ($positionRule == 'before') {
+					$pos = min($foundFlagPos);
+				} else if ($positionRule == 'after') {
+					$pos = max($foundFlagPos) + 1;
+				}
+			}
+		} 
+
+		if (isset($pos)) {
+			$this->_textMethods = array_merge(
+				array_slice($this->_textMethods,0,$pos),
+				[$flag => [$method]],
+				array_slice($this->_textMethods,$pos)
+			);
 		} else {
-			$this->_textMethods[] = $method;
+			$this->_textMethods[$flag][] = $method;
 		}
 	}
 
@@ -78,26 +129,31 @@ class DisplayTextHelper extends LayoutAppHelper {
 	}
 
 	private function _renderTextMethods($text, $options = []) {
-		foreach ($this->_textMethods as $k => $vars) {
-			list($flag, $method, $args) = $vars;
-			if ($flag === false || (isset($options['flags'][$flag]) && $options['flags'][$flag] === false)) {
+		foreach ($this->_textMethods as $flag => $flagMethods) {
+			if ($flag === false || (isset($options[$flag]) && $options[$flag] === false)) {
 				continue;
 			}
-			$passArgs = [$text];
-			if (!empty($args)) {
-				if (!is_array($args)) {
-					$args = [$args];
+			foreach ($flagMethods as $vars) {
+				list($method, $args) = $vars;			
+				$passArgs = [$text];
+				if (is_callable($args)) {
+					if ($calledArgs = $args($options)) {
+						$passArgs += $calledArgs;
+					}
+				} else if (!empty($args)) {
+					if (!is_array($args)) {
+						$args = [$args];
+					}
+					foreach ($args as $arg) {
+						$passArgs[$arg] = isset($options[$arg]) ? $options[$arg] : null;
+					}
 				}
-				foreach ($args as $arg) {
-					$passArgs[$arg] = isset($options[$arg]) ? $options[$arg] : null;
+				if (is_array($method) && !is_object($method[0])) {
+					$text = forward_static_call_array($method, $passArgs);
+				} else {
+					$text = call_user_func_array($method, $passArgs);
 				}
-			}
-			//debug(compact('method','passArgs'));
-			debug(count($method));
-			if (is_array($method) && !is_object($method[0])) {
-				$text = forward_static_call_array($method, $passArgs);
-			} else {
-				$text = call_user_func_array($method, $passArgs);
+				// debug(compact('text', 'flag'));
 			}
 		}
 		return $text;
@@ -127,6 +183,7 @@ class DisplayTextHelper extends LayoutAppHelper {
 			'div' => null,
 			'tag' => null,
 			'class' => null,
+			'truncate' => null,
 		], $options);
 
 		$options['striphtml'] = $options['html'] === false;
@@ -136,11 +193,10 @@ class DisplayTextHelper extends LayoutAppHelper {
 			$options['truncate'] = $fragment;
 		}
 
-		$this->smartNl2br($text, ['multiNl' => $options['multiNl'], 'nlPad' => $options['nlPad']]);
-		$this->registerTextMethod('nl2br', array($this, 'smartNl2br'), ['multiNl', 'nlPad']);
+		//$this->smartNl2br($text, ['multiNl' => $options['multiNl'], 'nlPad' => $options['nlPad']]);
 
 		if (empty($text) && !empty($options['empty'])) {
-			$this->addClass($options, 'emtpy');
+			$this->addClass($options, 'empty');
 			$text = $options['empty'];
 		}
 		
@@ -431,6 +487,10 @@ class DisplayTextHelper extends LayoutAppHelper {
 			list($length, $options) = $length + [null, null];
 		}
 
+		if (empty($length)) {
+			return $text;
+		}
+
 		if (!is_array($options)) {
 			$options = array('ellipsis' => $options);
 		}
@@ -582,7 +642,7 @@ class DisplayTextHelper extends LayoutAppHelper {
 		return preg_replace('/[\[<]Photo [^>]+[\]>]/','',$body);
 	}
 	
-	function firstParagraph($str) {
+	public function firstParagraph($str) {
 	//Returns only the first paragraph of a string of text
 		$str = str_replace(array('<br>','<br/>','<BR>','<BR/>','<br />'),"\n",$str);
 		$ps = explode("\n",$str);
@@ -621,7 +681,7 @@ class DisplayTextHelper extends LayoutAppHelper {
 		return preg_replace($regexp,$replace,$str);
 	}
 	
-	function dedupArray(&$array) {
+	protected function dedupArray(&$array) {
 		if(is_array($array)) {
 			foreach($array as $k=>$v) {
 				$switch[$v] = 1;
@@ -631,7 +691,7 @@ class DisplayTextHelper extends LayoutAppHelper {
 		return $array;
 	}
 	
-	function arrayStripEmpty(&$array,$trim=false) {
+	protected function arrayStripEmpty(&$array,$trim=false) {
 		if (is_array($array)) {
 			foreach ($array as $k=>$v) {
 				if ($trim) {
@@ -647,7 +707,7 @@ class DisplayTextHelper extends LayoutAppHelper {
 		return $array;
 	}
 	
-	function tableOfContents(&$text, $options = array()) {
+	public function tableOfContents(&$text, $options = array()) {
 		$options = array_merge(array(
 			'cutoff' => 3,
 		), $options);
@@ -731,7 +791,7 @@ class DisplayTextHelper extends LayoutAppHelper {
 		}
 	}
 	
-	function _asciiDebug($text) {
+	private function _asciiDebug($text) {
 		$return = array();
 		for ($i = 0; $i < strlen($text); $i++) {
 			$c = $text{$i};
@@ -740,12 +800,7 @@ class DisplayTextHelper extends LayoutAppHelper {
 		debug($return);
 	}
 	
-	function xmlDataHandler($parser, $data) {
-		$data = str_replace(' ', '&nbsp;', $data);
-		return $data;
-	}
-	
-	function parseText($str, $options = array()) {
+	protected function parseText($str, $options = array()) {
 		$str = $this->Html->div('parseWrapper', $str);
 		
 		$p = xml_parser_create();
@@ -779,8 +834,13 @@ class DisplayTextHelper extends LayoutAppHelper {
 		}
 		return $return;
 	}
+
+	private function xmlDataHandler($parser, $data) {
+		$data = str_replace(' ', '&nbsp;', $data);
+		return $data;
+	}
 	
-	function _parseTextValue($value, $options = array()) {
+	private function _parseTextValue($value, $options = array()) {
 		if (!empty($options['spaceFormat'])) {
 			$value = str_replace(' ', '&nbsp;', $value);
 		}
