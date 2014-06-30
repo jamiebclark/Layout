@@ -767,14 +767,14 @@ documentReady(function() {
 				newNameStart = name.substr(0,key.index),
 				newNameEnd = name.substr(name.indexOf("[", newNameStart.length + idKeyP.length));
 			if (newNameEnd != ']') {
-				$(this).attr('name', newNameStart + "["+newIdKey+"]" + newNameEnd);
+				$(this).attr('name', newNameStart + "[" + newIdKey + "]" + newNameEnd);
 			}
 		} else {
 			var idKeyMatch = name.match(/\[(\d+)\]/);
 			if (idKeyMatch) {
 				var idKeyP = idKeyMatch[0],
 					idKey = idKeyMatch[1];
-				$(this).attr('name', name.replace(idKeyP, "["+newIdKey+"]"));
+				$(this).attr('name', name.replace(idKeyP, "[" + newIdKey + "]"));
 			}
 		}
 
@@ -783,8 +783,7 @@ documentReady(function() {
 				$labels = $('label').filter(function() { return $(this).attr('for') == oldId;}),
 				newId = id.replace(idKey, newIdKey);
 			$(this).attr('id', newId);
-			
-			$(this).closest('form').find('label[for="'+oldId+'"]').attr('for',newId);
+			$(this).parents().last().find('label[for="' + oldId + '"]').attr('for',newId);
 			/*
 			$(this).parent('label[for="'+oldId+'"]').attr('for', newId);
 			$(this).closest('.form-group').find('label[for="'+oldId+'"]').attr('for',newId);
@@ -882,7 +881,6 @@ documentReady(function() {
 			$cloned.find(':input').each(function() {
 				return $(this).renumberInput(newIdKey, key.index).removeAttr('disabled');//.removeAttr('checked');
 			});
-
 			$cloned.insertAfter($entry);
 			
 			$(':checkbox,:radio', $cloned).each(function() {

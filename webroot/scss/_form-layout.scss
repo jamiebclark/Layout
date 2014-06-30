@@ -54,6 +54,9 @@
 .form-inactive {
 	background: $inactive-background;
 	color: $inactive-color;
+	padding: $padding-large-vertical $padding-large-horizontal;
+	margin: -#{$padding-large-vertical} -#{$padding-large-horizontal};
+	border-radius: $border-radius-base;
 }
 
 // Custom Inputs
