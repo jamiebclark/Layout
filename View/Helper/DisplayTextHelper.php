@@ -42,7 +42,6 @@ class DisplayTextHelper extends LayoutAppHelper {
 		$this->registerTextMethod('format', [$this, 'stripSpecialChars']);
 		$this->registerTextMethod('format', [$this, 'addConstants']);
 
-		App::uses('Markup', 'Layout.Lib');
 		$this->registerTextMethod('urls', ['Markup','setLinks'], ['shrinkUrls']);
 		$this->registerTextMethod('smileys', [$this, 'parseSmileys']);
 		$this->registerTextMethod('first', [$this, 'firstParagraph']);
@@ -216,11 +215,6 @@ class DisplayTextHelper extends LayoutAppHelper {
 			list($before, $after) = array('', '');
 		}
 		
-		if (Param::falseCheck($options, 'columns') !== false) {
-			$text = $this->parseColumns($text, compact('before', 'after'));
-		} else {
-			$text = $before . $text . $after;
-		}
 		
 		/*
 		if (Param::keyCheck($options, 'php')) {
@@ -229,6 +223,12 @@ class DisplayTextHelper extends LayoutAppHelper {
 		*/
 
 		$text = $this->_renderTextMethods($text, $options);
+
+		if (Param::falseCheck($options, 'columns') !== false) {
+			$text = $this->parseColumns($text, compact('before', 'after'));
+		} else {
+			$text = $before . $text . $after;
+		}
 
 		//debug(count($this->_textMethods));
 

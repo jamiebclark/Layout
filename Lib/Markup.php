@@ -158,7 +158,7 @@ class Markup {
 		}
 		*/
 		
-		$text = "\n$text";
+		//$text = "\n$text";
 		$text = preg_replace(array_keys($regx), $regx, $text, -1, $count);
 		return self::trimBreaks($text);
 	}
