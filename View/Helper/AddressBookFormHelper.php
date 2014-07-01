@@ -2,7 +2,8 @@
 /**
  * Helper for use with displaying contacts
  *
- **/App::uses('LayoutAppHelper', 'Layout.View/Helper');
+ **/
+App::uses('LayoutAppHelper', 'Layout.View/Helper');
 class AddressBookFormHelper extends LayoutAppHelper {
 	public $name = 'AddressBookForm';
 	public $helpers = array(
@@ -82,7 +83,7 @@ class AddressBookFormHelper extends LayoutAppHelper {
 		$checkBefore = array('location', 'locationName');
 		foreach ($checkBefore as $field) {
 			if (!empty($options[$field])) {
-				$beforeFields[$field] = $options[$field] === true ? array() : $options[$field];
+				$beforeFields[Inflector::underscore($field)] = $options[$field] === true ? array() : $options[$field];
 			}
 		}
 		
