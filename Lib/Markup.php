@@ -70,12 +70,21 @@ class Markup {
 						$attrs = Hash::combine($attrsMatches, '1.{n}', '2.{n}');
 						$attrs = array_map('trim', $attrs);
 					}
+					$attrs = $attrs + ['title' => null, 'url' => null];
 					if (empty($attrs['title'])) {
 						$attrs['title'] = $attrs['url'];
 					}
 
 					$source =  sprintf('<sup><a href="#%s" id="%s">^</a></sup> ', $reverseId, $id);
-					$source .= sprintf('<a href="%s">%s</a>', $attrs['url'], $attrs['title']);
+					if (!empty($attrs['url'])) {
+						$source .= sprintf('<a href="%s">%s</a>', $attrs['url'], $attrs['title']);
+					}
+					if (!empty($attrs['author'])) {
+						$source .= ' by ' . $attrs['author'];
+					}
+					if (!empty($attrs['date'])) {
+						$source .= ' on ' . date('M j, Y', strtotime($attrs['date']));
+					}
 					$references .= "\t<li>$source</li>\n";
 					$i++;
 				endif;
