@@ -56,7 +56,8 @@ class Markup {
 
 	public static function setCiteSources($text) {
 		$references = '';
-		$i = 1;
+		$i = 1;	// Keeps track of the current source index
+		$replace = [];
 		if (preg_match_all('/{{cite[\s]*([a-zA-Z0-9]+)([^}]*)}}/m', $text, $matches)):
 			foreach ($matches[0] as $k => $match):
 				if (!isset($replace[$match])):
@@ -81,7 +82,10 @@ class Markup {
 			endforeach;
 			$references = '<div class="markup-references"><h3>References</h3><ol>' . $references . '</ol></div>';
 		endif;
-		return str_replace(array_keys($replace), $replace, $text) . $references;
+		if (!empty($replace)) {
+			$text = str_replace(array_keys($replace), $replace, $text) . $references;
+		}
+		return $text;
 	}
 
 	/**
