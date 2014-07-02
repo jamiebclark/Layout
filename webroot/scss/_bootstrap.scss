@@ -88,3 +88,16 @@ $modal-width-slim: 360px;
 .nav.nav-tabs {
 	margin-bottom: $line-height-computed;
 }
+
+// NavBar
+// ---------------------------
+.navbar > .btn-group {
+	// navbar-brand is $navbar-padding-vertical + $line-height-computed
+	// .btn is $padding-base-vertical + $line-height-computed
+	$padding-vertical: $navbar-padding-vertical - $padding-base-vertical;
+	padding-top: $padding-vertical;
+	padding-bottom: $padding-vertical;
+	&.pull-right {
+		padding-right: $navbar-padding-horizontal;
+	}
+}
