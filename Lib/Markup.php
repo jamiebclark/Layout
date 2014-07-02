@@ -19,6 +19,8 @@ class Markup {
 			$text = self::setWikiLinks($text, $wikiModel, $links);
 		}
 		$text = self::setStyle($text, $webroot);
+		$text = self::setCiteSources($text);
+
 		return $text;
 	}
 	
@@ -50,6 +52,36 @@ class Markup {
 			},
 			$text
 		);
+	}
+
+	public static function setCiteSources($text) {
+		$references = '';
+		$i = 1;
+		if (preg_match_all('/{{cite[\s]*([a-zA-Z0-9]+)([^}]*)}}/m', $text, $matches)):
+			foreach ($matches[0] as $k => $match):
+				if (!isset($replace[$match])):
+					$id = 'cite_ref_' . $i;
+					$reverseId = 'cite_rev_ref_' . $i;
+
+					$replace[$match] = sprintf('<sup>[<a href="#%s" id="%s">%s</a>]</sup>', $id, $reverseId, $i);
+					$type = $matches[1][$k];
+					if (preg_match_all('/[\s]*[\|]{0,1}[\s]*([^=]+)[\s]*=[\s]*([^\|]+)/', $matches[2][$k], $attrsMatches)) {
+						$attrs = Hash::combine($attrsMatches, '1.{n}', '2.{n}');
+						$attrs = array_map('trim', $attrs);
+					}
+					if (empty($attrs['title'])) {
+						$attrs['title'] = $attrs['url'];
+					}
+
+					$source =  sprintf('<sup><a href="#%s" id="%s">^</a></sup> ', $reverseId, $id);
+					$source .= sprintf('<a href="%s">%s</a>', $attrs['url'], $attrs['title']);
+					$references .= "\t<li>$source</li>\n";
+					$i++;
+				endif;
+			endforeach;
+			$references = '<div class="markup-references"><h3>References</h3><ol>' . $references . '</ol></div>';
+		endif;
+		return str_replace(array_keys($replace), $replace, $text) . $references;
 	}
 
 	/**
