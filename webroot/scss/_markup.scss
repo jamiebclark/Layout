@@ -1,0 +1,7 @@
+.markup-references {
+	font-size: $font-size-base;
+	ol > li {
+		line-height: $line-height-computed !important;
+		margin-bottom: #{$line-height-computed / 2} !important;
+	}
+}
