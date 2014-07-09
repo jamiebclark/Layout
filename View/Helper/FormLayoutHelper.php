@@ -62,7 +62,8 @@ class FormLayoutHelper extends LayoutAppHelper {
 		), $options);
 		return $this->Form->input($name, $options);
 	}
-		//Our old version of input auto complete
+	
+	//Our old version of input auto complete
 	public function inputAutoCompleteOLD($name, $url, $options = array()) {
 		if (is_array($url)) {
 			$url = Router::url($url);
@@ -1284,18 +1285,24 @@ class FormLayoutHelper extends LayoutAppHelper {
 				$label = array('text' => $label);
 			}
 			$label = $this->addClass($label, 'control-label');
-			$label = $this->Form->addColWidthClass($label, true);
+			if (method_exists($this->Form, 'addColWidthClass')) {
+				$label = $this->Form->addColWidthClass($label, true);
+			}
 			$text = $label['text'];
 			unset($label['text']);
 			$label = $this->Form->label($fieldName, $text, $label);
 		}
 		$options['label'] = false;
 
-		$this->Form->pauseColWidth();
+		if (method_exists($this->Form, 'pauseColWidth')) {
+			$this->Form->pauseColWidth();
+		}
 		$out .= $this->{$function1}($fieldName, $options);
 		$out .= $this->{$function2}($fieldName, $secondOptions);
 		//$out = $this->Html->div('input-datetime-row row', $out);
-		$this->Form->pauseColWidth(false);
+		if (method_exists($this->Form, 'pauseColWidth')) {
+			$this->Form->pauseColWidth(false);
+		}
 		
 		return $this->fakeInput($this->Html->div('input-datetime-control', $out), array(
 			'label' => $text,
