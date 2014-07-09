@@ -740,7 +740,7 @@ class ModelViewHelper extends LayoutAppHelper {
 		$result = $this->_getResult($result);
 		$options = $this->thumbOptions($result, $options);
 		$src = $this->Image->src($result, $options);
-		if ($src[0] != '/') {
+		if ($src[0] != '/' && strpos($src, '://') === false) {
 			$src = Url::base() . '/img/' . $src;
 		}
 		return $src;
