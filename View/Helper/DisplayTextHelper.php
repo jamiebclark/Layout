@@ -101,9 +101,9 @@ class DisplayTextHelper extends LayoutAppHelper {
 					}
 				}
 				if ($positionRule == 'before') {
-					$pos = min($foundFlagPos);
+					$pos = !empty($foundFlagPos) ? min($foundFlagPos) : 0;
 				} else if ($positionRule == 'after') {
-					$pos = max($foundFlagPos) + 1;
+					$pos = !empty($foundFlagPos) ? max($foundFlagPos) + 1 : 1;
 				}
 			}
 		} 
