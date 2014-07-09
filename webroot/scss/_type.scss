@@ -48,8 +48,8 @@ h3, h4 {
 
 div.lead {
 	li {
-		line-height: 1.5 * $line-height-base;
-		margin-bottom: $line-height-computed / 4;
+		line-height: $line-height-base;
+		margin-bottom: $line-height-computed / 2;
 	} 
 }
 
