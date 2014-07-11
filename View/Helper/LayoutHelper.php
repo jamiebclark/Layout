@@ -362,14 +362,14 @@ class LayoutHelper extends LayoutAppHelper {
 		return $this->Html->div('page-header', $out);
 	}
 	
-	function neighbors($prev = null, $next = null, $up = null, $options = array()) {
+	function neighbors($prev = null, $next = null, $up = null, $options = []) {
 		$return = '';
 		$class = 'neighbors row';
 		
 		if (is_array($prev)) {
 			$prevOptions = $prev;
 			
-			$arrayKeys = array('prev', 'next', 'up');
+			$arrayKeys = ['prev', 'next', 'up'];
 			$foundOptions = false;
 			foreach($arrayKeys as $key) {
 				if (isset($prevOptions[$key]) && (empty($$key) || $key == 'prev')) {
@@ -383,21 +383,27 @@ class LayoutHelper extends LayoutAppHelper {
 			}
 		}
 
-		$neighborChecks = array(
-			array('arrow_left', $prev, 'prev'),
-			array('arrow_up', $up, 'up'),
-			array('arrow_right', $next, 'next'),
-		);
-		$offset = 0;
-		$col = 4;
-		$colSize = 'col-sm';
-		foreach ($neighborChecks as $k => $neighborCheck) {
-			list($icon, $link, $addClass) = $neighborCheck;
-			if (empty($link)) {
-				$offset++;
-				continue;
-			}
-			$icon = $this->Iconic->icon($icon);
+
+		$neighbors = [];
+		if (!empty($prev)) {
+			$neighbors[] = ['fa fa-chevron-left', $prev, 'prev'];
+		}
+		if (!empty($up)) {
+			$neighbors[] = ['fa fa-chevron-up', $up, 'up'];
+		}
+		if (!empty($next)) {
+			$neighbors[] = ['fa fa-chevron-right', $next, 'next'];
+		}
+
+		if (empty($neighbors)) {
+			return '';
+		}
+		
+		$colSize = 'col-sm-' . (12 / count($neighbors));
+
+		foreach ($neighbors as $k => $neighbor) {
+			list($icon, $link, $addClass) = $neighbor;
+			$icon = '<i class="' . $icon . '"></i>';//$this->Iconic->icon($icon);
 			if (is_array($link)) {
 				if (!empty($options['model']) && isset($link[$options['model']])) {
 					$displayField = !empty($options['displayField']) ? $options['displayField'] : 'title';
@@ -410,18 +416,18 @@ class LayoutHelper extends LayoutAppHelper {
 					$title = $result[$displayField];
 					$linkAttrs = array();
 				} else {
-					list($title, $url, $linkAttrs) = $link + array(null, null, array());
+					list($title, $url, $linkAttrs) = $link + [null, null, []];
 				}
 				$linkAttrs['escape'] = false;
-				$link = $this->Html->link("$icon $title", $url, $linkAttrs);
+				$link = $this->Html->link(
+					$addClass == 'next' ? "$title $icon" : "$icon $title", 
+					$url, 
+					$linkAttrs
+				);
 			} else {
-				$link = "$icon $link";
+				$link = $addClass == 'next' ? "$link $icon" : "$icon $link";
 			}
-			$neighborClass = "neighbors-$addClass $colSize-$col";
-			if (!empty($offset)) {
-				$neighborClass .= " $colSize-offset-" . ($col * $offset);
-			}
-			$return .= $this->Html->div($neighborClass, $link);
+			$return .= $this->Html->div("neighbors-$addClass $colSize", $link);
 			$offset = 0;
 		}
 		
