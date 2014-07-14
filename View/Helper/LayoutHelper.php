@@ -399,7 +399,7 @@ class LayoutHelper extends LayoutAppHelper {
 			return '';
 		}
 		
-		$colSize = 'col-sm-' . (12 / count($neighbors));
+		$colSize = 'col-xs-' . (12 / count($neighbors));
 
 		foreach ($neighbors as $k => $neighbor) {
 			list($icon, $link, $addClass) = $neighbor;
