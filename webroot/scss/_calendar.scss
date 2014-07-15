@@ -4,41 +4,41 @@
 
 // Calendar Colors
 // -------------------------------
-$calendar-grey: 				#ccc !default;
+$calendar-grey: 						#ccc !default;
 
-$date-link-hover-color:		$color2 !default;
+$date-link-hover-color:					$color2 !default;
 
-$day-hover-color:				$color1 !default;
-$day-active-color:			$color3-light !default;
+$day-hover-color:						$color1 !default;
+$day-active-color:						$color3-light !default;
 
-$day-size: 					1em !default;
-$day-height: 				2 * $day-size !default;
-$day-width: 					2 * $day-size !default;
+$day-size: 								1em !default;
+$day-height: 							2 * $day-size !default;
+$day-width: 							2 * $day-size !default;
 
 
 // Calendar Date
 // -----------------------------------
-$calendardate-border-color:		#ccc !default;
+$calendardate-border-color:				#ccc !default;
 
-$calendardate-month-size:			30px !default;
-$calendardate-month-small-size:	20px !default;
-$calendardate-month-background:	$color1 !default;
-$calendardate-month-color:		white !default;
-$calendardate-month-height:		40px !default;
+$calendardate-month-size:				30px !default;
+$calendardate-month-small-size:			20px !default;
+$calendardate-month-background:			$color1 !default;
+$calendardate-month-color:				white !default;
+$calendardate-month-height:				40px !default;
 
-$calendardate-day-size:			80px !default;
-$calendardate-day-small-size:		40px !default;
-$calendardate-day-background1:	#fff;	
-$calendardate-day-background2:	#eee;
-$calendardate-day-color:			inherit !default;
-$calendardate-day-height:			90px !default;
+$calendardate-day-size:					80px !default;
+$calendardate-day-small-size:			40px !default;
+$calendardate-day-background1:			#fff;	
+$calendardate-day-background2:			#eee;
+$calendardate-day-color:				inherit !default;
+$calendardate-day-height:				90px !default;
 
-$calendardate-year-size:			20px !default;
-$calendardate-year-background:	transparent !default;
-$calendardate-year-color:			inherit !default;
-$calendardate-year-height:		30px !default;
+$calendardate-year-size:				20px !default;
+$calendardate-year-background:			transparent !default;
+$calendardate-year-color:				inherit !default;
+$calendardate-year-height:				30px !default;
 
-$calendardate-width:				$calendardate-month-height + $calendardate-day-height;
+$calendardate-width:					$calendardate-month-height + $calendardate-day-height;
 
 // Deadline
 // --------------------------------------------------
@@ -133,6 +133,24 @@ $deadline-far-background:			transparent !default;
 		.calendardate-year {
 			font-size: 12px;
 			line-height: 20px;
+		}
+	}
+	&.tiny {
+		width: 30px;
+		.calendardate-month {
+			line-height: 12px;
+			font-size: 11px;
+		}
+		.calendardate-day {
+			line-height: 24px;
+			font-size: 18px;
+			.multi {
+				font-size: 14px;
+			}
+		}
+		.calendardate-year {
+			font-size: 10px;
+			line-height: 12px;
 		}
 	}
 	&.grey {
@@ -293,7 +311,7 @@ a:hover {
 		width: 100%;
 		li {
 			border-bottom: 1px solid #eee;
-			padding: 5px 0 9px 30px;
+			padding: $padding-small-vertical $padding-small-horizontal;
 			float: none;
 			width: auto;
 		}
@@ -322,9 +340,13 @@ a:hover {
 			font-weight: bold;
 		}
 	}
+	.calendardate {
+		margin-top: 10px;
+	}
 	.dscr {
 		overflow: hidden;
-		
+		margin-left: 10px;
+
 		li {
 			padding-bottom: 5px;
 		}
