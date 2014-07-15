@@ -323,7 +323,8 @@ a:hover {
 		}
 	}
 	.dscr {
-		margin-left: 40px;
+		overflow: hidden;
+		
 		li {
 			padding-bottom: 5px;
 		}

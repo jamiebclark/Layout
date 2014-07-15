@@ -1,21 +1,23 @@
 
-$liquid-left-column: 			200px;
+$liquid-left-column: 		200px;
 $liquid-right-column: 		300px;
 $liquid-outer-padding: 		0;
-$liquid-full-screen: 			960px;
+$liquid-full-screen: 		960px;
 $liquid-border-color: 		#f8f8f8;
 
-$liquid-side-padding:			10px;
-$liquid-side-margin:			5px;
+$liquid-side-padding:		10px;
+$liquid-side-margin:		5px;
 
 $ns: 						"liquid-layout";	//namespace
+
 .#{$ns} {
 	position: relative;
 	width: 100%;
 	min-width: 984px;
 	max-width: 1600px;
-	margin: 0 auto;
+	margin: -#{$grid-gutter-width / 2} auto;
 	padding: 0;
+
 	&, .#{$ns}-content {
 		display: block;
 		float: none;
@@ -69,7 +71,61 @@ $ns: 						"liquid-layout";	//namespace
 		}
 	}
 }
-@media (max-width: 760px) {
+
+
+@mixin liquid-layout-sizing($full-screen, $left-width, $right-width, $padding: 5px, $margin: 10px) {
+	.#{$ns} {
+		min-width: $full-screen;
+		.#{$ns}-left {
+			width: $left-width;
+			padding-left: $liquid-outer-padding;
+		}
+		.#{$ns}-right {
+			width: $liquid-right-column;
+			padding-left: $liquid-outer-padding;
+			left: auto;
+			right: 0;
+		}
+		.#{$ns}-content {
+			width: auto;
+			min-width: $full-screen;
+		}
+		&.has-left {
+			.#{$ns}-content {
+				margin-left: $left-width + $margin + $liquid-outer-padding;
+				min-width: $full-screen - $left-width - $liquid-outer-padding - $liquid-side-padding;
+				padding-left: $padding;
+				border-left: 1px solid $liquid-border-color;
+			}
+		}
+		&.has-right {
+			.#{$ns}-content {
+				margin-right: $right-width + $margin + $liquid-outer-padding;
+				min-width: $full-screen - $right-width - $liquid-outer-padding - $liquid-side-padding;
+				padding-right: $padding;
+				border-right: 1px solid $liquid-border-color;
+			}
+		}
+		&.has-left.has-right {
+			.#{$ns}-content {
+				min-width: $full-screen - $right-width - $left-width - 2 * $liquid-outer-padding;
+			}
+		}
+	}
+}
+
+
+@media screen and (min-width: $screen-sm-min) and (max-width: $screen-sm-max) {
+	@include liquid-layout-sizing($container-sm, 160px, 200px);
+}
+@media screen and (min-width: $screen-md-min) and (max-width: $screen-md-max) {
+	@include liquid-layout-sizing($container-md, 160px, 200px);
+}
+@media screen and (min-width: $screen-lg-min) {
+	@include liquid-layout-sizing($container-lg, 200px, 300px);
+}
+
+@media (max-width: $screen-xs-max) {
 	.#{$ns} {
 		min-width: 0;
 		min-height: 0;
