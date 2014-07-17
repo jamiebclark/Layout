@@ -299,6 +299,8 @@ a:hover {
 }
 	
 .events-list {
+	overflow: hidden;
+	
 	&, ul, li {
 		margin: 0;
 		padding: 0;

@@ -1280,6 +1280,7 @@ class LayoutHelper extends LayoutAppHelper {
 		$options = array_merge(array(
 				'class' => 'info-table',
 				'hideEmpty' => false,
+				'paginate' => false,
 			), $options);
 		$return = '';
 		$this->Table->reset();
