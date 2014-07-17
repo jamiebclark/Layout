@@ -12,7 +12,7 @@ class ModelViewHelper extends LayoutAppHelper {
 	public $defaultHelpers = array(
 		'Html', 
 		'Layout.AddressBook',
-		'Layout.Asset', 
+		'CakeAssets.Asset', 
 		'Layout.Calendar',
 		'Layout.DisplayText',
 		'Layout.Iconic',

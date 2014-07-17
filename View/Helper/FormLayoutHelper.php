@@ -8,7 +8,7 @@ App::uses('LayoutAppHelper', 'Layout.View/Helper');
 class FormLayoutHelper extends LayoutAppHelper {
 	public $name = 'FormLayout';
 	public $helpers = array(
-		'Layout.Asset',
+		'CakeAssets.Asset',
 		'Html', 
 		'Form', 
 		'Layout.Layout', 

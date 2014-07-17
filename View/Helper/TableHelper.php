@@ -7,8 +7,9 @@ class TableHelper extends LayoutAppHelper {
 		'Html', 
 		'Form',
 		'Paginator',
-		'Layout.Asset',
-		'Layout.Layout',	);
+		'CakeAssets.Asset',
+		'Layout.Layout',
+	);
 	
 	var $row = array();
 	var $rows = array();

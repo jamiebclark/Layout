@@ -1,7 +1,7 @@
 <?php
 class TextGraphHelper extends AppHelper {
 	var $name = 'TextGraph';
-	var $helpers = array('Layout.Asset','Html');
+	var $helpers = array('CakeAssets.Asset','Html');
 	
 	var $colors = array();
 	var $colorsInit = array(

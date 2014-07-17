@@ -3,7 +3,7 @@ App::uses('LayoutAppHelper', 'Layout.View/Helper');
 class CollapseListHelper extends LayoutAppHelper {
 	var $name = 'CollapseList';
 	var $helpers = array(
-		'Layout.Asset',
+		'CakeAssets.Asset',
 		'Layout.Layout',
 		'Layout.ModelView',
 		'Html',

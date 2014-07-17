@@ -1,7 +1,7 @@
 <?php
 class GridHelper extends AppHelper {
 	public $name = 'Grid';
-	public $helpers = array('Html', 'Layout.Asset');
+	public $helpers = array('Html', 'CakeAssets.Asset');
 	
 	public $colCount = 0;
 

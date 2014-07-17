@@ -1,7 +1,7 @@
 <?php
 class IconicHelper extends AppHelper {
 	var $name = 'Iconic';
-	var $helpers = array('Html', 'Layout.Asset');
+	var $helpers = array('Html', 'CakeAssets.Asset');
 	
 	var $useUnicode = false;
 	

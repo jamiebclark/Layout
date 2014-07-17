@@ -8,7 +8,7 @@ class LayoutAppHelper extends AppHelper {
 		'id','class','style','title',
 	);
 	
-	var $defaultHelpers = array('Layout.Asset');
+	var $defaultHelpers = array('CakeAssets.Asset');
 	var $defaultCss = array();
 	var $defaultJs = array();
 	

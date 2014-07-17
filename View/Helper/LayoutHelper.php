@@ -10,7 +10,7 @@ class LayoutHelper extends LayoutAppHelper {
 	var $helpers = array(
 		'Html', 
 		'Paginator', 
-		'Layout.Asset',
+		'CakeAssets.Asset',
 		'Layout.Crumbs',
 		'Layout.Iconic',
 		'Layout.Calendar', 

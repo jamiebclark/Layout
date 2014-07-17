@@ -1,7 +1,7 @@
 <?php
 class GalleryViewHelper extends AppHelper {
 	public $name = 'GalleryView';
-	public $helpers = array('Layout.Asset', 'Layout.ModelView');
+	public $helpers = array('CakeAssets.Asset', 'Layout.ModelView');
 	
 	var $modelName;
 	

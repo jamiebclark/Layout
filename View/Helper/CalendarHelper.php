@@ -4,15 +4,17 @@ App::uses('LayoutAppHelper', 'Layout.View/Helper');
 class CalendarHelper extends LayoutAppHelper {
 	var $name = 'Calendar';
 	var $helpers = array(
-		'Layout.Asset',
+		'CakeAssets.Asset',
 		'Html',
 		'Form',
 		'Time'
 	);
 		
-	function beforeRender($viewFile) {		//$this->Asset->css('Layout.layout');
+	function beforeRender($viewFile) {
+		//$this->Asset->css('Layout.layout');
 		//$this->Asset->js('event');
-		parent::beforeRender($viewFile);	}
+		parent::beforeRender($viewFile);
+	}
 	
 	function calendarDate($start, $stop = null, $options = array()) {
 		if (is_array($stop)) {
