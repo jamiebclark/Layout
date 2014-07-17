@@ -98,7 +98,7 @@ class AssetMinify {
 		//	debug(filemtime($cacheFilepath) . ' :: ' . $lastModified);
 			$this->buildCacheFile($cacheFilepath, $files, $type);
 		}
-		return $this->getCacheFilepath($files, $type, true);
+		return $this->getCacheFilepath($files, $type, true) . '?m=' . $lastModified;
 	}
 	
 	/**
