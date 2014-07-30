@@ -1083,7 +1083,7 @@ class FormLayoutHelper extends LayoutAppHelper {
 		);
 	}
 	
-	function inputDatetimePair($startFieldName, $endFieldName, $options = array()) {
+	public function inputDatetimePair($startFieldName, $endFieldName, $options = array()) {
 		if (empty($options['label']) && !Param::falseCheck($options, 'label')) {
 			$options['label'] = $this->getLabelText($startFieldName);
 		}
@@ -1094,12 +1094,12 @@ class FormLayoutHelper extends LayoutAppHelper {
 		} else {
 			$after = '';
 		}
-		$options['div'] = 'col-sm-6';
+		$options['div'] = false;
 		$out  = $this->inputDatetime($startFieldName, $this->getPairOptions('first', array('label' => 'From') + $options));
 		//$out .= $this->Html->div('datepair-between', ' - ');
 		$out .= $this->inputDatetime($endFieldName, $this->getPairOptions('second', array('flip' => true, 'label' => 'To') + $options));
 		
-		return $this->fakeInput($out, array(
+		return $this->fakeInput($this->Html->div('input-datepair-control', $out), array(
 			'div' => 'datepair datepair-time',
 			'label' => $options['label'],
 			'editable' => true,
@@ -1107,37 +1107,43 @@ class FormLayoutHelper extends LayoutAppHelper {
 		) + compact('after'));
 	}
 
- 	/**
-	 * A form input that includes a calendar dropdown when clicked on
-	 * If class is "datetime", then it also includes a separate time input
-	 * @param string $fieldName The form field name
-	 * @param array $options Standard options for the form item
-	 *
-	 **/
-	function inputDatePair($startFieldName, $endFieldName, $options = array()) {
+/**
+ * A form input that includes a calendar dropdown when clicked on
+ * If class is "datetime", then it also includes a separate time input
+ * @param string $fieldName The form field name
+ * @param array $options Standard options for the form item
+ *
+ **/
+	public function inputDatePair($startFieldName, $endFieldName, $options = array()) {
 		if (!isset($options['label'])) {
 			$options['label'] = $this->getLabelText($startFieldName);
 		}
+
+		$this->Form->pauseColWidth();
 		$out  = $this->inputDate($startFieldName, $this->getPairOptions('first', array('label' => 'From') + $options));
 		//$out .= $this->Html->div('datepair-between', ' - ');
 		$out .= $this->inputDate($endFieldName, $this->getPairOptions('second', array('label' => 'To') + $options));
+		$this->Form->pauseColWidth(false);
+
 		
-		return $this->fakeInput($out, array(
+		$return = $this->fakeInput($this->Html->div('input-datepair-control', $out), array(
 			'div' => 'datepair',
 			'label' => $options['label'],
 			'formControl' => false,
 		));		
+		return $return;
 	}
 
-	/**
-	 * If passing options regarding a pair of inputs, it can also accept an option key for "first" or "second"
-	 * to indicate just one of the inputs in the pair. It also then removes both first and second options
-	 *
-	 * @param String $pairKey "first" or "second"
-	 * @param Array $options Additional options
-	 *
-	 * @return New options
-	 **/
+
+/**
+ * If passing options regarding a pair of inputs, it can also accept an option key for "first" or "second"
+ * to indicate just one of the inputs in the pair. It also then removes both first and second options
+ *
+ * @param String $pairKey "first" or "second"
+ * @param Array $options Additional options
+ *
+ * @return New options
+ **/
 	private function getPairOptions($pairKey, $options = array()) {
 		if (isset($options[$pairKey])) {
 			$options = array_merge($options, (array) $options[$pairKey]);
@@ -1156,7 +1162,10 @@ class FormLayoutHelper extends LayoutAppHelper {
 				$value = implode(' ', $value);
 			}					
 			if ($type == 'date') {
-				$value = date('m/d/Y', strtotime($value));
+				if (!is_numeric($value)) {
+					$value = strtotime($value);
+				}
+				$value = date('m/d/Y', $value);
 			}
 		}
 		return $value;
@@ -1304,11 +1313,15 @@ class FormLayoutHelper extends LayoutAppHelper {
 			$this->Form->pauseColWidth(false);
 		}
 		
-		return $this->fakeInput($this->Html->div('input-datetime-control', $out), array(
+		$this->Form->pauseColWidth();
+		$return = $this->fakeInput($this->Html->div('input-datetime-control', $out), array(
 			'label' => $text,
 			'editable' => true,
 			'formControl' => false,
 		) + compact('div'));
+		$this->Form->pauseColWidth(false);
+		return $return;
+
 //		return $this->Html->div('input-datetime', $label . $this->Html->div('input-datetime-control', $out));	
 	}
 	
@@ -1598,7 +1611,10 @@ class FormLayoutHelper extends LayoutAppHelper {
 		foreach ($fields as $field) {
 			if (isset($options[$field])) {
 				$time = is_array($options[$field]) ? implode('', $options[$field]) : $options[$field];
-				$options[$field] = date($dateFormat, strtotime($time));
+				if (!is_numeric($time)) {
+					$time = strtotime($time);
+				}
+				$options[$field] = date($dateFormat, $time);
 			}
 		}
 		return $options;
