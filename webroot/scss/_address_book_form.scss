@@ -5,6 +5,11 @@
 	}
 }
 
+.input-gender {
+	overflow: hidden;
+	min-height: $line-height-computed;
+}
+
 // Input Name
 // --------------------------------
 $input-name-width: 				100px;
