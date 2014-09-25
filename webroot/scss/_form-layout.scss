@@ -527,6 +527,10 @@ textarea, input {
 		z-index: $zindex-select-collapse-mask + 1;
 	}
 }
+.select-collapse-search {
+	width: 100%;
+	margin: 0;
+}
 .select-collapse-window { 
 	border: 1px solid $window-border-color;
 	//@include box-shadow($shadow);
