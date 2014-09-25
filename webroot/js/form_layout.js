@@ -1315,7 +1315,6 @@ $(document).ready(function() {
 				vals = [];
 				
 			function setLink($a) {
-				console.log("SELECTED " + $a.attr('id'));
 				$div.find('.active').removeClass('active');
 				var $li = $a.closest('span.select-collapse-option').addClass('active').closest('li');
 				collapseAll();
