@@ -158,16 +158,16 @@ class DisplayTextHelper extends LayoutAppHelper {
 		return $text;
 	}
 
-	/**
-	 * Runs all functions on text
-	 $options accepts the following:
-		- format : false for no formatting
-		- urls : false for no auto-linked urls
-		- smileys : false for no emoticons
-		- html : false for no html tags
-		- multiNl : false to remove multiple new line characters
-	 **
-	 **/
+/**
+ * Runs all functions on text
+ *  $options accepts the following:
+ *   - format : false for no formatting
+ *   - urls : false for no auto-linked urls
+ *   - smileys : false for no emoticons
+ *   - html : false for no html tags
+ *   - multiNl : false to remove multiple new line characters
+ **
+ **/
 	function text($text, $options = array()) {
 		$options = array_merge([ 
 			'html' => true,						// Allow HTML output
@@ -321,11 +321,15 @@ class DisplayTextHelper extends LayoutAppHelper {
 		return $out;
 	}
 	
-	/**
-	 *
-		- multiNl : If false, removes all multiple new lines
-		- nlPad : adds additional endlines after existing endlines to pad paragraphs
-	 **/
+/**
+ * String helper function to convert new line characters to HTML line breaks
+ * 
+ * @param string $str The string being processed
+ * @param array $options Additional parameters
+ * 	- multiNl : If false, removes all multiple new lines
+ *	- nlPad : adds additional endlines after existing endlines to pad paragraphs
+ * @return string Newly processed string
+ **/
 	function smartNl2br($str, $options = array()) {
 		$preserve = array();
 		if (preg_match_all( '@<\?php(.+?)\?>@is', $str, $matches)) {
@@ -354,7 +358,13 @@ class DisplayTextHelper extends LayoutAppHelper {
 		if (!empty($preserve)) {
 			$str = str_replace(array_keys($preserve), $preserve, $str);
 		}
-		
+		// Trims final br
+		$str = trim($str);
+
+		$br = '<br />';
+		if (substr($str, -strlen($br)) == $br) {
+			$str = substr($str, 0, -strlen($br));
+		}
 		return $str;
 	}
 	
