@@ -1,6 +1,8 @@
 <?php
-App::uses('InflectorPlus', 'Layout.Lib');App::uses('Prefix', 'Layout.Lib');
-App::uses('LayoutAppHelper', 'Layout.View/Helper');class CrumbsHelper extends LayoutAppHelper {
+App::uses('InflectorPlus', 'Layout.Lib');
+App::uses('Prefix', 'Layout.Lib');
+App::uses('LayoutAppHelper', 'Layout.View/Helper');
+class CrumbsHelper extends LayoutAppHelper {
 	public $name = 'Crumbs';
 	public $helpers = array('Html', 'Layout.Iconic');
 	
@@ -128,7 +130,6 @@ App::uses('LayoutAppHelper', 'Layout.View/Helper');class CrumbsHelper extends L
 			$after .= $wrapClose;
 			$separator = $wrapClose . $wrapOpen;
 		}
-		
 		if ($crumbs = $this->getCrumbs($crumbs, $home)) {
 			if ($this->bootstrap) {
 				$out = '';
@@ -149,7 +150,7 @@ App::uses('LayoutAppHelper', 'Layout.View/Helper');class CrumbsHelper extends L
 	
 	private function getCrumbs($crumbs, $home = array()) {
 		$setCrumbs = array();
-		if (!empty($this->Html->_crumbs)) {
+		if (count($this->Html->_crumbs)) {
 			$setCrumbs = $this->Html->_crumbs;
 		} else {
 			foreach ($this->crumbTypes as $type) {
@@ -166,7 +167,6 @@ App::uses('LayoutAppHelper', 'Layout.View/Helper');class CrumbsHelper extends L
 		}
 		
 		$crumbs = $this->_mergeCrumbs($home, $setCrumbs, $crumbs);
-
 		if (!empty($crumbs) && $crumbs != $home) {
 			$out = array();
 			$lastKey = count($crumbs) - 1;
@@ -406,6 +406,7 @@ App::uses('LayoutAppHelper', 'Layout.View/Helper');class CrumbsHelper extends L
 		$modelInfo = array_shift($models);
 		$model = !empty($modelInfo['plugin']) ? $modelInfo['plugin'] . '.' : '';
 		$model .= $modelInfo['className'];
+
 		return $model;
 	}	
 	
