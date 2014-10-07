@@ -158,6 +158,7 @@ class TableComponent extends Component {
 				$options['redirect'] = array(
 					'controller' => 'duplicates',
 					'action' => 'view',
+					'plugin' => 'cake_duplicates',
 					'staff' => true,
 					$model,
 				);
