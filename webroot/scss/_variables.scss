@@ -1,5 +1,5 @@
 // If you are extending the layout style rather than including it, set this to true
-$is-layout-extended:				false !default;
+$is-layout-extended:			false !default;
 
 $is-minified:					false !default;
 $sides:							top, right, bottom, left;
@@ -42,6 +42,7 @@ $icon-font-path: 				"#{$font-dir}glyphicons/";
 
 // Variables
 // ---------------------
+$icon-font-path: 				"../fonts/";
 $text-color: 					#444 !default;
 $text-color-light:				#666 !default;
 $text-color-lighter:			#999 !default;
