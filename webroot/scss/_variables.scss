@@ -42,7 +42,7 @@ $icon-font-path: 				"#{$font-dir}glyphicons/";
 
 // Variables
 // ---------------------
-$icon-font-path: 				"../fonts/";
+$icon-font-path: 				"../fonts/" !default;
 $text-color: 					#444 !default;
 $text-color-light:				#666 !default;
 $text-color-lighter:			#999 !default;
