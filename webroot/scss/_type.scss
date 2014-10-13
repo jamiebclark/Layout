@@ -72,13 +72,6 @@ div.lead {
 	margin-top: $line-height-computed;
 }
 
-// Form
-// ------------------------
-:required {
-	border-color: $required-border !important;
-	background-color: $required-background !important;
-	color: $required-text !important;
-}
 
 // Lists
 // ------------------------

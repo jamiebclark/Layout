@@ -11,8 +11,8 @@ $box-header-bg:						$content-box-heading-background;
 $box-header-padding-horizontal:		$content-box-heading-padding-horizontal;
 $box-header-padding-vertical:		$content-box-heading-padding-vertical;
 $box-header-font:					$content-box-heading-font;
-$box-header-size:					$content-box-heading-size;
-$box-header-line-height:			$content-box-heading-line-height;
+$box-header-size:					$font-size-small; //$content-box-heading-size;
+$box-header-line-height:			$line-height-computed; //$content-box-heading-line-height;
 
 $box-divider-border:				$content-box-divider-border;
 
@@ -55,8 +55,7 @@ $box-divider-border:				$content-box-divider-border;
 		box-shadow: 0 0 0 0;
 		min-height: 0;
 		.navbar-brand {
-			padding-top: 5px;
-			padding-bottom: 5px;
+			padding: 0;
 			height: auto;
 		}
 	}
@@ -75,6 +74,14 @@ h4.box-header {
 	line-height: $box-header-line-height;
 }
 
+.box-header, .contentbox-heading {
+	.btn {
+		padding-top: 0;
+		padding-bottom: 0;
+		margin-top: -$box-header-padding-vertical;
+		line-height: #{$box-header-line-height + 2 * $box-header-padding-vertical - 2};
+	}
+}
 
 // Content Box
 // ----------------
@@ -104,12 +111,11 @@ h4.box-header {
 .contentbox-heading {
 	margin-bottom: 0 !important;
 	border-bottom: $content-box-divider-border;
-	.navbar {
+	&.navbar {
 		box-shadow: 0 0 0 0;
 		min-height: 0;
-		.navbar-brand {
-			padding-top: 5px;
-			padding-bottom: 5px;
+		> .btn-group, .navbar-brand {
+			padding: 0 !important;
 			height: auto;
 		}
 	}
@@ -118,14 +124,16 @@ h4.box-header {
 h2.contentbox-heading, 
 h3.contentbox-heading, 
 h4.contentbox-heading, 
-.contentbox-heading .navbar-inner {
+.contentbox-heading  {
 	border: 0;
 	margin: 0;
 	border-radius: 0;
 	padding: $content-box-heading-padding-vertical $content-box-heading-padding-horizontal;
 	background: $content-box-heading-background;
-	font-family: $content-box-heading-font;
-	font-size: $content-box-heading-size;
+	&, & .navbar-brand {
+		font-family: $content-box-heading-font;
+		font-size: $box-header-size;
+	}
 }
 h2.contentbox-heading, 
 h3.contentbox-heading, 
