@@ -111,7 +111,13 @@ class GridHelper extends AppHelper {
 		if (!empty($options['totalCols'])) {
 			$class = (!empty($options['cols']) ? $options['cols'] : 1) . '/' . $options['totalCols'];
 		}
-		$class = preg_replace('#(([\d]+)/([\d]+))#e', '$this->__getFractionClass($2,$3)', $class);
+		$class = preg_replace_callback(
+			'#(([\d]+)/([\d]+))#',
+			function ($matches) {
+				return $this->__getFractionClass($matches[2],$matches[3]);
+			},
+			$class);
+		
 		if (!empty($options['class'])) {
 			$class .= ' ' . $options['class'];
 		}
