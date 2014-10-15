@@ -1050,9 +1050,11 @@ documentReady(function() {
 								lastTimestamp = timestamp;
 								if (loadOptions.dataType == 'json') {
 									$dropdown.trigger('empty');
-									$.each(data, function(key, val) {
-										addDropdownOption(val.value, val.label);
-									});
+									if (data) {
+										$.each(data, function(key, val) {
+											addDropdownOption(val.value, val.label);
+										});
+									}
 								} else {
 									$dropdown.html(data);
 									$dropdown.find('a').click(function(e) {
