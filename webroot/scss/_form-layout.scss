@@ -45,6 +45,7 @@
 	input[type="color"],
 	.uneditable-input {
 		@include input-font-size($font-size-large);
+		height: 40px;
 	}
 }
 .input-lg {

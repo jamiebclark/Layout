@@ -17,7 +17,7 @@ $input-name-width-small: 		40px;
 $ns: 							"input-name";	//Namespace
 @mixin set-input-name-input-width($width) {
 	width: $width !important;
-	input, label {
+	input {
 		padding: $input-padding-top $input-padding-left;
 		// width: $width - 2 * $input-padding-left;
 	}
@@ -26,6 +26,7 @@ $ns: 							"input-name";	//Namespace
 	@extend %overflow;
 }
 .#{$ns} {
+	margin-bottom: 15px;
 	.#{$ns}-inner {
 		@extend %overflow;
 		div.form-group {
@@ -58,7 +59,7 @@ $ns: 							"input-name";	//Namespace
 		}
 		label {
 			text-align: left;
-			font-size: 10px;
+			font-size: $font-size-small;
 			font-weight: normal;
 		}
 		input {

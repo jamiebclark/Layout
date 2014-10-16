@@ -209,6 +209,7 @@ class AddressBookFormHelper extends LayoutAppHelper {
 			if (!empty($data[$name])) {
 				$options['value'] = $data[$name];
 			}
+			$options['label'] = Inflector::humanize(str_replace('_name', '', $name));
 			$options = $this->addClass($options, 'input-lg');
 			$out .= $this->Form->input($prefix . $name, $options);
 		}
