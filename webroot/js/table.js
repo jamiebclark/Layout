@@ -98,7 +98,7 @@
 							'class': c,
 							'title': 'Sorty the table by "' + label + '" in Ascending order'
 						})
-						.prepend($('<i class="icon-caret-up"></i>'));
+						.prepend($('<i class="glyphicon glyphicon-sort-by-attributes"></i>'));
 					
 				});
 			$div.append(function() {

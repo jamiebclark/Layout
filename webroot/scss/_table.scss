@@ -100,6 +100,7 @@ td.dt {
 		border: 1px solid white;
 		position: relative;
 		z-index: 1000;
+
 		&.hover {
 			border-radius: $table-sort-rounded;
 			background-color: $table-sort-bg-color;
@@ -124,10 +125,10 @@ td.dt {
 		z-index: 1001;
 		
 		a {
-			padding: 0 5px;
+			padding: $padding-small-vertical $padding-small-horizontal;
 			display: block;
 			font-weight: normal;
-			font-size: 10px;
+			font-size: $font-size-small;
 			text-align: left;
 			
 			border-radius: $table-sort-rounded;

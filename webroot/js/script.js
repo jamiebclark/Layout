@@ -226,7 +226,7 @@ documentReady(function() {
 							'class': linkClass,
 							'title': 'Sort the table by "' + label + '" in Ascending order'
 						})
-						.prepend($('<i class="icon-caret-up"></i>'));
+						.prepend($('<i class="pull-right glyphicon glyphicon-sort-by-attributes"></i>'));
 					
 				});
 			$div.append(function() {
@@ -240,7 +240,7 @@ documentReady(function() {
 						'class': linkClass,
 						'title': 'Sort the table by this column in Descending order'
 					})
-					.prepend($('<i class="icon-caret-down"></i>'));
+					.prepend($('<i class="pull-right glyphicon glyphicon-sort-by-attributes-alt"></i>'));
 			});
 			return $div.before('<br/>').hide();
 		});

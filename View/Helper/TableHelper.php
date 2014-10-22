@@ -149,13 +149,7 @@ class TableHelper extends LayoutAppHelper {
 	function checkbox($value = null) {
 		$cell = $this->tableCheckbox($value);
 
-		$header = $this->Form->input('check-all-checkbox', array(
-			'name' => 'check-all-checkbox',
-			'type' => 'checkbox',
-			'class' => 'check-all',
-			'div' => false,
-			'label' => false,
-		));
+		$header = sprintf('<input type="checkbox" name="%1$s" class="%2$s" id="%1$s" value="1"/>', 'check-all-checkbox', 'check-all');
 		$attrs = array(
 			'width' => 20,
 			'class' => 'table-checkbox',
