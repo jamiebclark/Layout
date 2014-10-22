@@ -860,7 +860,8 @@ h1, h2, h3, h4 {
 	}
 }
 .input-autocomplete-multi {
-	margin-bottom: 1em;
+	margin-top: -$line-height-computed;
+	margin-bottom: $line-height-computed;
 	.vals {
 		clear: both !important;
 		label {

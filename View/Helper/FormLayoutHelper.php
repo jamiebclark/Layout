@@ -138,6 +138,7 @@ class FormLayoutHelper extends LayoutAppHelper {
 				$this->Form->input("$model.$model", array(
 					'multiple' => 'checkbox',
 					'label' => false,
+					'class' => 'checkbox',
 				) + compact('options', 'selected'))
 			);
 			$k = count($options);
@@ -646,7 +647,7 @@ class FormLayoutHelper extends LayoutAppHelper {
 			'onclick' => 'this.select()',
 			'readonly' => 'readonly',
 		), $options);
-		$options = $this->addClass($options, 'input-copy');
+		$options = $this->addClass($options, 'form-control input-copy');
 		
 		if ($showForm) {
 			$return .= $this->Form->create();
