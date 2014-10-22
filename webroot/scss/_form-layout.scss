@@ -520,6 +520,9 @@ textarea, input {
 }
 .input-autocomplete-multi-values {
 	margin-top: -$line-height-computed;
+	label {
+		font-weight: normal;
+	}
 }
 
 
