@@ -135,34 +135,20 @@ class TableHelper extends LayoutAppHelper {
 		}
 	}
 	
-	function tableCheckbox($options = array()) {
-		if (!empty($options) && !is_array($options)) {
-			$options = array('value' => $options);
-		}
-		$name = 'table_checkbox.' . $this->checkboxCount;
+	function tableCheckbox($value) {
 		$name = 'data[table_checkbox][' . $this->checkboxCount . ']';
 		$id = 'table_checkbox' . $this->checkboxCount;
-		$options = array_merge(array(
-			'name' => $name,
-			'type' => 'checkbox',
-			'label' => false,
-			'div' => false,
-			'hiddenField' => false,
-			'id' => $id,
-		), $options);
-		$this->currentCheckboxId = $options['id'];
 
+		$this->currentCheckboxId = $id;
 		$this->hasForm = true;
-
 		$this->checkboxCount++;
-		return $this->Form->input($name, $options);
+
+		return sprintf('<span class="checkbox"><input type="checkbox" name="%s" id="%s" value="%s"/></span>', $name, $id, $value);
 	}
 	
-	function checkbox($options = array()) {
-		if (!empty($options) && !is_array($options)) {
-			$options = array('value' => $options);
-		}
-		$cell = $this->tableCheckbox($options);
+	function checkbox($value = null) {
+		$cell = $this->tableCheckbox($value);
+
 		$header = $this->Form->input('check-all-checkbox', array(
 			'name' => 'check-all-checkbox',
 			'type' => 'checkbox',
@@ -192,13 +178,15 @@ class TableHelper extends LayoutAppHelper {
 				'type' => 'select',
 				'options' => $withChecked,
 				'label' => 'With Checked:',
-				'div' => false,
+				'div' => 'form-group',
+				'wrapInput' => false,
+				'class' => 'form-control',
 				'name' => 'checked_action',
 			));
 		} else {
 			$return .= $content;
 		}
-		$out .= $this->Form->submit('Go', array('name' => 'with_checked','div' => false));
+		$out .= $this->Form->submit('Go', array('class' => 'btn btn-default', 'name' => 'with_checked','div' => false));
 		return $this->Html->div('table-with-checked form-inline', $out);
 	}
 
@@ -420,8 +408,10 @@ class TableHelper extends LayoutAppHelper {
 			(!isset($options['paginate']) || $options['paginate'] !== false) &&
 			!empty($this->request->params['paging'][$model])
 		) {
-			$out .= $this->Layout->paginateNav();
+			//$out .= $this->Layout->paginateNav();
+			$out .= $this->Paginator->pagination(array('ul' => 'pagination', 'div' => 'text-center'));
 		}
+
 		if (!empty($out)) {
 			if ($wrap) {
 				//Returns both top and bottom

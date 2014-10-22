@@ -130,6 +130,7 @@ div.lead {
 .layout-toggle {
 	margin-bottom: $line-height-computed / 2;
 	border: 1px solid $input-border;
+	clear: both;
 	fieldset {
 		background-color: transparent;
 		border: 0;
@@ -140,6 +141,10 @@ div.lead {
 	float: none;
 	clear: both;
 	position: relative;
+	.checkbox {
+		margin: 0;
+		padding: 0;
+	}
 	label {
 		position: relative;
 		z-index: 2;
@@ -149,7 +154,7 @@ div.lead {
 		display: block;
 		padding: $padding-large-vertical $padding-large-horizontal;
 		padding-left: 30px;
-		margin: 0;
+		//margin: 0;
 	}
 	.ell {
 		position: absolute;
@@ -180,10 +185,18 @@ div.lead {
 }
 .form-horizontal {
 	.layout-toggle-control {
-		padding-left: $component-offset-horizontal - 20px;
+		// padding-left: $component-offset-horizontal - 20px;
+		label.control-label {
+			text-align: left;
+		}
 	}
 	.layout-toggle-content {
 		padding-left: 0;
+		padding-right: 0;
+		.form-group {
+			margin-left: 0;
+			margin-right: 0;
+		}
 	}
 }
 

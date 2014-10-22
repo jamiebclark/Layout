@@ -58,6 +58,13 @@ li.#{$ns}-item {
 	margin: 0;
 	margin-bottom: 0 !important;
 	padding: $collapse-item-padding-top $collapse-item-padding-left;
+	> .checkbox {
+		display: inline-block;
+		margin-top: 0;
+		margin-bottom: 0;
+		margin-right: 5px;
+	}
+
 	&.selected {
 		background: #eee !important;
 	}

@@ -1025,6 +1025,7 @@ class ModelViewHelper extends LayoutAppHelper {
 				'type' => 'checkbox',
 				'label' => 'Delete photo',
 				'div' => 'input-thumb-delete',
+				'class' => 'checkbox',
 			));
 		}
 		return $out;

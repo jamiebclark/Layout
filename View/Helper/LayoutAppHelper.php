@@ -1,7 +1,7 @@
 <?php
 //App::uses('AppHelper', 'View/Html');
 class LayoutAppHelper extends AppHelper {
-	protected $bootstrap = false;
+	protected $bootstrap = true;
 	protected $localBootstrap = true;
 
 	protected $_tagAttributes = array(

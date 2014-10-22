@@ -7,14 +7,13 @@ App::uses('LayoutAppHelper', 'Layout.View/Helper');
 class AddressBookFormHelper extends LayoutAppHelper {
 	public $name = 'AddressBookForm';
 	public $helpers = array(
-		'Form' => array(
-			'className' => 'TwitterBootstrap.BootstrapFormHelper',
-		), 
+		'Html',
+		'Form', 
 		'Layout.Layout', 
 		'Layout.FormLayout'
 	);
 	
-	
+
 	private $numericCount = 0;
 	
 	function beforeRender($viewFile) {
@@ -24,9 +23,24 @@ class AddressBookFormHelper extends LayoutAppHelper {
 	}
 	
 	function inputGender($fieldName, $options = array()) {
+		$inputDefaults = $this->Form->inputDefaults();
+
+		$labelOptions = array();
+		if (!empty($inputDefaults['label']) && is_array($inputDefaults['label'])) {
+			$labelOptions = $inputDefaults['label'];
+		}
+
+		$wrapInput = 'input-gender-options';
+		if (!empty($inputDefaults)) {
+			$wrapInput .= ' ' . $inputDefaults['wrapInput'];
+		}
+
 		return $this->Form->input($fieldName, array(
 			'div' => 'input-gender form-group',
+			'before' => $this->Form->label('Gender', 'Gender', $labelOptions),
 			'type' => 'radio',
+			'class' => false,
+			'wrapInput' => $wrapInput,
 			'divControls' => 'input-multi-row',
 			'options' => array(
 				'' => '---',
@@ -184,8 +198,14 @@ class AddressBookFormHelper extends LayoutAppHelper {
 		}
 		$hasLabel = !empty($label);
 		$out = '';
+
+		$inputDefaults = $this->Form->inputDefaults();
+		$this->Form->inputDefaults(array(
+			'label' => array('class' => false),
+			'wrapInput' => false,
+		), true);
+
 		
-		$this->Form->pauseColWidth();
 		foreach ($inputs as $name => $options) {
 			if (!is_array($options)) {
 				$name = $options;
@@ -206,27 +226,26 @@ class AddressBookFormHelper extends LayoutAppHelper {
 				$div .= ' required';
 			}
 			$options['div'] = $div;
+			$options['wrapInput'] = false;
 			if (!empty($data[$name])) {
 				$options['value'] = $data[$name];
 			}
 			if (empty($options['label'])) {
 				$options['label'] = Inflector::humanize(str_replace('_name', '', $name));
 			}
-			$options = $this->addClass($options, 'input-lg');
+			$options = $this->addClass($options, 'form-control input-lg');
 			$out .= $this->Form->input($prefix . $name, $options);
 		}
-		$this->Form->pauseColWidth(false);
+		
+		$this->Form->inputDefaults($inputDefaults);
 		
 		$out = $this->Html->div("$ns-inner contain-label", $out);
 		if ($hasLabel) {
-			$label = $this->Html->tag('label', $label, $this->Form->addColWidthClass(
-				array('class' => "$ns-label control-label"), 
-				true
-			));
+			$label = $this->Html->tag('label', $label, array('class' => "$ns-label control-label"));
 			//$label = $this->Html->div("$ns-small", $this->Html->tag('label', '&nbsp;')) . $label;
 			$out = $label . $this->Html->tag('div', 
 				$out, 
-				$this->Form->addColWidthClass(array('class' => "$ns-content"))
+				array('class' => "$ns-content")
 			);
 		}
 		return $this->Html->div($ns, $out);

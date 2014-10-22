@@ -9,6 +9,7 @@ App::uses('LayoutAppHelper', 'Layout.View/Helper');
 class LayoutHelper extends LayoutAppHelper {
 	var $helpers = array(
 		'Html', 
+		'Form',
 		'Paginator', 
 		'CakeAssets.Asset',
 		'Layout.Crumbs',
@@ -97,11 +98,17 @@ class LayoutHelper extends LayoutAppHelper {
 		), $options);
 		extract($options);
 		
+		$labelClass = 'control-label';
+		if (!empty($controlClass)) {
+			$labelClass .= ' ' . $controlClass;
+		}
 		//Toggle Control
 		$toggleInput = $this->Form->input($name, array(
 			'type' => 'checkbox',
-			'label' => $label,
+			'label' => array('text' => $label, 'class' => $labelClass),
+			'class' => false,
 			'div' => false,
+			'wrapInput' => false,
 		) + compact('checked'));
 		return $this->Html->div('layout-toggle-control', $toggleInput);
 	}
@@ -200,6 +207,11 @@ class LayoutHelper extends LayoutAppHelper {
 	 *
 	 **/
 	function paginateNav($options = null) {
+		$options = array_merge(array(
+			'div' => 'text-center',
+			'ul' => 'pagination',
+		), (array) $options);
+
 		//if (empty($this->Paginator)) {
 		//	return '';
 		//}
@@ -212,7 +224,7 @@ class LayoutHelper extends LayoutAppHelper {
 		}
 
 		if ($this->bootstrap) {
-			return $this->Paginator->pagination();
+			return $this->Paginator->pagination($options);
 		}
 		
 		if ($options['hideBlank'] !== false && !$this->Paginator->hasPage(2)) {

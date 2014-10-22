@@ -26,6 +26,9 @@ class FormLayoutHelper extends LayoutAppHelper {
 
 	public $toggleCount = 0;
 	private $_inputCount = array();
+
+	private $_hSpan;
+	private $_inputDefaults = null;
 	
 	public function __construct($View, $settings = array()) {
 		parent::__construct($View, $settings);
@@ -328,7 +331,7 @@ class FormLayoutHelper extends LayoutAppHelper {
 			'value' => null,
 		), $custom, $options);
 		extract($options);
-		
+
 		$hasValue = !empty($value);
 		foreach ($custom as $key => $val) {
 			unset($options[$key]);
@@ -358,7 +361,12 @@ class FormLayoutHelper extends LayoutAppHelper {
 		
 		if (!empty($display) && empty($displayInput)) {
 			//$displayInput = $this->Html->div('display fakeInput text', $hasValue ? $value : '', array('style'=> 'display:none;'));
-			$displayInput = $this->fakeInput($hasValue ? $value : '', array('class' => 'display text', 'style' => 'display: none'));
+			$displayInput = $this->fakeInput($hasValue ? $value : '', array(
+				'class' => 'display text', 
+				'style' => 'display: none', 
+				'label' => false,
+				'wrapInput' => false
+			));
 		}
 		$idInput = !empty($idField) ? $this->Form->hidden($prefix . $idField) : '';
 
@@ -372,13 +380,15 @@ class FormLayoutHelper extends LayoutAppHelper {
 		if (!empty($redirectUrl)) {
 			$redirectUrl = is_array($redirectUrl) ? Router::url($redirectUrl) . '/' : $redirectUrl;
 		}
-		$return .= $this->input($searchField, array_merge($options, array(
+		$options = array_merge($options, array(
 			'type' => 'text',
 			'before' => $idInput,
-			'between' => $displayInput,
+			'beforeInput' => $displayInput,
 			'data-url' => $url,
 			'data-redirect-url' => $redirectUrl,
-		) + compact('value')));
+		) + compact('value'));
+
+		$return .= $this->input($searchField, $options);
 		return $return;
 	}
 	
@@ -454,15 +464,15 @@ class FormLayoutHelper extends LayoutAppHelper {
 				$options['step'] = 'any';
 			break;
 			case 'email' :
-				$options['prepend'] = $this->Iconic->icon('at');
+				$options['prepend'] = '<i class="fa fa-at"></i>';
 			break;
 			case 'tel':
 			case 'phone':
-				$options['prepend'] = '<i class="glyphicon glyphicon-phone"></i>';
+				$options['prepend'] = '<i class="fa fa-phone"></i>';
 				$options['type'] = 'tel';
 			break;
 			case 'url':
-				$options['prepend'] = '<i class="glyphicon glyphicon-globe"></i>';
+				$options['prepend'] = '<i class="fa fa-globe"></i>';
 				$options['type'] = 'text';
 			break;
 			case 'number':
@@ -519,11 +529,6 @@ class FormLayoutHelper extends LayoutAppHelper {
 			*/
 		}
 		
-		if (isset($options['inputAppend'])) {
-			$options['appendButton'] = $this->_buttonInner($options['inputAppend']);
-			unset($options['inputAppend']);
-		}
-
 		if ($form = Param::keyCheck($options, 'form', true)) {
 			list($formName, $formOptions) = array(null, array());
 			if (is_array($form)) {
@@ -531,21 +536,65 @@ class FormLayoutHelper extends LayoutAppHelper {
 			} else {
 				$formName = $form;
 			}
-
-			
 			$beforeInput = $this->Form->create($formName === true ? null : $formName, $formOptions);
 			$afterInput = $this->Form->end();
 		}
-		
-		
-		
+	
 		if (empty($input)) {
-			$input = $this->Form->input($fieldName, $options);
+			$input = $this->Form->input($fieldName, $this->inputOptions($options));
 		}
 		
 		return $beforeInput . $input . $afterInput;
 	}
-	
+
+	public function inputOptions($options = array()) {
+		if ($inputAppend = Param::keyCheck($options, 'inputAppend', true)) {
+			$options = $this->_appendOption($options, 'appendButton', $this->_buttonInner($inputAppend));
+		}
+
+		if ($appendButton = Param::keyCheck($options, 'appendButton', true)) {
+			$options = $this->_appendOption($options, 'beforeInput', '<div class="input-group">');
+			$options = $this->_appendOption($options, 'afterInput', '<span class="input-group-btn">' . $appendButton . '</span></div>', true);
+		}
+		if ($prependButton = Param::keyCheck($options, 'prependButton', true)) {
+			$options = $this->_appendOption($options, 'beforeInput', '<div class="input-group"><span class="input-group-btn">' . $prependButton . '</span>');
+			$options = $this->_appendOption($options, 'afterInput', '</div>', true);
+		}
+
+		if ($prepend = Param::keyCheck($options, 'prepend', true)) {
+			$options = $this->_appendOption($options, 'beforeInput', '<div class="input-group"><span class="input-group-addon">' . $prepend . '</span>');
+			$options = $this->_appendOption($options, 'afterInput', '</div>', true);
+		}
+		if ($append = Param::keyCheck($options, 'append', true)) {
+			$options = $this->_appendOption($options, 'beforeInput', '<div class="input-group">');
+			$options = $this->_appendOption($options, 'afterInput', '<span class="input-group-addon">' . $append . '</span></div>', true);
+		}
+
+
+		return $options;
+	}
+
+/**
+ * Appends a value to an option key
+ * 
+ * @param array $options The existing options
+ * @param string $prop The property key
+ * @param string $value The value to append
+ * @param bool $prepend If true it will prepend the value instead of appending
+ * @return array The newly formatted options
+ **/
+	public function _appendOption($options = array(), $prop, $value, $prepend = false) {
+		if (!isset($options[$prop])) {
+			$options[$prop] = '';
+		}
+		if ($prepend) {
+			$options[$prop] = $value . $options[$prop];
+		} else {
+			$options[$prop] .= $value;
+		}
+		return $options;
+	}
+
 	public function inputAutoCompleteSelect($searchField = 'title', $idField = 'id', $url = null, $options = array()) {
 		$options = array_merge(array(
 			'display' => true,
@@ -1004,7 +1053,7 @@ class FormLayoutHelper extends LayoutAppHelper {
 				'value' => $default,
 				'data-clone-numbered-default' => $isDefault ? $default : null,
 			));
-			$row = $this->Html->div('input-choice-control', $radio) . "\n";
+			$row = $this->Html->div('input-choice-control', '<label>' . $radio . '</label>') . "\n";
 			if (is_array($input)) {
 				if (empty($input['fieldset']) && empty($input['legend'])) {
 					$input['fieldset'] = false;
@@ -1073,6 +1122,7 @@ class FormLayoutHelper extends LayoutAppHelper {
 		$input = $this->input($prefix . 'all_day', compact('default') + array(
 			'class' => 'input-date-all-day',
 			'type' => 'checkbox',
+			'wrapInput' => false,
 			'div' => false,
 			'label' => false,
 		));
@@ -1088,23 +1138,24 @@ class FormLayoutHelper extends LayoutAppHelper {
 			$options['label'] = $this->getLabelText($startFieldName);
 		}
 		if (!empty($options['allDay']) || !empty($options['isAllDay'])) {
-			$after = $this->_inputDateAllDay($startFieldName, !empty($options['isAllDay']));
+			$afterInput = $this->_inputDateAllDay($startFieldName, !empty($options['isAllDay']));
 			$options['allDay'] = false;
 			$options['isAllDay'] = false;
 		} else {
-			$after = '';
+			$afterInput = '';
 		}
 		$options['div'] = false;
-		$out  = $this->inputDatetime($startFieldName, $this->getPairOptions('first', array('label' => 'From') + $options));
+		$out  = $this->inputDatetime($startFieldName, $this->getPairOptions('first', array('label' => 'From', 'inner' => true) + $options));
 		//$out .= $this->Html->div('datepair-between', ' - ');
-		$out .= $this->inputDatetime($endFieldName, $this->getPairOptions('second', array('flip' => true, 'label' => 'To') + $options));
+		$out .= $this->inputDatetime($endFieldName, $this->getPairOptions('second', array('flip' => true, 'label' => 'To', 'inner' => true) + $options));
 		
 		return $this->fakeInput($this->Html->div('input-datepair-control', $out), array(
-			'div' => 'datepair datepair-time',
+			'div' => 'form-group datepair datepair-time',
 			'label' => $options['label'],
 			'editable' => true,
-			'formControl' => false,
-		) + compact('after'));
+			'class' => false,
+
+		) + compact('afterInput'));
 	}
 
 /**
@@ -1119,17 +1170,17 @@ class FormLayoutHelper extends LayoutAppHelper {
 			$options['label'] = $this->getLabelText($startFieldName);
 		}
 
-		$this->Form->pauseColWidth();
-		$out  = $this->inputDate($startFieldName, $this->getPairOptions('first', array('label' => 'From') + $options));
+		$this->pauseHSpan();
+		$out  = $this->inputDate($startFieldName, $this->getPairOptions('first', array('label' => 'From', 'inner' => true) + $options));
 		//$out .= $this->Html->div('datepair-between', ' - ');
-		$out .= $this->inputDate($endFieldName, $this->getPairOptions('second', array('label' => 'To') + $options));
-		$this->Form->pauseColWidth(false);
+		$out .= $this->inputDate($endFieldName, $this->getPairOptions('second', array('label' => 'To', 'inner' => true) + $options));
+		$this->resumeHSpan();
 
 		
 		$return = $this->fakeInput($this->Html->div('input-datepair-control', $out), array(
-			'div' => 'datepair',
+			'div' => 'datepair form-group',
 			'label' => $options['label'],
-			'formControl' => false,
+			'class' => false,
 		));		
 		return $return;
 	}
@@ -1192,15 +1243,19 @@ class FormLayoutHelper extends LayoutAppHelper {
 		$options = array_merge(array(
 				'placeholder' => 'mm/dd/yyyy',
 				'default' => null,
-				//'prepend' => '<i class="glyphicon glyphicon-calendar"></i>',
+				//'beforeInput' => '<div class="input-group"><span class="input-group-addon"><i class="glyphicon glyphicon-calendar"></i></span>','afterInput' => '</div>',
 				'control' => array('today', 'clear'),
-			), $this->addClass($options, 'date datepicker'));
+			), $this->addClass($options, 'form-control date datepicker'));
 		if (!isset($options['div']) || $options['div'] !== false) {
 			$options = $this->addClass($options, 'form-group input-date', 'div');
 		}
 		if ($dataValue = $this->getDateFieldValue($fieldName)) {
 			$options['default'] = $dataValue;
 		}
+		if (Param::keyCheck($options, 'inner', true)) {
+			$options['wrapInput'] = false;
+		}
+
 		$options['type'] = 'text';
 		if (!empty($options['value'])) {
 			$options['value'] = $this->getDateFieldValue($fieldName, 'date', $options['value']);
@@ -1224,10 +1279,9 @@ class FormLayoutHelper extends LayoutAppHelper {
 					'tabIndex' => -1,
 				));
 			}
-			//$options['input-append'] = $this->Html->div('btn-group', $after);
-			$appendButton = array($appendButton, array('class' => 'input-date-control'));
-			$options = $this->addClass($options, $appendButton, 'appendButton');
-			$options = $this->addClass($options, 'input-group');
+			$options['beforeInput'] = '<div class="input-group input-date-control">';
+			$options['afterInput'] = '<span class="input-group-btn">' . $appendButton . '</span></div>';
+			//$options = $this->addClass($options, 'input-group');
 		}
 		if (!isset($options['label']) || (empty($options['label']) && $options['label'] !== false)) {
 			$options['label'] = $this->getLabelText($fieldName);
@@ -1240,14 +1294,18 @@ class FormLayoutHelper extends LayoutAppHelper {
 		$options = array_merge(array(
 			'placeholder' => '0:00pm',
 			'default' => null,
-			//'prepend' => '<i class="glyphicon glyphicon-time"></i>',
-		), $this->addClass($options, 'time timepicker'));
+			//'beforeInput' => '<div class="input-group"><span class="input-group-addon"><i class="glyphicon glyphicon-time"></i></span>','afterInput' => '</div>',
+		), $this->addClass($options, 'form-control time timepicker'));
 		if (!isset($options['div']) || $options['div'] !== false) {
 			$options = $this->addClass($options, 'form-group input-time', 'div');
 		}
 		if ($dataValue = $this->getFieldValue($fieldName, 'time')) {
 			$options['default'] = $dataValue;
 		}
+		if (Param::keyCheck($options, 'inner', true)) {
+			$options['wrapInput'] = false;
+		}
+		
 		$options['type'] = 'text';
 		$options = $this->_formatFields($options, 'H:i:s');
 		return $this->input("$fieldName.time", $options);			
@@ -1257,7 +1315,9 @@ class FormLayoutHelper extends LayoutAppHelper {
 		$out = '';
 		$flip = Param::keyCheck($options, 'flip', true);
 		
-		$options = $this->addClass($options, 'input-datetime', 'div');
+		$options = $this->addClass($options, 'form-group input-datetime', 'div');
+		$options['wrapInput'] = false;
+
 		$div = $options['div'];
 		unset($options['div']);
 		
@@ -1294,32 +1354,25 @@ class FormLayoutHelper extends LayoutAppHelper {
 				$label = array('text' => $label);
 			}
 			$label = $this->addClass($label, 'control-label');
-			if (method_exists($this->Form, 'addColWidthClass')) {
-				$label = $this->Form->addColWidthClass($label, true);
-			}
 			$text = $label['text'];
 			unset($label['text']);
 			$label = $this->Form->label($fieldName, $text, $label);
 		}
 		$options['label'] = false;
 
-		if (method_exists($this->Form, 'pauseColWidth')) {
-			$this->Form->pauseColWidth();
-		}
 		$out .= $this->{$function1}($fieldName, $options);
 		$out .= $this->{$function2}($fieldName, $secondOptions);
 		//$out = $this->Html->div('input-datetime-row row', $out);
-		if (method_exists($this->Form, 'pauseColWidth')) {
-			$this->Form->pauseColWidth(false);
-		}
 		
-		$this->Form->pauseColWidth();
-		$return = $this->fakeInput($this->Html->div('input-datetime-control', $out), array(
+		$inputOptions = array(
 			'label' => $text,
 			'editable' => true,
-			'formControl' => false,
-		) + compact('div'));
-		$this->Form->pauseColWidth(false);
+			'class' => false,
+		) + compact('div');
+		if (!empty($options['inner'])) {
+			$inputOptions['wrapInput'] = false;
+		}
+		$return = $this->fakeInput($this->Html->div('input-datetime-control', $out), $inputOptions);
 		return $return;
 
 //		return $this->Html->div('input-datetime', $label . $this->Html->div('input-datetime-control', $out));	
@@ -1362,6 +1415,54 @@ class FormLayoutHelper extends LayoutAppHelper {
 		$options1['after'] = $time2;
 		
 		return $this->input($name1, $options1);
+	}
+
+/**
+ * Sets or resets the horizontal form span
+ *
+ * @param int $span The span to set. If false, it will unset all horizontal span
+ * @return void
+ **/
+	public function setHSpan($span = 9) {
+		$this->_hSpan = $span;
+		if (!isset($this->_inputDefaults)) {
+			$this->_inputDefaults = $this->Form->inputDefaults();
+		}
+		if (empty($span)) {
+			$this->Form->inputDefaults($this->_inputDefaults);
+		} else {
+			$this->Form->inputDefaults(array(
+				'label' => array('class' => 'control-label col col-sm-' . (12 - $span)),
+				'wrapInput' => 'col col-sm-' . $span,
+			), true);
+		}
+	}
+
+/**
+ * Returns the horizontal form span
+ *
+ * @return int The current horizontal column span
+ **/
+	public function getHSpan() {
+		return $this->_hSpan;
+	}
+
+/**
+ * Stores the current horizontal form span but resets the form values to full
+ *
+ **/
+	public function pauseHSpan() {
+		$hSpan = $this->getHSpan();
+		$this->setHSpan(false);
+		$this->_hSpan = $hSpan;
+	}
+
+/**
+ * Resumes the current form width back to the stored value
+ *
+ **/
+	public function resumeHSpan() {
+		$this->setHSpan($this->_hSpan);
 	}
 
 	function submitOLD_VERSION($text = null, $attrs = array()) {
@@ -1467,6 +1568,7 @@ class FormLayoutHelper extends LayoutAppHelper {
 	}
 	
 	function fakeInput($value, $options = array()) {
+		$inputDefaults = $this->Form->inputDefaults();
 		$options = array_merge(array(
 			'label' => false,
 			'editable' => false,
@@ -1474,34 +1576,50 @@ class FormLayoutHelper extends LayoutAppHelper {
 			'before' => '',
 			'after' => '',
 			'between' => '',
+			'div' => 'form-group',
+			'class' => 'form-control',
 			'formControl' => true,
-		), $options);
-		$options = $this->addClass($options, 'form-group', 'div');
+			'wrapInput' => false,
+			'beforeInput' => '',
+			'afterInput' => ''
+		), $inputDefaults, $options);
 		if (empty($options['editable'])) {
 			$options = $this->addClass($options, 'uneditable-input');
 		}
 		extract($options);
-		$out = $before;
-		if (!empty($label)) {
-			$out .= $this->Html->tag('label', $label, $this->Form->addColWidthClass(array('class' => 'control-label'), true));
-		}
-		$value = $between . $value . $after;
-		$class .= ' ' . $this->Form->colWidthClass();
-		if ($formControl) {
-			$class .= ' form-control';
-		}
+		$out = '';
 		
-		$out .= $this->Html->div($class, $value);
+		// Fake input
+		$input = $this->Html->div($class . ' input-fake', $value);
+		$out = $beforeInput . $input . $afterInput;
+		if (!empty($wrapInput)) {
+			$out = $this->Html->div($wrapInput, $out);
+		}
+		if (!empty($label)) {
+			$labelOptions = array();
+			if (is_array($label)) {
+				$labelOptions = $label;
+				$label = $label['text'];
+			}
+			if (!empty($inputDefaults['label'])) {
+				$labelOptions = array_merge($inputDefaults['label'], $labelOptions);
+			}
+			//$label = $this->Html->tag('label', $label, array('class' => 'control-label'));
+			$label = $this->Form->label('Fake', $label, $labelOptions);
+		}
+		$out = $before . $label . $between . $out . $after;
 		if (!empty($div)) {
 			$out = $this->Html->div($div, $out);
 		}
+
 		return $out;
 	}
 	
 	function inputCash($fieldName, $options = array()) {
 		$options = array_merge(array(
 			'type' => 'text',
-			'prepend' => '$',
+			'beforeInput' => '<div class="input-group"><span class="input-group-addon">$</span>',
+			'afterInput' => '</div>',
 			'step' => 'any',
 			'placeholder' => '0.00',
 		), $options);
