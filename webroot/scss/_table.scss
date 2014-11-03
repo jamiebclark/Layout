@@ -87,6 +87,10 @@ td.dt {
 		@include border-bottom-radius($border-radius-base);
 	}
 }
+.panel > form > .table-nav {
+	margin-left: 0;
+	margin-right: 0;
+}
 
 .table-sort-links {
 	position: relative;

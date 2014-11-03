@@ -1,4 +1,6 @@
 <?php
+$this->extend('default');
+
 $left = $this->fetch('liquidLeft');
 $right = $this->fetch('liquidRight');
 
@@ -16,9 +18,9 @@ if ($hasRight) {
 <div class="<?php echo $class;?>">
 	<div class="liquid-layout-content">
 		<div class="liquid-layout-inner">
-			<!-- Liquid Inner Start --->
+			<!-- Liquid Inner Start -->
 			<?php echo $this->fetch('content'); ?>
-			<!-- Liquid Inner End --->
+			<!-- Liquid Inner End -->
 		</div>
 	</div>
 	<?php if ($hasLeft):?>

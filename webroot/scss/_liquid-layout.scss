@@ -15,7 +15,7 @@ $ns: 						"liquid-layout";	//namespace
 	width: 100%;
 	min-width: 984px;
 	max-width: 1600px;
-	margin: -#{$grid-gutter-width / 2} auto;
+	margin: 0 auto;
 	padding: 0;
 
 	&, .#{$ns}-content {
@@ -131,9 +131,9 @@ $ns: 						"liquid-layout";	//namespace
 		min-height: 0;
 		&.has-left, &.has-right {
 			.#{$ns}-content {
-					min-width: 0;
-					margin-left: 0;
-					margin-right: 0;
+				min-width: 0;
+				margin-left: 0;
+				margin-right: 0;
 			}
 		}
 		.#{$ns}-left, .#{$ns}-right {

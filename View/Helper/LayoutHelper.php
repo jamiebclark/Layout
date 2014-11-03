@@ -131,11 +131,12 @@ class LayoutHelper extends LayoutAppHelper {
 		return $this->contentBoxOpen($title, $params) . $this->contentBoxClose($content);
 	}
 	
+
 	function contentBoxOpen($title = null, $params = null) {
-		$params = $this->addClass($params, 'contentbox');
-		if (empty($title)) {
-			$params = $this->addClass($params, 'contentbox-blank');
-		}
+		$type = !empty($params['type']) ? $params['type'] : 'default';
+		unset($params['type']);
+		$params = $this->addClass($params, 'panel panel-' . $type);
+
 		if (!empty($params['toggle'])) {
 			$hasToggle = true;
 			$params = $this->addClass($params, 'layout-toggle');
@@ -148,9 +149,10 @@ class LayoutHelper extends LayoutAppHelper {
 				$params['actionMenu'] = array(array(), array());
 			}
 			$params['actionMenu'][0][] = array($this->Iconic->icon('x'), '#', 
-				array('escape' => false, 'onclick' => "$(this).closest('.contentBox').hide();return false;")
+				array('escape' => false, 'onclick' => "$(this).closest('.panel').hide();return false;")
 			);
 		}
+
 		$actionMenu = Param::keyCheck($params, 'actionMenu', true);
 		$url = Param::keyCheck($params, 'url', true);
 		$icon = Param::keyCheck($params, 'icon', true);
@@ -169,16 +171,16 @@ class LayoutHelper extends LayoutAppHelper {
 		if (!empty($title) || !empty($actionMenu)) {
 			$actionMenu = array_merge((array)$actionMenu, array(null, null));
 			$actionMenu[1]['icons'] = true;
-			$actionMenu[1]['class'] = 'contentbox-heading';
+			$actionMenu[1]['class'] = 'panel-heading';
 			$title = $this->headingActionMenu($title, $actionMenu[0], $actionMenu[1]);
 		}
 		
-		$bodyClass = 'contentbox-body';
+		$bodyClass = 'panel-body';
 		$bodyOptions = array();
 		if (!empty($params['bodyClass'])) {
 			$bodyClass = $params['bodyClass'];
 		} else if (!empty($params['list'])) {
-			$bodyClass = 'contentbox-body-list';
+			$bodyClass = '';
 		}
 		if (!empty($hasToggle)) {
 			$bodyClass .= ' layout-toggle-content';
@@ -189,10 +191,10 @@ class LayoutHelper extends LayoutAppHelper {
 		if (!empty($title)) {
 			$render .= $title;
 		}
-		
 		$render .= $this->Html->div($bodyClass, null, $bodyOptions);
 		return $render;
 	}
+
 	function contentBoxClose($content = null) {
 		$render = '';
 		if (!empty($content)) {
