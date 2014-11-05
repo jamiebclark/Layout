@@ -171,12 +171,24 @@ class AddressBookFormHelper extends LayoutAppHelper {
 	
 	function inputName($model = 'User', $inputs = array(), $options = array()) {
 		$ns = 'input-name';
+		$labelText = 'Name';
 		$options = array_merge(array(
 			'label' => 'Name',
 			'count' => null,
 			'prefix' => null,
+			'content' => array(),
 		), $options);
 		extract($options);
+
+		if (!is_array($label)) {
+			$labelText = $label;
+			$label = array();
+		} else if (!empty($label['text'])) {
+			$labelText = $label['text'];
+			unset($label['text']);
+		}
+		$label = $this->addClass($label, "$ns-label control-label");
+
 		if (empty($inputs)) {
 			$inputs = array(
 				'prefix' => array('required' => true, 'small' => true),
@@ -241,11 +253,11 @@ class AddressBookFormHelper extends LayoutAppHelper {
 		
 		$out = $this->Html->div("$ns-inner contain-label", $out);
 		if ($hasLabel) {
-			$label = $this->Html->tag('label', $label, array('class' => "$ns-label control-label"));
+			$label = $this->Html->tag('label', $labelText, $label);
 			//$label = $this->Html->div("$ns-small", $this->Html->tag('label', '&nbsp;')) . $label;
 			$out = $label . $this->Html->tag('div', 
 				$out, 
-				array('class' => "$ns-content")
+				$this->addClass($content, "$ns-content")
 			);
 		}
 		return $this->Html->div($ns, $out);
