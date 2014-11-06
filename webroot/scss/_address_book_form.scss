@@ -9,9 +9,17 @@
 	overflow: hidden;
 	min-height: $line-height-computed;
 }
-.input-gender-options label {
-	line-height: $line-height-computed;
-	padding: $input-padding-top $input-padding-left;
+.input-gender-options {
+	label {
+		line-height: $line-height-computed;
+		padding: $input-padding-top $input-padding-left;
+		display: inline-block;
+		margin-right: 15px;
+		> input.radio {
+			margin-left: 0;
+			margin-right: 5px;
+		}
+	}
 }
 
 // Input Name
