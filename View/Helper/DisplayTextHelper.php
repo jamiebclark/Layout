@@ -792,8 +792,8 @@ class DisplayTextHelper extends LayoutAppHelper {
 		}
 		$text = $return;
 		if ($count >= $options['cutoff']) {
-			return $this->Html->div('box toc',
-				$this->Html->tag('h2', 'Content', array('class' => 'toc-title box-header')) 
+			return $this->Html->div('panel toc',
+				$this->Html->div('toc-title panel-heading', 'Content') 
 				. $toc
 			);
 		} else {
