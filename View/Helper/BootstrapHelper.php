@@ -26,19 +26,6 @@ class BootstrapHelper extends LayoutAppHelper {
 		return $out;		
 	}
 
-	public function btnGroup($links, $options = array()) {
-		$out = '';
-		foreach ($links as $link) {
-			if (is_array($link)) {
-				$link += array(null, array(), array(), null);
-				$link[2] = $this->addClass($link[2], 'btn btn-default');
-				$link[2]['escape'] = false;
-				$out .= $this->Html->link($link[0], $link[1], $link[2], $link[3]);
-			}
-		}
-		return $this->Html->div('btn-group', $out);
-	}
-
 	public function listGroup($listItems, $options = array()) {
 		$options = $this->addClass($options, 'list-group');
 		$out = '';
