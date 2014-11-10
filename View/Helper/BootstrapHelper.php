@@ -39,14 +39,75 @@ class BootstrapHelper extends LayoutAppHelper {
 		return $this->Html->tag('ul', $out, $options);
 	}
 
-	public function linkListGroup($listItems, $options = array()) {
+	public function linkListGroup($links, $options = array()) {
 		$options = $this->addClass($options, 'list-group');
+		$options['tag'] = 'div';
+		$options['link']['class'] = 'list-group-item';
+		return $this->_linkList($links, $options);
+	}
+
+	public function linkBtnGroup($links, $options = array()) {
+		$options = $this->addClass($options, 'btn-group');
+		$options['tag'] = 'div';
+		$options['link']['class'] = 'btn btn-default';
+		return $this->_linkList($links, $options);
+	}
+
+/**
+ * Converts an array of links to HTML
+ *
+ * @param array $links An array of links, formatted to work with the Html link function
+ *	- title
+ * 	- url
+ * 	- linkOptions
+ * 	- onClick
+ * @param array $options Additional options to format the list
+ * @return string HTML list
+ **/
+	private function _linkList($links, $options = array()) {
+		$options = Hash::merge(array(
+			'tag' => null,
+			'class' => null,
+			'linkWrap' => array(
+				'tag' => null,
+				'class' => null,
+			),
+			'link' => array(
+				'class' => null,
+			)
+		), $options);
+
+		$tag = Param::keyCheck($options, 'tag', true);
+		$globalLinkOptions = Param::keyCheck($options, 'link', true);
+		$linkWrapOptions = Param::keyCheck($options, 'linkWrap', true);
+
 		$out = '';
-		foreach ($listItems as $listItem) {
-			$listItem += array(null, array(), array(), null);
-			$listItem[2] = $this->addClass($listItem[2], 'list-group-item');
-			$out .= "\t\t" . $this->Html->link($listItem[0], $listItem[1], $listItem[2], $listItem[3]) . "\n";
+		foreach ($links as $link) {
+			list($linkText, $linkUrl, $linkOptions, $linkClick) = $link + array(null, array(), array(), null);
+			$isActive = Param::keyCheck($linkOptions, 'active', true);
+
+			$linkOptions['escape'] = false;
+			$linkOptions = array_merge((array) $globalLinkOptions, $linkOptions );
+			if (empty($linkWrapOptions) && $isActive) {
+				$linkOptions = $this->addClass($linkOptions, 'active');
+			}
+			$link = $this->Html->link($linkText, $linkUrl, $linkOptions, $linkClick);
+
+
+			if (!empty($linkWrapOptions)) {
+				$lwOptions = $linkWrapOptions;
+				$lwTag = Param::keyCheck($lwOptions, 'tag', true);
+				if ($isActive) {
+					$lwOptions = $this->addClass($lwOptions, 'active');
+				}
+				$link = $this->Html->tag($lwTag, $link, $lwOptions);
+			}
+
+			$out .= $link;
 		}
-		return $this->Html->tag('div', $out, $options);
+		if (!empty($tag)) {
+			$out = $this->Html->tag($tag, $out, $options);
+		}
+		return $out;
 	}
 }
