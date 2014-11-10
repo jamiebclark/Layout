@@ -147,14 +147,17 @@ $input-thumb-delete-color:			$gray !default;
 
 // Media
 // -------------
-$media-margin:			10px !default;
-$media-border-radius:		$border-radius-base !default;
-$media-link-width: 		760px !default;
-$media-link-padding: 		10px !default;
-$media-link-color: 		#999 !default;
-$media-link-color-hover: 	#666 !default;
-$media-link-border:		#ccc !default;
-$media-link-border-hover:	#999 !default;
+$media-margin-vertical:				10px !default;
+$media-margin-horizontal:			16px !default;
+$media-border-radius:				$border-radius-base !default;
+$media-link-width: 					760px !default;
+$media-link-padding-vertical: 		$media-margin-vertical !default;
+$media-link-padding-horizontal:		$media-margin-horizontal !default;
+
+$media-link-color: 					#999 !default;
+$media-link-color-hover: 			#666 !default;
+$media-link-border:					#ccc !default;
+$media-link-border-hover:			#999 !default;
 
 
 // Select Collapse

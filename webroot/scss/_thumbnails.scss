@@ -1,7 +1,7 @@
 @mixin set-thumbnail-size($type, $size) {
 	.thumbnail-#{$type} {
 		width: $size;
-		&.media-object.iconic {
+		&.media-object > .fa, &.media-object.iconic {
 			line-height: $size;
 			font-size: $size;
 			vertical-align: middle;

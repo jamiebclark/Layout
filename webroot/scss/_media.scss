@@ -1,12 +1,13 @@
 // Media Box
 // ---------------------
 .media {
-	margin: $media-margin;
+	margin: $media-margin-vertical $media-margin-horizontal;
 	border-radius: $media-border-radius;
 
 	.media-body {
 		display: block;
 		text-align: left;
+		padding-bottom: $line-height-computed / 2;
 	}
 	&, .bd {
 		@extends %overflow;
@@ -50,10 +51,20 @@
 	}
 }
 
-
+.panel > .media-list {
+	margin-top: 0;
+	margin-bottom: 0;
+	> .media-wrap > .media {
+		border-radius: 0;
+		border-left: 0;
+		border-right: 0;
+		margin-left: 0;
+		margin-right: 0;
+	}
+}
 a.media {
 	color: $media-link-color;
-	padding: $media-link-padding;
+	padding: $media-link-padding-vertical $media-link-padding-horizontal;
 	border: 1px solid $media-link-border;
 	max-width: $media-link-width;
 	
@@ -84,7 +95,7 @@ li.media {
 .media-wrap, .media {
 	display: block;
 	position: relative;
-	max-width: $media-link-width + 2 * $media-link-padding;
+	max-width: $media-link-width + 2 * $media-link-padding-horizontal;
 	.media-actionmenu {
 		display: none;
 		position: absolute;
@@ -108,8 +119,8 @@ li.media {
 	}
 }
 ul.media-list {
-	margin-top: $media-margin;
-	margin-bottom: $media-margin;
+	margin-top: $media-margin-vertical;
+	margin-bottom: $media-margin-vertical;
 	li > a.media {
 		margin-bottom: 0;
 		border-radius: 0;

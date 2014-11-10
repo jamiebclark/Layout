@@ -623,7 +623,7 @@ documentReady(function() {
 					setTop = containerBottom - height;
 					setPosition = 'absolute';
 				} else {
-					setTop = 0;
+					setTop = '10px';
 					setPosition = 'fixed';
 				}	
 				$scroll.css({
@@ -638,7 +638,7 @@ documentReady(function() {
 			function setSizes() {
 				height = $scroll.outerHeight();
 				width = $scroll.outerWidth();
-				pos = $scroll.position();
+				pos = $scroll.offset();
 				top = pos.top;
 				containerBottom;
 				if ($container.length) {

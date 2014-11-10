@@ -356,6 +356,9 @@ $input-container-control-bg-color:	#eee;
 	label {
 		font-size: $font-size-large;
 		margin: 0;
+		> input {
+			margin-right: 10px;
+		}
 	}
 }
 .input-choice-content {
@@ -379,7 +382,7 @@ $input-container-control-bg-color:	#eee;
 // Input List
 // ---------------------
 $input-list-remove-width: 				30px;
-$input-list-item-padding-horizontal: 	6px;
+$input-list-item-padding-horizontal: 	15px;
 
 .input-list {
 	@extend %input-container;
@@ -420,6 +423,10 @@ $input-list-item-padding-horizontal: 	6px;
 .input-list-item-inner {
 	margin-right: 	$input-list-remove-width + 2 * $input-list-item-padding-horizontal;
 	margin-left: 	$input-list-item-padding-horizontal;
+	.row {
+		//margin-left: -$input-list-item-padding-horizontal;
+		//margin-right: -$input-list-item-padding-horizontal;
+	}
 }
 .input-list-item-remove {
 	position: absolute;
