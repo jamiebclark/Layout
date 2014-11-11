@@ -83,6 +83,19 @@ class EmailHelper extends LayoutAppHelper {
 	}
 	
 	function setAbsoluteUrls($text) {
+		return preg_replace_callback(
+			array(
+				'@(<a[^>]+href=")([^\"]*)("[^>]*>)@',
+				'@(<img[^>]+src=")([^\"]*)("[^>]*>)@',
+			),
+			function ($matches) {
+				return $matches[1] . $this->_url($matches[2]) . $matches[3];
+			}, 
+			$text
+		);
+	}
+
+	function setAbsoluteUrls_OLD($text) {
 		return preg_replace(
 			array(
 				'@(<a[^>]+href=")([^\"]*)("[^>]*>)@e',
@@ -108,23 +121,34 @@ class EmailHelper extends LayoutAppHelper {
 		} else {
 			$urlIds = array();
 		}
+
 		$urlCount = 0;
 		$replace = array(
 			'/([\{\}\$])/' => '\\$1',
-			'@<h[\d]>(.*)<\/h[\d]>@e' => '$eol . $eol . strtoupper("$1") . $eol;',	//Replaces titles
-			'@<dt>(.*)<\/dt>@e' => '$eol . $eol . strtoupper("$1") . $eol;',		//Replaces titles
-			'@<th>(.*)<\/th>@e' => '$eol . $eol . strtoupper("$1") . $eol;',		//Replaces titles
 			'@<dd>(.*)<\/dd>@' => '$1' . $eol,
 			'@<td>(.*)<\/td>@' => '$1' . $eol,
 			'@<tr>(.*)<\/tr>@' => '$1' . $eol,
 			
 			'/(\<img([^>]+)>)/' => '[IMAGE]',
 			'/<a[\s+]href="([^\"]*)"[^>]*>http:(.*)<\/a>/' => '[ $1 ]',
-			'/<a[\s+]href="([^\"]*)"[^>]*>(.*)<\/a>/e' => '"[" . $urlIds["$1"] . "] $2 "',	//
 			'/<li>/' => '- ',													//Removes list items
 			'@<[\/\!]*?[^<>]*?>@si' => '',									//Removes comments
 		);
 		$text = preg_replace(array_keys($replace), $replace, $text);
+
+		// Replaces URLs
+		$text = preg_replace_callback('/<a[\s+]href="([^\"]*)"[^>]*>(.*)<\/a>/', function($matches) {
+			return sprintf('[%1] %2', $urlIds[$matches[1]], $matches[2]); //'"[" . $urlIds["$1"] . "] $2 "',	//
+		}, $text);
+
+		$replaceUpper = array(
+			'@<h[\d]>(.*)<\/h[\d]>@',	//Replaces titles
+			'@<dt>(.*)<\/dt>@',		//Replaces titles
+			'@<th>(.*)<\/th>@',		//Replaces titles
+		);
+		$text = preg_replace_callback($replaceUpper, function($matches) {
+			return $eol . $eol . strtoupper($matches[1]) . $eol;
+		}, $text);
 		
 		//Removes additional tags
 		$text = strip_tags($text);
@@ -174,4 +198,24 @@ class EmailHelper extends LayoutAppHelper {
 		}
 		return $this->{$helper};
 	}
+
+	//Creates an absolute URL with a removed base
+	private function _url($url) {
+		return Router::url($this->removeUrlBase($url), true);
+	}
+	
+	private function removeUrlBase($url) {
+		if (is_array($url)) {
+			$url['base'] = false;
+		} else {
+			//If webroot is more than "/", remove it from the beginning
+			if ($webroot = substr($this->_View->webroot,0,-1)) {
+				if (strpos($url, $webroot) === 0) {
+					$url = substr($url, strlen($webroot));
+				}
+			}
+		}
+		return $url;
+	}
+
 }
