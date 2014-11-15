@@ -1,7 +1,7 @@
 <?php
 class BootstrapHelper extends LayoutAppHelper {
 	public $name = 'Bootstrap';
-	public $helpers = array('Html');
+	public $helpers = array('Html', 'Form');
 	
 	public function thumbnail($src, $options = array()) {
 		$options = array_merge(array(
@@ -53,6 +53,13 @@ class BootstrapHelper extends LayoutAppHelper {
 		return $this->_linkList($links, $options);
 	}
 
+	public function linkNav($links, $options = array()) {
+		$options = $this->addClass($options, 'nav');
+		$options['tag'] = 'ul';
+		$options['linkWrap'] = array('tag' => 'li');
+		return $this->_linkList($links, $options);
+	}
+
 /**
  * Converts an array of links to HTML
  *
@@ -91,8 +98,11 @@ class BootstrapHelper extends LayoutAppHelper {
 			if (empty($linkWrapOptions) && $isActive) {
 				$linkOptions = $this->addClass($linkOptions, 'active');
 			}
-			$link = $this->Html->link($linkText, $linkUrl, $linkOptions, $linkClick);
-
+			if (Param::keyCheck($linkOptions, 'postLink', true)) {
+				$link = $this->Form->postLink($linkText, $linkUrl, $linkOptions, $linkClick);
+			} else {
+				$link = $this->Html->link($linkText, $linkUrl, $linkOptions, $linkClick);
+			}
 
 			if (!empty($linkWrapOptions)) {
 				$lwOptions = $linkWrapOptions;

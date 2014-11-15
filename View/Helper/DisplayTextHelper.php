@@ -532,12 +532,21 @@ class DisplayTextHelper extends LayoutAppHelper {
 	}
 
 	
-	function cash($number, $round = null) {
+	public function cash($number, $round = null) {
 		$number = html_entity_decode($number);
 		if (empty($number)) {
 			$number = 0;
 		}
 		return '$' . number_format($number, $round !== false && ($round || $number == round($number)) ? 0 : 2);
+	}
+
+	public function cashLabel($cash, $positive = true, $round = null) {
+		if ($cash == 0) {
+			$class = 'label-default';
+		} else {
+			$class = $positive ? 'label-success' : 'label-danger';
+		}
+		return $this->Html->tag('span', $this->cash($cash, $round), array('class' => 'label ' . $class));
 	}
 	
 	function positiveNumber($number, $options = array()) {

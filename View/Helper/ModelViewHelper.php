@@ -11,6 +11,7 @@ class ModelViewHelper extends LayoutAppHelper {
 	
 	public $defaultHelpers = array(
 		'Html', 
+		'Form',
 		'Layout.AddressBook',
 		'CakeAssets.Asset', 
 		'Layout.Calendar',
@@ -315,6 +316,12 @@ class ModelViewHelper extends LayoutAppHelper {
 						$config[$field] = $attrs[$field];
 					}
 				}
+
+				if (!($postLink = Param::keyCheck($linkOptions, 'postLink', true)) && !empty($action[2]['postLlink'])) {
+					$postLink = $action[2]['postLink'];
+					unset($action[2]['postLink']);
+				}
+
 				if (!empty($attrs['urlAdd'])) {
 					$config['urlAdd'] = !empty($config['urlAdd']) ? array_merge($attrs['urlAdd'], $config['urlAdd']) : $attrs['urlAdd'];
 				}
@@ -376,7 +383,12 @@ class ModelViewHelper extends LayoutAppHelper {
 						}
 					}
 					*/
-					$menu[] = $this->Html->link($linkTitle, $linkUrl, $linkOptions, $linkPost);
+					if ($postLink) {
+						$menu[] = $this->Form->postLink($linkTitle, $linkUrl, $linkOptions, $linkPost);
+					} else {
+						$menu[] = $this->Html->link($linkTitle, $linkUrl, $linkOptions, $linkPost);
+					}
+
 				} else {
 					$menu[] = $this->Html->tag('span', $menuItem, array('class' => 'btn btn-default'));
 				}

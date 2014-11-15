@@ -352,7 +352,9 @@ class LayoutHelper extends LayoutAppHelper {
 		$action = $this->_getAction();
 		if ($action == 'add' || $action == 'edit') {
 			$menu = false;
-			$title = InflectorPlus::humanize($action) . ' ' . InflectorPlus::humanize($model);
+			if (empty($title)) {
+				$title = InflectorPlus::humanize($action) . ' ' . InflectorPlus::humanize($model);
+			}
 		}
 		$titleAttrs = array();
 		if (empty($title)) {
