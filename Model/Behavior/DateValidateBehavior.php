@@ -22,17 +22,13 @@ class DateValidateBehavior extends ModelBehavior {
 		return parent::beforeSave($Model, $options);
 	}
 
-	/**
-	 * Scans the Model schema to check for date, timestamp, or datetime columns and
-	 * runs strtotime() on them. This allows for more flexibility in date format
-	 *
-	 **/
+/**
+ * Scans the Model schema to check for date, timestamp, or datetime columns and
+ * runs strtotime() on them. This allows for more flexibility in date format
+ *
+ **/
 	public function validateDateData(Model $Model) {
-		if (!empty($Model->data[$Model->alias])) {
-			$data =& $Model->data[$Model->alias];
-		} else {
-			$data =& $Model->data;
-		}
+		$data =& $this->_getData($Model);
 		$schema = $Model->schema();
 		foreach ($schema as $key => $field) {
 			if (!empty($data[$key])) {
@@ -54,24 +50,29 @@ class DateValidateBehavior extends ModelBehavior {
 		return true;
 	}
 	
-	/**
-	 * Prevents blank dates saving as 0000-00-00 instead of NULL
-	 *
-	 **/
+/**
+ * Prevents blank dates saving as 0000-00-00 instead of NULL
+ *
+ **/
 	private function _nullDateFix(Model $Model) {
 		$schema = $Model->schema();
+		$data =& $this->_getData($Model);
+
 		foreach ($schema as $key => $field) {
 			$null = $field['null'];
 			$type = $field['type'];
 			$isDate = in_array($type,array('date','datetime','timestamp'));
-			if (isset($Model->data[$Model->alias][$key]) && !is_array($Model->data[$Model->alias][$key])) {
-				$val = $Model->data[$Model->alias][$key];
-				$blankVal = trim($val) == '' || strstr($val,'0000');
-				if ($null && $isDate && $blankVal) {
-					$Model->data[$Model->alias][$key] = null;
+
+			if (array_key_exists($key, $data)) {	// Makes sure the field actually exists
+				if (isset($data[$key]) && !is_array($data[$key])) {
+					$val = $data[$key];
+					$blankVal = trim($val) == '' || strstr($val,'0000');
+					if ($null && $isDate && $blankVal) {
+						$data[$key] = null;
+					}
+				} else if ($null && $isDate) {
+					$data[$key] = null;
 				}
-			} else if ($null && $isDate) {
-				$Model->data[$Model->alias][$key] = null;
 			}
 		}
 	}
@@ -119,5 +120,14 @@ class DateValidateBehavior extends ModelBehavior {
 			$return .= ' ' . $this->_timeStrValidate(implode(' ', $strs));
 		}
 		return trim($return);
+	}
+
+	private function &_getData(Model $Model) {
+		if (!empty($Model->data[$Model->alias])) {
+			$data =& $Model->data[$Model->alias];
+		} else {
+			$data =& $Model->data;
+		}
+		return $data;
 	}
 }
