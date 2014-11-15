@@ -124,7 +124,7 @@ class BlankDeleteBehavior extends ModelBehavior {
 					$settings['or'] = array($settings['or']);
 				}
 				foreach ($settings['or'] as $column) {
-					if (empty($data[$column]) || $this->isBlank($data[$column])) {
+					if ($this->isFound($column, $data) === false) {
 						$isBlank = true;
 					}
 				}
@@ -135,11 +135,11 @@ class BlankDeleteBehavior extends ModelBehavior {
 				}
 				$andBlank = false;
 				foreach ($settings['and'] as $column) {
-					if (empty($data[$column]) || $this->isBlank($data[$column])) {
-						$andBlank = true;
-					} else {
+					if ($this->isFound($column, $data) !== false) {
 						$andBlank = false;
 						break;
+					} else {
+						$andBlank = true;
 					}
 				}
 				if ($andBlank) {
@@ -163,6 +163,15 @@ class BlankDeleteBehavior extends ModelBehavior {
 		return $passedData;
 	}
 	
+	private function isFound($field, $array) {
+		if (!array_key_exists($field, $array)) {
+			$return = null;
+		} else {
+			$return = !empty($array[$field]) && !$this->isBlank($array[$field]);
+		}
+		return $return;
+	}
+
 	private function isBlank($val) {
 		// Value is type file
 		if (is_array($val) && isset($val['tmp_name'])) {
