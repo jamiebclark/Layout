@@ -435,6 +435,10 @@ class FormLayoutHelper extends LayoutAppHelper {
 		$options = $this->addClass($options, $options['type'], 'div');
 		*/
 
+		if ($fieldName == 'password' && empty($options['type'])) {
+			$options['type'] = 'password';
+		}
+
 		// Allows for custom types
 		switch ($options['type']) {
 			case 'id':
@@ -465,19 +469,22 @@ class FormLayoutHelper extends LayoutAppHelper {
 				$options['step'] = 'any';
 			break;
 			case 'email' :
-				$options['prepend'] = '<i class="fa fa-at"></i>';
+				$options['append'] = '<i class="fa fa-at"></i>';
 			break;
 			case 'tel':
 			case 'phone':
-				$options['prepend'] = '<i class="fa fa-phone"></i>';
+				$options['append'] = '<i class="fa fa-phone"></i>';
 				$options['type'] = 'tel';
 			break;
 			case 'url':
-				$options['prepend'] = '<i class="fa fa-globe"></i>';
+				$options['append'] = '<i class="fa fa-globe"></i>';
 				$options['type'] = 'text';
 			break;
 			case 'number':
 				$typeTrack = 'number';
+			break;
+			case 'password':
+				$options['append'] = '<i class="fa fa-lock"></i>';
 			break;
 		}
 		
