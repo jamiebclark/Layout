@@ -34,6 +34,7 @@ class BootstrapHelper extends LayoutAppHelper {
 				$item = $itemOptions;
 				$itemOptions = array();
 			}
+			$itemOptions = $this->addClass($itemOptions, 'list-group-item');
 			$out .= $this->Html->tag('li', $item, $itemOptions);
 		}
 		return $this->Html->tag('ul', $out, $options);
