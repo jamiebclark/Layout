@@ -310,7 +310,7 @@ class ModelViewHelper extends LayoutAppHelper {
 					$action = $config;
 					$config = array();
 				}
-				// debug(compact('action', 'config', 'attrs'));
+
 				foreach ($this->autoActionFields as $field) {
 					if (isset($attrs[$field]) && !isset($config[$field])) {
 						$config[$field] = $attrs[$field];
@@ -525,11 +525,13 @@ class ModelViewHelper extends LayoutAppHelper {
 			'right' => '',							//Text to be floated right
 			'body' => '',							//Additional text to show up in the body of the media element
 			'titleTag' => 'h4',						//Tag of the title
+			'titleClass' => null,
 			'link' => false,						//Whether the entire media element should be a link
 			'alias' => $this->modelName,			//Alias of the primary model in the result
 			'title' => null,						//Custom title
 			'actionMenu' => null,					//Actions to be added to an action menu within media element
 		), $options);
+
 		$options = $this->addClass($options, 'media media-' . strtolower($this->modelName));
 		if (!empty($options['dir'])) {
 			$options = $this->addClass($options, 'media-' . $options['dir']);
@@ -561,7 +563,6 @@ class ModelViewHelper extends LayoutAppHelper {
 		
 		$out = '';
 		// Thumb
-		// debug(compact('result', 'options'));
 		if (isset($thumb) && $thumb === false) {
 			$out .= '';
 		} else if (!is_array($thumb)) {
@@ -579,11 +580,16 @@ class ModelViewHelper extends LayoutAppHelper {
 			$out .= $this->Html->tag('div', $right, array('class' => 'pull-right'));
 		}
 		//Body
-		$body = $this->title($result, compact('url', 'alias') + array(
+		$titleOptions = compact('url', 'alias') + array(
 			'class' => 'media-title ' . $this->cssClass,
 			'tag' => $titleTag,
 			'text' => $title,
-		));
+		);
+
+		if (!empty($titleClass)) {
+			$titleOptions = $this->addClass($titleOptions, $titleClass);
+		}
+		$body = $this->title($result, $titleOptions);
 	
 		foreach ($this->_addressBookFunctions as $func) {
 			if (!empty($$func)) {
