@@ -52,6 +52,13 @@ td.dt {
 	color: $text-color-lighter;
 }
 
+@media (min-width: $grid-float-breakpoint) {
+	td.dt {
+		width: ($component-offset-horizontal - 20);
+	}
+}
+
+
 .table-with-checked {
 	padding: $padding-small-vertical $padding-small-horizontal;
 	&.fixed {
