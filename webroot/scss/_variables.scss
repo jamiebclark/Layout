@@ -113,9 +113,12 @@ $iconic-list-size:				$iconic-list-font-size + 2 * $iconic-list-padding !default
 // -----------------------------
 $row-inactive-color: 				$gray !default;
 $row-inactive-background:			#ccc !default;
-$row-active-background:			$state-info-bg !default;
-$row-hover-background:			#f8f8f8 !default;
+$row-active-background:				$state-info-bg !default;
+$row-hover-background:				#f8f8f8 !default;
+$row-total-background:				$gray-lighter !default;
+$row-total-border:					$gray !default;
 
+$table-separator-border: 			1px solid #aaa;
 $table-sort-bg-color: 				$gray-lighter !default;
 $table-sort-border-color: 			$table-sort-bg-color !default;
 $table-sort-rounded: 				$border-radius-base !default;

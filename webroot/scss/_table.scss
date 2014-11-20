@@ -1,18 +1,16 @@
-$tableSeparatorBorder: 1px solid #aaa;
-
 @import "shadow";
 .table {
 	td {
 		vertical-align: middle;
 	}
 }
-tr {
+table.table tr {
 	&.row-hover {
 		&, td {
 			background-color: $row-hover-background;
 		}
 	}
-	&.inactive, &.row-inactive {
+	&.empty, &.inactive, &.row-inactive {
 		&, td {
 			background-color: $row-inactive-background;
 			& {
@@ -25,22 +23,24 @@ tr {
 			background-color: $row-active-background;
 		}
 	}
+
 	&.row-total {
 		td {
 			font-weight: bold;
-			border-top: 1px solid black;
+			border-top: 4px solid $row-total-border;
+			background: $row-total-background;
 		}
 	}
 }
 table.table tr {
 	&.row-separator-top {
 		td {
-			border-top: $tableSeparatorBorder;
+			border-top: $table-separator-border;
 		}
 	}
 	&.row-separator-bottom {
 		td {
-			border-bottom: $tableSeparatorBorder;
+			border-bottom: $table-separator-border;
 		}
 	}
 }
@@ -102,7 +102,7 @@ td.dt {
 .table-sort-links {
 	position: relative;
 	z-index: 500;
-	float: left;
+	display: inline-block;
 	margin-top: 1px;
 	
 	.sort-select {
