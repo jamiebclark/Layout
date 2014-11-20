@@ -310,7 +310,7 @@ class TableHelper extends LayoutAppHelper {
 		if ($this->hasForm && !isset($options)) {
 			$options = true;
 		}
-		$options = $this->addClass($options, 'form-fullwidth');
+
 		$out = '';
 		if (!empty($options)) {
 			if (!is_array($options)) {
@@ -325,6 +325,7 @@ class TableHelper extends LayoutAppHelper {
 				'url' => '/' . $this->request->url,
 				//'action' => false,
 			), $options);
+			$options = $this->addClass($options, 'form-fullwidth');
 			
 			if (!empty($options['model'])) {
 				$modelName = $options['model'];
