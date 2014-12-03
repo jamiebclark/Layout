@@ -22,6 +22,10 @@
 	@include box-shadow($shadow-padding, $shadow-padding, $shadow-radius, $shadow-color);
 	border-radius: $border-radius-small;
 	color: $hover-window-border-color;
+	> .media-list > .media-wrap > .media {
+		margin-left: 0;
+		margin-right: 0;
+	}
 }
 .hover-window-title,.hover-window-title-control {
 	font-size: $font-size-base;

@@ -13,11 +13,24 @@
 	width: $input-slim-width !important;
 	text-align: right;
 }
+
 %input-container {
 	overflow: hidden;
 	border: 1px solid $input-border;
 	border-radius: $border-radius-base;
 	margin-bottom: $line-height-computed / 2;
+}
+
+@mixin input-container($class) {
+	.#{$class} {
+		@extend %input-container;
+	}
+	.panel > .#{$class} {
+		border-radius: 0;
+		margin-bottom: 0;
+		border-left: 0;
+		border-right: 0;
+	}
 }
 
 .input-list, .input-choices, .input-autocomplete-multi {
@@ -334,9 +347,8 @@ $input-choice-active-color: 		$btn-primary-bg !default;
 $input-choice-active-text-color: 	white !default;
 $input-container-control-bg-color:	#eee;
 
-.input-choices {
-	@extend %input-container;
-}
+@include input-container("input-choices");
+
 .input-choice-active {
 	.input-choice-control {
 		background-color: $input-choice-active-color;
@@ -384,9 +396,8 @@ $input-container-control-bg-color:	#eee;
 $input-list-remove-width: 				30px;
 $input-list-item-padding-horizontal: 	15px;
 
-.input-list {
-	@extend %input-container;
-}
+@include input-container("input-list");
+
 .input-list-title, .input-list-control {
 	padding: $padding-small-vertical $padding-small-horizontal;
 }
