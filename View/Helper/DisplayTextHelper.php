@@ -514,8 +514,8 @@ class DisplayTextHelper extends LayoutAppHelper {
 			$ellipsis .= ' ' . $this->Html->link($moreText, $url);
 		}
 		
-		$soft = $length - 5;
-		$hard = $length + 5;
+		$soft = $length - 10;
+		$hard = $length + 10;
 		$rx = '/(.{' . $soft . ',' . $hard . '})[\s,\.:\/="!\(\)<>~\[\]]+.*/';
 
 		if (preg_match($rx, $text, $r)) {
@@ -523,6 +523,7 @@ class DisplayTextHelper extends LayoutAppHelper {
 		} else {
 			$out = substr($text, 0, $length);
 		}
+
 		$out = $out . (strlen($out) < strlen($text) ? $ellipsis : null);
 		return $this->closeOpenedTags($out);
 	}

@@ -61,6 +61,12 @@ class BootstrapHelper extends LayoutAppHelper {
 		return $this->_linkList($links, $options);
 	}
 
+	public function linkList($links, $options = array()) {
+		$options['tag'] = 'ul';
+		$options['linkWrap'] = array('tag' => 'li');
+		return $this->_linkList($links, $options);
+	}
+
 /**
  * Converts an array of links to HTML
  *
