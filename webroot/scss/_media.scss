@@ -51,15 +51,21 @@
 	}
 }
 
-.panel > .media-list {
-	margin-top: 0;
-	margin-bottom: 0;
-	> .media-wrap > .media {
+.panel {
+	> .media {
+		margin: 0;
 		border-radius: 0;
-		border-left: 0;
-		border-right: 0;
-		margin-left: 0;
-		margin-right: 0;
+	}
+	> .media-list {
+		margin-top: 0;
+		margin-bottom: 0;
+		> .media-wrap > .media {
+			border-radius: 0;
+			border-left: 0;
+			border-right: 0;
+			margin-left: 0;
+			margin-right: 0;
+		}
 	}
 }
 a.media {

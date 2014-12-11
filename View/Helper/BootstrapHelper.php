@@ -97,18 +97,25 @@ class BootstrapHelper extends LayoutAppHelper {
 
 		$out = '';
 		foreach ($links as $link) {
-			list($linkText, $linkUrl, $linkOptions, $linkClick) = $link + array(null, array(), array(), null);
-			$isActive = Param::keyCheck($linkOptions, 'active', true);
+			if (is_array($link)) {
+				list($linkText, $linkUrl, $linkOptions, $linkClick) = $link + array(null, array(), array(), null);
+				$isActive = Param::keyCheck($linkOptions, 'active', true);
 
-			$linkOptions['escape'] = false;
-			$linkOptions = array_merge((array) $globalLinkOptions, $linkOptions );
-			if (empty($linkWrapOptions) && $isActive) {
-				$linkOptions = $this->addClass($linkOptions, 'active');
-			}
-			if (Param::keyCheck($linkOptions, 'postLink', true)) {
-				$link = $this->Form->postLink($linkText, $linkUrl, $linkOptions, $linkClick);
-			} else {
-				$link = $this->Html->link($linkText, $linkUrl, $linkOptions, $linkClick);
+				$before = Param::keyCheck($options, 'before', true);
+				$after = Param::keyCheck($options, 'after', true);
+
+				$linkOptions['escape'] = false;
+				$linkOptions = array_merge((array) $globalLinkOptions, $linkOptions );
+				if (empty($linkWrapOptions) && $isActive) {
+					$linkOptions = $this->addClass($linkOptions, 'active');
+				}
+				if (Param::keyCheck($linkOptions, 'postLink', true)) {
+					$link = $this->Form->postLink($linkText, $linkUrl, $linkOptions, $linkClick);
+				} else {
+					$link = $this->Html->link($linkText, $linkUrl, $linkOptions, $linkClick);
+				}
+
+				$link = $before . $link . $after;
 			}
 
 			if (!empty($linkWrapOptions)) {
