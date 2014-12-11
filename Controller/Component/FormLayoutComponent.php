@@ -113,12 +113,38 @@ class FormLayoutComponent extends Component {
 			return false;
 		}
 		return $modelData;
-	}/** * Avoids CakePHP's automatic removal of arrays passed into database fields * CakePHP uses a deconstruct() function through its set() function which scans data, * and sets any complex data types not conforming to its own data fields (year,month,day,etc) * to null. This happens before beforeValidate can be called. This preempts that and accommodates * the array('date' => '4/12/2010', 'time' => '8:00pm') format used with FormLayout * * @param $val the  * @return Newly formatted data **/	public function parseDateData($modelData, $model) {
+	}
+/**
+ * Avoids CakePHP's automatic removal of arrays passed into database fields
+ * CakePHP uses a deconstruct() function through its set() function which scans data,
+ * and sets any complex data types not conforming to its own data fields (year,month,day,etc)
+ * to null. This happens before beforeValidate can be called. This preempts that and accommodates
+ * the array('date' => '4/12/2010', 'time' => '8:00pm') format used with FormLayout
+ *
+ * @param $val the 
+ * @return Newly formatted data
+ **/
+	public function parseDateData($modelData, $model) {
 		foreach ($modelData as $key => $val) {
-			if (is_array($val)) {				$dateVal = '';				if (isset($val['time']) || isset($val['date'])) {
-					$format = '';					if (isset($val['date'])) {						$dateVal .= $val['date'];
-						$format = 'Y-m-d';					}					if (isset($val['time'])) {						$dateVal .= (!empty($dateVal) ? ' ' : '') . $val['time'];
-						$format .= ' H:i:s';					}					$modelData[$key] = !empty($dateVal) ? date($format, strtotime($dateVal)) : null;				}			}		}		return $modelData;	}	
+			if (is_array($val)) {
+				$dateVal = '';
+				if (isset($val['time']) || isset($val['date'])) {
+					$format = '';
+					if (isset($val['date'])) {
+						$dateVal .= $val['date'];
+						$format = 'Y-m-d';
+					}
+					if (isset($val['time'])) {
+						$dateVal .= (!empty($dateVal) ? ' ' : '') . $val['time'];
+						$format .= ' H:i:s';
+					}
+					$modelData[$key] = !empty($dateVal) ? date($format, strtotime($dateVal)) : null;
+				}
+			}
+		}
+		return $modelData;
+	}	
+
 /**
  * Finds model data within a data array and passes it to user-specified functions
  * 

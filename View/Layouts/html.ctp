@@ -57,7 +57,12 @@ $flash .= $this->Session->flash('auth', $flashParams);
 		echo $this->Asset->output(true, false, 'css');
 	?>
 </head>
-<body>
+<?php
+if (empty($bodyAttributes)) {
+	$bodyAttributes = array();
+}
+echo $this->Html->tag('body', null, $bodyAttributes);
+?>
 	<div id="container">
 		<div id="header" class="no-print">
 			<?php echo $this->fetch('header'); ?>

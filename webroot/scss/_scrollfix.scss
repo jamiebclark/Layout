@@ -1,5 +1,7 @@
-@media (max-width: 500px) {
+@media (max-width: $grid-float-breakpoint-max) {
 	.scrollfix {
-		display: none;
+		position: static !important;
+		width: auto !important;
+		top: auto !important;
 	}
 }

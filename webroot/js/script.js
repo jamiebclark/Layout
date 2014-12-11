@@ -613,17 +613,31 @@ documentReady(function() {
 	};
 	$.fn.scrollfix = function() {
 		return this.each(function() {
+			function setFix() {
+				if (
+					// Top clears the top of screen
+					($(window).scrollTop() > top) && 
+					// Bottom clears the bottom of screen
+					((top + height) < ($(window).height() + $(window).scrollTop()))
+				) {
+					fix();
+				} else {
+					unfix();
+				}
+			}
+
 			function fix() {
-				var top = $(window).scrollTop(),
-					overBorder = containerBottom && (top + height) > containerBottom,
+				var scrollTop = $(window).scrollTop(),
+					scrollOffset = (height > $(window).height()) ? height - $(window).height() : 0,
+					overBorder = containerBottom && (scrollTop - scrollOffset + height) > containerBottom,
 					setPosition,
 					setTop;
 				
 				if (overBorder) {
-					setTop = containerBottom - height;
+					setTop = $container.height() - height;
 					setPosition = 'absolute';
 				} else {
-					setTop = '10px';
+					setTop = (10 - scrollOffset) + "px";
 					setPosition = 'fixed';
 				}	
 				$scroll.css({
@@ -633,9 +647,11 @@ documentReady(function() {
 				});
 			}
 			function unfix() {
-				$scroll.css({'position': 'static'});
+				$scroll.css({'position': 'static', 'width': 'auto'});
 			}
+			
 			function setSizes() {
+				unfix();
 				height = $scroll.outerHeight();
 				width = $scroll.outerWidth();
 				pos = $scroll.offset();
@@ -645,10 +661,12 @@ documentReady(function() {
 					containerPos = $container.offset();
 					containerBottom = containerPos.top + $container.height();
 				}
+				setFix();
 			}
+
 			if (!$(this).data('scroll-init')) {
 				var $scroll = $(this),
-					$container = $scroll.closest('.row'),
+					$container = $scroll.closest('.row').css('position', 'relative'),
 					height,
 					width,
 					pos,
@@ -657,11 +675,7 @@ documentReady(function() {
 					containerPos;
 				setSizes();
 				$(window).scroll(function() {
-					if ($(window).scrollTop() > top) {
-						fix();
-					} else {
-						unfix();
-					}
+					setFix();
 				}).resize(function() {
 					setSizes();
 				}).load(function() {
@@ -670,6 +684,7 @@ documentReady(function() {
 				
 				$(this).data('scroll-init', true);
 			}
+
 		});
 	};
 })(jQuery);
@@ -677,6 +692,7 @@ documentReady(function() {
 	$('.affix-content').affixContent();
 	$('.scrollfix').scrollfix();
 });
+
 
 // Media
 (function($) {
