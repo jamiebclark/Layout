@@ -1,4 +1,5 @@
 <?php
+App::uses('LayoutAppHelper', 'Layout.View/Helper');
 class BootstrapHelper extends LayoutAppHelper {
 	public $name = 'Bootstrap';
 	public $helpers = array('Html', 'Form');
