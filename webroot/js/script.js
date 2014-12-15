@@ -660,6 +660,7 @@ documentReady(function() {
 				if ($container.length) {
 					containerPos = $container.offset();
 					containerBottom = containerPos.top + $container.height();
+					$container.css('min-height', height + "px");
 				}
 				setFix();
 			}
