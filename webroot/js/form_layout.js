@@ -1773,7 +1773,7 @@ documentReady(function() {
 //Sanitizing
 documentReady(function() {
 	function numberSanitize(val) {
-		return val.replace(/[^0-9\.]/g,'');
+		return val.replace(/[^0-9\.\-]/g,'');
 	}
 	
 	$('input.input-group-cash').each(function() {
