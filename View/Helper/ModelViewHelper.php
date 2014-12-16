@@ -776,7 +776,7 @@ class ModelViewHelper extends LayoutAppHelper {
 	
 	function thumbDate($result, $options = array()) {
 		if (isset($options['dir'])) {
-			$options['class'] = $options['dir'];
+			$options = $this->addClass($options, $options['dir']);
 		}
 		if (!empty($options['media'])) {
 			unset($options['media']);

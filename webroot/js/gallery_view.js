@@ -316,6 +316,7 @@
 				$headerTitle.html('');
 			}
 			
+			/*
 			$info.viewToggleControl({
 				'id': 'gallery-view-infos',
 				'controlDisplay': ['&laquo;', '&raquo;']
@@ -326,6 +327,7 @@
 				.on('hide', function() {
 					hideInfo();
 				});
+			*/
 
 			$thumbnails.viewToggleControl({
 				'id': 'gallery-view-thumbnails',

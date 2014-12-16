@@ -94,7 +94,7 @@ td.dt {
 		@include border-bottom-radius($border-radius-base);
 	}
 }
-.panel > form > .table-nav {
+.panel > form > .table-nav, .panel > .table-nav {
 	margin-left: 0;
 	margin-right: 0;
 }
