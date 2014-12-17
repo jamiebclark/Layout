@@ -130,7 +130,7 @@
 				screenH = $(window).height(),
 				marginW = screenW * (marginPctWidth / 100),
 				marginH = screenH * (marginPctHeight / 100),
-				boxWidth = screenW - marginW * 2,
+				boxWidth = $image.parent().outerWidth(), //screenW - marginW * 2,
 				boxHeight = screenH - marginH * 2;
 			if (boxWidth > maxWidth) {
 				boxWidth = maxWidth;
@@ -142,8 +142,6 @@
 			} else if (boxHeight < minHeight) {
 				boxHeight = minHeight;
 			}
-			
-			console.log('Box: ' + boxWidth + ', ' + boxHeight);
 			
 			var boxWidthOuter = boxWidth + marginW * 2,
 				boxHeightOuter = boxHeight + marginH * 2;
@@ -171,7 +169,6 @@
 				var w, h, tag = this.nodeName.toLowerCase();
 				if (tag == 'img') {
 					var img = $(this)[0];
-					console.log('Natural Dimensions: ' + naturalWidth + ', ' + naturalHeight);
 					
 					w = this.offsetWidth;
 					h = this.offsetHeight;
@@ -188,7 +185,6 @@
 					newWidth = boxWidth;
 					newHeight = newWidth / imageSizeRatio;
 				}
-				console.log([newHeight, newWidth, w, h, tag]);
 				if (newWidth && newHeight) {
 					$(this).show().stop().animate({'width':newWidth,'height':newHeight});
 				}
@@ -361,12 +357,9 @@
 				$info.trigger('hide');
 			}
 			$image.bind('load', function() {
-				console.log('Loaded!');
 				$("<img/>")
 					.attr('src', $(this).attr('src'))
 					.load(function() {
-						console.log('Loaded Copy');
-						console.log(this.width);
 						naturalWidth = this.width;
 						naturalHeight = this.height;
 					});
