@@ -651,7 +651,7 @@ class ModelViewHelper extends LayoutAppHelper {
 				if (!empty($listOptions['active']) && $listOptions['active'] == $id) {
 					$passOptions = $this->addClass($passOptions, 'active');
 				}
-				$out .= $this->media($result, array('tag' => 'li') + $passOptions);
+				$out .= $this->media($result, array('tag' => 'li') + (array) $passOptions);
 				if (!empty($listOptions['limit']) && ++$count >= $listOptions['limit']) {
 					break;
 				}
@@ -724,6 +724,7 @@ class ModelViewHelper extends LayoutAppHelper {
 		}
 		
 		$type = Param::keyCheck($options, 'type', true, $this->thumbType);
+
 		if ($type == 'text') {
 			$out = $this->thumbText($result, $options);
 		} else if ($type == 'date') {
