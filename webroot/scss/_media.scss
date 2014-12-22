@@ -59,7 +59,7 @@
 	> .media-list {
 		margin-top: 0;
 		margin-bottom: 0;
-		> .media, > .media-wrap > .media {
+		> li > .media, > .media, > .media-wrap > .media {
 			border-radius: 0;
 			border-left: 0;
 			border-right: 0;
