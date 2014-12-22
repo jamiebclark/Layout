@@ -1,4 +1,7 @@
-.hover-layout {
+.hover-layout-block {
+	display: block;
+}
+.hover-layout, .hover-layout-block {
 	position: relative;
 	&.hovering {
 		z-index: $hover-z-index;
@@ -123,7 +126,7 @@
 	&.position-right {
 		left: auto;
 		right: 0;
-		@include arrow-border(left);
+		// @include arrow-border(left);
 	}
 	
 	&.hover-left {

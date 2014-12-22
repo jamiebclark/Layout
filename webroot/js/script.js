@@ -504,8 +504,16 @@ documentReady(function () {
 							$this.addClass('hovering');
 							var $pos = $this.offset();
 							$content.show();
+							
 							//Left-Right
-							if (($pos.left + 30 + $content.width()) > $(window).width()) {
+							console.log({
+								'Window Width:' : $(window).width(),
+								'Position Left' : $pos.left,
+								'Content Width' : $content.width(),
+								'Outer Width'	: $content.outerWidth()
+							});
+
+							if (($pos.left + $content.width()) > $(window).width()) {
 								$content.addClass('position-right');
 								$pos.left = $pos.left - $content.width() + $this.width();
 							} else {
@@ -518,10 +526,10 @@ documentReady(function () {
 							};
 							//Top-Bottom
 							if (($pos.top + $content.height()) > ($(window).scrollTop() + $(window).height())) {
-								$content.addClass('position-down');
+								$content.addClass('position-down').removeClass('position-up');
 								$css.top = $pos.top - $content.height();
 							} else {
-								$content.removeClass('position-down');
+								$content.removeClass('position-down').addClass('position-up');
 							}
 							
 							if (hoverLeft) {
@@ -563,7 +571,7 @@ documentReady(function () {
 })(jQuery);
 
 documentReady(function() {
-	$('.hover-layout').hoverContent();	
+	$('.hover-layout,.hover-layout-block').hoverContent();	
 });
 
 //Scroll-fix

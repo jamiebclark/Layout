@@ -622,8 +622,9 @@ class ModelViewHelper extends LayoutAppHelper {
 		}
 		$out .= $this->Html->tag('div', $body, array('class' => 'media-body')) . "\n";
 		$out = $this->Html->tag($tag, $out, $returnOptions);
+
 		if (!empty($options['hover']) && method_exists($this, 'hoverContent') && ($hoverContent = $this->hoverContent($result))) {
-			$out = $this->Layout->hover($out, $hoverContent);
+			$out = $this->Layout->hover($out, $hoverContent, array('block' => true));
 		}
 
 		if (!empty($wrapTag)) {

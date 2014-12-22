@@ -1598,7 +1598,9 @@ class LayoutHelper extends LayoutAppHelper {
 			$attrs = array_merge($attrs, $attrsPass);
 		}
 
-		$windowAttrs = array('class' => 'hover-layout');
+		$windowAttrs = array(
+			'class' => !empty($attrs['block']) ? 'hover-layout-block' : 'hover-layout'
+		);
 		$contentAttrs = !empty($attrs['contentAttrs']) ? $attrs['contentAttrs'] : array();
 		$contentAttrs['style'] = 'display: none;';
 		$contentAttrs = $this->addClass($contentAttrs, 'hover-content');
