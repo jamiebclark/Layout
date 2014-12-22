@@ -477,6 +477,9 @@ class ModelViewHelper extends LayoutAppHelper {
 		if (!empty($truncate)) {
 			$text = $this->Text->truncate($text, $truncate);
 		}
+		if (!empty($link)) {
+			$text = strip_tags($text);
+		}
 		$text = $before . $text . $after;
 		if (!empty($url)) {
 			if ($url === true) {
@@ -584,6 +587,7 @@ class ModelViewHelper extends LayoutAppHelper {
 			'class' => 'media-title ' . $this->cssClass,
 			'tag' => $titleTag,
 			'text' => $title,
+			'link' => $link,
 		);
 
 		if (!empty($titleClass)) {
