@@ -1804,28 +1804,26 @@ documentReady(function() {
 				.append($('<h2>Loading</h2>').animatedEllipsis())
 				.appendTo($mask);
 
-			function getOverlayUrl(getUrl) {
+			function getOverlayUrl(getUrl, refresh) {
 				$.ajax({
 					//type: 'POST',
 					url: getUrl
 				}).done(function(data) {
+					console.log('Fetched');
 					if (data != '') {
 						$content.html(data);
+					}
+					if (refresh) {
+						setTimeout(function() {
+							getOverlayUrl(getUrl, refresh)
+						}, refresh);
 					}
 				});
 				console.log('Fetching URL: ' + getUrl);
 			}
 
 			if ($form.data('submitted-overlay-url')) {
-				if ($form.data('submitted-overlay-refresh')) {
-					console.log('Refreshing every ' + $form.data('submitted-overlay-refresh'));
-					setInterval(function() {
-
-						getOverlayUrl($form.data('submitted-overlay-url'));
-					}, $form.data('submitted-overlay-refresh'));
-				} else {
-					getOverlayUrl($form.data('submitted-overlay-url'));
-				}
+				getOverlayUrl($form.data('submitted-overlay-url'), $form.data('submitted-overlay-refresh'));
 			}
 							
 			$(':submit', $form).each(function() {
