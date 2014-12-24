@@ -58,6 +58,14 @@ td.dt {
 	}
 }
 
+$dt-widths: 10 25 33 50;
+@each $dt-width in $dt-widths {
+	.info-table-#{$dt-width} {
+		td.dt {
+			width: #{$dt-width + "%"};
+		}
+	}
+}
 
 .table-with-checked {
 	padding: $padding-small-vertical $padding-small-horizontal;
