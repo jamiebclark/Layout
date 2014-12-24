@@ -1787,7 +1787,8 @@ documentReady(function() {
 
 documentReady(function() {
 	$('form.submitted-overlay').each(function() {
-		$(this).submit(function(e) {
+		var $form = $(this);
+		$form.submit(function(e) {
 			var padding = 20;
 			var $form = $(this).addClass('submitted-overlay-submitted');
 			var $mask = $('<div class="submitted-overlay-mask"></div>')
@@ -1797,10 +1798,35 @@ documentReady(function() {
 					'top': padding * -1,
 					'left': padding * -1
 				})
-				.appendTo($form);				
-			$('<div class="submitted-overlay-mask-content"></div>')
+				.appendTo($form);
+
+			var $content = $('<div class="submitted-overlay-mask-content"></div>')
 				.append($('<h2>Loading</h2>').animatedEllipsis())
 				.appendTo($mask);
+
+			function getOverlayUrl(getUrl) {
+				$.ajax({
+					//type: 'POST',
+					url: getUrl
+				}).done(function(data) {
+					if (data != '') {
+						$content.html(data);
+					}
+				});
+				console.log('Fetching URL: ' + getUrl);
+			}
+
+			if ($form.data('submitted-overlay-url')) {
+				if ($form.data('submitted-overlay-refresh')) {
+					console.log('Refreshing every ' + $form.data('submitted-overlay-refresh'));
+					setInterval(function() {
+
+						getOverlayUrl($form.data('submitted-overlay-url'));
+					}, $form.data('submitted-overlay-refresh'));
+				} else {
+					getOverlayUrl($form.data('submitted-overlay-url'));
+				}
+			}
 							
 			$(':submit', $form).each(function() {
 				$(this).prop('disabled', true).html('Loading...');
