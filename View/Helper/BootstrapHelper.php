@@ -102,8 +102,8 @@ class BootstrapHelper extends LayoutAppHelper {
 				list($linkText, $linkUrl, $linkOptions, $linkClick) = $link + array(null, array(), array(), null);
 				$isActive = Param::keyCheck($linkOptions, 'active', true);
 
-				$before = Param::keyCheck($options, 'before', true);
-				$after = Param::keyCheck($options, 'after', true);
+				$before = Param::keyCheck($linkOptions, 'before', true);
+				$after = Param::keyCheck($linkOptions, 'after', true);
 
 				$linkOptions['escape'] = false;
 				$linkOptions = array_merge((array) $globalLinkOptions, $linkOptions );
