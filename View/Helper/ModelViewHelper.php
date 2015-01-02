@@ -681,8 +681,19 @@ class ModelViewHelper extends LayoutAppHelper {
 		$plugin = !empty($options['plugin']) ? $options['plugin'] : Inflector::underscore($this->modelPlugin);
 		
 		$url = compact('controller', 'action', 'plugin');
-		$id = is_numeric($result) ? $result : $modelResult[$this->primaryKey];
-		$title = (is_numeric($result) || empty($modelResult[$this->displayField])) ? null : $modelResult[$this->displayField];
+		$id = null;
+		$title = null;
+
+		if (is_numeric($result)) {
+			$id = $result;
+		} else {
+			if (!empty($modelResult[$this->primaryKey])) {
+				$id = $modelResult[$this->primaryKey];
+			}
+			if (!empty($modelResult[$this->displayField])) {
+				$title = $modelResult[$this->displayField];
+			}
+		}
 		
 		if ($this->sluggable && !empty($title)) {
 			$url += array('id' => $id, 'slug' => $title);
