@@ -5,7 +5,7 @@
 	border-radius: $media-border-radius;
 
 	.media-body {
-		display: block;
+		// display: block;
 		text-align: left;
 		padding-bottom: $line-height-computed / 2;
 	}
@@ -55,11 +55,14 @@
 	> .media {
 		margin: 0;
 		border-radius: 0;
+		padding: $padding-base-vertical $padding-base-horizontal;
 	}
 	> .media-list {
 		margin-top: 0;
 		margin-bottom: 0;
-		> .media, > .media-wrap > .media {
+		> li > .media, > .media, 
+		> .media-wrap > .media,
+		> .hover-layout-block > .hover-over > .media {
 			border-radius: 0;
 			border-left: 0;
 			border-right: 0;
@@ -67,6 +70,7 @@
 			margin-right: 0;
 			margin-top: 0;
 			margin-bottom: 0;
+			padding: $padding-base-vertical $padding-base-horizontal;
 		}
 	}
 }

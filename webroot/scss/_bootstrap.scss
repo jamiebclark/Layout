@@ -88,6 +88,12 @@ $modal-width-slim: 360px;
 .nav.nav-tabs {
 	margin-bottom: $line-height-computed;
 }
+.nav .nav-separator {
+	position: relative;
+	display: block;
+	padding: $nav-link-padding;
+	font-weight: bold;
+}
 
 // NavBar
 // ---------------------------

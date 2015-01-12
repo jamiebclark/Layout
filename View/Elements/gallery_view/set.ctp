@@ -70,6 +70,7 @@ $this->end();
 $this->start('galleryView');
 ?><div class="gallery-view"><?php 
 	echo $this->fetch('galleryViewImages'); 
+	echo "INFO";
 	echo $this->fetch('galleryViewInfos');
 ?></div>
 <?php 

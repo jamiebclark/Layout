@@ -1773,7 +1773,7 @@ documentReady(function() {
 //Sanitizing
 documentReady(function() {
 	function numberSanitize(val) {
-		return val.replace(/[^0-9\.]/g,'');
+		return val.replace(/[^0-9\.\-]/g,'');
 	}
 	
 	$('input.input-group-cash').each(function() {
@@ -1787,7 +1787,8 @@ documentReady(function() {
 
 documentReady(function() {
 	$('form.submitted-overlay').each(function() {
-		$(this).submit(function(e) {
+		var $form = $(this);
+		$form.submit(function(e) {
 			var padding = 20;
 			var $form = $(this).addClass('submitted-overlay-submitted');
 			var $mask = $('<div class="submitted-overlay-mask"></div>')
@@ -1797,10 +1798,33 @@ documentReady(function() {
 					'top': padding * -1,
 					'left': padding * -1
 				})
-				.appendTo($form);				
-			$('<div class="submitted-overlay-mask-content"></div>')
+				.appendTo($form);
+
+			var $content = $('<div class="submitted-overlay-mask-content"></div>')
 				.append($('<h2>Loading</h2>').animatedEllipsis())
 				.appendTo($mask);
+
+			function getOverlayUrl(getUrl, refresh) {
+				$.ajax({
+					//type: 'POST',
+					url: getUrl
+				}).done(function(data) {
+					console.log('Fetched');
+					if (data != '') {
+						$content.html(data);
+					}
+					if (refresh) {
+						setTimeout(function() {
+							getOverlayUrl(getUrl, refresh)
+						}, refresh);
+					}
+				});
+				console.log('Fetching URL: ' + getUrl);
+			}
+
+			if ($form.data('submitted-overlay-url')) {
+				getOverlayUrl($form.data('submitted-overlay-url'), $form.data('submitted-overlay-refresh'));
+			}
 							
 			$(':submit', $form).each(function() {
 				$(this).prop('disabled', true).html('Loading...');

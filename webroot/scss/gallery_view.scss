@@ -3,6 +3,8 @@ $gallery-info-control-size: 		40px !default;
 $gallery-view-border-radius:		4px !default;
 $gallery-view-body-height:			500px !default;
 
+$gallery-modal-info-width:			33%;
+
 @import "bootstrap_import";
 
 @import "variables";
@@ -170,6 +172,10 @@ a.gallery-view-control {
 		bottom: 0;
 	}
 	*/
+	.gallery-view-image, .gallery-view-thumbnails {
+		margin-right: $gallery-modal-info-width;
+	}
+
 	.gallery-view-infos {
 		position: absolute;
 		right: 0;
@@ -177,8 +183,13 @@ a.gallery-view-control {
 		top: 0;
 		z-index: 1;
 		background-color: white;
-		width: 40%;
+		width: $gallery-modal-info-width;
+		overflow: auto;
+		> .gallery-view-info {
+			padding: $padding-base-vertical $padding-base-horizontal;
+		}
 	}
+
 	.gallery-view-infos-inner {
 		overflow: auto;
 		position: absolute;

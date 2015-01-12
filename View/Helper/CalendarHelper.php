@@ -359,51 +359,56 @@ class CalendarHelper extends LayoutAppHelper {
 		}		
 		extract($options);
 		
+		$str = compact('m', 'd', 'y');
+		$return = '';
+
 		$stamp1 = Date::validStamp($date1);
 		$stamp2 = Date::validStamp($date2);
 		
-		if (empty($stamp2)) {
-			return $this->niceShort($stamp1, $options);
-		}
-		
-		if ($stamp1 > $stamp2) {
+		if (!empty($stamp2) && $stamp1 > $stamp2) {
 			list($stamp1, $stamp2) = array($stamp2, $stamp1);
 		}
-		$str = compact('m', 'd', 'y');
 		list($str1, $str2) = array($str, $str);
 		
 		if (!empty($time)) {
 			$str1 += compact('t');
 			$str2 = compact('t') + $str2;
 		}
+
+		if (empty($stamp2)) {
+			$str2 = null;
+			//return $this->niceShort($stamp1, $options);
+		}
 		
 		list($Y1, $M1, $D1, $T1, $H1, $I1, $A1) = explode('-', date('Y-m-d-H:i-H-i-a', $stamp1));
-		list($Y2, $M2, $D2, $T2, $H2, $I2, $A2) = explode('-', date('Y-m-d-H:i-H-i-a', $stamp2));
-		//Year Match
-		if ($Y1 == $Y2) {
-			$yearMatch = true;
-			unset($str1['y']);
-			//Month Match
-			if ($M1 == $M2) {
-				if (empty($time)) {
-					unset($str2['m']);
-				}
-				//Day Match
-				if ($D1 == $D2) {
-					unset($str2['m']);
-					unset($str2['d']);
-					if (!empty($time)) {
-						unset($str2['y']);
-						$str1 += compact('y');
+		if (!empty($stamp2)) {
+			list($Y2, $M2, $D2, $T2, $H2, $I2, $A2) = explode('-', date('Y-m-d-H:i-H-i-a', $stamp2));
+			//Year Match
+			if ($Y1 == $Y2) {
+				$yearMatch = true;
+				unset($str1['y']);
+				//Month Match
+				if ($M1 == $M2) {
+					if (empty($time)) {
+						unset($str2['m']);
 					}
-					$dayMatch = true;
-					//Time Match
-					if ($T1 == $T2) {
-						$timeMatch = true;
-						unset($str2['t']);
-					} else if ($A1 == $A2) {
-						$amMatch = true;
-						unset($str1['a']);
+					//Day Match
+					if ($D1 == $D2) {
+						unset($str2['m']);
+						unset($str2['d']);
+						if (!empty($time)) {
+							unset($str2['y']);
+							$str1 += compact('y');
+						}
+						$dayMatch = true;
+						//Time Match
+						if ($T1 == $T2) {
+							$timeMatch = true;
+							unset($str2['t']);
+						} else if ($A1 == $A2) {
+							$amMatch = true;
+							unset($str1['a']);
+						}
 					}
 				}
 			}
@@ -413,12 +418,11 @@ class CalendarHelper extends LayoutAppHelper {
 			if ($thisYear == $Y1) {
 				unset($str1['y']);
 			}
-			if ($thisYear == $Y2) {
+			if (!empty($Y2) && $thisYear == $Y2) {
 				unset($str2['y']);
 			}
 		}
 		
-		$return = '';
 
 		$time1 = Param::keyCheck($str1, 't', true, null);
 		$date = date(implode(' ', $str1), $stamp1);

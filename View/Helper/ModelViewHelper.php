@@ -477,6 +477,9 @@ class ModelViewHelper extends LayoutAppHelper {
 		if (!empty($truncate)) {
 			$text = $this->Text->truncate($text, $truncate);
 		}
+		if (!empty($link)) {
+			$text = strip_tags($text);
+		}
 		$text = $before . $text . $after;
 		if (!empty($url)) {
 			if ($url === true) {
@@ -584,6 +587,7 @@ class ModelViewHelper extends LayoutAppHelper {
 			'class' => 'media-title ' . $this->cssClass,
 			'tag' => $titleTag,
 			'text' => $title,
+			'link' => $link,
 		);
 
 		if (!empty($titleClass)) {
@@ -618,8 +622,9 @@ class ModelViewHelper extends LayoutAppHelper {
 		}
 		$out .= $this->Html->tag('div', $body, array('class' => 'media-body')) . "\n";
 		$out = $this->Html->tag($tag, $out, $returnOptions);
+
 		if (!empty($options['hover']) && method_exists($this, 'hoverContent') && ($hoverContent = $this->hoverContent($result))) {
-			$out = $this->Layout->hover($out, $hoverContent);
+			$out = $this->Layout->hover($out, $hoverContent, array('block' => true));
 		}
 
 		if (!empty($wrapTag)) {
@@ -651,7 +656,7 @@ class ModelViewHelper extends LayoutAppHelper {
 				if (!empty($listOptions['active']) && $listOptions['active'] == $id) {
 					$passOptions = $this->addClass($passOptions, 'active');
 				}
-				$out .= $this->media($result, array('tag' => 'li') + $passOptions);
+				$out .= $this->media($result, array('tag' => 'li') + (array) $passOptions);
 				if (!empty($listOptions['limit']) && ++$count >= $listOptions['limit']) {
 					break;
 				}
@@ -676,8 +681,19 @@ class ModelViewHelper extends LayoutAppHelper {
 		$plugin = !empty($options['plugin']) ? $options['plugin'] : Inflector::underscore($this->modelPlugin);
 		
 		$url = compact('controller', 'action', 'plugin');
-		$id = is_numeric($result) ? $result : $modelResult[$this->primaryKey];
-		$title = (is_numeric($result) || empty($modelResult[$this->displayField])) ? null : $modelResult[$this->displayField];
+		$id = null;
+		$title = null;
+
+		if (is_numeric($result)) {
+			$id = $result;
+		} else {
+			if (!empty($modelResult[$this->primaryKey])) {
+				$id = $modelResult[$this->primaryKey];
+			}
+			if (!empty($modelResult[$this->displayField])) {
+				$title = $modelResult[$this->displayField];
+			}
+		}
 		
 		if ($this->sluggable && !empty($title)) {
 			$url += array('id' => $id, 'slug' => $title);
@@ -724,6 +740,7 @@ class ModelViewHelper extends LayoutAppHelper {
 		}
 		
 		$type = Param::keyCheck($options, 'type', true, $this->thumbType);
+
 		if ($type == 'text') {
 			$out = $this->thumbText($result, $options);
 		} else if ($type == 'date') {
@@ -776,7 +793,7 @@ class ModelViewHelper extends LayoutAppHelper {
 	
 	function thumbDate($result, $options = array()) {
 		if (isset($options['dir'])) {
-			$options['class'] = $options['dir'];
+			$options = $this->addClass($options, $options['dir']);
 		}
 		if (!empty($options['media'])) {
 			unset($options['media']);
