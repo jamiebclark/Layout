@@ -100,7 +100,12 @@ class BootstrapHelper extends LayoutAppHelper {
 		foreach ($links as $link) {
 			if (is_array($link)) {
 				list($linkText, $linkUrl, $linkOptions, $linkClick) = $link + array(null, array(), array(), null);
-				$isActive = Param::keyCheck($linkOptions, 'active', true);
+
+				if (!empty($options['urlActive'])) {
+					$isActive = $this->_urlActive($linkUrl);
+				} else {
+					$isActive = Param::keyCheck($linkOptions, 'active', true);
+				}
 
 				$before = Param::keyCheck($linkOptions, 'before', true);
 				$after = Param::keyCheck($linkOptions, 'after', true);
@@ -134,5 +139,27 @@ class BootstrapHelper extends LayoutAppHelper {
 			$out = $this->Html->tag($tag, $out, $options);
 		}
 		return $out;
+	}
+
+	private function _urlActive($url) {
+		$params = $this->request->params;
+		if (!array_key_exists('prefix', $url) && !empty($params['prefix'])) {
+			$url['prefix'] = $params['prefix'];
+		}
+		if (!empty($url['prefix'])) {
+			$url['action'] = $params['prefix'] . '_' . $url['action'];
+		}
+
+		$fields = array('action', 'controller');
+		foreach ($fields as $field) {
+			if (!isset($url[$field])) {
+				continue;
+			}
+			if ($url[$field] != $params[$field]) {
+				return false;
+			}
+		}
+
+		return true;
 	}
 }
