@@ -1,4 +1,5 @@
 <?php
+App::uses('LayoutAppHelper', 'Layout.View/Helper');
 class EmailHelper extends LayoutAppHelper {
 	var $name = 'Email';
 	
