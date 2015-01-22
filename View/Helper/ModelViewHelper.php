@@ -597,7 +597,10 @@ class ModelViewHelper extends LayoutAppHelper {
 	
 		foreach ($this->_addressBookFunctions as $func) {
 			if (!empty($$func)) {
-				$body .= $this->AddressBook->$func($modelResult, array('tag' => $contentTag));
+				$line = $this->AddressBook->$func($modelResult, array('tag' => 'small'));
+				if (!empty($line)) {
+					$body .= $line . "<br/>\n";
+				}
 			}
 		}
 		if (!empty($after)) {
