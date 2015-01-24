@@ -1801,8 +1801,9 @@ documentReady(function() {
 				.appendTo($form);
 
 			var $content = $('<div class="submitted-overlay-mask-content"></div>')
-				.append($('<h2>Loading</h2>').animatedEllipsis())
+				.append($('<h2><i class="fa fa-spinner fa-spin"></i> Loading</h2>'))
 				.appendTo($mask);
+				//.animatedEllipsis())
 
 			function getOverlayUrl(getUrl, refresh) {
 				$.ajax({
