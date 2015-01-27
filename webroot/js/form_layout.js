@@ -1788,22 +1788,25 @@ documentReady(function() {
 documentReady(function() {
 	$('form.submitted-overlay').each(function() {
 		var $form = $(this);
+		if ($form.data('submitted-overlay-init')) {
+			return $(this);
+		}
 		$form.submit(function(e) {
-			var padding = 20;
-			var $form = $(this).addClass('submitted-overlay-submitted');
-			var $mask = $('<div class="submitted-overlay-mask"></div>')
-				.css({
-					'width': $form.outerWidth() + 2 * padding,
-					'height': $form.outerHeight() + 2 * padding,
-					'top': padding * -1,
-					'left': padding * -1
-				})
-				.appendTo($form);
+			var padding = 20,
+				$form = $(this).addClass('submitted-overlay-submitted'),
+				$mask = $('<div class="submitted-overlay-mask"></div>')
+					.css({
+						'width': $form.outerWidth() + 2 * padding,
+						'height': $form.outerHeight() + 2 * padding,
+						'top': padding * -1,
+						'left': padding * -1
+					})
+					.appendTo($form);
 
 			var $content = $('<div class="submitted-overlay-mask-content"></div>')
-				.append($('<h2><i class="fa fa-spinner fa-spin"></i> Loading</h2>'))
-				.appendTo($mask);
-				//.animatedEllipsis())
+					.append($('<h2><i class="fa fa-spinner fa-spin"></i> Loading</h2>'))
+					.appendTo($mask);
+					//.animatedEllipsis())
 
 			function getOverlayUrl(getUrl, refresh) {
 				$.ajax({
@@ -1830,7 +1833,8 @@ documentReady(function() {
 			$(':submit', $form).each(function() {
 				$(this).prop('disabled', true).html('Loading...');
 			});
-			return $(this);
 		});
+		$form.data('submitted-overlay-init', true);
+		return $(this);
 	});
 });

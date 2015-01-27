@@ -120,6 +120,12 @@ class CalendarHelper extends LayoutAppHelper {
 			$date1 = date('Y-m-d',strtotime($y.'-'.$m.'-'.$d));
 			
 		}
+
+		$nextWeekIcon = '<i class="fa fa-angle-right"></i>';
+		$nextMonthIcon = '<i class="fa fa-angle-double-right"></i>';
+		$prevWeekIcon = '<i class="fa fa-angle-left"></i>';
+		$prevMonthIcon = '<i class="fa fa-angle-double-left"></i>';
+
 		$date1Stamp = strtotime($date1);
 		$thisYear = date('Y') == date('Y',$date1Stamp);
 		
@@ -134,13 +140,32 @@ class CalendarHelper extends LayoutAppHelper {
 		
 		$return = '';
 		$return .= $this->Html->div('head');
-		$return .= $this->Html->link('<', $prevWeekUrl, array('class' => 'nav prev'));
-		
-		$return .= $this->Html->link('&laquo;', $prevMonthUrl, array('class' => 'monthNav','escape'=>false));
+		$return .= $this->Html->link($prevMonthIcon, $prevMonthUrl, array(
+			'class' => 'week-links-heading-nav week-links-heading-nav-prev',
+			'escape'=>false,
+			'title' => 'Previous Month',
+		));
+
+		$return .= $this->Html->link($prevWeekIcon, $prevWeekUrl, array(
+			'class' => 'week-links-heading-nav week-links-heading-nav-prev', 
+			'escape' => false,
+			'title' => 'Previous Week',
+		));
+
+		$return .= $this->Html->link($nextMonthIcon, $nextMonthUrl, array(
+			'class' => 'week-links-heading-nav week-links-heading-nav-next',
+			'escape'=>false,
+			'title' => 'Next Month',
+		));
+		$return .= $this->Html->link($nextWeekIcon, $nextWeekUrl, array(
+			'class' => 'week-links-heading-nav week-links-heading-nav-next', 
+			'escape' => false,
+			'title' => 'Next Week',
+		));
+
 		$return .= date($thisYear ? 'F' : 'F, Y', $date1Stamp);
-		$return .= $this->Html->link('&raquo;', $nextMonthUrl, array('class' => 'monthNav','escape'=>false));
-		
-		$return .= $this->Html->link('>', $nextWeekUrl, array('class' => 'nav next'));
+
+
 		$return .= "</div>\n";
 		
 		$return .= $this->Html->div('days');
