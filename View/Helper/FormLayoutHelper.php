@@ -851,6 +851,11 @@ class FormLayoutHelper extends LayoutAppHelper {
 		extract($options);
 		$out = '';
 
+		$listOptions = compact('class');
+		if (!empty($removeCommand)) {
+			$listOptions['data-input-list-remove-command'] = $removeCommand;
+		}
+
 		if (is_callable($listContent)) {
 			$type = 'function';
 		} else if (is_array($listContent)) {
@@ -889,7 +894,7 @@ class FormLayoutHelper extends LayoutAppHelper {
 			$out = $this->Html->tag($titleTag, $title, array('class' => 'input-list-title')) . $out;
 		}
 		$out .= $this->Html->div('input-list-control', '');
-		$out = $this->Html->tag($tag, $out, compact('class'));
+		$out = $this->Html->tag($tag, $out, $listOptions);
 		
 		if (!empty($legend)) {
 			$out = $this->Html->tag('legend', $legend) . $out;

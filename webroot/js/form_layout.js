@@ -674,18 +674,24 @@ documentReady(function() {
 			if ($(this).data('input-list-init')) {
 				return $(this);
 			}
+
 			function addRemoveBox($listItem) {
 				var $id = $(':input[name*="id]"]', $listItem).first();
 				if (!$id.length) {
 					return false;
 				}
 				var removeClass = 'input-list-item-remove',
+					removeCommand = 'remove',
 					$checkbox = $listItem.find('.' + removeClass + ' input[type=checkbox]'),
-					$content = $listItem.children(':not(.'+removeClass+')');
-					
+					$content = $listItem.children(':not(.' + removeClass + ')');
+				
+				if ($list.data('input-list-remove-command')) {
+					removeCommand = $list.data('input-list-remove-command');
+				}
+				
 				if (!$checkbox.length) {
 					$listItem.wrapInner('<div class="input-list-item-inner"></div>');
-					var removeName = $id.attr('name').replace(/\[id\]/,'[remove]'),
+					var removeName = $id.attr('name').replace(/\[id\]/,'[' + removeCommand + ']'),
 						removeBoxId = removeName.replace(/(\[([^\]]+)\])/g, '_$2'),
 						$checkbox = $('<input/>', {
 							'type' : 'checkbox',
