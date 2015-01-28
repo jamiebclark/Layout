@@ -317,9 +317,11 @@ class ModelViewHelper extends LayoutAppHelper {
 					}
 				}
 
-				if (!($postLink = Param::keyCheck($linkOptions, 'postLink', true)) && !empty($action[2]['postLlink'])) {
+				if (!empty($action[2]['postLink'])) {
 					$postLink = $action[2]['postLink'];
 					unset($action[2]['postLink']);
+				} else {
+					$postLink = null;
 				}
 
 				if (!empty($attrs['urlAdd'])) {
