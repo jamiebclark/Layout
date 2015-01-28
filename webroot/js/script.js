@@ -373,12 +373,17 @@ documentReady(function() {
 			var $a = $(this),
 				url = $a.attr('href'),
 				title = $a.attr('data-modal-title'),
+				modalClass = $a.attr('data-modal-class'),
 				customTitle = title,
 				ajaxWindowId = '',
 				ajaxWindowKey = 1;
 			do {
 				ajaxWindowId = '#ajax-modal' + (ajaxWindowKey++);
 			} while ($a.closest(ajaxWindowId).length);
+
+			if (!modalClass) {
+				modalClass = "modal-lg";
+			}
 
 			var $ajaxWindow = $(ajaxWindowId),
 				$ajaxWindowHeader = $('.modal-header', $ajaxWindow),
@@ -388,7 +393,7 @@ documentReady(function() {
 					'id': 'ajax-modal',
 					'class': 'modal fade'
 				});
-				var $ajaxDialog = $('<div class="modal-dialog modal-lg"></div>').appendTo($ajaxWindow),
+				var $ajaxDialog = $('<div class="modal-dialog"></div>').addClass(modalClass).appendTo($ajaxWindow),
 					$ajaxContent = $('<div class="modal-content"></div>').appendTo($ajaxDialog),	
 					$ajaxWindowHeader = $('<div class="modal-header"></div>')
 						.appendTo($ajaxContent),
