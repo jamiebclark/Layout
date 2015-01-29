@@ -1066,6 +1066,16 @@ class FormLayoutHelper extends LayoutAppHelper {
 				'value' => $default,
 				'data-clone-numbered-default' => $isDefault ? $default : null,
 			));
+			/*
+			$radio = sprintf('<input type="radio" name="%s" value="%s" data-clone-numbered-default="%s" %s/> %s',
+				$this->_name($name),
+				$radioValue,
+				$isDefault? $default : '',
+				$isDefault ? 'checked="checked"' : '',
+				$label
+			);
+			*/
+
 			$row = $this->Html->div('input-choice-control', '<label>' . $radio . '</label>') . "\n";
 			if (is_array($input)) {
 				if (empty($input['fieldset']) && empty($input['legend'])) {
