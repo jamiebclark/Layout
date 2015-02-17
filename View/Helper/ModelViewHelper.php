@@ -366,9 +366,16 @@ class ModelViewHelper extends LayoutAppHelper {
 					}
 					$linkOptions = $this->addClass($linkOptions, 'btn btn-default');
 					$linkOptions['escape'] = false;
-					if (!empty($attrs['icons']) && isset($linkOptions['icon'])) {
+					if (isset($linkOptions['icon'])) {
+						if (strstr($linkOptions['icon'], '<') !== false) {
+							$icon = $linkOptions['icon'];
+						} else if (!empty($attrs['icons'])) {
+							$icon = $this->Iconic->icon($linkOptions['icon']);	
+						} else {
+							$icon = '';
+						}
 						$oTitle = $linkTitle;
-						$linkTitle = $this->Iconic->icon($linkOptions['icon']);
+						$linkTitle = $icon;
 						if (!empty($attrs['text'])) {
 							$linkTitle .= " $oTitle";
 						}
