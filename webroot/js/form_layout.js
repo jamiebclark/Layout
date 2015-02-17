@@ -763,6 +763,7 @@ documentReady(function() {
 		}
 		var	name = $(this).attr('name'),
 			id = $(this).attr('id');
+
 		if (keyIndex != -1) {
 			var key = getNameKey(name, keyIndex);
 			if (key === false) {
@@ -799,6 +800,15 @@ documentReady(function() {
 		}
 		return $(this);
 	};
+
+	function getNumericKey(name, search, forward) {
+		i = name.indexOf(search);
+		do {
+			key = getNameKey(name, i, forward);
+			i = forward ? key.endIndex : key.index;
+		} while (isNaN(parseFloat(key.key)));
+		return key;
+	}
 
 	function getNameKey(name, startIndex, forward) {
 		if (typeof forward === 'undefined') {
@@ -861,7 +871,8 @@ documentReady(function() {
 			idName = $idFirst.attr('name');
 			if (idName) {
 				nameLength = idName.length;
-				key = getNameKey(idName, idName.indexOf("[id]"), false);
+				idIndex = idName.indexOf("[id]");
+				key = getNameKey(idName, idIndex, false);
 			}
 		}
 		
@@ -1186,7 +1197,7 @@ documentReady(function() {
 		function clickDisplay(value, label) {
 			showDisplay();
 			$display.html(label);
-			$hidden.attr('value', value);
+			$hidden.attr('value', value).prop('disabled', false);
 		}
 		
 		function showDisplay() {
@@ -1819,7 +1830,6 @@ documentReady(function() {
 					//type: 'POST',
 					url: getUrl
 				}).done(function(data) {
-					console.log('Fetched');
 					if (data != '') {
 						$content.html(data);
 					}
@@ -1829,7 +1839,6 @@ documentReady(function() {
 						}, refresh);
 					}
 				});
-				console.log('Fetching URL: ' + getUrl);
 			}
 
 			if ($form.data('submitted-overlay-url')) {
