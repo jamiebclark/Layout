@@ -160,6 +160,14 @@ class BootstrapHelper extends LayoutAppHelper {
 			}
 		}
 
+		if (!empty($params['pass'])) {
+			foreach ($params['pass'] as $k => $v) {
+				if (!isset($url[$k]) || $url[$k] != $v) {
+					return false;
+				}
+			}
+		}
+
 		return true;
 	}
 }
