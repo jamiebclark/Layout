@@ -24,6 +24,15 @@ if (CakePlugin::loaded('TwitterBootstrap')) {
 $flash = $this->Session->flash();
 $flash .= $this->Session->flash('auth', $flashParams);
 
+$default = array(
+	'content_class' => '',
+	'header_class' => '',
+	'footer_class' => '',
+);
+extract(array_merge($default, compact(array_keys($default))));
+$header_class .= ' no-print';
+$footer_class .= ' no-print';
+
  //<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
 ?>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
@@ -64,10 +73,10 @@ if (empty($bodyAttributes)) {
 echo $this->Html->tag('body', null, $bodyAttributes);
 ?>
 	<div id="container">
-		<div id="header" class="no-print">
+		<div id="header" class="<?php echo $header_class;?>">
 			<?php echo $this->fetch('header'); ?>
 		</div>
-		<div id="content">
+		<div id="content" class="<?php echo $content_class; ?>">
 			<?php 
 			if (!empty($pre_crumb)) {
 				echo $this->Html->div('pre-crumb', $pre_crumb);
@@ -94,7 +103,7 @@ echo $this->Html->tag('body', null, $bodyAttributes);
 			//echo $this->element('Layout.liquid_content', compact('content'));
 			?>
 		</div>
-		<div id="footer" class="no-print">
+		<div id="footer" class="<?php echo $footer_class; ?>">
 			<?php 
 				echo $this->fetch('footer');
 				if (!empty($adminDisplay)) {
