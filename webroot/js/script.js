@@ -597,14 +597,15 @@ documentReady(function() {
 				'top': 'auto',
 				'width': w + "px"
 			};
+		
 		function setStyles() {
 			if ($('body').outerWidth() < 500) {
 				styles.position = 'static';
 				styles.width = '';
 			}
-			$this.css(styles)
-			
+			$this.css(styles);	
 		}
+
 		$(this)
 			.affix({offset: {top: t, bottom: b}})
 			.on('affixed.bs.affix', function() {
@@ -626,12 +627,12 @@ documentReady(function() {
 	};
 	$.fn.scrollfix = function() {
 		return this.each(function() {
-			function setFix() {
+			function checkIsFixed() {
 				if (
 					// Top clears the top of screen
-					($(window).scrollTop() > top) && 
+					(scrollTop > scrollfixTop) && 
 					// Bottom clears the bottom of screen
-					((top + height) < ($(window).height() + $(window).scrollTop()))
+					((scrollfixTop + height) < (windowHeight + scrollTop))
 				) {
 					fix();
 				} else {
@@ -640,8 +641,7 @@ documentReady(function() {
 			}
 
 			function fix() {
-				var scrollTop = $(window).scrollTop(),
-					scrollOffset = (height > $(window).height()) ? height - $(window).height() : 0,
+				var scrollOffset = (height > windowHeight) ? height - windowHeight : 0,
 					overBorder = containerBottom && (scrollTop - scrollOffset + height) > containerBottom,
 					setPosition,
 					setTop;
@@ -650,46 +650,63 @@ documentReady(function() {
 					setTop = $container.height() - height;
 					setPosition = 'absolute';
 				} else {
-					setTop = (10 - scrollOffset) + "px";
+					setTop = (topOffset - scrollOffset) + "px";
 					setPosition = 'fixed';
 				}	
-				$scroll.css({
+				$scrollfix.css({
 					'width': width,
 					'position': setPosition,
 					'top': setTop
 				});
 			}
 			function unfix() {
-				$scroll.css({'position': 'static', 'width': 'auto'});
+				$scrollfix.css({'position': 'static', 'width': 'auto'});
 			}
 			
 			function setSizes() {
 				unfix();
-				height = $scroll.outerHeight();
-				width = $scroll.outerWidth();
-				pos = $scroll.offset();
-				top = pos.top;
-				containerBottom;
+				height = $scrollfix.outerHeight();
+				width = $scrollfix.outerWidth();
+				scrollfixPos = $scrollfix.offset();
+				scrollfixTop = scrollfixPos.top;
+
+				windowHeight = $(window).height();
+				topOffset = 10;
+
+				$('.scrollfix-fixed:visible').each(function() {
+					if ($(this).css('position') == "fixed") {
+						var h = $(this).outerHeight();
+						windowHeight -= h;
+						topOffset += h;
+					}
+				});
+
+				//containerBottom;
 				if ($container.length) {
 					containerPos = $container.offset();
 					containerBottom = containerPos.top + $container.height();
 					$container.css('min-height', height + "px");
 				}
-				setFix();
+				checkIsFixed();
 			}
 
 			if (!$(this).data('scroll-init')) {
-				var $scroll = $(this),
-					$container = $scroll.closest('.row').css('position', 'relative'),
+				var $scrollfix = $(this),
+					$container = $scrollfix.closest('.row').css('position', 'relative'),
 					height,
 					width,
-					pos,
-					top,
+					scrollfixPos,
+					scrollfixTop,
+					windowHeight,
+					scrollTop,
+					topOffset,
 					containerBottom,
 					containerPos;
 				setSizes();
 				$(window).scroll(function() {
-					setFix();
+					scrollTop = $(window).scrollTop() + topOffset;
+					setSizes();
+					checkIsFixed();
 				}).resize(function() {
 					setSizes();
 				}).load(function() {
@@ -702,6 +719,7 @@ documentReady(function() {
 		});
 	};
 })(jQuery);
+
 documentReady(function() {
 	$('.affix-content').affixContent();
 	$('.scrollfix').scrollfix();
@@ -718,7 +736,7 @@ documentReady(function() {
 				$actions = $('.media-actionmenu', $wrap),
 				$hover = $wrap.length ? $wrap : $this;
 				
-			if ($wrap.length == 0) {
+			if ($wrap.length === 0) {
 				$actions = $('.media-actionmenu', $this);
 			}
 			$hover.hover(function() {
@@ -741,13 +759,15 @@ documentReady(function() {
 		return this.each(function() {
 			var $this = $(this),
 				$parent = $this.parent('td'),
-				$children = $('> a', $this);
+				$children = $('> a', $this),
 				lft = $parent.css('padding-left'),
 				rgt = $parent.css('padding-right'),
 				w = 0;
+
 			$children.each(function() {
 				w += $(this).outerWidth();
 			});
+
 			if (lft) {
 				w += parseFloat(lft);
 			}
@@ -786,10 +806,11 @@ $(window).load(function() {
 			}
 			$container.on('resize', function() {
 				fitEmbedObject();
-			})
+			});
 		});
 	};
 })(jQuery);
+
 documentReady(function() {
 	$('.embed-fit').embedFit();
 });
