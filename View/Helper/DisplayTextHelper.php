@@ -349,7 +349,7 @@ class DisplayTextHelper extends LayoutAppHelper {
 			$str = preg_replace('/[\r\n]+/', str_repeat("\r\n", $nlPad + 1), $str);
 		}
 		$str = nl2br(html_entity_decode($str,ENT_QUOTES));
-		$non_break = array('h[\d]+','br','p','li','ul','hr','div','t[a-z]+');
+		$non_break = array('h[\d]+','br','p','li','ul','hr','div', 'dt', 'dd', 'dl', 'blockquote', 't[a-z]+');
 		foreach($non_break as $nb) {
 			$regexps[] = '/(<[\/]*'.$nb.'>)([\s]*<br[^>]*>)*/is';
 		}
