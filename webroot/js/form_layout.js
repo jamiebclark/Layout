@@ -44,30 +44,32 @@
 
 (function($) {
 	$.fn.inputFormActivate = function() {
+		function updateForm($form, $input) {
+			if ($input.is(':checked')) {
+				$form.removeClass('form-inactive');
+			} else {
+				$form.addClass('form-inactive');
+			}
+		}
+
 		return this.each(function() {
 			var $input = $(this),
-				$form = $input.closest('form'),
-				inactiveClass = 'form-inactive';
+				$form = $input.closest('form');
+
 			if (!$input.data('form-activate-init')) {
-				function updateForm() {
-					if ($input.is(':checked')) {
-						$form.removeClass(inactiveClass);
-					} else {
-						$form.addClass(inactiveClass);
-					}
-				}
 				$input.click(function(e) {
-					updateForm();
+					updateForm($form, $input);
 				});
-				updateForm();
+				updateForm($form, $input);
 				$input.data('form-activate-init');
 			}
 		});
 	};
+
+	documentReady(function() {
+		$(':input[class*="form-activate"]').inputFormActivate();
+	});
 })(jQuery);
-documentReady(function() {
-	$(':input[class*="form-activate"]').inputFormActivate();
-});
 
 // Input Date
 (function($) {
@@ -77,31 +79,31 @@ documentReady(function() {
 				$parent = $input.closest('.datepair'),
 				$timeInputs = $('input[name*="time"]', $parent);
 
-			if (!$input.data('all-day-init')) {
-				function click() {
-					var timeCount = 0;
-					$timeInputs.each(function() {
-						$(this).data('stored-val', $(this).val()).hide();
-						if (timeCount++ == 0) {
-							$(this).val("12:00am");
-						} else {
-							$(this).val("11:59pm");
-						}
-					});
-				}
-				function unclick() {
-					$timeInputs.each(function() {
-						$(this).val($(this).data('stored-val')).show();
-					});
-				}
-				function update() {
-					if ($input.is(':checked')) {
-						click();
+			function click() {
+				var timeCount = 0;
+				$timeInputs.each(function() {
+					$(this).data('stored-val', $(this).val()).hide();
+					if (timeCount++ === 0) {
+						$(this).val("12:00am");
 					} else {
-						unclick();
+						$(this).val("11:59pm");
 					}
+				});
+			}
+			function unclick() {
+				$timeInputs.each(function() {
+					$(this).val($(this).data('stored-val')).show();
+				});
+			}
+			function update() {
+				if ($input.is(':checked')) {
+					click();
+				} else {
+					unclick();
 				}
-				
+			}
+
+			if (!$input.data('all-day-init')) {
 				$input.click(function(e) {
 					update();
 				});
@@ -156,15 +158,15 @@ documentReady(function() {
 			
 		});
 	};
+
+	documentReady(function() {
+		$('.input-date-all-day').inputDateAllDay();
+		$('.input-date,.input-time').inputDate();
+	});
 })(jQuery);
 
-documentReady(function() {
-	$('.input-date-all-day').inputDateAllDay();
-	$('.input-date,.input-time').inputDate();
-});
 
-
-var dateRangeDiffs = new Array();
+var dateRangeDiffs = [];
 (function($) {
 	//Constants
 	var calHover = false;
@@ -217,12 +219,12 @@ var dateRangeDiffs = new Array();
 			var m = timeMatch[2];
 			var a = timeMatch[3];
 			
-			if (isNaN(h) || h == '') {
+			if (isNaN(h) || h === '') {
 				h = 0;
 			}
 			h = parseInt(h,10);
 			
-			if (isNaN(m) || m == '') {
+			if (isNaN(m) || m === '') {
 				m = 0;
 			}
 			m = parseInt(m,10);
@@ -253,7 +255,7 @@ var dateRangeDiffs = new Array();
 			if (h > 12) {
 				h -= 12;
 			}
-		} else if (h == 0) {
+		} else if (h === 0) {
 			h = 12;
 		}
 		var timeStr = '';
@@ -275,7 +277,7 @@ var dateRangeDiffs = new Array();
 			y = dateArray[3];
 			m = dateArray[1];
 			d = dateArray[2];
-			if (isNaN(y) || y == '') {
+			if (isNaN(y) || y === '') {
 				y = date.getFullYear();
 			}
 		} else if (dateStr) {
@@ -303,7 +305,7 @@ var dateRangeDiffs = new Array();
 			newInt = timeIntGet('h', timeInt);
 			if (newInt > 12) {
 				newInt -= 12;
-			} else if (newInt == 0) {
+			} else if (newInt === 0) {
 				newInt = 12;
 			}
 		}
@@ -317,11 +319,11 @@ var dateRangeDiffs = new Array();
 	}
 
 	function dateIntToDash(dateInt) {
-		var dateArray = dateIntToArray(dateInt);
-		return 
-			dateArray[1].toString() + "-" +
-			dateArray[2].toString() + "-" +
-			dateArray[0].toString();
+		var dateArray = dateIntToArray(dateInt),
+			y = dateArray[1].toString(),
+			m = dateArray[2].toString(),
+			d = dateArray[0].toString();
+		return y + "-" + m + "-" + d;
 	}
 
 	function dateIntToArray(dateInt) {
@@ -409,8 +411,11 @@ var dateRangeDiffs = new Array();
 	};
 	
 	$.fn.dateRangeOut = function(dateType) {
-		var timeStart = timeStop = dateStart = dateStop = '';
-		var dateLabel;
+		var timeStart = '',
+			timeStop = '',
+			dateStart = '',
+			dateStop = '',
+			dateLabel;
 
 		if ($(this).closest('.dateBuild').find('.dateBuild').length == 1) {
 			dateLabel = dateType == 'date' ? 'dateStart' : 'timeStart';
@@ -484,7 +489,7 @@ $(document).ready(function() {
 var lastAutoComplete;
 var skipFocus = false;
 var forceAutoComplete = false;
-var autoCompleteVars = new Array();
+var autoCompleteVars = [];
 
 
 var dropdownOver = false;
@@ -588,12 +593,13 @@ var dropdownInput;
 	$.fn.inputChoices = function() {
 		return this.each(function() {
 			var $list = $(this), $choices, $controls, $contents, $checkedControl;
+			
 			function setVars() {
-					$choices = $('.input-choice', $list),
-					$controls = $('.input-choice-control input', $choices),
-					$contents = $('.input-choice-content', $choices),
-					$checkedControl = $controls.filter(':checked');
-				}
+				$choices = $('.input-choice', $list);
+				$controls = $('.input-choice-control input', $choices);
+				$contents = $('.input-choice-content', $choices);
+				$checkedControl = $controls.filter(':checked');
+			}
 				
 			function select() {
 				setVars();
@@ -959,7 +965,7 @@ documentReady(function() {
 			$wrap = $parent.closest('.layout-dropdown-holder'),
 			offset = $parent.offset(),
 			dropOffset = $wrap.offset(),
-			defaultVals = new Array(),
+			defaultVals = [],
 			lastTimestamp = 0,
 			lastUrl = false;
 
@@ -1013,7 +1019,7 @@ documentReady(function() {
 					$(this).html('');
 				},
 				'checkEmpty': function() {
-					if ($(this).html() == '') {
+					if ($(this).html() === '') {
 						$(this).trigger('clear');
 					}
 				},
@@ -1023,7 +1029,7 @@ documentReady(function() {
 					}
 					$(this).trigger('empty');
 					
-					if (options.emptyResult && $(this).val() != '') {
+					if (options.emptyResult && $(this).val() !== '') {
 						addDropdownOption($('<em></em>').html(options.emptyResult));
 					}					
 					if (options.defaultTitle) {
@@ -1163,11 +1169,16 @@ documentReady(function() {
 			$input = $this.find('input[type*=text]').attr('autocomplete', 'off'),
 			$hidden = $this.find('input[type*=' + options.store + ']'),
 			$display = $this.find('div.display'),
+			$defaultVals = $this.find('select.default-vals').first(),
 			url = $input.data('url'),
 			redirectUrl = $input.data('redirect-url'),
-			isJson = (url.indexOf('json') > 0),
-			$defaultVals = $this.find('select.default-vals').first(),
-			$dropdown = $input.dropdown({
+			isJson = false;
+
+		if (url) {
+			isJson = (url.indexOf('json') > 0);
+		}
+
+		var $dropdown = $input.dropdown({
 				'tag': isJson ? 'ul' : 'div',
 				'itemTag': isJson ? 'li' : 'div',
 				'emptyMessage': 'Begin typing to load results',
@@ -1216,10 +1227,10 @@ documentReady(function() {
 		}
 		
 		if ($defaultVals.length) {
-			var defaultVals = new Array();
+			var defaultVals = [];
 			$defaultVals.attr('disabled', true).hide().find('option').each(function() {
-				if ($(this).val() != '') {
-					defaultVals.push(new Array($(this).val(), $(this).html()));
+				if ($(this).val() !== '') {
+					defaultVals.push([$(this).val(), $(this).html()]);
 				}
 			});
 			$dropdown.trigger('setDefault', [defaultVals]);
@@ -1239,7 +1250,7 @@ documentReady(function() {
 		if (options.action == 'select' && $hidden.val() && $input.val()) {
 			clickDisplay($hidden.val(), $input.val());
 		} else if ($hidden.val()) {
-			if ($display.html() == '') {
+			if ($display.html() === '') {
 				$display.html('Value Set');
 			}
 			showDisplay();
@@ -1418,16 +1429,17 @@ $(document).ready(function() {
 			}
 			
 			function positionMask() {
+				var offset, pos, w, h;
 				if ($select.is(':visible')) {
-					var offset = $select.offset(),
-						pos = $select.position(),
-						h = $select.outerHeight(),
-						w = $select.outerWidth();
+					offset = $select.offset();
+					pos = $select.position();
+					h = $select.outerHeight();
+					w = $select.outerWidth();
 				} else {
-					var offset = {top: 0, left: 0},
-						pos = offset,
-						w = 0,
-						h = 0;
+					offset = {top: 0, left: 0};
+					pos = offset;
+					w = 0;
+					h = 0;
 				}
 				
 				if ($scrollParent.length && pos.top > $scrollParent.height()) {
@@ -1450,7 +1462,7 @@ $(document).ready(function() {
 
 			function searchUpdate() {
 				var val = $search.val();
-				if (val == '') {
+				if (val === '') {
 					$('.select-collapse-options', $div).show();
 					$searchResults.hide();
 					return $(this);
@@ -1523,7 +1535,8 @@ $(document).ready(function() {
 							.data('val', $option.val())
 							.attr('id', 'select-collapse-' + $select.attr('id') + '-' + optionIndex),
 						title = $option.html(),
-						titlePre = title.match(/^[^A-Za-z0-9]*/);
+						titlePre = title.match(/^[^A-Za-z0-9]*/),
+						i = 0;
 					if (titlePre) {
 						titlePre = titlePre[0];
 						title = title.substring(titlePre.length);
@@ -1552,7 +1565,7 @@ $(document).ready(function() {
 						);
 						collapse($lastLi);
 					} else if (childIndex < lastChildIndex) {
-						for (var i = childIndex; i < lastChildIndex; i++) {
+						for (i = childIndex; i < lastChildIndex; i++) {
 							$ul = $ul.closest('li').closest('ul');
 							valLabelPath.pop();
 						}
@@ -1683,6 +1696,7 @@ documentReady(function() {
 					'width': oWidth,
 					'height': oHeight
 				});
+				$('body').addClass('input-centerfocus-open');
 				$(this)
 					.addClass('focused')
 					.css({
@@ -1718,6 +1732,7 @@ documentReady(function() {
 				$focusElements.each(function() {
 					$(this).removeClass('focused').hide();
 				});
+				$('body').removeClass('input-centerfocus-open');
 				$(this)
 					.animate({
 						'width': oWidth,

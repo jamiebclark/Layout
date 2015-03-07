@@ -277,7 +277,7 @@ class DisplayTextHelper extends LayoutAppHelper {
 	 *
 	 **/
 	function cheatSheet($collapse = false) {
-		$out = $this->Html->tag('h2', 'Text Formatting Cheat Sheet');
+		$out = '';
 		if (!empty($this->constants)) {
 			$out .= $this->Html->tag('h3', 'Constants');
 			$out .= 'These constants will be updated from year to year. Using them will keep text automatically updated.';
@@ -318,6 +318,10 @@ class DisplayTextHelper extends LayoutAppHelper {
 		if ($collapse) {
 			$out = $this->Layout->toggle($collapse, null, 'DisplayText Cheat Sheet');
 		}
+		$out = $this->Html->div('panel panel-default',
+			$this->Html->div('panel-heading', 'Text Formatting Cheat Sheet') .
+			$this->Html->div('panel-body', $out)
+		);
 		return $out;
 	}
 	
