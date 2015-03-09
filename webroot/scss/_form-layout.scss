@@ -510,9 +510,11 @@ textarea, input {
 	display: block;
 	a {
 		display: block;
-		padding: .5em;
-		font-weight: normal;
+		padding: $padding-base-vertical $padding-base-horizontal;
+		font-size: $font-size-small;
+		line-height: $line-height-computed * .75;
 		text-decoration: none !important;
+
 		&:hover {
 			background-color: $link-hover-color;
 			color: white !important;

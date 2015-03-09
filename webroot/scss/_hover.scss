@@ -1,6 +1,11 @@
+.hover-layout {
+	display: inline-block;
+}
+
 .hover-layout-block {
 	display: block;
 }
+
 .hover-layout, .hover-layout-block {
 	position: relative;
 	&.hovering {
