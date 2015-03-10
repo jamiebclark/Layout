@@ -213,8 +213,8 @@
 			return $collapseList.data('init', true);
 		});
 	};
-})(jQuery);
 
-$(document).ready(function() {
-	$('.collapse-list').collapseList();
-});
+	$(document).ready(function() {
+		$('.collapse-list').collapseList();
+	});
+})(jQuery);
