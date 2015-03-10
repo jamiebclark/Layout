@@ -965,6 +965,9 @@ class ModelViewHelper extends LayoutAppHelper {
 		
 		$out = '';
 		$class = $this->_getColSizeClass($options);
+		if (!empty($thumbnailClass)) {
+			$class = trim($class . ' ' . $thumbnailClass);
+		}
 
 		foreach ($results as $result) {
 			$modelResult = $this->_getResult($result);

@@ -237,15 +237,20 @@ a.gallery-view-control {
 		position: relative;
 		max-width: 160px;
 	}
+
 	@for $i from 1 through 12 {
 		.thumbnails#{$i} {
 			.thumbnail {
+				@if $i < 5 {
+					$i: 5;
+				}
 				margin: .5% !important;
 				width: #{100/$i - 1}% !important;
 				float: left;
 			}
 		}
 	}
+
 	li {
 		a:hover {
 			opacity: .5;
