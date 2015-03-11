@@ -1,0 +1,39 @@
+$nav-layout-header-border-radius:	$border-radius-base;
+$nav-layout-header-color:			$gray-light;
+$nav-layout-header-bg:				$gray-lighter;
+$nav-layout-header-color-hover:		#FFF;
+$nav-layout-header-bg-hover:		$gray-light;
+
+.nav.nav-layout-header {
+	border-top: 1px solid $navbar-default-border;
+	@include gradient-vertical(#f8f8f8, #fff);
+	padding: $padding-small-vertical $padding-small-horizontal;
+	> li {
+		position: relative;
+		display: inline-block;
+		margin-right: $padding-base-horizontal;
+
+		> a {
+			// border: 1px solid $gray-lighter;
+			background-color: $nav-layout-header-bg;
+			color: $nav-layout-header-color;
+			border-radius: $nav-layout-header-border-radius;
+
+			padding: $padding-small-vertical $padding-small-horizontal;
+
+			&:hover {
+				background-color: $nav-layout-header-bg-hover;
+				color: $nav-layout-header-color-hover;
+			}
+		}
+	}
+}
+
+.nav-pills {
+	span.navbar-brand {
+		padding: 8px 12px;
+		margin-top: 2px;
+		line-height: 14px;
+		display: block;
+	}
+}

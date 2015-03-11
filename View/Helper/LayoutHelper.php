@@ -279,7 +279,7 @@ class LayoutHelper extends LayoutAppHelper {
 	function headerMenu($menu = null, $attrs = array()) {
 		$attrs = array_merge(array(
 			'tag' => false,
-			'class' => 'nav nav-pills nav-layout-header'
+			'class' => 'nav nav-layout-header page-header-nav'
 		), (array) $attrs);
 		return $this->menu($menu, $attrs);
 	}
@@ -301,12 +301,12 @@ class LayoutHelper extends LayoutAppHelper {
 				array(
 					"Edit $human",
 					$urlBase + array('action' => 'edit', $modelId),
-					array('icon' => 'pen')
+					array('icon' => '<i class="fa fa-edit"></i>')
 				),
 				array(
 					"Delete $human",
 					$urlBase + array('action' => 'delete', $modelId),
-					array('icon' => 'x'),
+					array('icon' => '<i class="fa fa-times"></i>'),
 					"Delete this $human?"
 				)
 			);
@@ -356,13 +356,13 @@ class LayoutHelper extends LayoutAppHelper {
 				$title = InflectorPlus::humanize($action) . ' ' . InflectorPlus::humanize($model);
 			}
 		}
-		$titleAttrs = array();
+		$titleAttrs = array('class' => 'page-header-title');
 		if (empty($title)) {
 			$title = $model;
 			
 			if (empty($modelId)) {
 				$title = Inflector::pluralize($model);
-				$titleAttrs['class'] = 'top-title';
+				$titleAttrs = $this->addClass($titleAttrs, 'top-title');
 			}
 			$title = InflectorPlus::humanize($title);
 		}
@@ -1111,7 +1111,9 @@ class LayoutHelper extends LayoutAppHelper {
 				$iconAlign = Param::keyCheck($options, 'iconAlign', true);
 				if ($icon = Param::keyCheck($options, 'icon', true)) {
 					$options['escape'] = false;
-					$icon = $this->Iconic->icon($icon);
+					if ($icon[0] != '<') {
+						$icon = $this->Iconic->icon($icon);
+					}
 					if ($iconAlign == 'left') {
 						$content = "$icon $content";
 					} else {

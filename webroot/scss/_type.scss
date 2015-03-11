@@ -72,6 +72,11 @@ div.lead {
 	margin-top: $line-height-computed;
 }
 
+// Page Header
+// -----------
+.page-header-title {
+	margin-bottom: $line-height-computed / 4;
+}
 
 // Lists
 // ------------------------
@@ -79,19 +84,6 @@ div.lead {
 	.btn-group {
 		float: right;
 		margin-top: 0 !important;
-	}
-}
-.nav-layout-header {
-	border-top: 1px solid $navbar-default-border;
-	@include gradient-vertical(#f8f8f8, #fff);
-	padding: $padding-small-vertical $padding-small-horizontal;
-}
-.nav-pills {
-	span.navbar-brand {
-		padding: 8px 12px;
-		margin-top: 2px;
-		line-height: 14px;
-		display: block;
 	}
 }
 
