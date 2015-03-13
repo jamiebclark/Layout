@@ -53,6 +53,7 @@ class ActivateComponent extends Component {
 		if (!empty($this->_named)) {
 			$settings = $this->_getSettings($settings);
 			list($paramOn, $paramOff) = is_array($settings['param']) ? $settings['param'] : array($settings['param'], $settings['param']);
+
 			if (!empty($this->_named[$paramOn])) {
 				$this->activate($this->_named[$paramOn], $settings);
 			} else if (!empty($this->_named[$paramOff])) {
@@ -65,7 +66,12 @@ class ActivateComponent extends Component {
 		$settings = $this->_getSettings($settings);
 		extract($settings);
 		
-		$Model =& $this->controller->{$model};		$data = array(			$Model->primaryKey => $id,			$field => $this->_getVal($setOn, $format),		);
+		$Model =& $this->controller->{$model};
+		$data = array(
+			$Model->primaryKey => $id,
+			$field => $this->_getVal($setOn, $format),
+		);
+
 		$success = $Model->save($data, array('validate' => false, 'callbacks' => false));
 
 		$this->_setFlash($success, $id, $setOn, $settings);
