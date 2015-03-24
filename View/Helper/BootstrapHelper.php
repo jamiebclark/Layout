@@ -98,6 +98,7 @@ class BootstrapHelper extends LayoutAppHelper {
 
 		$out = '';
 		foreach ($links as $link) {
+			$isActive = false;
 			if (is_array($link)) {
 				list($linkText, $linkUrl, $linkOptions, $linkClick) = $link + array(null, array(), array(), null);
 

@@ -33,6 +33,8 @@ extract(array_merge($default, compact(array_keys($default))));
 $header_class .= ' no-print';
 $footer_class .= ' no-print';
 
+$containerClass = !empty($fluid_layout_content) ? 'container-fluid' : 'container';
+
  //<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
 ?>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
@@ -88,16 +90,20 @@ echo $this->Html->tag('body', null, $bodyAttributes);
 			}
 			if (!empty($crumbs)): ?>
 				<div id="breadcrumb">
-					<div class="container"><?php echo $crumbs;?></div>
+					<?php echo $this->Html->div($containerClass, $crumbs); ?>
 				</div>
 			<?php endif; ?>
 			
 			<?php
 			$content = '';
 			if (!empty($flash)) {
-				$content .= $this->Html->div('container', $flash);
+				$content .= $this->Html->div($containerClass, $flash);
 			}
-			$content .= $this->Html->div('container', $this->fetch('content'), array('id' => 'content-container')); 
+			$content .= $this->Html->div(
+				$containerClass, 
+				$this->fetch('content'), 
+				array('id' => 'content-container')
+			); 
 			echo $content;
 			//TODO: Test Liquid Layout
 			//echo $this->element('Layout.liquid_content', compact('content'));

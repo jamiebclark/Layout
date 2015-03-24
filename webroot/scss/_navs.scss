@@ -4,6 +4,9 @@ $nav-layout-header-bg:				$gray-lighter;
 $nav-layout-header-color-hover:		#FFF;
 $nav-layout-header-bg-hover:		$gray-light;
 
+$nav-layout-header-bg-active:		$btn-primary-bg;
+$nav-layout-header-color-active:	#FFF;
+
 .nav.nav-layout-header {
 	border-top: 1px solid $navbar-default-border;
 	@include gradient-vertical(#f8f8f8, #fff);
@@ -24,6 +27,12 @@ $nav-layout-header-bg-hover:		$gray-light;
 			&:hover {
 				background-color: $nav-layout-header-bg-hover;
 				color: $nav-layout-header-color-hover;
+			}
+		}
+		&.active {
+			> a {
+				background-color: $nav-layout-header-bg-active;
+				color: $nav-layout-header-color-active;
 			}
 		}
 	}
