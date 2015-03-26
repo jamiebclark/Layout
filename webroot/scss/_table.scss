@@ -87,7 +87,8 @@ $dt-widths: 10 25 33 50;
 	@include clearfix();
 	min-height: $line-height-computed;
 	margin: 0;
-	padding: $line-height-computed / 2;
+
+	padding: $padding-base-vertical $padding-base-horizontal;
 	background-color: $gray-lightest;	
 	
 	> div {
@@ -101,70 +102,73 @@ $dt-widths: 10 25 33 50;
 		margin-top: 0;
 		@include border-bottom-radius($border-radius-base);
 	}
+	.pagination {
+		margin: #{$line-height-computed / 4} 0;
+	}
 }
 .panel > form > .table-nav, .panel > .table-nav {
 	margin-left: 0;
 	margin-right: 0;
 }
 
+$table-sort-dropdown-width: 		120px;
+$table-sort-z-index:				1000;
+
 .table-sort-links {
 	position: relative;
 	z-index: 500;
 	display: inline-block;
-	margin-top: 1px;
-	
-	.sort-select {
-		padding: 5px;
-		padding-bottom: 4px;
-		border: 1px solid white;
-		position: relative;
-		z-index: 1000;
+	margin: -$table-cell-padding;
+}	
 
-		&.hover {
-			border-radius: $table-sort-rounded;
-			background-color: $table-sort-bg-color;
-			border-color: $table-sort-border-color;
-		}
-		&.selected {
-			color: orange;
-			text-decoration: underline;
-		}
-	}
-	
-	.table-sort {
-		padding: 5px 2px;
-		border: 1px solid $table-sort-border-color;
+.table-sort-links-toggle {
+	padding: $table-cell-padding;
+	padding-bottom: $table-cell-padding / 2;
+	border: 1px solid white;
+	position: relative;
+	z-index: $table-sort-z-index;
+	display: block;
+
+	&.is-hovered {
 		border-radius: $table-sort-rounded;
 		background-color: $table-sort-bg-color;
-		
-		width: 120px;
+		border-color: $table-sort-border-color;
+	}
 
-		position: absolute;
-		@include box-shadow();
-		z-index: 1001;
+	&.active {
+		color: orange;
+		text-decoration: underline;
+	}
+}
+	
+.table-sort-links-dropdown {
+	padding: 0;
+	border: 1px solid $table-sort-border-color;
+	border-radius: $table-sort-rounded;
+	background-color: $table-sort-bg-color;
+	width: $table-sort-dropdown-width;;
+
+	position: absolute;
+	@include box-shadow();
+	z-index: $table-sort-z-index + 1;
+	
+	a {
+		padding: $padding-small-vertical $padding-small-horizontal;
+		display: block;
+		text-decoration: none;
+
+		font-weight: normal;
+		font-size: $font-size-small;
+		text-align: left;
 		
-		a {
-			padding: $padding-small-vertical $padding-small-horizontal;
-			display: block;
-			font-weight: normal;
-			font-size: $font-size-small;
-			text-align: left;
-			
-			border-radius: $table-sort-rounded;
-			
-			&:hover {
-				background-color: white;
-				i {
-					text-decoration: none;
-				}
-			}
-			&.selected {
-				background-color: white;
-				font-weight: bold;
-			}
-			i {
-				margin-right: 6px;
-			}
+		border-radius: $table-sort-rounded;
+		
+		&:hover {
+			background-color: $table-bg-hover;
+		}
+		&.active {
+			font-weight: bold;
+			background-color: $table-bg-active;
 		}
 	}
 }

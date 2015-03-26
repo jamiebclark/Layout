@@ -8,7 +8,7 @@
 		
 		function getIndex() {
 			var name = $checkbox.attr('name'),
-				reg = /\[table_checkbox\]\[([\d]+)\]/m
+				reg = /\[table_checkbox\]\[([\d]+)\]/m,
 				idKeyMatch = name.match(reg);
 			return idKeyMatch ? idKeyMatch[1] : 0;
 		}
@@ -70,10 +70,10 @@
 			return $(this).attr('href').match(/.*sort.*direction.*/);
 		});
 		
-		$sortLinks.addClass('sort-select').wrap('<div class="table-sort-links"></div>');
+		$sortLinks.addClass('table-sort-links-toggle').wrap('<div class="table-sort-links"></div>');
 		$sortLinks.after(function() {
 			var $link = $(this),
-				url = $link.attr('href')
+				url = $link.attr('href'),
 				isAsc = $link.hasClass('asc'),
 				isDesc = $link.hasClass('desc'),
 				c = '',
@@ -86,7 +86,7 @@
 			if (!url) {
 				return '';
 			}
-			var $div = $('<div class="table-sort"></div>')
+			var $dropdown = $('<div class="table-sort-links-dropdown"></div>')
 				.append(function() {
 					var c = 'asc';
 					if (isAsc) {
@@ -101,7 +101,7 @@
 						.prepend($('<i class="glyphicon glyphicon-sort-by-attributes"></i>'));
 					
 				});
-			$div.append(function() {
+			$dropdown.append(function() {
 				var c = 'desc';
 				if (isDesc) {
 					c += ' selected';
@@ -114,7 +114,7 @@
 					})
 					.prepend($('<i class="icon-caret-down"></i>'));
 			});
-			return $div.before('<br/>').hide();
+			return $dropdown.before('<br/>').hide();
 		});
 		
 		$sortLinks.closest('.table-sort-links').hover(function() {

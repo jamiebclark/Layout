@@ -2,43 +2,41 @@
 App::uses('InflectorPlus', 'Layout.Lib');
 App::uses('LayoutAppHelper', 'Layout.View/Helper');
 class TableHelper extends LayoutAppHelper {
-	var $name = 'Table';
-	var $helpers = array(
+	public $name = 'Table';
+	public $helpers = array(
 		'Html', 
 		'Form',
 		'Paginator',
-		'CakeAssets.Asset',
 		'Layout.Layout',
 	);
 	
-	var $row = array();
-	var $rows = array();
-	var $headers = array();
-	var $trOptions = array();
+	protected $row = array();
+	protected $rows = array();
+	protected $headers = array();
+	protected $trOptions = array();
 	
-	var $columnCount = 0;
+	protected $columnCount = 0;
 	
-	var $skip = array();
-	var $tableRow = array();
-	var $getHeader = true;
-	var $hasHeader = false;
-	var $hasForm = false;
-	var $checkboxCount = 0;
-	var $currentCheckboxId;
+	protected $skip = array();
+	protected $tableRow = array();
+	protected $getHeader = true;
+	protected $hasHeader = false;
+	protected $hasForm = false;
+	protected $checkboxCount = 0;
+	protected $currentCheckboxId;
 	
-	public $sortUrl = array();
+	protected $sortUrl = array();
 	
-	var $currentTableId = 1;
+	protected $currentTableId = 1;
 	
-	var $trCount = 0;
-	var $tdCount = 0;
+	protected $trCount = 0;
+	protected $tdCount = 0;
 	
 	//Form Properties
-	var $defaultModel;
-	private $formAddRow = array();
+	protected $defaultModel;
+	protected $formAddRow = array();
 	
-	function beforeRender($viewFile) {
-		//$this->Asset->css('Layout.layout');
+	public function beforeRender($viewFile) {
 		$this->defaultModel = InflectorPlus::modelize($this->request->params['controller']);
 		return parent::beforeRender($viewFile);
 	}
@@ -53,16 +51,16 @@ class TableHelper extends LayoutAppHelper {
 		$this->skip = $skipIds;
 	}
 	
-	/**
-	 * Adds a cell to the current table row
-	 * 
-	 * @param string $cell Cell content
-	 * @param string $header Header text
-	 * @param string $headerSort Field the column can be sorted by
-	 * @param string $skipId An identifier in which the column can be skipped
-	 * @param array $cellOptions Additional cell options
-	 **/
-	function cell() {
+/**
+ * Adds a cell to the current table row
+ * 
+ * @param string $cell Cell content
+ * @param string $header Header text
+ * @param string $headerSort Field the column can be sorted by
+ * @param string $skipId An identifier in which the column can be skipped
+ * @param array $cellOptions Additional cell options
+ **/
+	public function cell() {
 		$argKeys = array('cell', 'header', 'headerSort', 'skipId', 'cellOptions');
 		$totalArgs = count($argKeys);
 		$totalArgKey = $lastArgKey = $totalArgs - 1;
@@ -87,7 +85,7 @@ class TableHelper extends LayoutAppHelper {
 		extract(array_combine($argKeys, $args + array_fill(0, $totalArgs, null)));
 		
 		//Checks if the skipId is in the skip array
-		if (!empty($skipId) && $this->__checkSkip($skipId)) {
+		if (!empty($skipId) && $this->_checkSkip($skipId)) {
 			return false;
 		}
 		$formAddCell = '&nbsp;';
@@ -101,7 +99,7 @@ class TableHelper extends LayoutAppHelper {
 				if ($headerSort === true) {
 					$headerSort = null;
 				}
-				$header = $this->_thSort($header, $headerSort);
+				$header = $this->thSort($header, $headerSort);
 			}
 			$thOptions = isset($cellOptions['th']) ? $cellOptions['th'] : $cellOptions;
 			$this->headers[] = array($header => $thOptions);
@@ -123,7 +121,28 @@ class TableHelper extends LayoutAppHelper {
 		}
 	}
 	
-	function cells($cells = null, $rowEnd = false) {
+/**
+ * Adds multiple cells to the table row and then closes the row
+ *
+ * @param array $cells An array of cell information
+ * @param array $options Row options
+ * @return void;
+ **/
+	public function row($cells = null, $options = array()) {
+		if (empty($options)) {
+			$options = true;
+		}
+		return $this->cells($cells, $options);
+	}
+
+/**
+ * Adds multiple cells to the table
+ *
+ * @param array $cells An array of cell information
+ * @param bool|array $rowEnd If not false, it will end the row after inserting the cells
+ * @return void;
+ **/
+	public function cells($cells = null, $rowEnd = false) {
 		if (is_array($cells)) {
 			foreach ($cells as $cell) {
 				$cell += array(null, null, null, null, null);
@@ -135,21 +154,23 @@ class TableHelper extends LayoutAppHelper {
 		}
 	}
 	
-	function tableCheckbox($value) {
+	public function tableCheckbox($value) {
 		$name = 'data[table_checkbox][' . $this->checkboxCount . ']';
 		$id = 'table_checkbox' . $this->checkboxCount;
-
 		$this->currentCheckboxId = $id;
 		$this->hasForm = true;
 		$this->checkboxCount++;
-
-		return sprintf('<span class="checkbox"><input type="checkbox" name="%s" id="%s" value="%s"/></span>', $name, $id, $value);
+		return sprintf('<span class="checkbox"><input type="checkbox" name="%s" id="%s" value="%s"/></span>', 
+			$name, $id, $value
+		);
 	}
 	
-	function checkbox($value = null) {
+	public function checkbox($value = null) {
 		$cell = $this->tableCheckbox($value);
 
-		$header = sprintf('<input type="checkbox" name="%1$s" class="%2$s" id="%1$s" value="1"/>', 'check-all-checkbox', 'check-all');
+		$header = sprintf('<input type="checkbox" name="%1$s" class="%2$s" id="%1$s" value="1"/>', 
+			'check-all-checkbox', 'check-all'
+		);
 		$attrs = array(
 			'width' => 20,
 			'class' => 'table-checkbox',
@@ -157,7 +178,7 @@ class TableHelper extends LayoutAppHelper {
 		return $this->cell($cell, $header, null, 'checkbox', $attrs);
 	}
 	
-	function withChecked($content = null) {
+	public function withChecked($content = null) {
 		$out = '';
 		if (is_array($content)) {
 			$withChecked = array('' => ' -- Select action -- ');
@@ -239,22 +260,22 @@ class TableHelper extends LayoutAppHelper {
 	}
 	
 	
-	/**
-	 * Legacy function to output table
-	 * 
-	 * @param array $options Table options
-	 * @return string HTML table
-	 **/
+/**
+ * Legacy function to output table
+ * 
+ * @param array $options Table options
+ * @return string HTML table
+ **/
 	public function table($options = array()) {
 		return $this->output($options);
 	}
 	
-	/**
-	 * Outputs current table information
-	 * 
-	 * @param array $options Table options
-	 * @return string HTML table
-	 **/
+/**
+ * Outputs current table information
+ * 
+ * @param array $options Table options
+ * @return string HTML table
+ **/
 	public function output($options = array()) {
 		$options = array_merge(array(
 			'form' => $this->hasForm,
@@ -374,11 +395,11 @@ class TableHelper extends LayoutAppHelper {
 		}
 	}
 	
-	function isSkipped($th) {
-		return $this->__checkSkip($th);
+	public function isSkipped($th) {
+		return $this->_checkSkip($th);
 	}
 	
-	function __checkSkip($skipId = null) {
+	protected function _checkSkip($skipId = null) {
 		if (empty($this->skip)) {
 			return false;
 		} else if (is_array($this->skip)) {
@@ -387,9 +408,15 @@ class TableHelper extends LayoutAppHelper {
 			return $skipId == $this->skip;
 		}
 	}
-	
-	// Creates the navigation options for the table, including the pagination and sorting options
-	// If wrap is set to true, it return an array of the top and bottom navigation menus
+
+/**
+ * Creates the navigation options for the table, including the pagination and sorting options
+ * If wrap is set to true, it return an array of the top and bottom navigation menus
+ *
+ * @param array $options Navigation option
+ * @param bool $wrap If true, wraps the output in DIV tags
+ * @return string;
+ **/
 	function tableNav($options = array(), $wrap = false) {
 		$return = $wrap ? array('','') : '';
 		$out = '';
@@ -405,7 +432,7 @@ class TableHelper extends LayoutAppHelper {
 			!empty($this->request->params['paging'][$model])
 		) {
 			//$out .= $this->Layout->paginateNav();
-			$out .= $this->Paginator->pagination(array('ul' => 'pagination', 'div' => 'text-center'));
+			$out .= $this->Paginator->pagination(array('ul' => 'pagination pagination-sm', 'div' => 'text-center'));
 		}
 
 		if (!empty($out)) {
@@ -422,7 +449,7 @@ class TableHelper extends LayoutAppHelper {
 		return $return;	
 	}
 	
-	function _table($headers = null, $rows = null, $options = array()) {
+	protected function _table($headers = null, $rows = null, $options = array()) {
 		$return = $tableNav = '';
 		list($tableNavTop, $tableNavBottom) = $this->tableNav($options, true);
 		unset($options['sort']);
@@ -522,7 +549,14 @@ class TableHelper extends LayoutAppHelper {
 		return $return;
 	}
 
-	function _thSort($label = null, $sort = null, $options = array()) {
+/**
+ * Creates a sorting link for the heading cell
+ *
+ * @param string $sort The field on which to sort
+ * @param string $label An optional label to display for the sorting field
+ * @return string;
+ **/
+ 	protected function thSort($label = null, $sort = null, $options = array()) {
 		$options = array_merge(array(
 			'model' => null
 		), $options);
@@ -537,7 +571,19 @@ class TableHelper extends LayoutAppHelper {
 		}
 
 		if (!$paginate) {
-			$label = $this->_thSortLink($sort, $label); //ucfirst($label);
+			// Creates a sorting link
+			$direction = 'asc';
+			$class = null;
+			if (!empty($this->request->params['named'])) {
+				$named = $this->request->params['named'];
+				if (!empty($named['sort']) && $named['sort'] == $sort) {
+					if (!empty($named['direction']) && $named['direction'] == 'asc') {
+						$direction = 'desc';
+					}
+					$class = $direction;
+				}
+			}
+			$label = $this->Html->link($label, compact('sort', 'direction') + $this->sortUrl, compact('class'));
 		} else {
 			$label = $this->Paginator->sort($sort, $label, array(
 				'url' => $this->sortUrl,
@@ -545,18 +591,5 @@ class TableHelper extends LayoutAppHelper {
 			));
 		}
 		return $label;
-	}
-	
-	function _thSortLink($sort, $label = null) {
-		$direction = 'asc';
-		$class = null;
-
-		if (!empty($this->request->params['named']['sort']) && $this->request->params['named']['sort'] == $sort) {
-			if (!empty($this->request->params['named']['direction']) && $this->request->params['named']['direction'] == 'asc') {
-				$direction = 'desc';
-			}
-			$class = $direction;
-		}
-		return $this->Html->link($label, compact('sort', 'direction') + $this->sortUrl, compact('class'));
 	}
 }
