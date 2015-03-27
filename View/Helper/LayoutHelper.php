@@ -222,7 +222,7 @@ class LayoutHelper extends LayoutAppHelper {
 			}
 		}
 		
-		if (!Param::falseCheck($options, 'hideBlank') !== false && !$this->Paginator->hasPage(2)) {
+		if (!Param::falseCheck($options, 'hideBlank') && !$this->Paginator->hasPage(2)) {
 			return '';
 		}
 		unset($options['hideBlank']);
