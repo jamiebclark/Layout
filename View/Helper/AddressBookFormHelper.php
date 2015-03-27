@@ -17,8 +17,8 @@ class AddressBookFormHelper extends LayoutAppHelper {
 	private $numericCount = 0;
 	
 	function beforeRender($viewFile) {
-		//$this->Asset->css('Layout.address_book_form');
-		$this->Asset->js('Layout.address_book_form');	
+		//$this->Html->css('Layout.address_book_form');
+		$this->Html->script('Layout.address_book_form', array('inline' => false));	
 		parent::beforeRender($viewFile);
 	}
 	

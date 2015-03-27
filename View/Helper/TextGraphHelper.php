@@ -1,7 +1,7 @@
 <?php
 class TextGraphHelper extends AppHelper {
 	var $name = 'TextGraph';
-	var $helpers = array('CakeAssets.Asset','Html');
+	var $helpers = array('Html');
 	
 	var $colors = array();
 	var $colorsInit = array(
@@ -12,8 +12,7 @@ class TextGraphHelper extends AppHelper {
 	
 	function beforeRender($viewFile) {
 		$this->colors = $this->_colorsInit($this->colorsInit);
-		
-		$this->Asset->css('Layout.text_graphs');
+		$this->Html->css('Layout.text_graphs', null, array('inline' => false));
 		return parent::beforeRender($viewFile);
 	}
 	

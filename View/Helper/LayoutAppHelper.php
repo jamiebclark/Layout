@@ -8,7 +8,7 @@ class LayoutAppHelper extends AppHelper {
 		'id','class','style','title',
 	);
 	
-	var $defaultHelpers = array('CakeAssets.Asset');
+	var $defaultHelpers = array();
 	var $defaultCss = array();
 	var $defaultJs = array();
 	
@@ -44,14 +44,8 @@ class LayoutAppHelper extends AppHelper {
 	}
 	
 	function beforeRender($viewFile) {
-		if ($this->name == 'Asset') {
-			$Asset =& $this;
-		} else {
-			$Asset =& $this->Asset;
-		}
-		$Asset->css($this->defaultCss);
-		$Asset->js($this->defaultJs);
-
+		$this->Html->css($this->defaultCss, null, array('inline' => false));
+		$this->Html->script($this->defaultJs, array('inline' => false));
 		parent::beforeRender($viewFile);
 	}
 	
@@ -64,14 +58,14 @@ class LayoutAppHelper extends AppHelper {
 		return isset($this->_tagAttributes[$tag]);
 	}
 	
-	/**
-	 * Filters out any keys from an array not found in key array
-	 *
-	 * @var Array $array Array to check for keys
-	 * @var Array $keys Keys to make sure exist in $array
-	 *
-	 * @return Array Filtered $array
-	 **/
+/**
+ * Filters out any keys from an array not found in key array
+ *
+ * @var Array $array Array to check for keys
+ * @var Array $keys Keys to make sure exist in $array
+ *
+ * @return Array Filtered $array
+ **/
 	protected function keyFilter($array, $keys) {
 		$keys = array_flip($keys);
 		foreach ($array as $key => $value) {

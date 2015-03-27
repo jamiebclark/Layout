@@ -12,7 +12,6 @@ App::uses('LayoutAppHelper', 'Layout.View/Helper');
 
 class DisplayTextHelper extends LayoutAppHelper {
 	public $helpers = array(
-		'CakeAssets.Asset',
 		'Layout.Grid',
 		'Html', 
 		'Layout.Layout', 

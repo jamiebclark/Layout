@@ -11,7 +11,6 @@ class LayoutHelper extends LayoutAppHelper {
 		'Html', 
 		'Form',
 		'Paginator', 
-		'CakeAssets.Asset',
 		'Layout.Crumbs',
 		'Layout.Iconic',
 		'Layout.Calendar', 
@@ -62,15 +61,7 @@ class LayoutHelper extends LayoutAppHelper {
 		}
 		return parent::__construct($View, $settings);
 	}
-	
-	/*
-	function beforeRender($viewFile) {
-	//	$this->Asset->css('Layout.font-awesome');
-	//	$this->Asset->js('Layout.layout');
-		parent::beforeRender($viewFile);
-	}
-	*/
-	
+
 	public function toggle($content, $offContent = null, $label, $options = array()) {
 		$options = array_merge(array(
 			'checked' => null,
@@ -226,10 +217,12 @@ class LayoutHelper extends LayoutAppHelper {
 		}
 
 		if ($this->bootstrap) {
-			return $this->Paginator->pagination($options);
+			if (method_exists($this->Paginator, 'pagination')) {
+				return $this->Paginator->pagination($options);
+			}
 		}
 		
-		if ($options['hideBlank'] !== false && !$this->Paginator->hasPage(2)) {
+		if (!Param::falseCheck($options, 'hideBlank') !== false && !$this->Paginator->hasPage(2)) {
 			return '';
 		}
 		unset($options['hideBlank']);

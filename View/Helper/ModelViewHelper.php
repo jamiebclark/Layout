@@ -13,7 +13,6 @@ class ModelViewHelper extends LayoutAppHelper {
 		'Html', 
 		'Form',
 		'Layout.AddressBook',
-		'CakeAssets.Asset', 
 		'Layout.Calendar',
 		'Layout.DisplayText',
 		'Layout.Iconic',

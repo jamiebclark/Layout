@@ -1,7 +1,7 @@
 <?php
 class IconicHelper extends AppHelper {
 	var $name = 'Iconic';
-	var $helpers = array('Html', 'CakeAssets.Asset');
+	var $helpers = array('Html');
 	
 	var $useUnicode = false;
 	
@@ -335,11 +335,6 @@ class IconicHelper extends AppHelper {
 		'spin_alt' => 'e037',
 		'sun_fill' => '2600'
 	);
-	
-	function beforeRender($page) {
-		parent::beforeRender($page);
-		//$this->Asset->css('Layout.iconic');
-	}
 	
 	function menu($list = array(), $options = array()) {
 		$options = array_merge(array(

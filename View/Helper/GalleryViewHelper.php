@@ -1,7 +1,7 @@
 <?php
 class GalleryViewHelper extends AppHelper {
 	public $name = 'GalleryView';
-	public $helpers = array('CakeAssets.Asset', 'Layout.ModelView');
+	public $helpers = array('Layout.ModelView');
 	
 	var $modelName;
 	
@@ -12,8 +12,8 @@ class GalleryViewHelper extends AppHelper {
 	}
 	
 	public function beforeRender($viewFile) {
-		$this->Asset->css('Layout.gallery_view'); 
-		$this->Asset->js('Layout.gallery_view'); 
+		$this->Html->css('Layout.gallery_view', null, array('inline' => false)); 
+		$this->Asset->script('Layout.gallery_view', array('inline' => false)); 
 		return parent::beforeRender($viewFile);
 	}
 	

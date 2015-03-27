@@ -3,7 +3,6 @@ App::uses('LayoutAppHelper', 'Layout.View/Helper');
 class CollapseListHelper extends LayoutAppHelper {
 	var $name = 'CollapseList';
 	var $helpers = array(
-		'CakeAssets.Asset',
 		'Layout.Layout',
 		'Layout.ModelView',
 		'Html',
@@ -13,7 +12,10 @@ class CollapseListHelper extends LayoutAppHelper {
 	var $listItemCount = 0;
 
 	function beforeRender($viewFile) {
-		$this->Asset->js(array('Layout.jquery/jquery.scrollTo-1.4.2-min', 'Layout.collapse_list'));
+		$this->Html->script(
+			array('Layout.jquery/jquery.scrollTo-1.4.2-min', 'Layout.collapse_list'),
+			array('inline' => false)
+		);
 		parent::beforeRender($viewFile);
 	}
 
@@ -152,7 +154,7 @@ class CollapseListHelper extends LayoutAppHelper {
 				$out .= $this->Table->withChecked($withChecked);
 			}
 			$out = $this->Table->formWrap($out, $form);
-			$this->Asset->block('$(".collapse-list").collapseList();');
+			$this->Html->scriptBlock('$(".collapse-list").collapseList();', array('inline' => false));
 		}
 		return $out;
 	}

@@ -8,7 +8,6 @@ App::uses('LayoutAppHelper', 'Layout.View/Helper');
 class FormLayoutHelper extends LayoutAppHelper {
 	public $name = 'FormLayout';
 	public $helpers = array(
-		'CakeAssets.Asset',
 		'Html', 
 		'Form', 
 		'Layout.Layout', 
@@ -39,12 +38,11 @@ class FormLayoutHelper extends LayoutAppHelper {
 	
 	public function beforeRender($viewFile) {
 		parent::beforeRender($viewFile);
-		$this->Asset->js(array(
+		$this->Html->script(array(
 			'Layout.form_layout',
 			'Layout.jquery/jquery.timepicker',
 			'Layout.jquery/datepair',
-		));
-		//$this->Asset->css('Layout.layout');
+		), array('inline' => false));
 	}
 	
 	public function newPassword($name, $options = array()) {
