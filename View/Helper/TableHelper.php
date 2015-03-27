@@ -419,7 +419,7 @@ class TableHelper extends LayoutAppHelper {
  * @param bool $wrap If true, wraps the output in DIV tags
  * @return string;
  **/
-	protected function tableNav($options = array(), $wrap = false) {
+	public function tableNav($options = array(), $wrap = false) {
 		$return = $wrap ? array('','') : '';
 		$out = '';
 		

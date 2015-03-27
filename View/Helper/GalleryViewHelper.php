@@ -13,7 +13,7 @@ class GalleryViewHelper extends AppHelper {
 	
 	public function beforeRender($viewFile) {
 		$this->Html->css('Layout.gallery_view', null, array('inline' => false)); 
-		$this->Asset->script('Layout.gallery_view', array('inline' => false)); 
+		$this->Html->script('Layout.gallery_view', array('inline' => false)); 
 		return parent::beforeRender($viewFile);
 	}
 	

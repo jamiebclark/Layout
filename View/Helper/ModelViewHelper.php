@@ -9,18 +9,6 @@ App::uses('InflectorPlus', 'Layout.Lib');
 class ModelViewHelper extends LayoutAppHelper {
 	public $name = 'ModelView';
 	
-	public $defaultHelpers = array(
-		'Html', 
-		'Form',
-		'Layout.AddressBook',
-		'Layout.Calendar',
-		'Layout.DisplayText',
-		'Layout.Iconic',
-		'Layout.Image', 
-		'Layout.Layout',
-		'Text',
-	);
-	
 	protected $modelName;
 	protected $blankTitle = 'No Title';
 	
@@ -87,11 +75,18 @@ class ModelViewHelper extends LayoutAppHelper {
 
 
 	public function __construct(View $view, $settings = array()) {
-		$helpers = $this->defaultHelpers;
-		if (!empty($this->helpers)) {
-			$helpers = array_merge($helpers, $this->helpers);
-		}
-		$this->helpers = $helpers;
+		$this->setDefaultHelper(array(
+			'Html', 
+			'Form',
+			'Layout.AddressBook',
+			'Layout.Calendar',
+			'Layout.DisplayText',
+			'Layout.Iconic',
+			'Layout.Image', 
+			'Layout.Layout',
+			'Text',
+		));
+
 		parent::__construct($view, $settings);
 		
 		if (!empty($settings['model'])) {
