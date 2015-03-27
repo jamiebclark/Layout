@@ -39,7 +39,6 @@ class TableHelper extends LayoutAppHelper {
 	protected $formAddRow = array();
 	
 	public function beforeRender($viewFile) {
-		//$this->Asset->css('Layout.layout');
 		$this->defaultModel = InflectorPlus::modelize($this->request->params['controller']);
 		return parent::beforeRender($viewFile);
 	}
@@ -102,7 +101,7 @@ class TableHelper extends LayoutAppHelper {
 				if ($headerSort === true) {
 					$headerSort = null;
 				}
-				$header = $this->_thSort($header, $headerSort);
+				$header = $this->thSort($header, $headerSort);
 			}
 			$thOptions = isset($cellOptions['th']) ? $cellOptions['th'] : $cellOptions;
 			$this->headers[] = array($header => $thOptions);
@@ -124,7 +123,13 @@ class TableHelper extends LayoutAppHelper {
 		}
 	}
 	
-
+/**
+ * Adds multiple cells to the table row and then closes the row
+ *
+ * @param array $cells An array of cell information
+ * @param array $options Row options
+ * @return void;
+ **/
 	public function row($cells = null, $options = array()) {
 		if (empty($options)) {
 			$options = true;
@@ -132,6 +137,13 @@ class TableHelper extends LayoutAppHelper {
 		return $this->cells($cells, $options);
 	}
 
+/**
+ * Adds multiple cells to the table
+ *
+ * @param array $cells An array of cell information
+ * @param bool|array $rowEnd If not false, it will end the row after inserting the cells
+ * @return void;
+ **/
 	public function cells($cells = null, $rowEnd = false) {
 		if (is_array($cells)) {
 			foreach ($cells as $cell) {
@@ -147,18 +159,20 @@ class TableHelper extends LayoutAppHelper {
 	public function tableCheckbox($value) {
 		$name = 'data[table_checkbox][' . $this->checkboxCount . ']';
 		$id = 'table_checkbox' . $this->checkboxCount;
-
 		$this->currentCheckboxId = $id;
 		$this->hasForm = true;
 		$this->checkboxCount++;
-
-		return sprintf('<span class="checkbox"><input type="checkbox" name="%s" id="%s" value="%s"/></span>', $name, $id, $value);
+		return sprintf('<span class="checkbox"><input type="checkbox" name="%s" id="%s" value="%s"/></span>', 
+			$name, $id, $value
+		);
 	}
 	
 	public function checkbox($value = null) {
 		$cell = $this->tableCheckbox($value);
 
-		$header = sprintf('<input type="checkbox" name="%1$s" class="%2$s" id="%1$s" value="1"/>', 'check-all-checkbox', 'check-all');
+		$header = sprintf('<input type="checkbox" name="%1$s" class="%2$s" id="%1$s" value="1"/>', 
+			'check-all-checkbox', 'check-all'
+		);
 		$attrs = array(
 			'width' => 20,
 			'class' => 'table-checkbox',
@@ -396,13 +410,13 @@ class TableHelper extends LayoutAppHelper {
 			return $skipId == $this->skip;
 		}
 	}
-	
+
 /**
  * Creates the navigation options for the table, including the pagination and sorting options
  * If wrap is set to true, it return an array of the top and bottom navigation menus
  *
- * @param array $options
- * @param bool $wrap
+ * @param array $options Navigation option
+ * @param bool $wrap If true, wraps the output in DIV tags
  * @return string;
  **/
 	protected function tableNav($options = array(), $wrap = false) {
@@ -537,7 +551,14 @@ class TableHelper extends LayoutAppHelper {
 		return $return;
 	}
 
-	protected function _thSort($label = null, $sort = null, $options = array()) {
+/**
+ * Creates a sorting link for the heading cell
+ *
+ * @param string $sort The field on which to sort
+ * @param string $label An optional label to display for the sorting field
+ * @return string;
+ **/
+ 	protected function thSort($label = null, $sort = null, $options = array()) {
 		$options = array_merge(array(
 			'model' => null
 		), $options);
@@ -552,6 +573,7 @@ class TableHelper extends LayoutAppHelper {
 		}
 
 		if (!$paginate) {
+			// Creates a sorting link
 			$direction = 'asc';
 			$class = null;
 			if (!empty($this->request->params['named'])) {

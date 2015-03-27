@@ -1,5 +1,5 @@
 function documentReady(actions) {
-	$(document).ready(actions).ajaxComplete(actions);
+	jQuery(document).ready(actions).ajaxComplete(actions);
 }
 
 (function($) {
@@ -9,7 +9,7 @@ function documentReady(actions) {
 			var $toggle = $(this),
 				$control = $toggle.find('.layout-toggle-control input[type*=checkbox]').first(),
 				$content = $toggle.find('> .layout-toggle-content').first(),
-				$offContent = $toggle.find('> .layout-toggle-off');
+				$offContent = $toggle.find('> .layout-toggle-off'),
 				tc = toggleCount++;
 			
 			$toggle.addClass('toggle' + tc);
@@ -44,11 +44,12 @@ function documentReady(actions) {
 			return $toggle;
 		});
 	};
+
+	documentReady(function() {
+		$('.layout-toggle').layoutToggle();
+	});
 })(jQuery);
 
-documentReady(function() {
-	$('.layout-toggle').layoutToggle();
-});
 
 
 (function($) {
@@ -98,14 +99,15 @@ documentReady(function() {
 			return $input;
 		});
 	};
+
+	documentReady(function() {
+		$('.datepicker').datepick();
+		$('.timepicker').timepick();
+	});
+
 })(jQuery);
 
-documentReady(function() {
-	$('.datepicker').datepick();
-	$('.timepicker').timepick();
-});
-
-//Table
+// Table
 (function($) {
 	var lastCheckedIndex = 0;
 	var nextLastCheckedIndex = 0;
@@ -118,7 +120,7 @@ documentReady(function() {
 			
 			function getIndex() {
 				var name = $checkbox.attr('name'),
-					reg = /\[table_checkbox\]\[([\d]+)\]/m
+					reg = /\[table_checkbox\]\[([\d]+)\]/m,
 					idKeyMatch = name.match(reg);
 				return idKeyMatch ? idKeyMatch[1] : 0;
 			}
@@ -192,72 +194,83 @@ documentReady(function() {
 	};
 	
 	$.fn.tableSortLink = function() {
-		var $sortLinks = $(this).filter(function() {
-			return $(this).attr('href').match(/.*sort.*direction.*/);
-		});
-		$sortLinks.addClass('sort-select').wrap('<div class="table-sort-links"></div>');
-		$sortLinks.after(function() {
-			var $link = $(this),
-				url = $link.attr('href')
-				isAsc = $link.hasClass('asc'),
-				isDesc = $link.hasClass('desc'),
-				linkClass = '',
-				label = $link.html();
-			if (isAsc) {
-				linkClass = 'asc';
-			} else if (isDesc) {
-				linkClass = 'desc';
+		return this.each(function() {
+			var $this = $(this),
+				wrapClass = 'table-sort-links',
+				linkClass = 'table-sort-links-toggle',
+				dropdownClass = 'table-sort-links-dropdown';
+
+			if (!$this.attr('href').match(/.*sort.*direction.*/)) {
+				return $(this);
 			}
-			if (isAsc || isDesc) {
-				$link.addClass('selected');
-			}
-			if (!url) {
-				return '';
-			}
-			var $div = $('<div class="table-sort"></div>')
-				.append(function() {
-					var linkClass = 'asc';
-					if (isAsc) {
+
+			$this.addClass(linkClass).wrap($('<div></div>').addClass(wrapClass));
+			$this.after(function() {
+				var $link = $(this),
+					url = $link.attr('href'),
+					isAsc = $link.hasClass('asc'),
+					isDesc = $link.hasClass('desc'),
+					linkClass = '',
+					label = $link.html();
+				if (isAsc) {
+					linkClass = 'asc';
+				} else if (isDesc) {
+					linkClass = 'desc';
+				}
+				if (isAsc || isDesc) {
+					$link.addClass('active');
+				}
+				if (!url) {
+					return '';
+				}
+				var $dropdown = $('<div></div>').addClass(dropdownClass)
+					.append(function() {
+						var linkClass = 'asc';
+						if (isAsc) {
+							linkClass += ' selected';
+						}
+						return $('<a>Ascending</a>')
+							.attr({
+								'href': url.replace('direction:desc','direction:asc'),
+								'class': linkClass,
+								'title': 'Sort the table by "' + label + '" in Ascending order'
+							})
+							.prepend($('<i class="pull-right glyphicon glyphicon-sort-by-attributes"></i>'));
+						
+					});
+				$dropdown.append(function() {
+					var linkClass = 'desc';
+					if (isDesc) {
 						linkClass += ' selected';
 					}
-					return $('<a>Ascending</a>')
+					return $('<a>Descending</a>')
 						.attr({
-							'href': url.replace('direction:desc','direction:asc'),
+							'href': url.replace('direction:asc', 'direction:desc'),
 							'class': linkClass,
-							'title': 'Sort the table by "' + label + '" in Ascending order'
+							'title': 'Sort the table by this column in Descending order'
 						})
-						.prepend($('<i class="pull-right glyphicon glyphicon-sort-by-attributes"></i>'));
-					
+						.prepend($('<i class="pull-right glyphicon glyphicon-sort-by-attributes-alt"></i>'));
 				});
-			$div.append(function() {
-				var linkClass = 'desc';
-				if (isDesc) {
-					linkClass += ' selected';
-				}
-				return $('<a>Descending</a>')
-					.attr({
-						'href': url.replace('direction:asc', 'direction:desc'),
-						'class': linkClass,
-						'title': 'Sort the table by this column in Descending order'
-					})
-					.prepend($('<i class="pull-right glyphicon glyphicon-sort-by-attributes-alt"></i>'));
+				return $dropdown.before('<br/>').hide();
 			});
-			return $div.before('<br/>').hide();
+
+			var $wrap = $this.closest("." + wrapClass),
+				$dropdown = $("." + dropdownClass, $wrap);
+			$wrap.hover(function() {
+					if ($wrap.not(':animated')) {
+						$this.addClass('is-hovered');
+						$dropdown.stop(true).delay(500).slideDown(100);
+					}
+				},
+				function() {
+					if ($wrap.not(':animated')) {
+						$this.first().removeClass('is-hovered');
+						$dropdown.stop(true).slideUp(100);
+					}
+				}
+			);
+			return $(this);
 		});
-		$sortLinks.closest('.table-sort-links').hover(function() {
-				if ($(this).not(':animated')) {
-					$(this).find('a').first().addClass('hover');
-					$(this).find('.table-sort').stop(true).delay(500).slideDown(100);
-				}
-			},
-			function() {
-				if ($(this).not(':animated')) {
-					$(this).find('a').first().removeClass('hover');
-					$(this).find('.table-sort').stop(true).slideUp(100);
-				}
-			}
-		);
-		return $(this);
 	};
 	
 	$.fn.tableCheckboxes  = function() {
@@ -318,53 +331,63 @@ documentReady(function() {
 			return $table;
 		});
 	};
+
+	$(document).ready(function() {
+		$('th a').tableSortLink();
+		$('.layout-table,.table-checkboxes').tableCheckboxes();
+		$('input[name*="[table_checkbox]"]').tableCheckbox();
+	});
 })(jQuery);
 
-$(document).ready(function() {
-	$('th a').tableSortLink();
-	$('.layout-table,.table-checkboxes').tableCheckboxes();
-	$('input[name*="[table_checkbox]"]').tableCheckbox();
-});
-
-//Animated Ellipsis
+// Animated Ellipsis
 (function($) {
-	$.fn.animatedEllipsis = function() {
-		return this.each(function() {
-			if (!$(this).data('animate-ellipsis-init')) {
-				var $container = $(this),
-					text = $container.html(),
-					interval;
-				function animate() {
-					var pt = 0;
-					var text = $container.html();
-					function step() {
-						var str = text;
-						for (var i = 1; i <= pt; i++) {
-							str += ".";
-						}
-						if (++pt > 3) {
-							pt = 0;
-						}
-						$container.html(str);
-					}
 
-					interval = setInterval(step, 300);
-				}
-				
-				if (interval) {
-					clearInterval(interval);
-				}
-				animate();
-				$container.data('animate-ellipsis-init');
-			}
-			return $(this);
+	$.fn.animateText = function(opts) {
+		opts = jQuery.extend({}, opts, {
+			refreshInterval: 300,
+			step: function(text, key) {}
+		});
+
+		return this.each(function() {
+			var $container = $(this),
+				animationKey = 0,
+				animationInterval = false;
+			animationInterval = setInterval(function() {
+				var txt = opts.step($container.html(), animationKey);
+				animationKey++;
+				$container.html(txt);
+			}, opts.refreshInterval);
 		});
 	};
+
+	$.fn.animatedEllipsis = function() {
+		function animatedEllipsisStep(text, key) {
+			var	outputText = '',
+				pt = key % 3;
+			for (var i = 1; i <= pt; i++) {
+				outputText += ".";
+			}
+			return outputText;
+		}
+
+		return this.animateText({
+			refreshInteval: 300,
+			step: function (text, key) {
+				var	outputText = '',
+					pt = key % 3;
+				for (var i = 1; i <= pt; i++) {
+					outputText += ".";
+				}
+				return outputText;
+			}
+		});
+	};
+
+	documentReady(function() {
+		$('.animated-ellipsis').animatedEllipsis();
+	});
 })(jQuery);
 
-documentReady(function() {
-	$('.animated-ellipsis').animatedEllipsis();
-});
 
 // AJAX Modal Loading Window 
 (function($) {
@@ -388,17 +411,20 @@ documentReady(function() {
 			var $ajaxWindow = $(ajaxWindowId),
 				$ajaxWindowHeader = $('.modal-header', $ajaxWindow),
 				$ajaxWindowBody = $('.modal-body', $ajaxWindow);
+
 			if (!$ajaxWindow.length) {
 				$ajaxWindow = $('<div></div>', {
 					'id': 'ajax-modal',
 					'class': 'modal fade'
 				});
-				var $ajaxDialog = $('<div class="modal-dialog"></div>').addClass(modalClass).appendTo($ajaxWindow),
+				$ajaxWindowHeader = $('<div class="modal-header"></div>')
+					.appendTo($ajaxContent);
+				$ajaxWindowBody = $('<div class="modal-body"></div>')
+					.appendTo($ajaxContent);
+
+				var $ajaxDialog = $('<div class="modal-dialog"></div>')
+						.addClass(modalClass).appendTo($ajaxWindow),
 					$ajaxContent = $('<div class="modal-content"></div>').appendTo($ajaxDialog),	
-					$ajaxWindowHeader = $('<div class="modal-header"></div>')
-						.appendTo($ajaxContent),
-					$ajaxWindowBody = $('<div class="modal-body"></div>')
-						.appendTo($ajaxContent),
 					$ajaxWindowFooter = $('<div class="modal-footer"></div>')
 						.appendTo($ajaxContent);
 				$ajaxWindowHeader.append($('<button></button>', {
@@ -417,7 +443,6 @@ documentReady(function() {
 						$ajaxWindow.modal('hide');
 					}
 				}).appendTo($ajaxWindowFooter);
-				
 				
 				$('<a></a>', {
 					'html': 'Update',
@@ -474,15 +499,18 @@ documentReady(function() {
 			}
 		});
 	};
+
+	/*
+	$(document).ready(function() {
+		$('.ajax-modal').ajaxModal();
+	});
+	*/
+	documentReady(function () {
+		$('.ajax-modal').ajaxModal();
+	});
+
 })(jQuery);
-/*
-$(document).ready(function() {
-	$('.ajax-modal').ajaxModal();
-});
-*/
-documentReady(function () {
-	$('.ajax-modal').ajaxModal();
-});
+
 
 // Hover
 (function($) {
@@ -573,11 +601,12 @@ documentReady(function () {
 			return $this;
 		});
 	};
-})(jQuery);
 
-documentReady(function() {
-	$('.hover-layout,.hover-layout-block').hoverContent();	
-});
+	documentReady(function() {
+		$('.hover-layout,.hover-layout-block').hoverContent();	
+	});
+
+})(jQuery);
 
 //Scroll-fix
 (function($) {
@@ -718,13 +747,13 @@ documentReady(function() {
 
 		});
 	};
+
+	documentReady(function() {
+		$('.affix-content').affixContent();
+		$('.scrollfix').scrollfix();
+	});
+
 })(jQuery);
-
-documentReady(function() {
-	$('.affix-content').affixContent();
-	$('.scrollfix').scrollfix();
-});
-
 
 // Media
 (function($) {
@@ -748,10 +777,13 @@ documentReady(function() {
 			});
 		});
 	};
+
+	documentReady(function() {
+		$('.media').layoutMedia();
+	});
+
 })(jQuery);
-documentReady(function() {
-	$('.media').layoutMedia();
-});
+
 
 //Action Menu Fit
 (function($) {
@@ -778,10 +810,13 @@ documentReady(function() {
 			return $this;
 		});
 	};
+	
+	$(window).load(function() {
+		$('.action-menu').actionMenuFit();
+	});
+
 })(jQuery);
-$(window).load(function() {
-	$('.action-menu').actionMenuFit();
-});
+
 
 // Embed Fit
 (function($) {
@@ -809,8 +844,8 @@ $(window).load(function() {
 			});
 		});
 	};
-})(jQuery);
 
-documentReady(function() {
-	$('.embed-fit').embedFit();
-});
+	documentReady(function() {
+		$('.embed-fit').embedFit();
+	});
+})(jQuery);
