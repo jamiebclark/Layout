@@ -1679,7 +1679,14 @@ class FormLayoutHelper extends LayoutAppHelper {
 		return $url;
 	}
 	
-	public function resultToList($result, $model, $primaryKey = 'id', $displayField = 'title') {
+	public function resultToList($result, $model, $primaryKey = null, $displayField = null) {
+		if (empty($primaryKey)) {
+			$primaryKey = 'id';
+		}
+		if (empty($displayField)) {
+			$displayField = 'title';
+		}
+
 		$list = array();
 		if (!empty($result[$model])) {
 			$result = $result[$model];
