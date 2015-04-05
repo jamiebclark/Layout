@@ -410,23 +410,25 @@ function documentReady(actions) {
 
 			var $ajaxWindow = $(ajaxWindowId),
 				$ajaxWindowHeader = $('.modal-header', $ajaxWindow),
-				$ajaxWindowBody = $('.modal-body', $ajaxWindow);
+				$ajaxWindowBody = $('.modal-body', $ajaxWindow),
+				$ajaxWindowFooter = $('.modal-footer', $ajaxWindow);
 
 			if (!$ajaxWindow.length) {
 				$ajaxWindow = $('<div></div>', {
-					'id': 'ajax-modal',
+					'id': ajaxWindowId,
 					'class': 'modal fade'
 				});
+				var $ajaxDialog = $('<div class="modal-dialog"></div>')
+						.addClass(modalClass).appendTo($ajaxWindow),
+					$ajaxContent = $('<div class="modal-content"></div>').appendTo($ajaxDialog);
+
 				$ajaxWindowHeader = $('<div class="modal-header"></div>')
 					.appendTo($ajaxContent);
 				$ajaxWindowBody = $('<div class="modal-body"></div>')
 					.appendTo($ajaxContent);
+				$ajaxWindowFooter = $('<div class="modal-footer"></div>')
+					.appendTo($ajaxContent);
 
-				var $ajaxDialog = $('<div class="modal-dialog"></div>')
-						.addClass(modalClass).appendTo($ajaxWindow),
-					$ajaxContent = $('<div class="modal-content"></div>').appendTo($ajaxDialog),	
-					$ajaxWindowFooter = $('<div class="modal-footer"></div>')
-						.appendTo($ajaxContent);
 				$ajaxWindowHeader.append($('<button></button>', {
 					'type': 'button',
 					'class': 'close',
