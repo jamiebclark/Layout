@@ -39,6 +39,7 @@ class FormLayoutHelper extends LayoutAppHelper {
 	public function beforeRender($viewFile) {
 		parent::beforeRender($viewFile);
 		$this->Html->script(array(
+			'Layout.script',
 			'Layout.form_layout',
 			'Layout.jquery/jquery.timepicker',
 			'Layout.jquery/datepair',
