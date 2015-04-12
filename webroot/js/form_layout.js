@@ -682,8 +682,12 @@ documentReady(function() {
 			}
 
 			function addRemoveBox($listItem) {
-				var $id = $(':input[name*="id]"]', $listItem).first();
-				if (!$id.length) {
+				var $ids = $listItem.getIdInputs(),
+					$id = $ids.first();
+
+				console.log($ids);
+
+				if (!$ids.length) {
 					return false;
 				}
 				var removeClass = 'input-list-item-remove',
@@ -697,8 +701,10 @@ documentReady(function() {
 				
 				if (!$checkbox.length) {
 					$listItem.wrapInner('<div class="input-list-item-inner"></div>');
-					var removeName = $id.attr('name').replace(/\[id\]/,'[' + removeCommand + ']'),
-						removeBoxId = removeName.replace(/(\[([^\]]+)\])/g, '_$2'),
+					var removeName = $id.attr('name').substr(0, $id.data('id-input-after-key-index')) + "[" + removeCommand + "]";
+
+					console.log(removeName);
+					var	removeBoxId = removeName.replace(/(\[([^\]]+)\])/g, '_$2'),
 						$checkbox = $('<input/>', {
 							'type' : 'checkbox',
 							'name' : removeName,
@@ -759,7 +765,6 @@ documentReady(function() {
 	};
 
 	$.fn.renumberInput = function(newIdKey, keyIndex) {
-		
 		if (typeof keyIndex === "undefined") {
 			var keyIndex = -1;
 		}
@@ -772,15 +777,19 @@ documentReady(function() {
 
 		if (keyIndex != -1) {
 			var key = getNameKey(name, keyIndex);
+			console.log([name, keyIndex, key.index]);
 			if (key === false) {
 				return $(this);
 			}
-			var idKeyP = "[" + key.key + "]",
-				idKey = key.key,
-				newNameStart = name.substr(0,key.index),
-				newNameEnd = name.substr(name.indexOf("[", newNameStart.length + idKeyP.length));
+			var idKey = key.key,
+				idKeyP = "[" + idKey + "]",
+				newNameStart = name.substr(0, key.index),
+				newNameIndexEnd = name.indexOf("[", newNameStart.length + idKeyP.length),
+				newNameEnd = (newNameIndexEnd > -1) ? name.substr(newNameIndexEnd) : '',
+				newName = newNameStart + "[" + newIdKey + "]" + newNameEnd;
+
 			if (newNameEnd != ']') {
-				$(this).attr('name', newNameStart + "[" + newIdKey + "]" + newNameEnd);
+				$(this).attr('name', newName);
 			}
 		} else {
 			var idKeyMatch = name.match(/\[(\d+)\]/);
@@ -862,34 +871,47 @@ documentReady(function() {
 		}
 	}
 	
+	// Finds all inputs that are valid ID inputs
+	$.fn.getIdInputs = function() {
+		var $this = $(this),
+			idKeyReg = /(\[([\d]+)\])[\[id\]]*$/,
+			keyIndex,
+			afterKeyIndex
+			$ids = $(':input:enabled', $this).filter(function() {
+				// Filters only those elements with an id element
+				var n = $(this).attr('name');
+				var matches = idKeyReg.exec(n);
+				if (!matches) {
+					return false;
+				} else {
+					if (!keyIndex) {
+						var i = n.indexOf(matches[0]);
+						keyIndex = n.length - matches[0].length;
+					}
+				}
+				$(this).data('id-input-key-index', keyIndex);
+				$(this).data('id-input-after-key-index', keyIndex + matches[1].length);
+				return $(this);
+			});
+		$ids.data('id-inputs-key-index', keyIndex);
+		return $ids;	
+	};
+
+	// Clones an element, incrementing any numeric indexes
 	$.fn.cloneNumbered = function($parent) {
 		if ($parent.data('cloning')) {
 			return $(this);
 		}
 		$parent.data('cloning', true);
-		var $ids = $(this).find(':input[name*="[id]"]:enabled'),
-			$idFirst = $ids.first(),
-			idName,
-			nameLength = 0,
-			key;
-		
-		if ($idFirst) {
-			idName = $idFirst.attr('name');
-			if (idName) {
-				nameLength = idName.length;
-				idIndex = idName.indexOf("[id]");
-				key = getNameKey(idName, idIndex, false);
-			}
-		}
-		
-		if (!key) {
+
+		var $ids = $(this).getIdInputs(),
+			keyIndex = $ids.data('id-inputs-key-index');
+
+		if (!keyIndex) {
 			console.log('Key not found');
-			return false;
+			//return false;
 		}
 		
-		$ids = $ids.filter(function() {
-			return $(this).attr('name').length < nameLength + 2;	//Filters out sub-ids
-		});
 		var	$id = $ids.last(),
 			name = $id.attr('name');
 			
@@ -897,12 +919,13 @@ documentReady(function() {
 			var $entry = $(this).last();
 			var $cloned = $entry.clone();
 			var newIdKey = $ids.length;
+
 			$('input', $cloned).removeClass('hasDatepicker');
 			$('input[name*="[id]"]', $cloned).val('').trigger('reset');
 			$('.clone-numbered-index', $cloned).html((newIdKey + 1));	//Re-numbers from 0 index
 			
 			$cloned.find(':input').each(function() {
-				return $(this).renumberInput(newIdKey, key.index).removeAttr('disabled');//.removeAttr('checked');
+				return $(this).renumberInput(newIdKey, keyIndex).removeAttr('disabled');//.removeAttr('checked');
 			});
 			$cloned.insertAfter($entry);
 			
