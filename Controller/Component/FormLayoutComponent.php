@@ -24,7 +24,10 @@ class FormLayoutComponent extends Component {
 	public function parseData($passModel = null) {
 		if(!empty($this->controller->request->data)) {
 			$this->controller->request->data = $this->parseDataFunction(
-				array('parseRemoveData','parseDateData'), 
+				array(
+					'parseRemoveData',
+					'parseDateData'
+				), 
 				$this->controller->request->data,
 				$passModel
 			);
@@ -94,18 +97,28 @@ class FormLayoutComponent extends Component {
 			return $modelData;
 		}
 		$primaryKey = $Model->primaryKey;
+
+		if (!empty($modelData[$model])) {
+			$modelData[$model] = $this->parseRemoveData($modelData[$model], $model);
+			if (empty($modelData[$model])) {
+				unset($modelData[$model]);
+			}
+		}
 		
 		$remove = false;
 		$removeId = false;
 		if (isset($modelData['remove_id'])) {
 			$remove = true;
 			$removeId = $modelData['remove_id'];
+			unset($modelData['remove_id']);
 		} else if (!empty($modelData['remove'])) {
 			$remove = true;
 			if (isset($modelData[$primaryKey])) {
 				$removeId = $modelData[$primaryKey];
 			}
+			unset($modelData['remove']);
 		}
+
 		if (!empty($removeId)) {
 			$Model->delete($removeId);
 		}
@@ -175,6 +188,7 @@ class FormLayoutComponent extends Component {
 			}
 			*/
 		}
+
 		foreach ($data as $model => $modelData) {
 			if (is_array($modelData)) {
 				/*
