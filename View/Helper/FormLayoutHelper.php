@@ -4,6 +4,7 @@
  *
  **/
 App::uses('LayoutAppHelper', 'Layout.View/Helper');
+App::uses('Param', 'Layout.Lib');
 
 class FormLayoutHelper extends LayoutAppHelper {
 	public $name = 'FormLayout';
@@ -850,7 +851,9 @@ class FormLayoutHelper extends LayoutAppHelper {
 		extract($options);
 		$out = '';
 
-		$listOptions = compact('class');
+		$listOptions = compact('class') + array(
+			'data-input-list-model' => $model,
+		);
 		if (!empty($removeCommand)) {
 			$listOptions['data-input-list-remove-command'] = $removeCommand;
 		}
