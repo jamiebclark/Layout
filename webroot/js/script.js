@@ -2,6 +2,8 @@ function documentReady(actions) {
 	jQuery(document).ready(actions).ajaxComplete(actions);
 }
 
+var test = 1;
+
 (function($) {
 	var toggleCount = 1;
 	$.fn.layoutToggle = function() {
