@@ -335,12 +335,18 @@ class DisplayTextHelper extends LayoutAppHelper {
  **/
 	function smartNl2br($str, $options = array()) {
 		$preserve = array();
-		if (preg_match_all( '@<\?php(.+?)\?>@is', $str, $matches)) {
-			foreach ($matches[0] as $k => $match) {
-				$key = '###PRESERVE' . $k . '###';
-				$preserve[$key] = $match;
+		$preserveMatches = array(
+			'@<\?php(.+?)\?>@is',
+			'@<pre>(.+?)</pre>@is'
+		);
+		foreach ($preserveMatches as $match) {
+			if (preg_match_all($match, $str, $matches)) {
+				foreach ($matches[0] as $k => $match) {
+					$key = '###PRESERVE' . $k . '###';
+					$preserve[$key] = $match;
+				}
+				$str = str_replace($preserve, array_keys($preserve), $str);
 			}
-			$str = str_replace($preserve, array_keys($preserve), $str);
 		}
 		
 		$nlPad = Param::keyCheck($options, 'nlPad', true);
@@ -357,10 +363,12 @@ class DisplayTextHelper extends LayoutAppHelper {
 			$regexps[] = '/(<[\/]*'.$nb.'>)([\s]*<br[^>]*>)*/is';
 		}
 		$str = preg_replace($regexps,'$1',$str);
-		
+
+		// Replaces anything that needed to be preserved		
 		if (!empty($preserve)) {
 			$str = str_replace(array_keys($preserve), $preserve, $str);
 		}
+
 		// Trims final br
 		$str = trim($str);
 
