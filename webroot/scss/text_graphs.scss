@@ -1,5 +1,7 @@
-@import "bootstrap_import";
-@import "variables";
+$bar-height: 		1.5em;
+$bar-radius: 		.25em;
+
+@import "utilities/index";
 
 .pie-icon {
 	vertical-align: middle;
@@ -45,8 +47,6 @@
 	}
 }
 
-$bar-height: 		1.5em;
-$bar-radius: 		.25em;
 
 .div-bar-graph {
 	height: $bar-height;

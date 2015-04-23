@@ -1,0 +1,4 @@
+.resource-embed {
+	@include clearfix();
+	@include gradient-vertical(#eee,#f8f8f8);
+}

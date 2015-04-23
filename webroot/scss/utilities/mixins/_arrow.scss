@@ -1,0 +1,28 @@
+@mixin arrow($arrow-side, $arrow-height, $color) {
+	width: 0;
+	height: 0;
+	position: absolute;
+
+	@each $side in $sides {
+		$border-width: $arrow-height;
+		$border-color: transparent;
+		$side-position: auto;
+		
+		@if ($side == $arrow-side) {
+			$border-width: 0;
+			$side-position: -1 * ($arrow-height - 1);
+		} @else if ($side == opposite-side($arrow-side)) {
+			$border-color: $color;
+		}			
+		border-#{$side}: $border-width solid $border-color;
+		#{$side}: $side-position;
+	}
+
+	@if ($arrow-side == 'top') {
+		left: $line-height-computed;
+	} @else if ($arrow-side == 'bottom') {
+		left: $line-height-computed;
+	} @else {
+		top: $line-height-computed;
+	}
+}

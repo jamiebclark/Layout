@@ -1,0 +1,626 @@
+// Calendar Colors
+// -------------------------------
+$calendar-grey: 						#ccc !default;
+
+$date-link-hover-color:					$color2 !default;
+
+$day-hover-color:						$color1 !default;
+$day-active-color:						$color3-light !default;
+
+$day-size: 								$font-size-base !default;	//100 / 7
+$day-height: 							2 * $day-size !default;
+$day-width: 							14.2% ; //2 * $day-size !default;
+
+
+// Calendar Date
+// -----------------------------------
+$calendardate-border-color:				#ccc !default;
+
+$calendardate-month-size:				30px !default;
+$calendardate-month-small-size:			20px !default;
+$calendardate-month-background:			$color1 !default;
+$calendardate-month-color:				white !default;
+$calendardate-month-height:				40px !default;
+
+$calendardate-day-size:					80px !default;
+$calendardate-day-small-size:			40px !default;
+$calendardate-day-background1:			#fff;	
+$calendardate-day-background2:			#eee;
+$calendardate-day-color:				inherit !default;
+$calendardate-day-height:				90px !default;
+
+$calendardate-year-size:				20px !default;
+$calendardate-year-background:			transparent !default;
+$calendardate-year-color:				inherit !default;
+$calendardate-year-height:				30px !default;
+
+$calendardate-width:					$calendardate-month-height + $calendardate-day-height;
+
+// Deadline
+// --------------------------------------------------
+$deadline-past: 						#780000 !default;
+$deadline-past-background: 				#ffecec !default;
+$deadline-upcoming: 					orange !default;
+$deadline-upcoming-background: 			lighten($deadline-upcoming, 40%) !default;
+$deadline-complete: 					#ccc !default;
+$deadline-complete-background: 			transparent !default;
+$deadline-far:							#999 !default;
+$deadline-far-background:				transparent !default;
+
+
+
+.calendardate-wrap {
+	clear: both;
+	position: relative;
+	float: left;
+	left: 50%;
+	.calendardate {
+		position: relative;
+		float: left;
+		left: -50%;
+	}
+}
+
+.calendardate-month, .calendardate-day, .calendardate-year {
+	text-align: center;
+	font-weight: 700;
+	float: left;
+	width: 100%;
+	clear: both;
+}
+.calendardate-month, .calendardate-day {
+	border: 1px solid $calendardate-border-color;
+}
+.calendardate-month {
+	background-color: $calendardate-month-background;
+	border-bottom: 0;
+	color: $calendardate-month-color;
+	line-height: $calendardate-month-height;
+	font-size: $calendardate-month-size;
+	&.multi {
+		font-size: $calendardate-month-small-size;
+	}
+}
+.calendardate-day {
+	@include gradient-vertical($calendardate-day-background1, $calendardate-day-background2);
+	border-top: 0;
+	line-height: $calendardate-day-height;
+	font-size: $calendardate-day-size;
+	&.multi {
+		font-size: $calendardate-day-small-size;
+	}
+}
+.calendardate-year {
+	color: $calendardate-year-color;
+	font-size: $calendardate-year-size;
+	line-height: $calendardate-year-height;
+	background: $calendardate-year-background;
+}
+
+.calendardate {
+	float: left;
+	margin: $line-height-computed 0;
+	width: $calendardate-width;
+	border: 0 !important;
+	border-radius: $border-radius-base;
+	
+	span {
+		float: left;
+		display: block;
+		text-align: center;
+		width: 50%;
+	}
+	&.pull-right {
+		float: right;
+	}
+	&.small {
+		width: 60px;
+		.calendardate-month {
+			line-height: 20px;
+			font-size: 14px;
+		}
+		.calendardate-day {
+			line-height: 40px;
+			font-size: 25px;
+			.multi {
+				font-size: 20px;
+			}
+		}
+		.calendardate-year {
+			font-size: 12px;
+			line-height: 20px;
+		}
+	}
+	&.tiny {
+		width: 30px;
+		.calendardate-month {
+			line-height: 12px;
+			font-size: 11px;
+		}
+		.calendardate-day {
+			line-height: 24px;
+			font-size: 18px;
+			.multi {
+				font-size: 14px;
+			}
+		}
+		.calendardate-year {
+			font-size: 10px;
+			line-height: 12px;
+		}
+	}
+	&.grey {
+		&, .calendardate-month, .calendardate-day, .calendardate-year {
+			border-color: $calendar-grey;
+			color: $calendar-grey;
+		}
+		.calendardate-month {
+			background-color: $calendar-grey;
+			color: white;
+		}
+		.calendardate-day {
+			@include gradient-vertical(#fff,#fff);
+
+		}
+	}
+	&.media-object {
+		margin-top: 0;
+		margin-bottom: 0;
+	}
+}
+a:hover {
+	.calendardate {
+		.calendardate-day, .calendardate-month {
+			border-color: $date-link-hover-color;
+		}
+	}
+}
+
+.week-links {
+	margin: 0 auto;
+	max-width: 7 * ($day-size * 2) * 1.5;
+
+	&, .days a {
+		text-decoration: none;
+		clear: both;
+	}
+	.days {
+		a {
+			@include clearfix;
+			display: block;
+			border-radius: $border-radius-large;
+			
+			&:hover {
+				background-color: $day-hover-color !important;
+				font {
+					color: white;
+				}
+			}
+			
+			&.current {
+				background-color: $day-active-color; 
+				font {
+					font-weight: bold!important;
+				}
+			}
+		}
+		font {
+			display: block;
+			float: left;
+			width: $day-width;
+			line-height: $day-height;
+			font-size: $day-size;
+			font-weight: normal;
+			color: #666;
+			text-align: center;
+			background: transparent;
+		}
+	}
+
+	.head, .week {
+		clear: both;
+		line-height: $day-height;
+		margin: 0 auto;
+		width: 100%;	//7 * $day-width;
+	}
+	.head {
+		text-align: center;
+		font-size: $day-size;
+		font-weight: bold;
+		background-color: $color3;
+		height: $day-height;
+		color: white;
+		position: relative;
+		
+		.nav {
+			display: block;
+			line-height: $day-height;
+			width: $day-width;
+			text-align: center;
+
+			font-weight: bold !important;
+			color: white;
+			background-color: transparent;
+			
+			&:hover {
+				color: $color3;
+				background-color: white;
+				text-decoration: none;
+			}
+		}
+		.next, .prev {
+			position: absolute;
+			top: 0;
+		}
+		.next {
+			right: 0;
+		}
+		.prev {
+			left: 0;
+		}
+		.month-nav {
+			font-size: $day-size;
+			font-weight: bold;
+			color: white;
+			text-decoration: none;
+			&:hover {
+				color: orange;
+			}
+		}
+	}
+}
+.week-links-heading-nav {
+	display: block;
+	float: left;
+	line-height: $day-height;
+	height: $day-height;
+	font-size: $day-size;
+	padding-top: $day-height / 2 - $day-size / 2;
+	width: $day-height;
+	color: white;
+}
+.week-links-heading-nav-next {
+	float: right;
+}
+
+.date-box {
+	float: left;
+	width: 20px!important;
+	border: 1px solid black;
+	background-color: #4b71a3;
+	padding: 2px;
+	padding-top: 0;
+	margin-bottom: 5px;
+	font, span {
+		text-align: center;
+		display: block;
+		font-weight: bold;
+	}
+	font {
+		line-height: 15px;
+		font-size: 10px;
+		color: white;
+	}
+	span {
+		line-height: 20px;
+		background-color: white;
+		font-size: 15px;
+		color: black;
+	}
+}
+	
+.events-list {
+	overflow: hidden;
+	
+	&, ul, li {
+		margin: 0;
+		padding: 0;
+		list-style-type: none;
+		display: block;
+		clear: both;
+	}
+	li {
+		float: left;
+		width: 100%;
+		li {
+			border-bottom: 1px solid #eee;
+			padding: $padding-small-vertical $padding-small-horizontal;
+			float: none;
+			width: auto;
+		}
+	}
+	div.li-body {
+		margin: 0;
+		padding: 4px 10px 5px 0;
+	}
+	a {
+		font-weight: normal;
+	}
+	.date {
+		float: left;
+		clear: left;
+		width: 30px;
+		padding-bottom: 10px;
+		margin-left: 5px;
+		
+		@extend %overflow;
+		
+		.day {
+			display: block;
+			text-align: center;
+			font-size: 10px;
+			line-height: 10px;
+			font-weight: bold;
+		}
+	}
+	.calendardate {
+		margin-top: 10px;
+	}
+	.dscr {
+		overflow: hidden;
+		margin-left: 10px;
+
+		li {
+			padding-bottom: 5px;
+		}
+		li, font {
+			font-size: 11px;
+		}
+		li, ul {
+			float: none;
+			clear: none;
+			width: auto;
+		}
+	}
+	p {
+		margin: 0;
+		padding: 10px;
+	}
+	.img-list20  li {
+		//margin-left: 10px;
+		//margin-right: 10px;
+		margin: 0;
+	}
+	.date-footer {
+		font-size: 10px;
+		line-height: 10px;
+		color: #ccc;
+	}
+	&.side {
+		.date {
+			float: none;
+			width: 100%;
+			padding: 0;
+			margin: 0;
+			text-align: right;
+
+			.day, .date-box span, .date-box font {
+				display: inline;
+				padding: 0;
+				margin: 0;
+				margin-right: 5px;
+				font-size: 12px;
+				background-color: transparent;
+				color: #ccc;
+			}
+			.date-box {
+				width: auto;
+				float: left;
+				border: 0;
+				background-color: transparent;
+			}
+		}
+		.dscr {
+			margin: 0;
+		}
+	}
+}
+
+.event-month {
+	tr.sel td {
+		background-color: #e5ecf9;
+	}
+	td.sel {
+		background-color: #cfdef7!important;
+	}
+	td.today {
+		background-color: #ffe9ba!important;
+	}
+}
+.event-week {
+	ul, li.event-day {
+		list-style-type: none;
+		padding: 0;
+		margin: 0;
+	}	
+	li .event-day {
+		margin-bottom: 10px;
+	}
+}
+.event-day {
+	border: 1px solid #efefef;
+	padding: 9px;
+	.event-day-item {
+		margin-bottom: 10px;
+	}
+}
+
+$cal-box-w: 2em;
+
+.event-box {
+	table {
+		margin: 0 auto;
+		width: auto;
+	}
+	th, td {
+		padding: 0;
+		height: $cal-box-w;
+		width: $cal-box-w;
+		text-align: center;
+		font-size: 11px;
+	}
+	td {
+		a {
+			display: block;
+			line-height: $cal-box-w;
+			text-decoration: none;
+			font-weight: bold;
+			color: #333;
+			background-color: #effbfc;
+			&:hover {
+				text-decoration: underline;
+			}
+			&.e {
+				font-weight: normal;
+				background-color: transparent;
+			}
+		}
+		&.n {
+			color: #ccc;			
+			a {
+				color: #ccc;
+			}
+		}
+	}
+	.week {
+		border-right: 1px solid #ccc;
+		a {
+			font-weight: normal;
+			color: #ccc;
+			background-color: transparent;
+		}
+	}
+	.preview {
+		display: none;
+		position: absolute;
+		background-color: white;
+		border: 1px solid #666;
+		z-index: 999;
+		width: 120px;
+		color: #666;
+		ul, li {
+			@include reset-list;
+		}
+		li {
+			font-size: 10px;
+			line-height: 15px;
+			padding: 4px;
+			border-bottom: #ccc;
+			text-align: left;
+		}
+		a {
+			display: inline;
+			background-color: transparent;
+		}
+	}
+
+}
+	
+.event-main {
+	td, th, table {
+		border: 1px solid #eee;
+	}
+	table {
+		width: 100%;
+		border-right: 0;
+		border-bottom: 0;
+	}
+	td, th {
+		vertical-align: top;
+		padding: 0;
+		background-color: #fff;
+		border-top: 0;
+		border-left: 0;
+		width: 14%;
+	}
+	td {
+		.day {
+			min-height: 120px;
+			a {
+				text-decoration: none;
+				font-weight: normal;
+				&:hover {
+					text-decoration: underline;
+				}
+			}
+		}
+		.d {
+			display: block;
+			text-align: right;
+			font-size: 9px;
+			background-color: #e5ecf9;
+			padding: 0 4px;
+		}
+		&.n {
+			background-color: #eaf2ff;
+		}
+		ul, li {
+			@include reset-list;
+		}
+		li {
+			margin-bottom: 1px;
+			font-size: 11px;
+			padding: 5px;
+			text-align: left;
+		}
+	}
+	th {
+		text-align: center;
+		//	font-size: 9px;
+	}
+}
+
+.input-date-range {
+	div {
+		float: left;
+		line-height: 30px;
+		margin-right: 5px;
+		padding: 5px;
+		&.spacer {
+			font-weight: bold;
+			font-size: 20px;
+		}
+		&.input-date-range-radios {
+			border: 1px solid #f8f8f8;
+			padding: 4px;
+		}
+	}
+	.input-date-range-radios {
+		label {
+			float: left;
+			padding-top: 0 !important;
+			margin-right: 5px;
+		}
+	}
+}
+
+@mixin deadline($class, $color, $background) {
+	.#{$class} {
+		color: $color;
+		.calendardate-month {
+			background-color: $color;
+		}
+		.calendardate-day, .calendardate-year {
+			color: $color;
+		}
+	}
+	.media.#{$class} {
+		@if ($background == 'transparent') {
+			background: $background;
+		} @else {
+			@include gradient-vertical(#fff, $background);
+		}
+	}
+}
+
+.deadline {
+	font-weight: normal;
+}
+
+@include deadline(deadline-complete, $deadline-complete, $deadline-complete-background);
+@include deadline(deadline-upcoming, $deadline-upcoming, $deadline-upcoming-background);
+@include deadline(deadline-past, $deadline-past, $deadline-past-background);
+@include deadline(deadline-far, $deadline-far, $deadline-far-background);
+.deadline-complete {
+	text-decoration: line-through;
+}

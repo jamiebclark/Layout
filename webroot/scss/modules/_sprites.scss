@@ -1,0 +1,31 @@
+// Global Variables
+$sprite-prefix: 		"";
+$sprite-width: 		0;
+$sprite-height: 		0;
+
+@mixin sprite-map($prefix, $bg-img, $w, $h) {
+	$sprite-width: 	$w;
+	$sprite-height: 	$h;
+	$sprite-prefix: 	$prefix;
+	[class^="#{$sprite-prefix}-"], [class*=" #{$sprite-prefix}-"] {
+		display: inline-block;
+		width: $sprite-width;
+		height: $sprite-height;
+		line-height: $sprite-height;
+		vertical-align: middle;
+		background-image: url("#{$bg-img}");
+	}
+}
+@mixin sprite($class, $x, $y) {
+	.#{$sprite-prefix}-#{$class} {
+		background-position: $sprite-width * $x * -1 $sprite-height * $y * -1;
+	}	
+}
+
+@include sprite-map(folder-icon, "#{$layout-base-dir}img/sprites/folder.png", 16px, 16px);
+@include sprite(folder, 0, 0);
+@include sprite(add,1,0);
+@include sprite(remove,2,0);
+@include sprite(go,3,0);
+@include sprite(up,4,0);
+@include sprite(elbow,5,0);

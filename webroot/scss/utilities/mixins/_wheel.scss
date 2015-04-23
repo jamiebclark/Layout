@@ -1,0 +1,8 @@
+
+@mixin wheel($w) {
+	$padding: 10px;
+	padding-left: #{$w + 2 * $padding};
+	background-image: url("#{$layout-base-dir}img/loading/wheel#{$w}.gif");
+	background-position: #{$padding} center;
+	background-repeat: no-repeat;
+}

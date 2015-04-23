@@ -1,0 +1,19 @@
+
+//Converts pixels to em (to overcome Web-kit but with browser zoom)
+@function pem($pixels) {
+	@return #{$pixels/16.0}em;
+}
+
+
+@function opposite-side($side) {
+	@if $side == 'left' {
+		@return 'right';
+	} @else if $side == 'right' {
+		@return 'left';
+	} @else if $side == 'top' {
+		@return 'bottom';
+	} @else if $side == 'bottom' {
+		@return 'top';
+	}
+	@return '';
+}

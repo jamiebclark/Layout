@@ -5,12 +5,7 @@ $gallery-view-body-height:			500px !default;
 
 $gallery-modal-info-width:			33%;
 
-@import "bootstrap_import";
-
-@import "variables";
-@import "mixins";
-
-//@import "ajax-loading";
+@import "utilities/index";
 
 #galleryviewlayout {
 	.gallery-view-image {

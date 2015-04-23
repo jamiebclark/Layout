@@ -1,0 +1,16 @@
+@mixin gradient-vertical($fade-color1, $fade-color2) {
+	background: $fade-color1; /* Old browsers */
+	background: -moz-linear-gradient(top,  $fade-color1 0%, $fade-color2 100%); /* FF3.6+ */
+	background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,$fade-color1), color-stop(100%,$fade-color2)); /* Chrome,Safari4+ */
+	background: -webkit-linear-gradient(top,  $fade-color1 0%,$fade-color2 100%); /* Chrome10+,Safari5.1+ */
+	background: -o-linear-gradient(top,  $fade-color1 0%,$fade-color2 100%); /* Opera 11.10+ */
+	background: -ms-linear-gradient(top,  $fade-color1 0%,$fade-color2 100%); /* IE10+ */
+	background: linear-gradient(to bottom,  $fade-color1 0%,$fade-color2 100%); /* W3-c */
+	filter: unquote("progid:DXImage-transform.Microsoft.gradient( start-colorstr='#{$fade-color1}', end-colorstr='#{$fade-color2}',Gradient-type=0 )"); /* IE6-9 */	
+}
+
+@mixin gradient-reset($bg-color) {
+	background: $bg-color;
+	filter: none;
+}
+
