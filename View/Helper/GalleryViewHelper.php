@@ -1,7 +1,7 @@
 <?php
 class GalleryViewHelper extends AppHelper {
 	public $name = 'GalleryView';
-	public $helpers = array('Layout.ModelView');
+	public $helpers = array('Html', 'Layout.ModelView');
 	
 	var $modelName;
 	
