@@ -6,6 +6,13 @@
 App::uses('Inflector', 'Utilities');
 class Markup {
 
+/**
+ * The amount of spaces to use for each tab
+ *
+ * @var int;
+ **/
+	protected static $tabSpaces = 4;
+
 	public static function set($text, $options = array()) {
 		$options = array_merge(array(
 			'wikiModel' => null,
@@ -97,25 +104,26 @@ class Markup {
 		return $text;
 	}
 
-	/**
-	 * Converts the wiki markup for lists
-	 * Converts:
-	 * 		* List 1
-	 * 		* List 2
-	 *		** Sub List 1
-	 * 		** Sub List 2
-	 * To:
-	 *		<ul>
-	 *			<li>List 1</li>
-	 *			<li>List 2
-	 * 				<ul>
-	 *					<li>Sub List 1</li>
-	 *					<li>Sub List 2</li>
-	 *				</ul>
-	 *			</li>
-	 *		</ul>
-	 *			
-	 **/
+/**
+ * Converts the wiki markup for lists
+ * Converts:
+ * 		* List 1
+ * 		* List 2
+ *		** Sub List 1
+ * 		** Sub List 2
+ * To:
+ *		<ul>
+ *			<li>List 1</li>
+ *			<li>List 2
+ * 				<ul>
+ *					<li>Sub List 1</li>
+ *					<li>Sub List 2</li>
+ *				</ul>
+ *			</li>
+ *		</ul>
+ *
+ * @param string $text The selected text
+ **/
 	public static function setLists($text) {
 		$endl = "\n";
 		$lines = explode($endl, $text);
@@ -195,6 +203,7 @@ class Markup {
 			'/{{clear}}/'										=> 	'<br clear="all" />',
 			'/{{-}}/'											=> 	'<br clear="all" />',
 			//'/\{([http|\/|\.][^\s]+)[\s]([^\}]+)\}/'			=>	'<a href="$1">$2</a>',
+			'/[\t]/'											=> 	str_repeat('&nbsp;', self::$tabSpaces),
 
 		);
 
