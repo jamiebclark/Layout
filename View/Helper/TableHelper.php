@@ -397,7 +397,13 @@ class TableHelper extends LayoutAppHelper {
 		}
 	}
 	
-	protected function isSkipped($th) {
+/**
+ * Checks if a column is being skipped
+ *
+ * @param string $th The heading of the column
+ * @return bool;
+ **/
+	public function isSkipped($th) {
 		return $this->_checkSkip($th);
 	}
 	
