@@ -203,8 +203,6 @@ class Markup {
 			'/{{clear}}/'										=> 	'<br clear="all" />',
 			'/{{-}}/'											=> 	'<br clear="all" />',
 			//'/\{([http|\/|\.][^\s]+)[\s]([^\}]+)\}/'			=>	'<a href="$1">$2</a>',
-			'/[\t]/'											=> 	str_repeat('&nbsp;', self::$tabSpaces),
-
 		);
 
 		/*
@@ -220,6 +218,19 @@ class Markup {
 		return self::trimBreaks($text);
 	}
 	
+/**
+ * Replaces tabs with non-breaking spaces
+ *
+ * @param string $text
+ * @param return string;
+ **/
+	public static function replaceTabs ($text, $tabSpaces = false) {
+		if ($tabSpaces === false) {
+			$tabSpaces = self::$tabSpaces;
+		}
+		return str_replace("\t", str_repeat('&nbsp;', $tabSpaces), $text);
+	}
+
 	public static function trimBreaks($text) {
 		$text = preg_replace(array(
 			'#^[\r\n]*(?:<br\s*/?>[\s\r\n]*)+#', 	//Breaks at beginning of string

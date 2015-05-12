@@ -41,6 +41,8 @@ class DisplayTextHelper extends LayoutAppHelper {
 		$this->registerTextMethod('format', [$this, 'stripSpecialChars']);
 		$this->registerTextMethod('format', [$this, 'addConstants']);
 
+		$this->registerTextMethod('tabs', ['Markup', 'replaceTabs']);
+
 		$this->registerTextMethod('urls', ['Markup','setLinks'], ['shrinkUrls']);
 		$this->registerTextMethod('smileys', [$this, 'parseSmileys']);
 		$this->registerTextMethod('first', [$this, 'firstParagraph']);
@@ -126,37 +128,6 @@ class DisplayTextHelper extends LayoutAppHelper {
 		}
 	}
 
-	private function _renderTextMethods($text, $options = []) {
-		foreach ($this->_textMethods as $flag => $flagMethods) {
-			if ($flag === false || (isset($options[$flag]) && $options[$flag] === false)) {
-				continue;
-			}
-			foreach ($flagMethods as $vars) {
-				list($method, $args) = $vars;			
-				$passArgs = [$text];
-				if (is_callable($args)) {
-					if ($calledArgs = $args($options)) {
-						$passArgs += $calledArgs;
-					}
-				} else if (!empty($args)) {
-					if (!is_array($args)) {
-						$args = [$args];
-					}
-					foreach ($args as $arg) {
-						$passArgs[$arg] = isset($options[$arg]) ? $options[$arg] : null;
-					}
-				}
-				if (is_array($method) && !is_object($method[0])) {
-					$text = forward_static_call_array($method, $passArgs);
-				} else {
-					$text = call_user_func_array($method, $passArgs);
-				}
-				// debug(compact('text', 'flag'));
-			}
-		}
-		return $text;
-	}
-
 /**
  * Runs all functions on text
  *  $options accepts the following:
@@ -167,7 +138,7 @@ class DisplayTextHelper extends LayoutAppHelper {
  *   - multiNl : false to remove multiple new line characters
  **
  **/
-	function text($text, $options = array()) {
+	public function text($text, $options = array()) {
 		$options = array_merge([ 
 			'html' => true,						// Allow HTML output
 			'php' => false,						// Evaluate PHP
@@ -182,6 +153,7 @@ class DisplayTextHelper extends LayoutAppHelper {
 			'tag' => null,
 			'class' => null,
 			'truncate' => null,
+			'tabs' => false,
 		], $options);
 
 		$options['striphtml'] = $options['html'] === false;
@@ -271,11 +243,11 @@ class DisplayTextHelper extends LayoutAppHelper {
 		return $this->Html->tag('blockquote', $text, array('class' => $options['class']));
 	}
 	
-	/**
-	 * Generates a table of formatting commands and their result
-	 *
-	 **/
-	function cheatSheet($collapse = false) {
+/**
+ * Generates a table of formatting commands and their result
+ *
+ **/
+	public function cheatSheet($collapse = false) {
 		$out = '';
 		if (!empty($this->constants)) {
 			$out .= $this->Html->tag('h3', 'Constants');
@@ -462,8 +434,11 @@ class DisplayTextHelper extends LayoutAppHelper {
 	
 	
 	
+/**
+ * Strips out certain tags
+ *
+ **/
 	function shortenStripTags($str) {
-	//If the blog article is being shortened, it strips out certain tags
 		$strip = array(
 			'#<object(.*?)</object>#',
 			'#<embed(.*?)</embed>#'
@@ -493,17 +468,17 @@ class DisplayTextHelper extends LayoutAppHelper {
 		return $str;
 	}
 
-	/*
-	* Taken from CakePHP 1.2 Flay Class http://api12.cakephp.org/view_source/flay/#line-270
-	* Return a fragment of a text, up to $length characters long, with an ellipsis after it.
-	*
-	* @param string $text Text to be truncated.
-	* @param integer $length Max length of text.
-	* @param string $ellipsis Sign to print after truncated text.
-	* @return string Fragment
-	* @access public
-	*/
-	function truncate($text, $length, $options = array()) {
+/**
+ * Taken from CakePHP 1.2 Flay Class http://api12.cakephp.org/view_source/flay/#line-270
+ * Return a fragment of a text, up to $length characters long, with an ellipsis after it.
+ *
+ * @param string $text Text to be truncated.
+ * @param integer $length Max length of text.
+ * @param string $ellipsis Sign to print after truncated text.
+ * @return string Fragment
+ * @access public
+ **/
+	public function truncate($text, $length, $options = array()) {
 		if (is_array($length)) {
 			list($length, $options) = $length + [null, null];
 		}
@@ -876,5 +851,37 @@ class DisplayTextHelper extends LayoutAppHelper {
 			$value = str_replace(' ', '&nbsp;', $value);
 		}
 		return $value;
+	}
+
+
+	private function _renderTextMethods($text, $options = []) {
+		foreach ($this->_textMethods as $flag => $flagMethods) {
+			if ($flag === false || (isset($options[$flag]) && $options[$flag] === false)) {
+				continue;
+			}
+			foreach ($flagMethods as $vars) {
+				list($method, $args) = $vars;			
+				$passArgs = [$text];
+				if (is_callable($args)) {
+					if ($calledArgs = $args($options)) {
+						$passArgs += $calledArgs;
+					}
+				} else if (!empty($args)) {
+					if (!is_array($args)) {
+						$args = [$args];
+					}
+					foreach ($args as $arg) {
+						$passArgs[$arg] = isset($options[$arg]) ? $options[$arg] : null;
+					}
+				}
+
+				if (is_array($method) && !is_object($method[0])) {
+					$text = forward_static_call_array($method, $passArgs);
+				} else {
+					$text = call_user_func_array($method, $passArgs);
+				}
+			}
+		}
+		return $text;
 	}
 }
