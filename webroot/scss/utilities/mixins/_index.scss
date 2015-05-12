@@ -52,7 +52,7 @@
 	$line-height: $font-size + 4px;
 	font-size: $font-size;
 	line-height: $line-height;
-	height: $line-height + 2 * 1 + 2 * $input-padding-top;
+	// height: $line-height + 2 * 1 + 2 * $input-padding-top;
 }
 
 @mixin reset-list {
