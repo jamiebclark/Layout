@@ -33,7 +33,7 @@ class CrumbsHelper extends LayoutAppHelper {
 	
 	var $_crumbs = array();
 	
-	function __construct(View $view, $settings = array()) {
+	public function __construct(View $view, $settings = array()) {
 		parent::__construct($view, $settings);
 		$vars = array();
 		foreach ($this->crumbTypes as $type) {
@@ -49,7 +49,7 @@ class CrumbsHelper extends LayoutAppHelper {
 		$this->addVars($settings);
 	}
 	
-	function add($title, $link = null, $options = null) {
+	public function add($title, $link = null, $options = null) {
 		if (is_array($title)) {
 			$crumb = $title + array(null, null, null);
 		} else {
@@ -59,7 +59,7 @@ class CrumbsHelper extends LayoutAppHelper {
 		return $this->userSetCrumbs(compact('append'));	
 	}
 	
-	function debug() {
+	public function debug() {
 		$out = array();
 		foreach ($this->crumbTypes as $type) {
 			$out[$type] = $this->{$type . 'Crumbs'};
@@ -67,7 +67,7 @@ class CrumbsHelper extends LayoutAppHelper {
 		debug($out);
 	}
 	
-	function addVars($vars = array(), $options = array()) {
+	public function addVars($vars = array(), $options = array()) {
 		foreach ($this->crumbTypes as $type) {
 			if (isset($vars[$type . 'Crumbs'])) {
 				$this->_setCrumbType($type, array('crumbs' => $vars[$type . 'Crumbs']), $options);
@@ -84,7 +84,7 @@ class CrumbsHelper extends LayoutAppHelper {
 		return true;
 	}
 	
-	function addCrumbs($crumbs = array(), $options = array()) {
+	public function addCrumbs($crumbs = array(), $options = array()) {
 		foreach ($this->crumbTypes as $type) {
 			if (!empty($options[$type . 'Crumbs'])) {
 				$this->_setCrumbType($type, array('crumbs' => $options[$type . 'Crumbs']));
@@ -99,7 +99,7 @@ class CrumbsHelper extends LayoutAppHelper {
 		return true;
 	}
 	
-	function output($options = array()) {
+	public function output($options = array()) {
 		$options = array_merge(array(
 			'home' => $this->Iconic->icon('home'),
 			'homeUrl' => '/',
