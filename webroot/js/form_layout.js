@@ -685,7 +685,7 @@ documentReady(function() {
 				var $ids = $listItem.getIdInputs(),
 					$id = $ids.first();
 
-				console.log($ids);
+				// console.log($ids);
 
 				if (!$ids.length) {
 					return false;
@@ -703,7 +703,7 @@ documentReady(function() {
 					$listItem.wrapInner('<div class="input-list-item-inner"></div>');
 					var removeName = $id.attr('name').substr(0, $id.data('id-input-after-key-index')) + "[" + removeCommand + "]";
 
-					console.log(removeName);
+					// console.log(removeName);
 					var	removeBoxId = removeName.replace(/(\[([^\]]+)\])/g, '_$2'),
 						$checkbox = $('<input/>', {
 							'type' : 'checkbox',
@@ -777,7 +777,7 @@ documentReady(function() {
 
 		if (keyIndex != -1) {
 			var key = getNameKey(name, keyIndex);
-			console.log([name, keyIndex, key.index]);
+			// console.log([name, keyIndex, key.index]);
 			if (key === false) {
 				return $(this);
 			}
@@ -1384,7 +1384,7 @@ documentReady(function() {
 				}
 			}
 			function set(val) {
-				$select.val(val);
+				$select.val(val).trigger('change');
 			}
 			function toggle() {
 				return $select.data('expanded') ? hide() : show();
