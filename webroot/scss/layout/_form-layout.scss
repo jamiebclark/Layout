@@ -255,6 +255,10 @@ input.date, input.time {
 	max-width: $input-time-width;
 }
 
+.input-date-control .btn {
+	padding-left: $padding-xs-horizontal;
+	padding-right: $padding-xs-horizontal;
+}
 /*
 .input-date-control {
 	display: inline-block;
@@ -394,6 +398,9 @@ $input-container-control-bg-color:	#eee;
 // ---------------------
 $input-list-remove-width: 				30px;
 $input-list-item-padding-horizontal: 	15px;
+$input-list-item-padding-vertical:		10px;
+$input-list-item-bg:					#F8F8F8;
+$input-list-item-separate-height:		5px;
 
 @include input-container("input-list");
 
@@ -408,12 +415,17 @@ $input-list-item-padding-horizontal: 	15px;
 }
 .input-list-item {
 	position: relative;
-	border-bottom: 1px dotted #f8f8f8;
+	border: 0;
+
+	background: $input-list-item-bg;
+	padding-top: $input-list-item-padding-vertical;
+	padding-bottom: $input-list-item-padding-vertical;
+	margin-bottom: $input-list-item-separate-height;
+
 	min-height: $input-list-remove-width + $input-list-item-padding-horizontal * 2;
-	margin-bottom: $line-height-computed;
 	
 	&:last {
-		border-bottom: 0;
+		margin-bottom: 0;
 	}
 	&.remove {
 		background-color: #eee;
@@ -440,7 +452,7 @@ $input-list-item-padding-horizontal: 	15px;
 }
 .input-list-item-remove {
 	position: absolute;
-	top: 0;
+	top: $input-list-item-padding-vertical;
 	right: $input-list-item-padding-horizontal;
 	
 	text-align: center;
