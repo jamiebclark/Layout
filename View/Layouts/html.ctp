@@ -79,21 +79,7 @@ echo $this->Html->tag('body', null, $bodyAttributes);
 			<?php echo $this->fetch('header'); ?>
 		</div>
 		<div id="content" class="<?php echo $content_class; ?>">
-			<?php 
-			if (!empty($pre_crumb)) {
-				echo $this->Html->div('pre-crumb', $pre_crumb);
-			}
-			if (!empty($this->Crumbs)) {
-				$crumbs = $this->Crumbs->output();
-			} else {
-				$crumbs = $this->Html->getCrumbs();
-			}
-			if (!empty($crumbs)): ?>
-				<div id="breadcrumb">
-					<?php echo $this->Html->div($containerClass, $crumbs); ?>
-				</div>
-			<?php endif; ?>
-			
+			<?php echo $this->element('Layout.layout/crumbs'); ?>			
 			<?php
 			$content = '';
 			if (!empty($flash)) {
