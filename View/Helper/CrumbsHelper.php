@@ -15,6 +15,8 @@ class CrumbsHelper extends LayoutAppHelper {
 	var $controllerCrumbs;
 	var $actionCrumbs;
 	var $userSetCrumbs;
+
+	var $controllerTitle;
 	
 	var $controllerParentVar = array();
 	
@@ -35,20 +37,28 @@ class CrumbsHelper extends LayoutAppHelper {
 	
 	public function __construct(View $view, $settings = array()) {
 		parent::__construct($view, $settings);
+
+		if (empty($settings['controllerTitle'])) {
+			$urlBase = $this->_getUrlBase($settings);
+			$settings['controllerTitle'] = InflectorPlus::humanize($urlBase['controller']);
+		}
+
 		$vars = array();
 		foreach ($this->crumbTypes as $type) {
-			if (isset($settings[$type . 'Crumbs'])) {
-				$vars[$type] = $settings[$type . 'Crumbs'];
-				unset($settings[$type . 'Crumbs']);
+			$key = $type . 'Crumbs';
+			if (isset($settings[$key])) {
+				$vars[$type] = $settings[$key];
+				unset($settings[$key]);
 			} 
 		}
 		$this->_set($settings);
+
 		foreach ($vars as $type => $vars) {
 			$this->_setCrumbType($type, $vars);
 		}
 		$this->addVars($settings);
 	}
-	
+
 	public function add($title, $link = null, $options = null) {
 		if (is_array($title)) {
 			$crumb = $title + array(null, null, null);
@@ -243,6 +253,8 @@ class CrumbsHelper extends LayoutAppHelper {
 	}
 	
 	function _setCrumbType($type, $options = array()) {
+		$typeVarName = $type . 'Crumbs';
+
 		if (empty($options['crumbs'])) {
 			if (is_array($options)) {
 				foreach ($options as $k => $v) {
@@ -255,12 +267,14 @@ class CrumbsHelper extends LayoutAppHelper {
 				$options = array('crumbs' => $options);
 			}
 		}
+
+
 		if (!empty($options['crumbs']) || (isset($options['crumbs']) && $options['crumbs'] === false)) {
 			$crumbs = $options['crumbs'];
-		} else if ((!isset($this->{$type . 'Crumbs'}) || !empty($options['reset'])) && empty($options['skipDefault'])) {
+		} else if ((!isset($this->{$typeVarName}) || !empty($options['reset'])) && empty($options['skipDefault'])) {
 			$crumbs = $this->_getDefaultCrumbType($type, $options);
 		} else {
-			$crumbs = $this->{$type . 'Crumbs'};
+			$crumbs = $this->{$typeVarName};
 		}
 		if (!empty($options['prepend'])) {
 			$crumbs = $this->_mergeCrumbs($options['prepend'], $crumbs);
@@ -268,7 +282,7 @@ class CrumbsHelper extends LayoutAppHelper {
 		if (!empty($options['append'])) {
 			$crumbs = $this->_mergeCrumbs($crumbs, $options['append']);
 		}
-		$this->{$type . 'Crumbs'} = $crumbs;
+		$this->{$typeVarName} = $crumbs;
 		
 		//Unsets Controller and Action, using the legacy 'default' format
 		if (!empty($crumbs) && $type == 'default') {
@@ -288,7 +302,7 @@ class CrumbsHelper extends LayoutAppHelper {
 				$urlBase[$controllerParentVarName] = $controllerParentVar;
 			}
 			$crumbs = array(
-				array(InflectorPlus::humanize($urlBase['controller']), array('action' => 'index') + $urlBase)
+				array($this->controllerTitle, array('action' => 'index') + $urlBase)
 			);
 		} else if ($type == 'path') {
 			$urlBase = !empty($options['urlBase']) ? $options['urlBase'] : $this->_getUrlBase($options);
