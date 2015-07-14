@@ -49,12 +49,12 @@ class FormLayoutHelper extends LayoutAppHelper {
 	
 	public function newPassword($name, $options = array()) {
 		$pw = $this->_randomString(10);
-		$pwMsg = 'Use random password: <strong>' . $pw . '</strong>';
-		$after = $this->Html->link(
-			$pwMsg,
+		$after = 'Use random password: ';
+		$after .= $this->Html->link(
+			'<strong>' . $pw . '</strong>',
 			array('#' => 'top'),
 			array(
-				'onclick' => "$(this).prev().attr('value', '$pw');return false;",
+				'onclick' => "$(this).prev('input').val('$pw');return false;",
 				'escape' => false,
 				'class' => 'newPassword',
 			)
