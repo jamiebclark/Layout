@@ -543,8 +543,9 @@
 		content:'\2600';
 	}
 
-$media-icon-size: 80px;
-$media-icon-padding: 10px;
+$media-icon-size: $line-height-computed * 2;
+$media-icon-padding: $line-height-computed / 2;
+
 
 .media .media-object .fa, 
 .media .img .iconic, 
