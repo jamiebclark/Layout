@@ -1424,7 +1424,6 @@ class LayoutHelper extends LayoutAppHelper {
 			}
 			//First char is capital, treats it like a model name
 			if (preg_match('/^[A-Z]/', $field)) {
-				debug($field);
 				$values = $this->infoTableResult($result, array(
 					'model' => $field, 
 					'fields' => $config,
