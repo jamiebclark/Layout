@@ -1,22 +1,33 @@
 <?php
 class TextGraphHelper extends AppHelper {
-	var $name = 'TextGraph';
-	var $helpers = array('Html');
+	public $name = 'TextGraph';
+	public $helpers = array('Html');
 	
-	var $colors = array();
-	var $colorsInit = array(
+/**
+ * A full list of color RGB values
+ *
+ * @var array;
+ **/	
+	protected $colorRange = array();
+	
+/**
+ * A list of color RGB basic points that will be used to create colorRange
+ *
+ * @var array;
+ **/
+	protected $colorRangePoints = array(
 		array(223,27,27),
 		array(223,223,27),
 		array(27,223,27),
 	);
 	
-	function beforeRender($viewFile) {
-		$this->colors = $this->_colorsInit($this->colorsInit);
+	public function beforeRender($viewFile) {
+		$this->setColorRangeValues();
 		$this->Html->css('Layout.text_graphs', null, array('inline' => false));
 		return parent::beforeRender($viewFile);
 	}
 	
-	function number($val, $options = array()) {
+	public function number($val, $options = array()) {
 		$options = array_merge(array(
 			'min' => 0,
 			'max' => $val,
@@ -49,7 +60,7 @@ class TextGraphHelper extends AppHelper {
 		);
 	}
 
-	function pieIcon($val, $total = null, $options = array()) {
+	public function pieIcon($val, $total = null, $options = array()) {
 		if (is_array($total)) {
 			$options = $total;
 			$total = null;
@@ -84,7 +95,7 @@ class TextGraphHelper extends AppHelper {
 		return $this->Html->tag('span', $return, compact('class'));
 	}
 	
-	function pct($val, $min = 0, $max = 0, $reverse = false) {
+	public function pct($val, $min = 0, $max = 0, $reverse = false) {
 		$color = $this->colorRange($val, $min, $max, $reverse);
 		return $this->Html->tag(
 			'font', 
@@ -93,7 +104,7 @@ class TextGraphHelper extends AppHelper {
 		);
 	}
 	
-	function pctChange($currentVal, $startVal, $round = 2) {
+	public function pctChange($currentVal, $startVal, $round = 2) {
 		if (empty($startVal)) {
 			$pct = 0;
 			$class = 'empty';
@@ -104,7 +115,7 @@ class TextGraphHelper extends AppHelper {
 		return $this->pctFormat($pct, $round);
 	}
 	
-	function pctFormat($pct, $settings = array()) {
+	public function pctFormat($pct, $settings = array()) {
 		if (is_numeric($settings)) {
 			$settings = array('round' => $settings);
 		}
@@ -131,7 +142,7 @@ class TextGraphHelper extends AppHelper {
 		return $this->Html->tag('span',  $pct, compact('class'));
 	}
 	
-	function getPct($val, $min = 0, $max = 0) {
+	public function getPct($val, $min = 0, $max = 0) {
 		if($val < $min) {
 			$pct = 0;
 		} else if($val > $max) {
@@ -144,37 +155,38 @@ class TextGraphHelper extends AppHelper {
 		return $pct;
 	}
 	
-	function colorTag($tag, $text, $options = array()) {
+	public function colorTag($tag, $text, $options = array()) {
 		$options = array_merge(array(
 			'min' => 0,
 			'max' => 100,
 			'reverse' => false,
 			'val' => $text,
+			'cssProperty' => 'color',
 		), $options);
 		extract($options);
 		return $this->Html->tag($tag, $text, array(
-			'style' => 'color:' . $this->colorRange($val, $min, $max, $reverse),
+			'style' => $cssProperty . ':' . $this->colorRange($val, $min, $max, $reverse),
 		));
 	}
 	
-	function colorRange($val, $min = 0, $max = 100, $reverse=false) {
+	public function colorRange($val, $min = 0, $max = 100, $reverse=false) {
 		if($min > $max) {
 			list($min,$max) = array($max,$min);
 			$reverse = !$revers;
 		}
 		
-		$colors = $this->colors;
+		$colorRange = $this->getColorRangeValues();
 		
 		if($reverse) {
-			$colors = array_values(array_reverse($colors));
+			$colorRange = array_values(array_reverse($colorRange));
 		}
 		
 		$pct = $this->getPct($val, $min, $max);
-		$key = round((count($colors)-1)*$pct);
-		return 'rgb('.implode(',',$colors[$key]).')';
+		$key = round((count($colorRange)-1)*$pct);
+		return 'rgb('.implode(',',$colorRange[$key]).')';
 	}
 	
-	function barGraph($good, $bad, $count=35) {
+	public function barGraph($good, $bad, $count=35) {
 		$total = $good + $bad;
 		
 		$good = floor($total > 0 ? $count * ($good / $total) : 0);
@@ -189,7 +201,7 @@ class TextGraphHelper extends AppHelper {
 		return $return;
 	}
 	
-	function divBarGraph($amt, $total = 1, $options = array()) {
+	public function divBarGraph($amt, $total = 1, $options = array()) {
 		$options = array_merge(array(
 			'url' => null,
 			'width' => null,
@@ -261,40 +273,50 @@ class TextGraphHelper extends AppHelper {
 		return $this->Html->div($class, $return, $attrs);
 	}
 
-	function _colorsInit($colorsInit, $length = 50) {
-		$colors = array();
-		if(count($colorsInit) > 1) {
-			foreach($colorsInit as $k=>$c) {
-				if(isset($colorsInit[$k+1])) {
-					$count = count($colorsInit)-1;
-					$next = $colorsInit[$k+1];
-					$this->__colorSpectrum($colors, $c, $next, $length / $count);
+	private function createColorRange($colorRangePoints, $length = 50) {
+		$colorRange = array();
+		if(count($colorRangePoints) > 1) {
+			foreach($colorRangePoints as $k => $c) {
+				if(isset($colorRangePoints[$k+1])) {
+					$count = count($colorRangePoints)-1;
+					$next = $colorRangePoints[$k+1];
+					$colorRange = $this->addColorSpectrum($colorRange, $c, $next, $length / $count);
 				}
 			}
 		} else {
-			$colors = $colorsInit[0];
+			$colorRange = $colorRangePoints[0];
 		}
-		return $colors;
+		return $colorRange;
 	}
 
-	function __colorSpectrum(&$colors, $start, $end, $length) {
-	//Finds the range of changing values between two colors
+/**
+ * Finds the range of changing values between two colors
+ * 
+ * @param array $colorRange The existing range
+ * @param array $startColor The RGB array of the start color
+ * @param array $endColor The RGB array of the end color
+ * @param string $colorCount How many points should be between the colors
+ * @return array;
+ **/
+	private function addColorSpectrum(&$colorRange, $startColor, $endColor, $colorCount) {
 		$change = array();
-		foreach($start as $k=>$v) {
-			if($start[$k] != $end[$k])
+		foreach ($startColor as $k => $v) {
+			if($startColor[$k] != $endColor[$k]) {
 				$change[$k] = 1;
-		}
-		for($i=0; $i<=$length; $i++) {
-			$color = array();
-			for($j = 0; $j <= count($start)-1; $j++) {
-				if(isset($change[$j])) {
-					$color[$j] = round($start[$j] + ($end[$j] - $start[$j]) * ($i / $length));
-				} else
-					$color[$j] = $start[$j];
 			}
-			$colors[] = $color;
 		}
-		return $colors;
+
+		for ($i = 0; $i <= $colorCount; $i++) {
+			$color = array();
+			for ($j = 0; $j <= count($startColor)-1; $j++) {
+				if (isset($change[$j])) {
+					$color[$j] = round($startColor[$j] + ($endColor[$j] - $startColor[$j]) * ($i / $colorCount));
+				} else
+					$color[$j] = $startColor[$j];
+			}
+			$colorRange[] = $color;
+		}
+		return $colorRange;
 	}
 
 	function getCompleteUrl($url = array(), $isComplete = false) {
@@ -310,5 +332,26 @@ class TextGraphHelper extends AppHelper {
 		return $url;
 	}
 
+/**
+ * Returns the list of colors associated with a color range
+ *
+ * @return array;
+ **/
+	private function getColorRangeValues() {
+		if (empty($this->colorRangeValues)) {
+			$this->setColorRangeValues();
+		}
+		return $this->colorRangeValues;
+	}
+
+/**
+ * Creates a color range
+ *
+ * @return void;
+ **/
+	private function setColorRangeValues() {
+		if (!empty($this->colorRangePoints)) {
+			$this->colorRangeValues = $this->createColorRange($this->colorRangePoints);
+		}
+	}
 }
-?>
