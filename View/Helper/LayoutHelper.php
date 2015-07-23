@@ -65,10 +65,13 @@ class LayoutHelper extends LayoutAppHelper {
 	public function toggle($content, $offContent = null, $label, $options = array()) {
 		$options = array_merge(array(
 			'checked' => null,
+			'controlPosition' => 'top',
 		), $options);
 		extract($options);
 		
-		$out = $this->_toggleControl($label, $options);
+		$control = $this->_toggleControl($label, $options);
+
+		$out = '';
 		//Toggle Content
 		if (!empty($content)) {
 			$out .= $this->_toggleContent($content, $checked);
@@ -77,6 +80,13 @@ class LayoutHelper extends LayoutAppHelper {
 		if (!empty($offContent)) {
 			$out .= $this->_toggleContent($offContent, !$checked, 'layout-toggle-off');
 		}
+
+		if ($controlPosition == 'bottom') {
+			$out = $out . $control;
+		} else {
+			$out = $control . $out;
+		}
+		
 		return $this->Html->div('layout-toggle', $out);
 	}
 	
