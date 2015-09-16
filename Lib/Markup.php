@@ -13,10 +13,12 @@ class Markup {
  **/
 	protected static $tabSpaces = 4;
 
+	public static $wikiModel;
+
 	public static function set($text, $options = array()) {
 		$options = array_merge(array(
-			'wikiModel' => null,
-			'webroot' => null,
+			'wikiModel' => self::$wikiModel,
+			'webroot' => substr(Router::getRequest()->webroot, 0, -1),
 			'links' => true,
 		), $options);
 		extract($options);
@@ -31,6 +33,17 @@ class Markup {
 		return $text;
 	}
 	
+	public static function setWikiModel($wikiModel) {
+		$this->wikiModel = $wikiModel;
+	}
+
+/**
+ * Converts email addresses and URLs into clickable links
+ *
+ * @param string $text The text being checked
+ * @param bool $shrink If true, it will condense the results
+ * @return string The converted $text
+ **/
 	public static function setLinks($text, $shrink = true) {
 		//Emails
 		$text = preg_replace('/[\n ]([a-zA-Z0-9&\-_.]+@[a-zA-Z0-9&\-_.]+)/',' <a href="mailto:$1">$1</a>',$text);
