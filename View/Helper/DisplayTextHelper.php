@@ -126,7 +126,7 @@ class DisplayTextHelper extends LayoutAppHelper {
 		
 		$out = $this->Html->div('displaytext-cheatsheet', $out);
 		if ($collapse) {
-			$out = $this->Layout->toggle($collapse, null, 'DisplayText Cheat Sheet');
+			$out = $this->Layout->toggle($out, null, 'DisplayText Cheat Sheet');
 		}
 		$out = $this->Html->div('panel panel-default',
 			$this->Html->div('panel-heading', 'Text Formatting Cheat Sheet') .
