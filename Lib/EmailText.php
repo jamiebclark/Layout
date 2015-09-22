@@ -94,17 +94,20 @@ class EmailText {
 
 		$urlCount = 0;
 		$replace = array(
-			'/([\{\}\$])/' => '\\$1',
-			'@<dd>(.*)<\/dd>@' => '$1' . $eol,
-			'@<td>(.*)<\/td>@' => '$1' . $eol,
-			'@<tr>(.*)<\/tr>@' => '$1' . $eol,
+			'/([\{\}\$])/' => '\\$1',				// Escape dollar signs and brackets
+													// NOTE: This is causing unexpected results
+			'@<dd>(.*)<\/dd>@' => '$1' . $eol,		// Removes DL tags
+			'@<td>(.*)<\/td>@' => '$1' . $eol,		// Removes Table cells
+			'@<tr>(.*)<\/tr>@' => '$1' . $eol,		// Removes Table rows
 			
-			'/(\<img([^>]+)>)/' => '[IMAGE]',
+			'/(\<img([^>]+)>)/' => '[IMAGE]',		// Replaces images
 			'/<a[\s+]href="([^\"]*)"[^>]*>http:(.*)<\/a>/' => '[ $1 ]',
-			'/<li>/' => '- ',													//Removes list items
+			'/<li>/' => '- ',												//Removes list items
 			'@<[\/\!]*?[^<>]*?>@si' => '',									//Removes comments
 		);
 		$text = preg_replace(array_keys($replace), $replace, $text);
+
+		$text = str_replace('$1%', '$%', $text);	//TODO: find cause of this issue
 
 		// Replaces URLs
 		$text = preg_replace_callback('/<a[\s+]href="([^\"]*)"[^>]*>(.*)<\/a>/', function($matches) {
