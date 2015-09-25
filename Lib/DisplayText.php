@@ -205,7 +205,7 @@ class DisplayText {
 		$options - array_merge(array(
 			'class' => '',
 			'url' => null,
-		), $options);
+		), (array) $options);
 		extract($options);
 
 		$class .= 'layout-quote';
