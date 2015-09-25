@@ -79,12 +79,14 @@ class EmailText {
 	//Formats text for being displayed in a Plain-text email.
 	public static function text($text) {
 		$eol = "\r\n";
-		
+
+		$text = str_replace(array("\r", "\n", "\t"), '', $text);		
 		$text = self::setAbsoluteUrls($text);
 		
 		//$text = preg_replace('/[\[\]\{\}]/', '\\\\$0', $text);
 		preg_match_all('/<a[\s+]href="([^\"]*)"/', $text, $matches);
-		//Unique URLs
+		
+		// Unique URLs
 		$uniqueUrls = array_flip(array_flip($matches[1]));
 		if (!empty($uniqueUrls)) {
 			$urlIds = array_combine($uniqueUrls, range(1, count($uniqueUrls)));
@@ -93,37 +95,49 @@ class EmailText {
 		}
 
 		$urlCount = 0;
+		
 		$replace = array(
 			'/([\{\}\$])/' => '\\$1',				// Escape dollar signs and brackets
 													// NOTE: This is causing unexpected results
-			'@<dd>(.*)<\/dd>@' => '$1' . $eol,		// Removes DL tags
-			'@<td>(.*)<\/td>@' => '$1' . $eol,		// Removes Table cells
-			'@<tr>(.*)<\/tr>@' => '$1' . $eol,		// Removes Table rows
+			'@<dd>(.*?)<\/dd>@' => '$1' . $eol,		// Removes DL tags
+			'@<td>(.*?)<\/td>@' => '$1' . $eol,		// Removes Table cells
+			'@<tr>(.*?)<\/tr>@' => '$1' . $eol,		// Removes Table rows
 			
 			'/(\<img([^>]+)>)/' => '[IMAGE]',		// Replaces images
-			'/<a[\s+]href="([^\"]*)"[^>]*>http:(.*)<\/a>/' => '[ $1 ]',
-			'/<li>/' => '- ',												//Removes list items
-			'@<[\/\!]*?[^<>]*?>@si' => '',									//Removes comments
+			'/<a[\s+]href="([^\"]*)"[^>]*>http:(.*?)<\/a>/' => '[ $1 ]',
+			'/(<li>)/' => '$1- ',												//Removes list items
+			/* '@<[\/\!]*?[^<>]*?>@si' => '',									//Removes comments*/
 		);
 		$text = preg_replace(array_keys($replace), $replace, $text);
 
 		$text = str_replace('$1%', '$%', $text);	//TODO: find cause of this issue
 
 		// Replaces URLs
-		$text = preg_replace_callback('/<a[\s+]href="([^\"]*)"[^>]*>(.*)<\/a>/', function($matches) {
-			return sprintf('[%1] %2', $urlIds[$matches[1]], $matches[2]); //'"[" . $urlIds["$1"] . "] $2 "',	//
+		$text = preg_replace_callback('@<a[\s+]href="([^\"]*)"[^>]*>(.*?)</a>@', function($matches) use ($urlIds) {
+			return sprintf('[%1$s] %2$s', $urlIds[$matches[1]], $matches[2]); //'"[" . $urlIds["$1"] . "] $2 "',	//
 		}, $text);
 
-		$replaceUpper = array(
-			'@<h[\d]>(.*)<\/h[\d]>@',	//Replaces titles
-			'@<dt>(.*)<\/dt>@',		//Replaces titles
-			'@<th>(.*)<\/th>@',		//Replaces titles
+		// Replace some tags with basic line break
+		$replaceLineBreak = array(
+			'@<li>(.*?)<\/li>@',			// Replaces title headings
 		);
-		$text = preg_replace_callback($replaceUpper, function($matches) {
+		$text = preg_replace_callback($replaceLineBreak, function($matches) use ($eol) {
+			return trim($matches[1]) . $eol;
+		}, $text);
+		
+
+		// Replaces Title Tags, making them all uppercase and adding an extra line break before
+		$replaceUpper = array(
+			'@<h[\d]>(.*?)<\/h[\d]>@',	// Replaces titles
+			'@<dt>(.*?)<\/dt>@',			// Replaces definition terms
+			'@<th>(.*?)<\/th>@',			// Replaces title headings
+		);
+		
+		$text = preg_replace_callback($replaceUpper, function($matches) use ($eol) {
 			return $eol . $eol . strtoupper($matches[1]) . $eol;
 		}, $text);
 		
-		//Removes additional tags
+		// Removes additional tags
 		$text = strip_tags($text);
 		$text = html_entity_decode($text,ENT_QUOTES);
 		$text = self::_linewrap($text, 75, $eol);
