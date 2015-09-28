@@ -24,6 +24,10 @@ class DisplayTextHelper extends LayoutAppHelper {
 		$options['wikiModel'] = $this->wikiModel;
 		$this->_engine = new DisplayText($options);
 
+		if (!empty($this->constants)) {
+			$this->_engine->addConstant($this->constants);
+		}
+
 		parent::__construct($View, $options);
 	}
 	

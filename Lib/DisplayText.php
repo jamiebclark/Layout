@@ -6,6 +6,7 @@
 App::uses('Param', 'Layout.Lib');
 App::uses('TextCleanup', 'Layout.Lib');
 App::uses('Markup', 'Layout.Lib');
+App::uses('DisplayTextConstant', 'Layout.Lib');
 
 App::uses('LayoutAppHelper', 'Layout.View/Helper');
 
@@ -273,24 +274,29 @@ class DisplayText {
 		return $str;
 	}
 	
-	/**
-	 * Removes curly quotes and emdashes from a string
-	 *
-	 **/
+/**
+ * Removes curly quotes and emdashes from a string
+ *
+ **/
 	function stripSpecialChars($str) {
 		$str = TextCleanup::ms($str);
 		return $str;
 	}
 	
+/**
+ * Replaces constant placeholders with constant values
+ *
+ **/
 	function addConstants($str) {
-		if (!empty($this->constants)) {
-			$str = str_replace(array_keys($this->constants), $this->constants, $str);
+		$constants = (array) $this->constants;
+		if (DisplayTextConstant::check()) {
+			$constants = array_merge($constants, DisplayTextConstant::get());
+		}
+		if (!empty($constants)) {
+			$str = str_replace(array_keys($constants), $constants, $str);
 		}
 		return $str;
 	}
-	
-	
-	
 	
 /**
  * Strips out certain tags
