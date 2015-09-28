@@ -203,7 +203,8 @@ class DisplayText {
 	
 	public function quote($quote, $author = null, $options = array()) {
 		$text = $this->text($quote);
-		$options - array_merge(array(
+
+		$options = array_merge(array(
 			'class' => '',
 			'url' => null,
 		), (array) $options);
