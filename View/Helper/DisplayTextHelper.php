@@ -6,7 +6,7 @@
 App::uses('Param', 'Layout.Lib');
 App::uses('TextCleanup', 'Layout.Lib');
 App::uses('Markup', 'Layout.Lib');
-App::uses('DisplayText', 'Layout.Lib');
+App::uses('DisplayTextEngine', 'Layout.Lib');
 
 App::uses('LayoutAppHelper', 'Layout.View/Helper');
 
@@ -22,7 +22,7 @@ class DisplayTextHelper extends LayoutAppHelper {
 
 	public function __construct(View $View, $options = null) {
 		$options['wikiModel'] = $this->wikiModel;
-		$this->_engine = new DisplayText($options);
+		$this->_engine = new DisplayTextEngine($options);
 
 		if (!empty($this->constants)) {
 			$this->_engine->addConstant($this->constants);

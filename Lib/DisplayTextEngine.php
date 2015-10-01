@@ -11,7 +11,7 @@ App::uses('DisplayTextConstant', 'Layout.Lib');
 App::uses('LayoutAppHelper', 'Layout.View/Helper');
 
 
-class DisplayText {
+class DisplayTextEngine {
 
 	public $valid_tag_exp = ':A-Za-z0-9';	//Acceptable tag characters
 	public $allowableTags = '<br><hr><strong><em>';

@@ -1,11 +1,11 @@
 <?php
-App::uses('DisplayText', 'Layout.Lib');
+App::uses('DisplayTextEngine', 'Layout.Lib');
 
 class EmailText {
 	protected $DisplayText;
 
 	public static function display($text, $format = 'html', $options = array()) {
-		$DisplayText = new DisplayText();
+		$DisplayText = new DisplayTextEngine();
 
 		$text = $DisplayText->text($text, $options);
 		$style = Param::keyCheck($options, 'style', true, null);
