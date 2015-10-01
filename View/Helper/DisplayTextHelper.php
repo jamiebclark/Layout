@@ -43,6 +43,10 @@ class DisplayTextHelper extends LayoutAppHelper {
 	}
 
 
+	public function evalPhp($text) {
+		return $this->_engine->evanPhp($text, $this->viewVars);
+	}
+	
 /**
  * Runs all functions on text
  *  $options accepts the following:

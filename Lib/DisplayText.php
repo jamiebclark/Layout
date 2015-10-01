@@ -178,8 +178,10 @@ class DisplayText {
 	
 	//Evaluates any PHP included in the text.
 	//Only use this if you trust the content creator!
-	public function evalPhp($text) {
-		extract($this->viewVars);
+	public function evalPhp($text, $viewVars = null) {
+		if (!empty($viewVars)) {
+			extract($viewVars);
+		}
 		ob_start();
 		//debug($text);
 		eval("?>$text");
