@@ -15,6 +15,9 @@ class Markup {
 
 	public static $wikiModel;
 
+	const EMAIL_REGEX = '[a-zA-Z0-9&\-_.]+@[a-zA-Z0-9&\-_.]+';
+
+
 	public static function set($text, $options = array()) {
 		$options = array_merge(array(
 			'wikiModel' => self::$wikiModel,
@@ -46,7 +49,7 @@ class Markup {
  **/
 	public static function setLinks($text, $shrink = true) {
 		//Emails
-		$text = preg_replace('/[\n ]([a-zA-Z0-9&\-_.]+@[a-zA-Z0-9&\-_.]+)/',' <a href="mailto:$1">$1</a>',$text);
+		$text = preg_replace('/[\n ](' . self::EMAIL_REGEX . ')/',' <a href="mailto:$1">$1</a>',$text);
 		//Links
 		$text = preg_replace('/(^|[\n ])(((www|ftp)\.[^ ,""\s<\/]*)[^ ,""\s<]*)/',' <a href="http://$2">' . ($shrink ? '[$3]' : 'http://$2') . '</a>',$text);
 		$text = preg_replace('/(^|[\n ])([\w]+?:\/\/([^ ,""\s<\/]*)[^ ,""\s<]*)/',' <a href="$2">' . ($shrink ? '[$3]' : '$2') . '</a>',$text);
@@ -213,6 +216,7 @@ class Markup {
 			'/\[(\/[^\s]+)[\s]([^\]]+)\]/'						=>	'<a href="' . $webroot . '$1">$2</a>',
 			'/\[([http|\/|\.][^\s]+)\]/'						=>	'<a href="$1">$1</a>',
 			'/\[([http|\/|\.][^\s]+)[\s]([^\]]+)\]/'			=>	'<a href="$1">$2</a>',
+			'/\[(' . self::EMAIL_REGEX . ')[\s]([^\]]+)\]/'		=> 	'<a href="mailto:$1">$2</a>',
 			'/{{clear}}/'										=> 	'<br clear="all" />',
 			'/{{-}}/'											=> 	'<br clear="all" />',
 			//'/\{([http|\/|\.][^\s]+)[\s]([^\}]+)\}/'			=>	'<a href="$1">$2</a>',
