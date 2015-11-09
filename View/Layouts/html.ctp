@@ -47,10 +47,13 @@ $containerClass = !empty($fluid_layout_content) ? 'container-fluid' : 'container
 	</title>
 	<?php echo $this->Html->meta('icon'); ?>
 	<?php //<meta name="viewport" content="width=device-width"/> ?>
-	<?php		
-		if (!empty($description_for_layout)) {
+	<?php echo $this->Html->meta(['name' => 'og:url', 'content' => Router::url($this->request->here(false), true)]);  ?>
+	<?php echo $this->Html->meta(['name' => 'og:type', 'content' => 'website']); ?>
+
+	<?php if (!empty($description_for_layout)) {
 			$description_for_layout = str_replace("\n", '', strip_tags($description_for_layout));
 			echo $this->Html->meta('description', $description_for_layout);
+			echo $this->Html->meta(['name' => 'og:content', 'content' => $description_for_layout]);
 		}
 		
 		if (!empty($image_for_layout)) {
@@ -58,6 +61,7 @@ $containerClass = !empty($fluid_layout_content) ? 'container-fluid' : 'container
 				'rel' => 'image_src',
 				'href' => $image_for_layout
 			));
+			echo $this->Html->meta(['name' => 'og:img', 'content' => $image_for_layout]);
 		}
 
 		if ($head = $this->fetch('head')) {
