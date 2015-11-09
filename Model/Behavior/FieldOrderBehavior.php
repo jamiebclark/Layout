@@ -41,13 +41,13 @@ class FieldOrderBehavior extends ModelBehavior {
 		if (count($settings['subKeyFields']) > 0) {
 			$order = array();
 			foreach ($settings['subKeyFields'] as $field) {
-				$order[] = $Model->alias . '.' . $field;
+				$order[$Model->alias . '.' . $field] = 'ASC';
 			}
 			$Model->order = $order;
 		} else {
 			$Model->order = array();
 		}
-		$Model->order[] = $Model->alias . '.' . $settings['orderField'];
+		$Model->order[$Model->alias . '.' . $settings['orderField']] = 'ASC';
 	}
 	
 	/*
