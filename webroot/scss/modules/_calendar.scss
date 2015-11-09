@@ -101,6 +101,8 @@ $deadline-far-background:				transparent !default;
 	float: left;
 	margin: $line-height-computed 0;
 	width: $calendardate-width;
+	max-width: 100%;
+	
 	border: 0 !important;
 	border-radius: $border-radius-base;
 	
