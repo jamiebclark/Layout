@@ -47,8 +47,9 @@ $containerClass = !empty($fluid_layout_content) ? 'container-fluid' : 'container
 	</title>
 	<?php echo $this->Html->meta('icon'); ?>
 	<?php //<meta name="viewport" content="width=device-width"/> ?>
-	<?php echo $this->Html->meta(['property' => 'og:url', 'content' => Router::url($this->request->here(false), true)]);  ?>
+	<?php echo $this->Html->meta(['property' => 'og:title', 'content' => $title_for_layout]); ?>
 	<?php echo $this->Html->meta(['property' => 'og:type', 'content' => 'website']); ?>
+	<?php echo $this->Html->meta(['property' => 'og:url', 'content' => Router::url($this->request->here(false), true)]);  ?>
 
 	<?php if (!empty($description_for_layout)) {
 			$description_for_layout = str_replace("\n", '', strip_tags($description_for_layout));
