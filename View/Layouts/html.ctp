@@ -53,7 +53,7 @@ $containerClass = !empty($fluid_layout_content) ? 'container-fluid' : 'container
 	<?php if (!empty($description_for_layout)) {
 			$description_for_layout = str_replace("\n", '', strip_tags($description_for_layout));
 			echo $this->Html->meta('description', $description_for_layout);
-			echo $this->Html->meta(['property' => 'og:content', 'content' => $description_for_layout]);
+			echo $this->Html->meta(['property' => 'og:description', 'content' => $description_for_layout]);
 		}
 		
 		if (!empty($image_for_layout)) {
@@ -61,7 +61,7 @@ $containerClass = !empty($fluid_layout_content) ? 'container-fluid' : 'container
 				'rel' => 'image_src',
 				'href' => $image_for_layout
 			));
-			echo $this->Html->meta(['property' => 'og:img', 'content' => $image_for_layout]);
+			echo $this->Html->meta(['property' => 'og:image', 'content' => $image_for_layout]);
 		}
 
 		if ($head = $this->fetch('head')) {
