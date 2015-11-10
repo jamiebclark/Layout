@@ -479,6 +479,8 @@ class FormLayoutHelper extends LayoutAppHelper {
 			case 'url':
 				$options['append'] = '<i class="fa fa-globe"></i>';
 				$options['type'] = 'text';
+				$options['class'] = 'form-control code';
+				$options['placeholder'] = 'http://';
 			break;
 			case 'number':
 				$typeTrack = 'number';
