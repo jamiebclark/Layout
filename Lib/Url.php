@@ -64,7 +64,14 @@ class Url {
 		return preg_replace('/^www./', '', $url['host']);
 	}
 	
-	//Makes sure the URL is formatted correctly with the appropriate prefixes
+/**
+ * Makes sure the URL is formatted correctly with the appropriate prefixes
+ * 
+ * @param string $url The url to test
+ * @param array $options Additional options
+ *		- scheme:	An additional prefix other than 'http'
+ * @return string;
+ **/
 	public static function validate($url, $options = array()) {
 		if (substr($url,0,1) == '/') {
 			//If it's a local URL, add the local host
@@ -76,7 +83,7 @@ class Url {
 		}
 		return $url;
 	}
-	
+
 	public static function base() {
 		$self =& Url::getInstance();
 		$urlArray = $self::urlArray();
