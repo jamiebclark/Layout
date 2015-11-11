@@ -51,11 +51,14 @@ $containerClass = !empty($fluid_layout_content) ? 'container-fluid' : 'container
 	<?php echo $this->Html->meta(['property' => 'og:type', 'content' => 'website']); ?>
 	<?php echo $this->Html->meta(['property' => 'og:url', 'content' => Router::url($this->request->here(false), true)]);  ?>
 
-	<?php if (!empty($description_for_layout)) {
+	<?php if (!empty($description_for_layout)):
+			if (!empty($this->DisplayText)) {
+				$description_for_layout = $this->DisplayText->text($description_for_layout);
+			}
 			$description_for_layout = str_replace("\n", '', strip_tags($description_for_layout));
 			echo $this->Html->meta('description', $description_for_layout);
 			echo $this->Html->meta(['property' => 'og:description', 'content' => $description_for_layout]);
-		}
+		endif;
 		
 		if (!empty($image_for_layout)) {
 			echo $this->Html->tag('link', '', array(
