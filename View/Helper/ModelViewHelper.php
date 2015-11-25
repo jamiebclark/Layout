@@ -777,12 +777,15 @@ class ModelViewHelper extends LayoutAppHelper {
 	}
 
 	// Returns only the path to the model's image
-	function imageSrc($result, $options = array()) {
+	public function imageSrc($result, $options = array()) {
 		$result = $this->_getResult($result);
 		$options = $this->thumbOptions($result, $options);
 		$src = $this->Image->src($result, $options);
 		
-		list($plugin, $src) = pluginSplit($src);
+		// Looks for preceding plugin
+		$urlParts = explode('/', $src);
+		list($plugin, $urlParts[0]) = pluginSplit($urlParts[0]);
+		$src = implode('/', $urlParts);
 
 		if ($src[0] != '/' && strpos($src, '://') === false) {
 			$srcBase = Url::base();
