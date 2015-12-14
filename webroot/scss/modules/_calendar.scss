@@ -573,6 +573,9 @@ $cal-box-w: 2em;
 }
 
 .input-date-range {
+	select {
+		width: auto;
+	}
 	div {
 		float: left;
 		line-height: 30px;
@@ -583,15 +586,13 @@ $cal-box-w: 2em;
 			font-size: 20px;
 		}
 		&.input-date-range-radios {
-			border: 1px solid #f8f8f8;
-			padding: 4px;
-		}
-	}
-	.input-date-range-radios {
-		label {
-			float: left;
-			padding-top: 0 !important;
-			margin-right: 5px;
+			padding: $padding-base-vertical $padding-base-horizontal;
+			> label.radio {
+				float: left;
+				padding-top: 0 !important;
+				margin-top: 0 !important;
+				margin-right: 5px;
+			}
 		}
 	}
 }

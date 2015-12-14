@@ -46,9 +46,17 @@ table.table tr {
 
 
 
+
 td.dt {
 	text-align: right;
 	color: $text-color-lighter;
+}
+.td-empty {
+	color: $row-inactive-background;
+}
+.td-numeric {
+	text-align: center;
+	font-size: $font-size-large;
 }
 
 @media (min-width: $grid-float-breakpoint) {
