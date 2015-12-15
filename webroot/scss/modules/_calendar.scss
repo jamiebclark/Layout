@@ -572,27 +572,39 @@ $cal-box-w: 2em;
 	}
 }
 
+
+$input-date-range-height: 30px;
 .input-date-range {
 	select {
 		width: auto;
 	}
 	div {
 		float: left;
-		line-height: 30px;
-		margin-right: 5px;
-		padding: 5px;
+		line-height: $input-date-range-height;
+		padding: 0 $padding-base-horizontal;
+
 		&.spacer {
 			font-weight: bold;
 			font-size: 20px;
 		}
 		&.input-date-range-radios {
-			padding: $padding-base-vertical $padding-base-horizontal;
+			border: 0;
+			padding: 0;
+
 			> label.radio {
 				float: left;
 				padding-top: 0 !important;
 				margin-top: 0 !important;
 				margin-right: 5px;
+				> input {
+					height: $input-date-range-height;
+				}
 			}
+		}
+	}
+	.month, .day, .year {
+		> select {
+			height: $input-date-range-height + 2;
 		}
 	}
 }
