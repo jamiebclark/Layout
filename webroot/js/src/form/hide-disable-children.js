@@ -6,9 +6,13 @@
 		}
 		$(this).find(':input,select')
 			.filter(function() {
-				return $(this).prop('disabled', false) || !$(this).data('hide-disabled-set');
+				return $(this).prop('disabled') === false || !$(this).data('hide-disabled-set');
 			})
 			.each(function() {
+				console.log({
+					'Disabling': $(this).attr('name')
+				});
+
 				$(this)
 					.data('stored-disabled', $(this).prop('disabled'))
 					.data('hide-disabled-set', true)
@@ -26,6 +30,11 @@
 			if ($(this).data('stored-disabled')) {
 				setDisabled = $(this).data('stored-disabled');
 			}
+
+			console.log({
+				'Enabling': $(this).attr('name')
+			});
+
 			$(this)
 				.data('hide-disabled-set', false)
 				.prop('disabled', false);

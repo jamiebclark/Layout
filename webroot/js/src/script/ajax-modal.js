@@ -102,7 +102,7 @@
 							}
 						});
 						$('.form-actions:empty', $form).remove();
-						$(document).trigger('ajax-modal-loaded');
+						$(document).trigger('ajax-modal-loaded').ajaxComplete();
 					});
 					$ajaxWindow.modal('show');
 				});

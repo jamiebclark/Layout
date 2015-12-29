@@ -10,17 +10,15 @@
 				$checkedControl = $controls.filter(':checked');
 			}
 				
-			function select() {
+			function clickRadio() {
 				setVars();
-				
 				if (!$checkedControl.length) {
 					$checkedControl = $controls.first();
 				}
+				console.log("CLICKED RADIO: " + $controls.index($checkedControl));
 				if (!$checkedControl.is(':disabled')) {
 					var $choice = $checkedControl.closest('.input-choice');
-					$choices.each(function() {
-						$(this).removeClass('input-choice-active');
-					});
+					$choices.not($choice).removeClass('input-choice-active');
 					$choice.addClass('input-choice-active');
 
 					$(':input', $contents).each(function() {
@@ -39,6 +37,7 @@
 							return !$(this).closest('.input-choice').hasClass('input-choice-active');
 						})
 						.each(function() {
+							console.log("HIDING AND DISABLING CHILDREN");
 							$(this).hideDisableChildren();
 						});
 					$('.input-choice-content', $choice).showEnableChildren();
@@ -55,20 +54,23 @@
 							})
 						.click(function(e) {
 							$checkedControl = $(this);
-							select();
+							clickRadio();
 						})
 						.bind('layout-enabled', function() {
-							select();
+							clickRadio();
 						});
 				});
 				$list.data('input-choice-init', true);
+				$(document).ajaxComplete(function() {
+					clickRadio();
+				});
 				$(window).load(function() {
-					select();
+					clickRadio();
 				}).unload(function() {
-					select();
+					clickRadio();
 				});
 			}
-			select();
+			clickRadio();
 			return $list;
 		});
 	};
