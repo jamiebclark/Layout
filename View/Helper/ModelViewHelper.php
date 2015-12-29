@@ -35,17 +35,17 @@ class ModelViewHelper extends LayoutAppHelper {
 	protected $dateStartField = 'started';
 	protected $dateEndField = 'stopped';
 	
-	//Whether the urls should be formatted to include slugs: array('controller','action', 'id' => $id, 'slug' => $slug)
+	//Whether the urls should be formatted to include slugs: ['controller','action', 'id' => $id, 'slug' => $slug]
 	// Should be set up in Config/router first
 	protected $sluggable = false;	
 	
 	//The functions within the Address Book Helper to check using the media function
-	private $_addressBookFunctions = array('address', 'cityState', 'addline', 'addressLine');
+	private $_addressBookFunctions = ['address', 'cityState', 'addline', 'addressLine'];
 	
-	protected $_actions = array();
+	protected $_actions = [];
 
 	// Actions translated to their Iconic icon name
-	protected $actionIcons = array(
+	protected $actionIcons = [
 		'index' => 'list',
 		'active' => 'check_alt',
 		'add' => 'plus',
@@ -60,22 +60,22 @@ class ModelViewHelper extends LayoutAppHelper {
 		'move_down' => 'arrow_down',
 		'move_top' => 'upload',
 		'move_bottom' => 'download',
-	);
+	];
 	
 	// Actions that automatically translate to array
-	protected $autoActions = array(
+	protected $autoActions = [
 		'index', 'edit', 'delete', 'view', 'add', 
 		'move_up', 'move_down', 'move_top', 'move_bottom', 'settings',
 		'spam', 'clock',
-		'active' => array('activate' => true),
-	);
+		'active' => ['activate' => true],
+	];
 	
 	// The fields passed to each getAutoAction function
-	protected $autoActionFields = array('id', 'url', 'active');
+	protected $autoActionFields = ['id', 'url', 'active'];
 
 
-	public function __construct(View $view, $settings = array()) {
-		$this->setDefaultHelper(array(
+	public function __construct(View $view, $settings = []) {
+		$this->setDefaultHelper([
 			'Html', 
 			'Form',
 			'Layout.AddressBook',
@@ -85,7 +85,7 @@ class ModelViewHelper extends LayoutAppHelper {
 			'Layout.Image', 
 			'Layout.Layout',
 			'Text',
-		));
+		]);
 
 		parent::__construct($view, $settings);
 		
@@ -169,7 +169,7 @@ class ModelViewHelper extends LayoutAppHelper {
 	}
 
 // Adds an action to the action menu
-	function setAutoAction($action, $options = array()) {
+	function setAutoAction($action, $options = []) {
 		if (is_array($action)) {
 			foreach ($action as $key => $val) {
 				if (is_numeric($key)) {
@@ -186,13 +186,13 @@ class ModelViewHelper extends LayoutAppHelper {
 		}
 	}
 	
-	function linkActive($id, $action, $actionOptions, $options = array()) {
-		$options = array_merge(array(
-			'title' => array('Activate', 'Deactivate'),
-			'param' => array('activate', 'deactivate'),
+	function linkActive($id, $action, $actionOptions, $options = []) {
+		$options = array_merge([
+			'title' => ['Activate', 'Deactivate'],
+			'param' => ['activate', 'deactivate'],
 			'icon' => 'active',
 			'field' => $action,
-		), (array) $options);
+		], (array) $options);
 		$field = $options['field'];
 		$active = !empty($actionOptions[$field]) || !empty($actionOptions['result'][$field]);
 		foreach ($options as $k => $v) {
@@ -202,24 +202,24 @@ class ModelViewHelper extends LayoutAppHelper {
 		}
 		extract($options);
 		$class = $active ? 'active' : null;
-		return array($title, array($param => $id), compact('title', 'icon', 'class'));
+		return array($title, [$param => $id], compact('title', 'icon', 'class'));
 	}
 	
-	function getAutoAction($action, $id, $options = array()) {
-		$baseUrl = !empty($options['url']) ? $options['url'] : array();
-		$baseUrl += array('controller' => $this->controller, $id);
+	function getAutoAction($action, $id, $options = []) {
+		$baseUrl = !empty($options['url']) ? $options['url'] : [];
+		$baseUrl += ['controller' => $this->controller, $id];
 		$baseUrl['action'] = $action;
 		$menuItem = $action;
 		
-		if (in_array($action, array('up', 'down', 'top', 'bottom'))) {
-			$baseUrl = array($action => $id);
+		if (in_array($action, ['up', 'down', 'top', 'bottom'])) {
+			$baseUrl = [$action => $id];
 			$action = 'move_' . $action;
 		}
 		
 		if ($action == 'delete') {
-			$menuItem = array('Delete', $baseUrl, array('title' => 'Delete ' . $this->modelHuman), "Delete this {$this->modelHuman}?");
+			$menuItem = ['Delete', $baseUrl, ['title' => 'Delete ' . $this->modelHuman], "Delete this {$this->modelHuman}?"];
 		} else if ($this->isAutoAction($action)) {
-			$actionOptions = isset($this->autoActions[$action]) ? $this->autoActions[$action] : array();
+			$actionOptions = isset($this->autoActions[$action]) ? $this->autoActions[$action] : [];
 			$title = Inflector::humanize($action);
 			$itemOptions = compact('title');
 			foreach ($options as $key => $val) {
@@ -245,7 +245,7 @@ class ModelViewHelper extends LayoutAppHelper {
 				if (!empty($actionOptions['addUrl'])) {
 					$baseUrl = $actionOptions['addUrl'] + $baseUrl;
 				}
-				$menuItem = array($title, $baseUrl, $itemOptions);
+				$menuItem = [$title, $baseUrl, $itemOptions];
 			}
 		}
 		if (empty($menuItem[2]['icon']) && isset($this->actionIcons[$action])) {
@@ -261,10 +261,10 @@ class ModelViewHelper extends LayoutAppHelper {
 		return isset($this->autoActions[$action]) || in_array($action, $this->autoActions);
 	}
 	
-	function adminMenu($actions, $result = array(), $actionMenuOptions = array(), $navBarOptions = array()) {
-		$navBarOptions = array_merge(array(
+	function adminMenu($actions, $result = [], $actionMenuOptions = [], $navBarOptions = []) {
+		$navBarOptions = array_merge([
 			'title' => 'Staff Only',
-		), $navBarOptions);
+		], $navBarOptions);
 		$navBarOptions = $this->addClass($navBarOptions, 'navbar-admin');
 		extract($navBarOptions);
 		$actionMenuOptions = $this->addClass($actionMenuOptions, 'pull-right');
@@ -273,18 +273,18 @@ class ModelViewHelper extends LayoutAppHelper {
 		return $this->Layout->navBar($menu, $title, $navBarOptions);
 	}
 	
-	function actionMenu($actions = null, $result = array(), $attrs = array()) {
+	function actionMenu($actions = null, $result = [], $attrs = []) {
 		if (!isset($attrs)) {
 			$attrs = $result;
 		}
-		$attrs = array_merge(array(
+		$attrs = array_merge([
 			'icons' => true,	// Displays an icon if found for each action
 			'text' => false,	// Displays the link text for each action
 			'active' => null,
 			'id' => null,
-			'url' => array(),
+			'url' => [],
 			'vertical' => false,
-		), $attrs);
+		], $attrs);
 		$attrs = $this->addClass($attrs, 'action-menu inline');
 		if ($attrs['vertical']) {
 			$attrs['text'] = true;
@@ -292,7 +292,7 @@ class ModelViewHelper extends LayoutAppHelper {
 		if (empty($attrs['url']) && !empty($result['id'])) {
 			$attrs['url'] = $this->modelUrl($result);
 		}
-		$menu = array();
+		$menu = [];
 		$useIcons = !empty($attrs['icons']);
 		
 		if (!empty($attrs['autoActions'])) {
@@ -302,7 +302,7 @@ class ModelViewHelper extends LayoutAppHelper {
 			foreach ($actions as $action => $config) {
 				if (is_numeric($action)) {
 					$action = $config;
-					$config = array();
+					$config = [];
 				}
 
 				foreach ($this->autoActionFields as $field) {
@@ -354,11 +354,11 @@ class ModelViewHelper extends LayoutAppHelper {
 					}
 				}
 				if (is_array($menuItem)) {
-					list($linkTitle, $linkUrl, $linkOptions, $linkPost) = $menuItem + array(null, null, null, null);
+					list($linkTitle, $linkUrl, $linkOptions, $linkPost) = $menuItem + [null, null, null, null];
 					if ((empty($linkUrl['controller']) || ($linkUrl['controller'] == $this->controller)) && !isset($linkUrl[0])) {
 						$linkUrl[0] = $id;
 					}
-					$linkOptions = $this->addClass($linkOptions, 'btn btn-default');
+					$linkOptions = $this->addClass($linkOptions, 'btn btn-default btn-sm');
 					$linkOptions['escape'] = false;
 					if (isset($linkOptions['icon'])) {
 						if (strstr($linkOptions['icon'], '<') !== false) {
@@ -392,7 +392,7 @@ class ModelViewHelper extends LayoutAppHelper {
 					}
 
 				} else {
-					$menu[] = $this->Html->tag('span', $menuItem, array('class' => 'btn btn-default'));
+					$menu[] = $this->Html->tag('span', $menuItem, ['class' => 'btn btn-default btn-sm']);
 				}
 			}
 		}
@@ -401,12 +401,12 @@ class ModelViewHelper extends LayoutAppHelper {
 	}
 	
 	
-	function link($result, $options = array()) {
-		$options = array_merge(array(
+	function link($result, $options = []) {
+		$options = array_merge([
 			'class' => $this->cssClass,
 			'escape' => false,
-			'titleFields' => array('truncate'),
-		), (array) $options);
+			'titleFields' => ['truncate'],
+		], (array) $options);
 		$url = !empty($options['url']) ? $options['url'] : $this->modelUrl($result);
 		if (isset($options['prefix'])) {
 			if ($options['prefix'] === false) {
@@ -420,7 +420,7 @@ class ModelViewHelper extends LayoutAppHelper {
 			$url += $urlAdd;
 		}
 
-		$titleOptions = array('tag' => false);
+		$titleOptions = ['tag' => false];
 		if ($titleFields = Param::keyCheck($options, 'titleFields', true)) {
 			foreach ($titleFields as $field) {
 				if ($val = Param::keyCheck($options, $field, true)) {
@@ -431,14 +431,14 @@ class ModelViewHelper extends LayoutAppHelper {
 
 		$title = $this->title($result, $titleOptions);
 		if (!empty($options['img'])) {
-			$imgOptions = array();
+			$imgOptions = [];
 			if ($options['img'] !== true) {
 				$imgOptions['dir'] = $options['img'];
 			}
 			$title = $this->thumb($result, $imgOptions). ' ' . $title;		
 		}
 
-		$link = $this->Html->link($title, $url,array('escape' => false) + $options);
+		$link = $this->Html->link($title, $url,['escape' => false] + $options);
 		
 		if (!empty($options['div'])) {
 			$options['tag'] = 'div';
@@ -448,7 +448,7 @@ class ModelViewHelper extends LayoutAppHelper {
 			if (empty($options['tagClass'])) {
 				$options['tagClass'] = null;
 			}
-			$link = $this->Html->tag($options['tag'], $link, array('class' => $options['tagClass']));
+			$link = $this->Html->tag($options['tag'], $link, ['class' => $options['tagClass']]);
 			unset($options['tag']);
 			unset($options['div']);
 			unset($options['tagClass']);
@@ -456,8 +456,8 @@ class ModelViewHelper extends LayoutAppHelper {
 		return $link;
 	}
 	
-	function title($result, $options = array()) {
-		$options = array_merge(array(
+	function title($result, $options = []) {
+		$options = array_merge([
 			'tag' => 'h2',
 			'text' => '',
 			'default' => '<em>No Title</em>',
@@ -466,7 +466,7 @@ class ModelViewHelper extends LayoutAppHelper {
 			'truncate' => false,
 			'url' => false,
 			'alias' => null,
-		), (array) $options);
+		], (array) $options);
 		$options = $this->addClass($options, strtolower($this->name) . '-title');
 		extract($options);
 		$result = $this->_getResult($result, $alias);
@@ -487,7 +487,7 @@ class ModelViewHelper extends LayoutAppHelper {
 			if ($url === true) {
 				$url = $this->modelUrl($result);
 			}
-			$text = $this->Html->link($text, $url, array('escape' => false));
+			$text = $this->Html->link($text, $url, ['escape' => false]);
 		}
 		if (!empty($tag)) {
 			$text = $this->Html->tag($tag, $text, compact('class'));
@@ -499,11 +499,11 @@ class ModelViewHelper extends LayoutAppHelper {
  * If a descriptionField is set, formats the next and wraps it in a tag
  *
  **/
-	function description($result, $options = array()) {
-		$options = array_merge(array(
+	function description($result, $options = []) {
+		$options = array_merge([
 			'tag' => 'div',
 			'class' => 'media-description',
-		), $options);
+		], $options);
 		$out = '';
 		if (!empty($this->descriptionField) && !empty($result[$this->descriptionField])) {
 			$out = $this->DisplayText->text($result[$this->descriptionField], $options);
@@ -519,11 +519,11 @@ class ModelViewHelper extends LayoutAppHelper {
 	 * @param array $options
 	 * @return string Media HTML element
 	 **/
-	function media($result, $options = array()) {
-		$options = array_merge(array(
+	function media($result, $options = []) {
+		$options = array_merge([
 			'tag' => 'div',							//Tag wrapper
 			'dir' => $this->defaultMediaDir,		//Thumbnail directory
-			'thumb' => array(),						//Thumbnail options
+			'thumb' => [],						//Thumbnail options
 			'url' => null,							//Use a custom URL instead of the automated one
 			'urlAdd' => null,						//Additional parameters to pass to the url
 			'contentTag' => 'p',					//Tag to wrap the individual content elements
@@ -535,7 +535,7 @@ class ModelViewHelper extends LayoutAppHelper {
 			'alias' => $this->modelName,			//Alias of the primary model in the result
 			'title' => null,						//Custom title
 			'actionMenu' => null,					//Actions to be added to an action menu within media element
-		), $options);
+		], $options);
 
 		$options = $this->addClass($options, 'media media-' . strtolower($this->modelName));
 		if (!empty($options['dir'])) {
@@ -582,15 +582,15 @@ class ModelViewHelper extends LayoutAppHelper {
 			$out .= $this->thumb($result, $thumb);
 		}
 		if (!empty($right)) {
-			$out .= $this->Html->tag('div', $right, array('class' => 'pull-right'));
+			$out .= $this->Html->tag('div', $right, ['class' => 'pull-right']);
 		}
 		//Body
-		$titleOptions = compact('url', 'alias') + array(
+		$titleOptions = compact('url', 'alias') + [
 			'class' => 'media-title ' . $this->cssClass,
 			'tag' => $titleTag,
 			'text' => $title,
 			'link' => $link,
-		);
+		];
 
 		if (!empty($titleClass)) {
 			$titleOptions = $this->addClass($titleOptions, $titleClass);
@@ -599,7 +599,7 @@ class ModelViewHelper extends LayoutAppHelper {
 	
 		foreach ($this->_addressBookFunctions as $func) {
 			if (!empty($$func)) {
-				$line = $this->AddressBook->$func($modelResult, array('tag' => 'small'));
+				$line = $this->AddressBook->$func($modelResult, ['tag' => 'small']);
 				if (trim(strip_tags($line)) != "") {
 					$body .= $line . "<br/>\n";
 				}
@@ -614,7 +614,7 @@ class ModelViewHelper extends LayoutAppHelper {
 			if (!empty($actionMenu[0]) && is_array($actionMenu[0])) {
 				list($actionMenu, $actionMenuOptions) = $actionMenu;
 			} else {
-				$actionMenuOptions = array();
+				$actionMenuOptions = [];
 			}
 			$actionMenuOptions = $this->addClass($actionMenuOptions, 'media-actionmenu');
 			$actionMenu = $this->actionMenu($actionMenu, $modelResult, $actionMenuOptions);
@@ -626,23 +626,23 @@ class ModelViewHelper extends LayoutAppHelper {
 				$out .= $actionMenu;
 			}
 		}
-		$out .= $this->Html->tag('div', $body, array('class' => 'media-body')) . "\n";
+		$out .= $this->Html->tag('div', $body, ['class' => 'media-body']) . "\n";
 		$out = $this->Html->tag($tag, $out, $returnOptions);
 
 		if (!empty($options['hover']) && method_exists($this, 'hoverContent') && ($hoverContent = $this->hoverContent($result))) {
-			$out = $this->Layout->hover($out, $hoverContent, array('block' => true));
+			$out = $this->Layout->hover($out, $hoverContent, ['block' => true]);
 		}
 
 		if (!empty($wrapTag)) {
 			if (!empty($actionMenu) && !empty($link)) {
 				$out .= $actionMenu;
 			}
-			$out = $this->Html->tag($wrapTag, $out, array('class' => 'media-wrap'));
+			$out = $this->Html->tag($wrapTag, $out, ['class' => 'media-wrap']);
 		}
 		return $out;
 	}
 	
-	function mediaList($results, $options = array(), $listOptions = array()) {
+	function mediaList($results, $options = [], $listOptions = []) {
 		$out = '';
 		$listOptions = $this->addClass($listOptions, 'media-list');
 		if (empty($results)) {
@@ -650,7 +650,7 @@ class ModelViewHelper extends LayoutAppHelper {
 				$out = $this->Html->div('lead', $listOptions['empty']);
 			}
 		} else {
-			$paginateOptions = array();
+			$paginateOptions = [];
 			if (!empty($options['paginate']) && $options['paginate'] !== true) {
 				$paginateOptions = $options['paginate'];
 			}
@@ -662,7 +662,7 @@ class ModelViewHelper extends LayoutAppHelper {
 				if (!empty($listOptions['active']) && $listOptions['active'] == $id) {
 					$passOptions = $this->addClass($passOptions, 'active');
 				}
-				$out .= $this->media($result, array('tag' => 'li') + (array) $passOptions);
+				$out .= $this->media($result, ['tag' => 'li'] + (array) $passOptions);
 				if (!empty($listOptions['limit']) && ++$count >= $listOptions['limit']) {
 					break;
 				}
@@ -672,15 +672,15 @@ class ModelViewHelper extends LayoutAppHelper {
 		return $out;
 	}
 	
-	function linkList($result, $linkOptions = array(), $listOptions = array()) {
-		$list = array();
+	function linkList($result, $linkOptions = [], $listOptions = []) {
+		$list = [];
 		foreach ($result as $row) {
 			$list[] = $this->link($this->_getResult($row), $linkOptions);
 		}
 		return $this->Html->tag('ul', '<li>' . implode('</li><li>', $list) . '</li>', $listOptions);	
 	}	
 
-	public function modelUrl($result, $options = array()) {
+	public function modelUrl($result, $options = []) {
 		$modelResult = $this->_getResult($result);
 		$controller = !empty($options['controller']) ? $options['controller'] : $this->controller;
 		$action = !empty($options['action']) ? $options['action'] : 'view';
@@ -702,7 +702,7 @@ class ModelViewHelper extends LayoutAppHelper {
 		}
 		
 		if ($this->sluggable && !empty($title)) {
-			$url += array('id' => $id, 'slug' => $title);
+			$url += ['id' => $id, 'slug' => $title];
 		} else {
 			$url[] = $id;
 		}
@@ -724,7 +724,7 @@ class ModelViewHelper extends LayoutAppHelper {
 		return $url;
 	}
 	
-	function thumb($result, $options = array()) {
+	function thumb($result, $options = []) {
 		$alias = !empty($options['alias']) ? $options['alias'] : null;
 		$result = $this->_getResult($result, $alias);
 		if (Param::keyCheck($options, 'url') === true && !empty($result)) {
@@ -757,13 +757,13 @@ class ModelViewHelper extends LayoutAppHelper {
 		
 		if (!empty($out)) {
 			if (!empty($hasMedia) && !empty($url)) {
-				$out = $this->Html->link($out, $url, array('escape' => false, 'class' => 'pull-left'));
+				$out = $this->Html->link($out, $url, ['escape' => false, 'class' => 'pull-left']);
 			}
 		}
 		return $out;
 	}
 	
-	function image($Result, $options = array()) {
+	function image($Result, $options = []) {
 		$return = '';
 		if (!empty($options['src'])) {
 			$src = $options['src'];
@@ -777,7 +777,7 @@ class ModelViewHelper extends LayoutAppHelper {
 	}
 
 	// Returns only the path to the model's image
-	public function imageSrc($result, $options = array()) {
+	public function imageSrc($result, $options = []) {
 		$result = $this->_getResult($result);
 		$options = $this->thumbOptions($result, $options);
 		$src = $this->Image->src($result, $options);
@@ -797,17 +797,17 @@ class ModelViewHelper extends LayoutAppHelper {
 		return $src;
 	}
 	
-	function thumbText($result, $options = array()) {
+	function thumbText($result, $options = []) {
 		$text = 'True';
 		if (!empty($options['text']) && $options['text'] !== true) {
 			$text = $options['text'];
 		}
 		$options = $this->addClass($options, 'thumbnail-text');
-		$out = $this->Html->tag('span', $text, $this->keyFilter($options, array('style', 'class', 'id')));
+		$out = $this->Html->tag('span', $text, $this->keyFilter($options, ['style', 'class', 'id']));
 		return $out;
 	}
 	
-	function thumbDate($result, $options = array()) {
+	function thumbDate($result, $options = []) {
 		if (isset($options['dir'])) {
 			$options = $this->addClass($options, $options['dir']);
 		}
@@ -830,9 +830,9 @@ class ModelViewHelper extends LayoutAppHelper {
 		return $this->Calendar->calendarDate($start, $end, $options);
 	}
 	
-	function thumbnail($result, $options = array()) {
+	function thumbnail($result, $options = []) {
 		$modelResult = $this->_getResult($result);
-		$options = array_merge(array(
+		$options = array_merge([
 			'dir' => 'mid',
 			'tag' => 'div',		
 			'image' => true,		// Display the image
@@ -841,7 +841,7 @@ class ModelViewHelper extends LayoutAppHelper {
 			'link' => false,		// Make the entire thumbnail a link
 			'empty' => false,		// How to handle a not found image
 			'captionTitleTag' => 'h3',
-		), $options);
+		], $options);
 		$options = $this->addClass($options, 'thumbnail');
 		extract($options);
 		if ($url === true) {
@@ -857,7 +857,7 @@ class ModelViewHelper extends LayoutAppHelper {
 		}
 		$out = '';
 		if ($image) {
-			$out .= $this->thumb($result, compact('dir', 'url') + array('dirClass' => false));
+			$out .= $this->thumb($result, compact('dir', 'url') + ['dirClass' => false]);
 		}
 		if (empty($out)) {
 			if ($empty === false) {
@@ -873,19 +873,19 @@ class ModelViewHelper extends LayoutAppHelper {
 		$thumbnailOptions = compact('class');
 		
 		if ($link) {
-			return $this->Html->link($out, $link, $thumbnailOptions + array('escape' => false));
+			return $this->Html->link($out, $link, $thumbnailOptions + ['escape' => false]);
 		} else {
 			return $this->Html->tag($tag, $out, $thumbnailOptions);
 		}
 	}
 	
-	function thumbnailCaption($result, $options = array()) {
+	function thumbnailCaption($result, $options = []) {
 		$caption = '';
 		$modelResult = $this->_getResult($result);
 		$tag = !empty($options['captionTitleTag']) ? $options['captionTitleTag'] : 'h3';
 		$useCaption = !empty($options['caption']) ? $options['caption'] : true;
 		if (!empty($modelResult['title']) && ($useCaption === true || $useCaption == 'title')) {
-			$caption .= $this->title($result, compact('tag') + array('url' => $options['url'], 'class' => 'caption-title'));
+			$caption .= $this->title($result, compact('tag') + ['url' => $options['url'], 'class' => 'caption-title']);
 		}
 		if ($useCaption === true || $useCaption == 'description') {
 			if ($description = $this->thumbnailCaptionDescription($result, $options)) {
@@ -901,7 +901,7 @@ class ModelViewHelper extends LayoutAppHelper {
 		return $caption;	
 	}
 	
-	function thumbnailCaptionDescription($result, $options = array()) {
+	function thumbnailCaptionDescription($result, $options = []) {
 		$result = $this->_getResult($result);
 		if (!empty($result['description'])) {
 			return $this->DisplayText->text($result['description']);
@@ -913,12 +913,12 @@ class ModelViewHelper extends LayoutAppHelper {
  * Outputs a breadcrumb list based on a getPath result
  *
  **/
-	public function pathBreadcrumb($resultPath, $options = array()) {
-		$options = array_merge(array(
+	public function pathBreadcrumb($resultPath, $options = []) {
+		$options = array_merge([
 			'lastLink' => false,		//Should the last item be a link
 			'class' => 'breadcrumb',	
 			'url' => null, 				//Set an alternate url from the default one
-		), $options);
+		], $options);
 		extract($options);
 		$count = count($resultPath) - 1;
 		$out = '';
@@ -932,7 +932,7 @@ class ModelViewHelper extends LayoutAppHelper {
 		return $this->Html->tag('ol', $out, compact('class'));
 	}
 	
-	private function _getColSizeClass($options = array(), $unset = true) {
+	private function _getColSizeClass($options = [], $unset = true) {
 		$class = '';
 		//Converts from Bootstrap 2.X spanN classes
 		if (isset($options['span'])) {
@@ -941,7 +941,7 @@ class ModelViewHelper extends LayoutAppHelper {
 				unset($options['span']);
 			}
 		}
-		$suffixes = array('', '-offset');
+		$suffixes = ['', '-offset'];
 		//Cycles through all of the column size types
 		foreach ($this->Layout->colSizes as $sizeKey) {
 			foreach ($suffixes as $suffix) {
@@ -957,11 +957,11 @@ class ModelViewHelper extends LayoutAppHelper {
 		return trim($class);
 	}
 	
-	function thumbnails($results, $options = array()) {
-		$options = array_merge(array(
+	function thumbnails($results, $options = []) {
+		$options = array_merge([
 			'id' => null,
 			'urlAdd' => null,
-		), $options);
+		], $options);
 		$options = $this->addClass($options, 'photo-thumbnails');
 		extract($options);
 		$wrapClass = $class;
@@ -975,7 +975,7 @@ class ModelViewHelper extends LayoutAppHelper {
 
 		foreach ($results as $result) {
 			$modelResult = $this->_getResult($result);
-			$thumbnailOptions = !empty($options['thumbnailOptions']) ? $options['thumbnailOptions'] : array();
+			$thumbnailOptions = !empty($options['thumbnailOptions']) ? $options['thumbnailOptions'] : [];
 			$thumbnailOptions += $options;
 			unset($thumbnailOptions['thumbnailOptions']);
 			if ($modelResult['id'] == $id) {
@@ -999,7 +999,7 @@ class ModelViewHelper extends LayoutAppHelper {
 	 * Sets the basic options to pass on to Image helper to create a profile thumbnail
 	 *
 	 **/
-	protected function thumbOptions($Result, $options = array()) {
+	protected function thumbOptions($Result, $options = []) {
 		if (is_numeric($Result)) {
 			$modelId = $Result;
 		} else if (!empty($Result[$this->primaryKey])) {
@@ -1032,7 +1032,7 @@ class ModelViewHelper extends LayoutAppHelper {
 	}
 	
 	function neighbors($neighbors) {
-		$fields = array('prev', 'next', 'up' => 'parent');
+		$fields = ['prev', 'next', 'up' => 'parent'];
 		$prev = $next = $up = null;
 		foreach ($fields as $neighborField => $resultField) {
 			if (is_numeric($neighborField)) {
@@ -1040,28 +1040,28 @@ class ModelViewHelper extends LayoutAppHelper {
 			}
 			if (!empty($neighbors[$resultField])) {
 				$result = $this->_getResult($neighbors[$resultField]);
-				$$neighborField = array($this->title($result, array('tag' => false)), $this->modelUrl($result));
+				$$neighborField = array($this->title($result, ['tag' => false]), $this->modelUrl($result));
 			}
 		}
 		return $this->Layout->neighbors($prev, $next, $up);
 	}
 
 
-	function inputThumb($fieldName = null, $options = array()) {
-		$options = array_merge(array(
+	function inputThumb($fieldName = null, $options = []) {
+		$options = array_merge([
 			'name' => 'add_image',
 			'label' => 'Photo',
 			'deleteName' => 'delete_file',
 			'image' => '',
-		), $options);
+		], $options);
 		extract($options);
 		$add = !empty($this->request->data[$this->modelName]['id']);
 		$hasImg = !empty($this->request->data[$this->modelName][$this->imageField]);
 		if (empty($image)) {
-			$image = $this->thumb($hasImg ? $this->request->data[$this->modelName] : 0, array(
+			$image = $this->thumb($hasImg ? $this->request->data[$this->modelName] : 0, [
 				'class' => 'input-thumb-image',
 				'type' => 'image',
-			));
+			]);
 		}
 		$out = $image;
 		if (empty($fieldName)) {
@@ -1075,12 +1075,12 @@ class ModelViewHelper extends LayoutAppHelper {
 		));
 		$out = $this->Html->div('input-thumb', $out);
 		if ($hasImg && $deleteName) {
-			$out .= $this->Form->input($deleteName, array(
+			$out .= $this->Form->input($deleteName, [
 				'type' => 'checkbox',
 				'label' => 'Delete photo',
 				'div' => 'input-thumb-delete',
 				'class' => 'checkbox',
-			));
+			]);
 		}
 		return $out;
 	}	
