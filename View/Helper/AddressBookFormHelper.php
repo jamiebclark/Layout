@@ -157,7 +157,7 @@ class AddressBookFormHelper extends LayoutAppHelper {
 			),
 			$this->_numericField('country', $numerical, $addressPrefix) => array(
 				'default' => 'US', 
-				'label' => 'County',
+				'label' => 'Country',
 				'options' => $countries,
 				'div' => 'addressbookform-country',
 			),
