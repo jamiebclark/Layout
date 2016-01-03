@@ -122,7 +122,8 @@
 					containerBottom,
 					containerPos;
 				setSizes();
-				$(window).scroll(function() {
+				
+				$(window).on('scroll', function() {
 					scrollTop = $(window).scrollTop() + topOffset;
 					setSizes();
 					checkIsFixed();

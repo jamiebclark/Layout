@@ -46,6 +46,10 @@
 	}
 }
 
+.layout-heading-media {
+	padding-top: $padding-base-vertical;
+}
+
 .panel {
 	> .media {
 		margin: 0;
@@ -107,8 +111,8 @@ li.media {
 	.media-actionmenu {
 		display: none;
 		position: absolute;
-		top: 0;
-		right: 0;
+		top: $padding-base-vertical;
+		right: $padding-base-horizontal;
 		z-index: $hover-z-index + 1;
 	}
 }
@@ -129,10 +133,16 @@ li.media {
 ul.media-list {
 	margin-top: $media-margin-vertical;
 	margin-bottom: $media-margin-vertical;
-	li > a.media {
-		margin-bottom: 0;
+	> li.media {
+		border: 1px solid $list-group-border;
+	}
+
+	> li.media, > li > a.media {
+		padding: $padding-large-vertical $padding-large-horizontal;
+		margin: 0 0 -1px 0 !important;
 		border-radius: 0;
-		margin-top: -1px;
+	}
+	li > a.media {
 		position: relative;
 		z-index: 1;
 		&.active {
