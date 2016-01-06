@@ -15,8 +15,9 @@
 				if (!$checkedControl.length) {
 					$checkedControl = $controls.first();
 				}
-				console.log("CLICKED RADIO: " + $controls.index($checkedControl));
+
 				if (!$checkedControl.is(':disabled')) {
+					$checkedControl.prop('checked', true);
 					var $choice = $checkedControl.closest('.input-choice');
 					$choices.not($choice).removeClass('input-choice-active');
 					$choice.addClass('input-choice-active');
@@ -37,7 +38,6 @@
 							return !$(this).closest('.input-choice').hasClass('input-choice-active');
 						})
 						.each(function() {
-							console.log("HIDING AND DISABLING CHILDREN");
 							$(this).hideDisableChildren();
 						});
 					$('.input-choice-content', $choice).showEnableChildren();
@@ -61,12 +61,11 @@
 						});
 				});
 				$list.data('input-choice-init', true);
-				$(document).ajaxComplete(function() {
+				$(document).bind('read ajaxComplete', function() {
 					clickRadio();
 				});
-				$(window).load(function() {
-					clickRadio();
-				}).unload(function() {
+
+				$(window).bind('load unload', function() {
 					clickRadio();
 				});
 			}
