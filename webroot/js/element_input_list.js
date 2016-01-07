@@ -1,32 +1,37 @@
 (function($) {
-	$.fn.elementList = function() {
+	$.fn.elementInputList = function() {
 		return this.each(function() {
 			var $list = $(this),
-				$items = $('.element-list-item', $list),
-				$template = $('.element-list-template', $list),
-				$button = $('.element-list-add', $list);
+				$items = $('.element-input-list-item', $list),
+				$template = $('.element-input-list-template', $list),
+				$button = $('.element-input-list-add', $list);
 
 			function initItem($item) {
-				if (!$item.data('element-list-item-init')) {
+				if (!$item.data('element-input-list-item-init')) {
 					var index = $items.index($item),
-						$key = $('.element-list-key', $item);
+						$key = $('.element-input-list-key', $item);
 
-					$item.data('element-list-item-index', index);
-					$item.wrapInner('<div class="element-list-item-inner"></div>');
-					$item.data('element-list-item-init', true);
+					$item.data('element-input-list-item-index', index);
+					$item.wrapInner('<div class="element-input-list-item-inner"></div>');
+					$item.data('element-input-list-item-init', true);
 
-					if ($key) {
+					if ($key.length) {
+						console.log($key);
+						console.log($item);
+						console.log($key.html());
+						console.log($key.attr('name'));
+
 						var name = $key.attr('name').replace('[id]', '[remove]');
 						$button = $('<input/>')
 							.attr('name', name)
 							.attr('type', 'checkbox')
 							.attr('tabindex', -1)
-							.addClass('element-list-item-remove-input')
+							.addClass('element-input-list-item-remove-input')
 							.attr('value', index)
 							.appendTo($item);
 
 						$button
-							.wrap('<label class="element-list-item-remove-label btn btn-default"></label>')
+							.wrap('<label class="element-input-list-item-remove-label btn btn-default"></label>')
 							.after('<i class="fa fa-times"></i>')
 							.bind('change', function() {
 								if ($(this).is(':checked')) {
@@ -49,13 +54,13 @@
 
 			function removeItem($item) {
 				$item.addClass('removed');
-				var $inner = $('.element-list-item-inner', $item).slideUp();				
+				var $inner = $('.element-input-list-item-inner', $item).slideUp();				
 				disableInputs($inner);
 			}
 
 			function restoreItem($item) {
 				$item.removeClass('removed');
-				var $inner = $('.element-list-item-inner', $item).slideDown();
+				var $inner = $('.element-input-list-item-inner', $item).slideDown();
 				enableInputs($inner);
 			}
 
@@ -63,14 +68,14 @@
 				console.log("DISABLING INPUTS: " + $el.length);
 				$(':input', $el).each(function() {
 					var disabledVal = $(this).prop('disabled');
-					$(this).prop('disabled', 'disabled').data('element-list-item-disabled', disabledVal);
+					$(this).prop('disabled', 'disabled').data('element-input-list-item-disabled', disabledVal);
 				});
 			}
 
 			function enableInputs($el) {
 				$(':input', $el).each(function() {
-					if ($(this).data('element-list-item-disabled')) {
-						$(this).prop('disabled', $(this).data('element-list-item-disabled'));
+					if ($(this).data('element-input-list-item-disabled')) {
+						$(this).prop('disabled', $(this).data('element-input-list-item-disabled'));
 					} if ($(this).data('hide-disabled-set')) {
 						$(this).prop('disabled', $(this).data('hide-disabled-set'));
 					} else {
@@ -84,12 +89,12 @@
 					.clone()
 					.hide()
 					.insertAfter($items.last())
-					.removeClass('element-list-template')
-					.addClass('element-list-item');
+					.removeClass('element-input-list-template')
+					.addClass('element-input-list-item');
 
 				enableInputs($item);
 
-				$items = $('.element-list-item', $list);
+				$items = $('.element-input-list-item', $list);
 
 				$(':input,label', $item).each(function() {
 					templateReplace($(this), 'name');
@@ -102,7 +107,7 @@
 				$(document).trigger('ajaxComplete');
 			}
 
-			if (!$list.data('element-list-init')) {
+			if (!$list.data('element-input-list-init')) {
 				console.log('Disabling templates')
 				disableInputs($template);
 				$button.click(function(e) {
@@ -113,7 +118,7 @@
 					initItem($(this));
 				});
 
-				$list.data('element-list-init', true);
+				$list.data('element-input-list-init', true);
 
 				$(document).ajaxComplete(function() {
 					disableInputs($template);
@@ -125,6 +130,6 @@
 	}
 	$(document)
 		.bind('ready ajaxComplete', function() {
-			$('.element-list').elementList();
+			$('.element-input-list').elementInputList();
 		});
 })(jQuery);
