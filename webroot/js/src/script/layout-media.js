@@ -1,7 +1,8 @@
 // Media
 (function($) {
 	$.fn.layoutMedia = function() {
-		var fadeDuration = 100;
+		var fadeDuration = 250;
+		var fadeEasing = "easeOutSine";
 		return this.each(function() {
 			var $this = $(this),
 				$wrap = $this.closest('.media-wrap'),
@@ -11,17 +12,19 @@
 			if ($wrap.length === 0) {
 				$actions = $('.media-actionmenu', $this);
 			}
-			$hover.hover(function() {
-				$this.addClass('media-hover');
-				$actions.fadeIn(fadeDuration);
-			}, function() {
-				$this.removeClass('media-hover');
-				$actions.fadeOut(fadeDuration);
-			});
+			if (!$this.data('layout-media-init')) {
+				$hover.hover(function() {
+					$this.addClass('media-hover');
+					$actions.stop().fadeIn(fadeDuration, fadeEasing);
+				}, function() {
+					$this.removeClass('media-hover');
+					$actions.stop().fadeOut(fadeDuration, fadeEasing);
+				});
+				$this.data('layout-media-init', true);
+			}
 		});
 	};
 	documentReady(function() {
 		$('.media').layoutMedia();
 	});
-
 })(jQuery);

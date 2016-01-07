@@ -5,6 +5,7 @@
  **/
 App::uses('LayoutAppHelper', 'Layout.View/Helper');
 App::uses('Param', 'Layout.Lib');
+App::uses('InflectorPlus', 'Layout.Lib');
 
 class FormLayoutHelper extends LayoutAppHelper {
 	public $name = 'FormLayout';
@@ -39,6 +40,9 @@ class FormLayoutHelper extends LayoutAppHelper {
 	
 	public function beforeRender($viewFile) {
 		parent::beforeRender($viewFile);
+
+		$this->Html->css('Layout.style', null, ['inline' => false]);
+		
 		$this->Html->script(array(
 			'Layout.script',
 			'Layout.form_layout',

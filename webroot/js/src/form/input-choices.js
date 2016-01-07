@@ -10,17 +10,16 @@
 				$checkedControl = $controls.filter(':checked');
 			}
 				
-			function select() {
+			function clickRadio() {
 				setVars();
-				
 				if (!$checkedControl.length) {
 					$checkedControl = $controls.first();
 				}
+
 				if (!$checkedControl.is(':disabled')) {
+					$checkedControl.prop('checked', true);
 					var $choice = $checkedControl.closest('.input-choice');
-					$choices.each(function() {
-						$(this).removeClass('input-choice-active');
-					});
+					$choices.not($choice).removeClass('input-choice-active');
 					$choice.addClass('input-choice-active');
 
 					$(':input', $contents).each(function() {
@@ -55,20 +54,22 @@
 							})
 						.click(function(e) {
 							$checkedControl = $(this);
-							select();
+							clickRadio();
 						})
 						.bind('layout-enabled', function() {
-							select();
+							clickRadio();
 						});
 				});
 				$list.data('input-choice-init', true);
-				$(window).load(function() {
-					select();
-				}).unload(function() {
-					select();
+				$(document).bind('read ajaxComplete', function() {
+					clickRadio();
+				});
+
+				$(window).bind('load unload', function() {
+					clickRadio();
 				});
 			}
-			select();
+			clickRadio();
 			return $list;
 		});
 	};

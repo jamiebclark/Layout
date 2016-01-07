@@ -6,7 +6,7 @@
 		}
 		$(this).find(':input,select')
 			.filter(function() {
-				return $(this).prop('disabled', false) || !$(this).data('hide-disabled-set');
+				return $(this).prop('disabled') === false || !$(this).data('hide-disabled-set');
 			})
 			.each(function() {
 				$(this)

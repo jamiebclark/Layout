@@ -1,0 +1,62 @@
+$element-input-list-item-remove-width: 			40px;
+$element-input-list-item-remove-height: 		$element-input-list-item-remove-width;
+$element-input-list-item-padding-horizontal:	$padding-base-horizontal;
+$element-input-list-item-padding-vertical:		$padding-large-vertical;
+
+.element-input-list {
+	border: 1px solid $list-group-border;
+	border-radius: $list-group-border-radius;
+	&-item {
+		margin-top: -1px;
+		margin-left: -1px;
+		margin-right: -1px;
+		margin-bottom: 0;
+
+		border: 1px solid $list-group-border;
+		padding: $element-input-list-item-padding-vertical $element-input-list-item-padding-horizontal;
+		position: relative;
+		min-height: $element-input-list-item-remove-height + 2 * $element-input-list-item-padding-vertical;
+		&-inner {
+			margin-right: $element-input-list-item-remove-width + $padding-base-horizontal;
+		}
+		&-remove-label {
+			display: block;
+			position: absolute;
+			top: $element-input-list-item-padding-vertical;
+			right: $element-input-list-item-padding-horizontal;
+			width: $element-input-list-item-remove-width;
+			height: $element-input-list-item-remove-height;
+			line-height: $element-input-list-item-remove-height;
+			padding: 0;
+			font-size: $element-input-list-item-remove-width * .5;
+			text-align: center;
+			> .fa {
+				line-height: $element-input-list-item-remove-height - 2;
+			}
+			input {
+				position: absolute;
+				opacity: 0;
+				height: 1px;
+				left: -999px;
+			}
+			&:hover {
+				cursor: pointer;
+			}
+		}
+		&.removed {
+			background-color: $gray-lighter;
+			.element-input-list-item-remove-label {
+				background-color: $component-active-bg;
+				color: $component-active-color;
+				border-color: $component-active-bg;
+			}
+		}
+	}
+	&-template {
+		display: none;
+	}
+	&-control {
+		background-color: $gray-lighter;
+		padding: $padding-base-vertical $padding-base-horizontal;
+	}
+}

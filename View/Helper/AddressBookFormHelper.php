@@ -140,6 +140,7 @@ class AddressBookFormHelper extends LayoutAppHelper {
 				'label' => 'City',
 				'type' => 'text',
 				'col-sm' => 8,
+				'col-xs' => 6,
 				'div' => 'addressbookform-city',
 			)),
 			$this->_numericField('state', $numerical, $addressPrefix) =>  $this->_inputOptions($inputOptions, 'state', array(
@@ -153,6 +154,7 @@ class AddressBookFormHelper extends LayoutAppHelper {
 				'label' => 'Zip',
 				'type' => 'text',
 				'col-sm' => 8,
+				'col-xs' => 6,
 				'div' => 'addressbookform-zip',
 			),
 			$this->_numericField('country', $numerical, $addressPrefix) => array(
