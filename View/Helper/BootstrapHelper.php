@@ -111,6 +111,35 @@ class BootstrapHelper extends LayoutAppHelper {
 				$before = Param::keyCheck($linkOptions, 'before', true);
 				$after = Param::keyCheck($linkOptions, 'after', true);
 
+				if (!empty($linkOptions['dropdown'])) {
+					$targetId = 'dropdown' . rand(0,99999);
+					$linkOptions['data-toggle'] = 'dropdown';
+					$linkOptions['aria-expanded'] = 'false';
+					$linkOptions['id'] = $targetId;
+					$linkOptions['role'] = 'button';
+					$after .= $this->linkList($linkOptions['dropdown'], [
+							'class' => 'dropdown-menu',
+							'role' => 'menu',
+							'aria-labelledby' => $targetId,
+						]);
+					unset($linkOptions['dropdown']);
+				}
+
+				if (!empty($linkOptions['collapse'])) {
+					$targetId = 'collapse' . rand(0,99999);
+					$linkOptions = $this->addClass($linkOptions, 'dropdown-toggle');
+					$linkOptions['data-toggle'] = 'collapse';
+					$linkOptions['data-target'] = '#' . $targetId;
+					$linkOptions['aria-expanded'] = 'true';
+					$after .= $this->linkList($linkOptions['collapse'], [
+						'class' => 'collapse nav',
+						'role' => 'menu',
+						'id' => $targetId,
+						'aria-labelledby' => $targetId,
+					]);
+					unset($linkOptions['collapse']);
+				}
+
 				$linkOptions['escape'] = false;
 				$linkOptions = array_merge((array) $globalLinkOptions, $linkOptions );
 				if (empty($linkWrapOptions) && $isActive) {
