@@ -111,8 +111,18 @@
 
 			if (!$(this).data('scroll-init')) {
 				var $scrollfix = $(this),
-					$container = $scrollfix.closest('.row').css('position', 'relative'),
-					height,
+					containerClasses = new Array('.row', '.container'),
+					$container;
+
+				for (var i in containerClasses) {
+					$container = $scrollfix.closest(containerClasses[i]);
+					if ($container.length) {
+						break;
+					}
+				}
+				$container.css('position', 'relative');
+
+				var height,
 					width,
 					scrollfixPos,
 					scrollfixTop,
