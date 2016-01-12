@@ -3,7 +3,7 @@
 	$.fn.ajaxModal = function() {
 		return this.each(function() {
 			var $a = $(this),
-				url = $a.attr('href'),
+				loadUrl = $a.attr('href'),
 				title = $a.attr('data-modal-title'),
 				modalClass = $a.attr('data-modal-class'),
 				customTitle = title,
@@ -75,34 +75,60 @@
 					$ajaxWindowBody.append($('<div class="ajax-loading"></div')
 						.append($('<span>Loading</span>').animatedEllipsis())
 					);
-					$ajaxWindowBody.load(url, function() {
-						var $footer = $('.modal-footer', $ajaxWindow),
-							$form = $('.modal-body form', $ajaxWindow);
-						if (!$form.length) {
-							$footer.hide();
-						} else {
-							$footer.show();
+					$.ajax({
+						url: loadUrl,
+						success: function(data) {
+							var $data = $(data),
+								$scripts = $('script', $data),
+								$content = $('#content-container', $data),
+								$footer = $('.modal-footer', $ajaxWindow);
+								
+							if (!$content.length) {
+								$content = $data;
+							} else {
+								$content = $content.html();
+							}
+
+							$ajaxWindowBody.html($content);
+							$('.ajax-modal-hide', $ajaxWindowBody).remove();
+
+							if ($scripts.length) {
+								$scripts.each(function() {
+									if ($(this).attr('src')) {
+										$.getScript($(this).attr('src'));
+									}
+								});
+							}
+
+							var $form = $('.modal-body form', $ajaxWindow);
+
+							if (!$form.length) {
+								$footer.hide();
+							} else {
+								$footer.show();
+							}
+							
+							var $bodyTitle = $('h1', $ajaxWindowBody).first(),
+								$bodyTitleParent = $bodyTitle.closest('.page-header');
+							
+							if ($bodyTitle) {
+								if (!customTitle) {
+									$('h3', $ajaxWindowHeader).html($bodyTitle.html());
+								}
+								$bodyTitle.remove();
+								if ($bodyTitleParent.empty()) {
+									$bodyTitleParent.remove();
+								}
+							}
+
+							$('submit,button[type="submit"]', $form).each(function() {
+								if (!$(this).attr('name')) {
+									$(this).addClass('modal-body-submit').hide();
+								}
+							});
+							$('.form-actions:empty', $form).remove();
+							$(document).trigger('ajax-modal-loaded').ajaxComplete();
 						}
-						var $bodyTitle = $('h1', $ajaxWindowBody).first(),
-							$bodyTitleParent = $bodyTitle.closest('.page-header');
-						
-						if ($bodyTitle) {
-							if (!customTitle) {
-								$('h3', $ajaxWindowHeader).html($bodyTitle.html());
-							}
-							$bodyTitle.remove();
-							if ($bodyTitleParent.empty()) {
-								$bodyTitleParent.remove();
-							}
-						}
-						
-						$('submit,button[type="submit"]', $form).each(function() {
-							if (!$(this).attr('name')) {
-								$(this).addClass('modal-body-submit').hide();
-							}
-						});
-						$('.form-actions:empty', $form).remove();
-						$(document).trigger('ajax-modal-loaded').ajaxComplete();
 					});
 					$ajaxWindow.modal('show');
 				});
