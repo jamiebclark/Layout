@@ -1,6 +1,8 @@
 (function($) {
 	$.fn.elementInputList = function() {
 		return this.each(function() {
+			console.log("ELEMENT INPUT LIST");
+
 			var $list = $(this),
 				$items = $('.element-input-list-item', $list),
 				$template = $('.element-input-list-template', $list),
@@ -16,11 +18,6 @@
 					$item.data('element-input-list-item-init', true);
 
 					if ($key.length) {
-						console.log($key);
-						console.log($item);
-						console.log($key.html());
-						console.log($key.attr('name'));
-
 						var name = $key.attr('name').replace('[id]', '[remove]');
 						$button = $('<input/>')
 							.attr('name', name)
@@ -65,7 +62,6 @@
 			}
 
 			function disableInputs($el) {
-				console.log("DISABLING INPUTS: " + $el.length);
 				$(':input', $el).each(function() {
 					var disabledVal = $(this).prop('disabled');
 					$(this).prop('disabled', 'disabled').data('element-input-list-item-disabled', disabledVal);
@@ -88,9 +84,14 @@
 				var $item = $template
 					.clone()
 					.hide()
-					.insertAfter($items.last())
 					.removeClass('element-input-list-template')
 					.addClass('element-input-list-item');
+
+				if ($items.length) {
+					$item.insertAfter($items.last());
+				} else {
+					$item.prependTo($list);
+				}
 
 				enableInputs($item);
 
@@ -108,7 +109,6 @@
 			}
 
 			if (!$list.data('element-input-list-init')) {
-				console.log('Disabling templates')
 				disableInputs($template);
 				$button.click(function(e) {
 					e.preventDefault();
@@ -124,7 +124,7 @@
 					disableInputs($template);
 				});
 			} else {
-				console.log("ALREADY INITIALIZED");
+				// console.log("ALREADY INITIALIZED");
 			}
 		});
 	}
