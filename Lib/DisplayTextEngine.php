@@ -386,12 +386,28 @@ class DisplayTextEngine {
 	}
 
 	
-	public function cash($number, $round = null) {
+	public function cash($number, $round = null, $html = true) {
 		$number = html_entity_decode($number);
 		if (empty($number)) {
 			$number = 0;
 		}
-		return '$' . number_format($number, $round !== false && ($round || $number == round($number)) ? 0 : 2);
+		$prepend = '$';
+		$append = '';
+		$val = number_format($number, $round !== false && ($round || $number == round($number)) ? 0 : 2);
+
+		if ($html) {
+			if (!empty($prepend)) {
+				$prepend = '<span class="cash-addon">' . $prepend . '</span>';
+			}
+			if (!empty($append)) {
+				$append = '<span class="cash-addon">' . $append . '</span>';
+			}
+		}
+		$return = $prepend . $val . $append;
+		if ($html) {
+			$return = '<span class="cash">' . $return . '</val>';
+		}
+		return $return;
 	}
 
 	public function cashLabel($cash, $positive = true, $round = null) {
