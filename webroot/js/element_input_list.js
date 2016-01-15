@@ -1,7 +1,17 @@
 (function($) {
 	$.fn.elementInputList = function() {
+		var slideDuration = 250,
+			slideEasing = "easeInQuart",
+			slideOptions = {
+				duration: slideDuration,
+				easing: slideEasing,
+				complete: function() {
+					console.log("DONE!");
+					$(window).resize();
+				}
+			};
+
 		return this.each(function() {
-			console.log("ELEMENT INPUT LIST");
 
 			var $list = $(this),
 				$items = $('.element-input-list-item', $list),
@@ -51,13 +61,13 @@
 
 			function removeItem($item) {
 				$item.addClass('removed');
-				var $inner = $('.element-input-list-item-inner', $item).slideUp();				
+				var $inner = $('.element-input-list-item-inner', $item).slideUp(slideOptions);				
 				disableInputs($inner);
 			}
 
 			function restoreItem($item) {
 				$item.removeClass('removed');
-				var $inner = $('.element-input-list-item-inner', $item).slideDown();
+				var $inner = $('.element-input-list-item-inner', $item).slideDown(slideOptions);
 				enableInputs($inner);
 			}
 
@@ -98,6 +108,7 @@
 				$items = $('.element-input-list-item', $list);
 
 				$(':input,label', $item).each(function() {
+					$(this).removeClass('hasDatepicker');
 					templateReplace($(this), 'name');
 					templateReplace($(this), 'id');
 					templateReplace($(this), 'for');
