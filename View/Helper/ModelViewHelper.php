@@ -786,8 +786,7 @@ class ModelViewHelper extends LayoutAppHelper {
 		$urlParts = explode('/', $src);
 		list($plugin, $urlParts[0]) = pluginSplit($urlParts[0]);
 		$src = implode('/', $urlParts);
-
-		if ($src[0] != '/' && strpos($src, '://') === false) {
+		if (!empty($src) && $src[0] != '/' && strpos($src, '://') === false) {
 			$srcBase = Url::base();
 			if (!empty($plugin)) {
 				$srcBase .= '/' . Inflector::underscore($plugin);
@@ -961,6 +960,7 @@ class ModelViewHelper extends LayoutAppHelper {
 		$options = array_merge([
 			'id' => null,
 			'urlAdd' => null,
+			'thumbnailAdd' => null
 		], $options);
 		$options = $this->addClass($options, 'photo-thumbnails');
 		extract($options);
@@ -973,7 +973,7 @@ class ModelViewHelper extends LayoutAppHelper {
 			$class = trim($class . ' ' . $thumbnailClass);
 		}
 
-		foreach ($results as $result) {
+		foreach ($results as $result):
 			$modelResult = $this->_getResult($result);
 			$thumbnailOptions = !empty($options['thumbnailOptions']) ? $options['thumbnailOptions'] : [];
 			$thumbnailOptions += $options;
@@ -982,7 +982,14 @@ class ModelViewHelper extends LayoutAppHelper {
 				$thumbnailOptions = $this->addClass($thumbnailOptions, 'active');
 			}
 			$out .= $this->Html->div($class, $this->thumbnail($result, $thumbnailOptions));
+		endforeach;
+
+		if (!empty($thumbnailAdd)) {
+			$out .= $this->Html->div('gallery-view-link thumbnail thumbnail-add',
+				$this->Html->link('+', $thumbnailAdd)
+			);
 		}
+
 		$out = $this->Html->div('row', $out);
 		if (!isset($paginate) || $paginate !== false) {
 			$paginate = $this->Layout->paginateNav();
