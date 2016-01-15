@@ -84,7 +84,8 @@
 			
 			function setSizes() {
 				unfix();
-				height = $scrollfix.outerHeight();
+
+				height = $scrollfix.outerHeight(true);
 				width = $scrollfix.outerWidth();
 				scrollfixPos = $scrollfix.offset();
 				scrollfixTop = scrollfixPos.top;
