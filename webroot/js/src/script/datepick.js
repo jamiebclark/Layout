@@ -46,7 +46,7 @@
 		});
 	};
 
-	documentReady(function() {
+	$(document).bind('ready ajaxComplete', function() {
 		$('.datepicker').datepick();
 		$('.timepicker').timepick();
 	});
