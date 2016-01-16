@@ -100,12 +100,13 @@
 								});
 							}
 
-							var $form = $('.modal-body form', $ajaxWindow);
+							var $form = $('.modal-body form', $ajaxWindow),
+								addSubmitFooter = $form.length === 1;
 
-							if (!$form.length) {
-								$footer.hide();
-							} else {
+							if (addSubmitFooter) {
 								$footer.show();
+							} else {
+								$footer.hide();
 							}
 							
 							var $bodyTitle = $('h1', $ajaxWindowBody).first(),
@@ -121,11 +122,14 @@
 								}
 							}
 
-							$('submit,button[type="submit"]', $form).each(function() {
-								if (!$(this).attr('name')) {
-									$(this).addClass('modal-body-submit').hide();
-								}
-							});
+							if (addSubmitFooter) {
+								$('submit,button[type="submit"]', $form).each(function() {
+									if (!$(this).attr('name')) {
+										$(this).addClass('modal-body-submit').hide();
+									}
+								});
+							}
+							
 							$('.form-actions:empty', $form).remove();
 							$(document).trigger('ajax-modal-loaded').ajaxComplete();
 						}
