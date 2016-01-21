@@ -19,11 +19,15 @@ class Markup {
 
 
 	public static function set($text, $options = array()) {
-		$options = array_merge(array(
+		$default = array(
 			'wikiModel' => self::$wikiModel,
-			'webroot' => substr(Router::getRequest()->webroot, 0, -1),
 			'links' => true,
-		), $options);
+			'webroot' => '/',
+		);
+		if ($request = Router::getRequest()) {
+			$default['webroot'] = substr($request->webroot, 0, -1);
+		}
+		$options = array_merge($default, $options);
 		extract($options);
 		
 		$text = self::setLists($text);
