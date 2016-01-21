@@ -173,6 +173,9 @@ class LayoutHelper extends LayoutAppHelper {
 			$actionMenu = array_merge((array)$actionMenu, array(null, null));
 			$actionMenu[1]['icons'] = true;
 			$actionMenu[1]['class'] = 'panel-heading';
+			if (!empty($title)) {
+				$title = $this->Html->tag('span', $title, ['class' => 'panel-title']);
+			}
 			$title = $this->headingActionMenu($title, $actionMenu[0], $actionMenu[1]);
 		}
 		
