@@ -752,7 +752,10 @@ class ModelViewHelper extends LayoutAppHelper {
 		} else if ($type == 'date') {
 			$out = $this->thumbDate($result, $options);
 		} else {
-			$out = $this->Image->thumb($result, $options);
+			$out = $this->thumbImage($result, $options);
+		}
+		if (empty($out)) {
+			$out = '';
 		}
 		
 		if (!empty($out)) {
@@ -762,7 +765,7 @@ class ModelViewHelper extends LayoutAppHelper {
 		}
 		return $out;
 	}
-	
+
 	function image($Result, $options = []) {
 		$return = '';
 		if (!empty($options['src'])) {
@@ -796,7 +799,7 @@ class ModelViewHelper extends LayoutAppHelper {
 		return $src;
 	}
 	
-	function thumbText($result, $options = []) {
+	protected function thumbText($result, $options = []) {
 		$text = 'True';
 		if (!empty($options['text']) && $options['text'] !== true) {
 			$text = $options['text'];
@@ -806,7 +809,7 @@ class ModelViewHelper extends LayoutAppHelper {
 		return $out;
 	}
 	
-	function thumbDate($result, $options = []) {
+	protected function thumbDate($result, $options = []) {
 		if (isset($options['dir'])) {
 			$options = $this->addClass($options, $options['dir']);
 		}
@@ -828,7 +831,13 @@ class ModelViewHelper extends LayoutAppHelper {
 		}
 		return $this->Calendar->calendarDate($start, $end, $options);
 	}
+
+	protected function thumbImage($result, $options = []) {
+		//debug(compact('result', 'options'));
+		$this->Image->thumb($result, $options);
+	}
 	
+
 	function thumbnail($result, $options = []) {
 		$modelResult = $this->_getResult($result);
 		$options = array_merge([
