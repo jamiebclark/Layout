@@ -169,16 +169,17 @@ class LayoutHelper extends LayoutAppHelper {
 		if (!empty($hasToggle)) {
 			$title = $this->_toggleControl($title, array('checked' => $toggleChecked));
 		}
-		if (!empty($title) || !empty($actionMenu)) {
+
+		if (!empty($title)) {
+			$title = $this->Html->tag('span', $title, ['class' => 'panel-title']);
+		}
+
+		if (!empty($actionMenu)) {
 			$actionMenu = array_merge((array)$actionMenu, array(null, null));
 			$actionMenu[1]['icons'] = true;
-			$actionMenu[1]['class'] = 'panel-heading';
-			if (!empty($title)) {
-				$title = $this->Html->tag('span', $title, ['class' => 'panel-title']);
-			}
 			$title = $this->headingActionMenu($title, $actionMenu[0], $actionMenu[1]);
 		}
-		
+
 		$bodyClass = 'panel-body';
 		$bodyOptions = array();
 		if (!empty($params['bodyClass'])) {
@@ -193,7 +194,7 @@ class LayoutHelper extends LayoutAppHelper {
 			$bodyOptions['style'] = 'display:none;';
 		}
 		if (!empty($title)) {
-			$render .= $title;
+			$render .= $this->Html->div('panel-heading', $title);
 		}
 		$render .= $this->Html->div($bodyClass, null, $bodyOptions);
 		return $render;
