@@ -41,7 +41,7 @@ class FormLayoutHelper extends LayoutAppHelper {
 	public function beforeRender($viewFile) {
 		parent::beforeRender($viewFile);
 
-		$this->Html->css('Layout.style', null, ['inline' => false]);
+		//$this->Html->css('Layout.style', null, ['inline' => false]);
 		
 		$this->Html->script(array(
 			'Layout.script',
