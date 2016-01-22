@@ -834,7 +834,7 @@ class ModelViewHelper extends LayoutAppHelper {
 
 	protected function thumbImage($result, $options = []) {
 		//debug(compact('result', 'options'));
-		$this->Image->thumb($result, $options);
+		return $this->Image->thumb($result, $options);
 	}
 	
 
