@@ -39,7 +39,8 @@ class ActivateComponent extends Component {
 		$model = !empty($controller->modelClass) ? $controller->modelClass : null;
 		
 		$this->settings['model'] = $model;
-
+		
+		App::uses('InflectorPlus', 'Layout.Lib');
 		$this->settings['humanName'] = InflectorPlus::humanize($model);
 		
 		if (!method_exists($this->controller, '_beforeActivate') || $this->controller->_beforeActivate()) {
