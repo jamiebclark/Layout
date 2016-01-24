@@ -1,5 +1,6 @@
 <?php
-App::import('Lib', 'Inflector');
+App::uses('Inflector', 'Utility');
+
 class InflectorPlus {
 	public static function &getInstance() {
 		static $instance = array();
