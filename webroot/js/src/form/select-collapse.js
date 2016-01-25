@@ -144,7 +144,9 @@
 			}
 
 			function searchUpdate() {
-				var val = $search.val();
+				var val = $search.val(),
+					valLower = val.toLowerCase();
+
 				if (val === '') {
 					$('.select-collapse-options', $div).show();
 					$searchResults.hide();
@@ -154,7 +156,7 @@
 				$searchResults.show().empty();
 				for (var i = 0; i < vals.length; i++) {
 					var label = vals[i].label,
-						index = label.indexOf(val);
+						index = label.toLowerCase().indexOf(valLower);
 
 					if (index == -1) {
 						continue;
@@ -234,27 +236,29 @@
 						}
 					}
 
-					if (childIndex > lastChildIndex && $lastLi) {
-						$ul = $('<ul></ul>').appendTo($lastLi);
-						$lastLi.removeClass('no-child').find('a').first().before($('<a class="select-collapse-bullet" href="#">+</a>')
-							.click(function(e) {
-								e.preventDefault();
-								var $li = $(this).closest('li');
-								if ($li.hasClass('expanded')) {
-									collapse($li);
-								} else {
-									expand($li);
-								}
-							})
-						);
-						collapse($lastLi);
+					if (childIndex > lastChildIndex) {
+						if ($lastLi) {
+							$ul = $('<ul></ul>').appendTo($lastLi);
+							$lastLi.removeClass('no-child').find('a').first().before($('<a class="select-collapse-bullet" href="#">+</a>')
+								.click(function(e) {
+									e.preventDefault();
+									var $li = $(this).closest('li');
+									if ($li.hasClass('expanded')) {
+										collapse($li);
+									} else {
+										expand($li);
+									}
+								})
+							);
+							collapse($lastLi);
+						}
 					} else if (childIndex < lastChildIndex) {
 						for (i = childIndex; i < lastChildIndex; i++) {
 							$ul = $ul.closest('li').closest('ul');
 							valLabelPath.pop();
 						}
-					} else {
 						valLabelPath.pop();
+					} else {
 						valLabelPath.pop();
 					}
 
