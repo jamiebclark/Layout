@@ -284,6 +284,7 @@ class ModelViewHelper extends LayoutAppHelper {
 			'id' => null,
 			'url' => [],
 			'vertical' => false,
+			'btnSize' => 'sm',
 		], $attrs);
 		$attrs = $this->addClass($attrs, 'action-menu inline');
 		if ($attrs['vertical']) {
@@ -295,6 +296,8 @@ class ModelViewHelper extends LayoutAppHelper {
 		$menu = [];
 		$useIcons = !empty($attrs['icons']);
 		
+		$btnClass = 'btn btn-default btn-' . $attrs['btnSize'];
+
 		if (!empty($attrs['autoActions'])) {
 			$this->setAutoAction($attrs['autoActions']);
 		}
@@ -358,7 +361,7 @@ class ModelViewHelper extends LayoutAppHelper {
 					if ((empty($linkUrl['controller']) || ($linkUrl['controller'] == $this->controller)) && !isset($linkUrl[0])) {
 						$linkUrl[0] = $id;
 					}
-					$linkOptions = $this->addClass($linkOptions, 'btn btn-default btn-sm');
+					$linkOptions = $this->addClass($linkOptions, $btnClass);
 					$linkOptions['escape'] = false;
 					if (isset($linkOptions['icon'])) {
 						if (strstr($linkOptions['icon'], '<') !== false) {
@@ -392,7 +395,7 @@ class ModelViewHelper extends LayoutAppHelper {
 					}
 
 				} else {
-					$menu[] = $this->Html->tag('span', $menuItem, ['class' => 'btn btn-default btn-sm']);
+					$menu[] = $this->Html->tag('span', $menuItem, ['class' => $btnClass]);
 				}
 			}
 		}
@@ -511,15 +514,25 @@ class ModelViewHelper extends LayoutAppHelper {
 		return $out;
 	}
 	
-	
-	/**
-	 * Generates a media element based around the CSS media layout 
-	 * 
-	 * @param array $result Result array from model
-	 * @param array $options
-	 * @return string Media HTML element
-	 **/
-	function media($result, $options = []) {
+
+	public function avatar($result, $options = []) {
+		$options = array_merge([
+			'dir' => 'thumb',
+			'link' => true,
+			'avatar' => true,
+		], $options);
+		$options = $this->addClass($options, 'media-avatar');
+		return $this->media($result, $options);
+	}
+
+/**
+ * Generates a media element based around the CSS media layout 
+ * 
+ * @param array $result Result array from model
+ * @param array $options
+ * @return string Media HTML element
+ **/
+	public function media($result, $options = []) {
 		$options = array_merge([
 			'tag' => 'div',							//Tag wrapper
 			'dir' => $this->defaultMediaDir,		//Thumbnail directory
@@ -576,9 +589,8 @@ class ModelViewHelper extends LayoutAppHelper {
 			if (empty($thumb['dir']) && isset($dir)) {
 				$thumb['dir'] = $dir;
 			}
-			$thumb = $this->addClass($thumb, 'media-object');
 			$thumb['media'] = true;
-			$thumb += compact('url', 'link', 'alias', 'size') + $thumb;
+			$thumb += compact('url', 'link', 'alias', 'size', 'avatar') + $thumb;
 			$out .= $this->thumb($result, $thumb);
 		}
 		if (!empty($right)) {
@@ -642,9 +654,34 @@ class ModelViewHelper extends LayoutAppHelper {
 		return $out;
 	}
 	
+	public function avatarList($results, $options = [], $listOptions = []) {
+		$options = array_merge([
+			'dir' => 'thumb',
+			'link' => true,
+			'avatar' => true,
+		], $options);
+
+		$listOptions = array_merge([
+			'cols' => 3,
+		], $listOptions);
+
+		$options = $this->addClass($options, 'media-avatar');
+		$listOptions['listWrapClass'] = 'media-avatar-list';
+
+		if (!empty($listOptions['cols'])) {
+			$listOptions = $this->addClass($listOptions, 'media-avatar-list-cols-' . $listOptions['cols']);
+			unset($listOptions['cols']);
+		}
+		return $this->mediaList($results, $options, $listOptions);
+	}
+
 	function mediaList($results, $options = [], $listOptions = []) {
 		$out = '';
-		$listOptions = $this->addClass($listOptions, 'media-list');
+		
+		$listWrapClass = !empty($listOptions['listWrapClass']) ? $listOptions['listWrapClass'] : 'media-list';
+		unset($listOptions['listWrapClass']);
+		$listOptions = $this->addClass($listOptions, $listWrapClass);
+
 		if (empty($results)) {
 			if (!empty($listOptions['empty'])) {
 				$out = $this->Html->div('lead', $listOptions['empty']);
@@ -727,18 +764,23 @@ class ModelViewHelper extends LayoutAppHelper {
 	function thumb($result, $options = []) {
 		$alias = !empty($options['alias']) ? $options['alias'] : null;
 		$result = $this->_getResult($result, $alias);
+		$isMedia = !empty($options['media']);
+		$isAvatar = !empty($options['avatar']);
+
+		$mediaPositionClass = $isAvatar ? null : 'pull-left';
+
 		if (Param::keyCheck($options, 'url') === true && !empty($result)) {
 			$options['url'] = $this->modelUrl($result);
 		}
 		$options = $this->thumbOptions($result, $options);
-		if (!empty($options['media'])) {
+		if ($isMedia) {
 			$hasMedia = true;
 			$options = $this->addClass($options, 'media-object');
 			if (!empty($options['url'])) {
 				$url = $options['url'];
 				unset($options['url']);
 			} else {
-				$options = $this->addClass($options, 'pull-left');
+				$options = $this->addClass($options, $mediaPositionClass);
 			}
 		}
 		if (isset($options['alt'])) {
@@ -760,7 +802,7 @@ class ModelViewHelper extends LayoutAppHelper {
 		
 		if (!empty($out)) {
 			if (!empty($hasMedia) && !empty($url)) {
-				$out = $this->Html->link($out, $url, ['escape' => false, 'class' => 'pull-left']);
+				$out = $this->Html->link($out, $url, ['escape' => false, 'class' => $mediaPositionClass]);
 			}
 		}
 		return $out;
@@ -815,9 +857,10 @@ class ModelViewHelper extends LayoutAppHelper {
 		}
 		if (!empty($options['media'])) {
 			unset($options['media']);
+			$mediaPositionClass = !empty($options['avatar']) ? null : 'pull-left';
 			$options = $this->addClass($options, 'media-object');
 			if (!empty($options['link'])) {
-				$options = $this->addClass($options, 'pull-left');
+				$options = $this->addClass($options, $mediaPositionClass);
 			}
 		}
 		$start = $end = null;
