@@ -2,10 +2,13 @@
 /**
  * Helper for use with displaying contacts
  *
- **/ App::uses('LayoutAppHelper', 'Layout.View/Helper');
+ **/ 
+App::uses('LayoutAppHelper', 'Layout.View/Helper');
 class AddressBookHelper extends LayoutAppHelper {
 	var $name = 'AddressBook';
-	/*	function contactItemList($result, $options = array()) {
+
+	/*
+	function contactItemList($result, $options = array()) {
 		$options = array_merge(array(
 			'fields' => array('address', 'email', 'phone', 'website'),
 		), $options);
@@ -181,7 +184,8 @@ class AddressBookHelper extends LayoutAppHelper {
 		$url = Url::validate($url);
 		
 		return $this->Html->link('[' . $host . ']', $url, $options);
-	}	
+	}
+	
 	function location($result, $options = array()) {
 		if (!empty($options['beforeField']) && !is_array($options['beforeField'])) {
 			$options['beforeField'] = array($options['beforeField']);
@@ -262,7 +266,8 @@ class AddressBookHelper extends LayoutAppHelper {
 			}
 			foreach ($line as $lineItem) {
 				if (!empty($result[$lineItem])) {
-					$returnLine .= $result[$lineItem].' ';
+					$returnLine .= $this->Html->tag('span', $result[$lineItem], ['class' => 'addressbook-' . $lineItem]);
+					$returnLine .= ' ';
 				}
 			}
 			$returnLine = trim($returnLine);
@@ -331,7 +336,8 @@ class AddressBookHelper extends LayoutAppHelper {
 			return '';
 		}
 	}
-		/*
+	
+	/*
 	function contactMethodDisplays($result, $options = array()) {
 		$return = array();
 		$contactInfo = !empty($result['Contact']) ? $result['Contact'] : $result;
@@ -375,7 +381,8 @@ class AddressBookHelper extends LayoutAppHelper {
 			$return[$model] = $val;
 		}
 		return $return;
-	}	
+	}
+	
 	function contactMethodOutput($model, $result) {
 		if ($model == 'ContactAddress') {
 			return $this->addressLine($result);
@@ -387,7 +394,8 @@ class AddressBookHelper extends LayoutAppHelper {
 			return '';
 		}
 	}
-	*/	
+	*/
+	
 	function googleMapsUrl($result, $options = array()) {
 		$options['lineBreak'] = ', ';
 		$str = $this->address($result, $options);
@@ -397,7 +405,8 @@ class AddressBookHelper extends LayoutAppHelper {
 		$url = 'http://maps.google.com/?q=' . urlencode($str);
 		return $url;
 	}
-		/*
+	
+	/*
 	function inputFormatTitle($name, $defaultValue = '', $options = array()) {
 		$return = '';
 		$nameParts = explode('.', $name);
@@ -460,7 +469,8 @@ class AddressBookHelper extends LayoutAppHelper {
 		$return .= "</div>\n";
 		return $return;
 	}
-	*/	
+	*/
+	
 	private function _out($output, $options = array()) {
 		if (!empty($options['div'])) {
 			$options['tag'] = 'div';
