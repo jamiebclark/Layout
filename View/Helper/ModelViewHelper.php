@@ -773,6 +773,7 @@ class ModelViewHelper extends LayoutAppHelper {
 			$options['url'] = $this->modelUrl($result);
 		}
 		$options = $this->thumbOptions($result, $options);
+	
 		if ($isMedia) {
 			$hasMedia = true;
 			$options = $this->addClass($options, 'media-object');
@@ -876,7 +877,6 @@ class ModelViewHelper extends LayoutAppHelper {
 	}
 
 	protected function thumbImage($result, $options = []) {
-		//debug(compact('result', 'options'));
 		return $this->Image->thumb($result, $options);
 	}
 	
@@ -1087,7 +1087,8 @@ class ModelViewHelper extends LayoutAppHelper {
 		if (!empty($options['size']) && !empty($options['dirClass'])) {
 			$options = $this->addClass($options, "thumbnail-{$options['size']}");
 		}
-		return !empty($modelId) ? $this->_idReplace($options, $modelId) : $options;
+		$options = !empty($modelId) ? $this->replaceModelIdString($options, $modelId) : $options;
+		return $options;
 	}
 	
 	function neighbors($neighbors) {
@@ -1143,17 +1144,23 @@ class ModelViewHelper extends LayoutAppHelper {
 		}
 		return $out;
 	}	
-	/**
-	 * Replaces any instance of the string with the actual profile's ID
-	 * If value is an array, it applies to all values and any arrays found inside
-	 *
-	 **/
-	protected function _idReplace(&$value, $id, $str = '_ID_') {
+/**
+ * Replaces any instance of the string with the actual profile's ID
+ * If value is an array, it applies to all values and any arrays found inside
+ *
+ * @param array|string $value The value to update
+ * @param int $modelId The model id to use in the replacement
+ * @param string $placeholder The replacement string to search for
+ * @return array|string The updated $value;
+ **/
+	protected function replaceModelIdString($value, $modelId, $placeholder = '_ID_') {
 		if (!is_array($value)) {
-			$value = str_replace($str, $id, $value);
+			if ($value !== false) {
+				$value = str_replace($placeholder, $modelId, $value);
+			}
 		} else {
-			foreach ($value as $key => $val) {
-				$value[$key] = $this->_idReplace($val, $id, $str);
+			foreach ($value as $k => $v) {
+				$value[$k] = $this->replaceModelIdString($v, $modelId, $placeholder);
 			}
 		}
 		return $value;
