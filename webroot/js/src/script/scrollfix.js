@@ -25,7 +25,7 @@
 			$this.css(styles);	
 		}
 
-		$(this)
+		$this
 			.affix({offset: {top: t, bottom: b}})
 			.on('affixed.bs.affix', function() {
 				styles.position = 'fixed';
