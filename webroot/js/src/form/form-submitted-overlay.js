@@ -1,28 +1,32 @@
 (function($) {
 
+	var maskPadding = 0;
+
 	$.fn.formSubmittedOverlay = function() {
 		return this.each(function() {
 			var $form = $(this);
+
 			if ($form.data('submitted-overlay-init')) {
 				return $form;
 			}
 
 			$form.submit(function(e) {
-				var padding = 20,
-					$form = $(this).addClass('submitted-overlay-submitted'),
+				var $form = $(this).addClass('submitted-overlay-submitted'),
 					$mask = $('<div class="submitted-overlay-mask"></div>')
 						.css({
-							'width': $form.outerWidth() + 2 * padding,
-							'height': $form.outerHeight() + 2 * padding,
-							'top': padding * -1,
-							'left': padding * -1
+							'width': $form.outerWidth() + 2 * maskPadding,
+							'height': $form.outerHeight() + 2 * maskPadding,
+							'top': maskPadding * -1,
+							'left': maskPadding * -1
 						})
-						.appendTo($form);
+						.appendTo($form),
+					$message = $('<div class="submitted-overlay-mask-message"></div>').appendTo($mask),
+					$icon = $('<div class="submitted-overlay-mask-message-icon"><i class="fa fa-spinner fa-spin"></i></div>')
+						.appendTo($message),
+					$title = $('<div class="submitted-overlay-mask-message-title"></div>').appendTo($message),
+					$content = $('<div class="submitted-overlay-mask-message-content"></div>').appendTo($message);
 
-				var $content = $('<div class="submitted-overlay-mask-content"></div>')
-						.append($('<h2><i class="fa fa-spinner fa-spin"></i> Loading</h2>'))
-						.appendTo($mask);
-						//.animatedEllipsis())
+				$message.append('<h2>Loading</h2>');
 
 				function getOverlayUrl(getUrl, refresh) {
 					$.ajax({
@@ -47,6 +51,7 @@
 				$(':submit', $form).each(function() {
 					$(this).prop('disabled', true).html('Loading...');
 				});
+				return false;
 			});
 			$form.data('submitted-overlay-init', true);
 
@@ -54,8 +59,7 @@
 		});
 	};
 
-	documentReady(function() {
+	$(document).bind('ready ajaxComplete', function() {
 		$('form.submitted-overlay').formSubmittedOverlay();
 	});
-
 })(jQuery);
