@@ -45,6 +45,8 @@ class BootstrapHelper extends LayoutAppHelper {
 		$options = $this->addClass($options, 'list-group');
 		$options['tag'] = 'div';
 		$options['link']['class'] = 'list-group-item';
+		$options['linkWrap'] = false;
+
 		return $this->_linkList($links, $options);
 	}
 
@@ -52,6 +54,7 @@ class BootstrapHelper extends LayoutAppHelper {
 		$options = $this->addClass($options, 'btn-group');
 		$options['tag'] = 'div';
 		$options['link']['class'] = 'btn btn-default';
+		$options['linkWrap'] = false;
 		return $this->_linkList($links, $options);
 	}
 
@@ -142,6 +145,7 @@ class BootstrapHelper extends LayoutAppHelper {
 
 				$linkOptions['escape'] = false;
 				$linkOptions = array_merge((array) $globalLinkOptions, $linkOptions );
+
 				if (empty($linkWrapOptions) && $isActive) {
 					$linkOptions = $this->addClass($linkOptions, 'active');
 				}
