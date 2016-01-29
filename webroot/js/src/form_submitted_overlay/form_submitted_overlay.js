@@ -130,7 +130,7 @@
 				$(':submit', $form).each(function() {
 					$(this).prop('disabled', true).html(loadingIcon + ' Loading');
 				});
-				// return false;
+				return $(this);
 			});
 			$form.data('submitted-overlay-init', true);
 			return $form;
