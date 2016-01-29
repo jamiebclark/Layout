@@ -1,0 +1,71 @@
+@import "utilities/index";
+
+// Message Carousel component of the submitted overlay
+.message-carousel {
+	&-wrap {
+		position: relative;
+	}
+	&-message {
+		display: none;
+	}
+}
+
+
+// Form Submit Mask
+// When someone hits submit, cover the entire form with a mask
+// -----------------------------------------------------------
+form.submitted-overlay {
+	position: relative;
+}
+
+$submitted-overlay-message-padding: 	20px;
+$submitted-overlay-icon-size: 			40px;
+
+.submitted-overlay-mask {
+	position: absolute;
+	top: 0;
+	left: 0;
+	right: 0;
+	bottom: 0;
+	z-index: 5000;
+	@include background-opacity(#000, .25);
+	&-message {
+
+		position: fixed;
+		border-radius: $border-radius-base;
+		@include box-shadow(0 3px 7px rgba(0,0,0,0.3));
+		
+		color: #666;
+		//text-shadow: 0 -1px 0 #666, 0 1px 0 #fff;
+
+		left: 		50%;
+		top: 		50%;
+		width: 		400px;
+		transform: 	translate(-50%, -50%);
+		
+		background-color: #ccc;
+		padding: 20px;
+
+		&-icon {
+			font-size: $submitted-overlay-icon-size;
+			text-shadow: 0 0 0 black;
+			position: absolute;
+			top: 50%;
+			left: $submitted-overlay-message-padding;
+			transform: translateY(-50%);
+		}
+
+		&-title, &-content {
+			overflow: hidden;
+			margin-left: $submitted-overlay-icon-size + 10px;
+		}
+		&-title {
+			font-weight: bold;
+			font-size: $font-size-large;
+		}
+
+		&-content {
+			overflow: hidden;
+		}
+	}
+}
