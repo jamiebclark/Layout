@@ -216,11 +216,15 @@ class BootstrapHelper extends LayoutAppHelper {
 		}
 
 		$currentUrl = Url::urlArray();
-		$default = array_intersect_key($currentUrl, array_flip(['controller', 'action', Url::getPrefix()]));
+		$defaultKeys = ['controller', 'action'];
+		if ($prefix = Url::getPrefix()) {
+			$defaultKeys[] = $prefix;
+		}
+		$default = array_intersect_key($currentUrl, array_flip($defaultKeys));
 		$currentUrl = $this->prepareUrlForCompare($currentUrl, $keys);
 
 		foreach ($urls as $k => $url) {
-			$url = $replaceUrl + $url + $default;
+			$url = (array) $replaceUrl + (array) $url + (array) $default;
 			if ($this->prepareUrlForCompare($url, $keys) == $currentUrl) {
 				return $k;
 			}
