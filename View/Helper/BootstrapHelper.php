@@ -1,5 +1,7 @@
 <?php
 App::uses('LayoutAppHelper', 'Layout.View/Helper');
+App::uses('Url', 'Layout.Lib');
+
 class BootstrapHelper extends LayoutAppHelper {
 	public $name = 'Bootstrap';
 	public $helpers = array('Html', 'Form');
@@ -82,6 +84,7 @@ class BootstrapHelper extends LayoutAppHelper {
  * @param array $options Additional options to format the list
  * @return string HTML list
  **/
+
 	private function _linkList($links, $options = array()) {
 		$options = Hash::merge(array(
 			'tag' => null,
@@ -99,17 +102,29 @@ class BootstrapHelper extends LayoutAppHelper {
 		$globalLinkOptions = Param::keyCheck($options, 'link', true);
 		$linkWrapOptions = Param::keyCheck($options, 'linkWrap', true);
 
+		// Check for active
+		$urls = Hash::extract($links, '{n}.1');
+		$keyGroups = [
+			null, 
+			['plugin', 'prefix', 'controller', 'action'],
+			['plugin', 'prefix', 'controller', 'action' => 'index'],
+			['plugin', 'prefix', 'controller'],
+		];
+		foreach ($keyGroups as $keys) {
+			if (($k = $this->findUrlMatch($urls, $keys)) !== false) {
+				$links[$k][2]['active'] = true;
+				break;
+			}
+		}
+
+		// Output
 		$out = '';
-		foreach ($links as $link) {
+		foreach ($links as $k => $link) {
 			$isActive = false;
 			if (is_array($link)) {
 				list($linkText, $linkUrl, $linkOptions, $linkClick) = $link + array(null, array(), array(), null);
 
-				if (!empty($options['urlActive'])) {
-					$isActive = $this->_urlActive($linkUrl);
-				} else {
-					$isActive = Param::keyCheck($linkOptions, 'active', true);
-				}
+				$isActive = Param::keyCheck($linkOptions, 'active', true);
 
 				$before = Param::keyCheck($linkOptions, 'before', true);
 				$after = Param::keyCheck($linkOptions, 'after', true);
@@ -175,33 +190,57 @@ class BootstrapHelper extends LayoutAppHelper {
 		return $out;
 	}
 
-	private function _urlActive($url) {
-		$params = $this->request->params;
-		if (!array_key_exists('prefix', $url) && !empty($params['prefix'])) {
-			$url['prefix'] = $params['prefix'];
-		}
-		if (!empty($url['prefix'])) {
-			$url['action'] = $params['prefix'] . '_' . $url['action'];
-		}
-
-		$fields = array('action', 'controller');
-		foreach ($fields as $field) {
-			if (!isset($url[$field])) {
-				continue;
-			}
-			if ($url[$field] != $params[$field]) {
-				return false;
-			}
-		}
-
-		if (!empty($params['pass'])) {
-			foreach ($params['pass'] as $k => $v) {
-				if (!isset($url[$k]) || $url[$k] != $v) {
-					return false;
+/**
+ * Cycles through an array of url arrays looking to see if it matches the current url array
+ *
+ * @param array $urls An array of url arrays to check
+ * @param array $keys An optional filter to only search by a specific type of keys and / or value
+ *		Array(
+ *			'controller',			# Limit the search to only compare 'controller' and 'action' keys
+ *			'action' => 'index',	# Assume every 'action' value in $urls is set to 'index'
+ *		);
+ * @return int|bool Either the matching key in urls or false if not found
+ **/
+	private function findUrlMatch($urls, $keys = []) {
+		$replaceUrl = [];
+		if (is_array($keys)) {
+			// If you pass a value as well as a key, 
+			// it will force that value on all your arrays
+			foreach ($keys as $k => $v) {
+				if (!is_numeric($k)) {
+					$replaceUrl[$k] = $v;
+					unset($keys[$k]);
+					$keys[] = $k;
 				}
 			}
 		}
 
-		return true;
+		$currentUrl = Url::urlArray();
+		$default = array_intersect_key($currentUrl, array_flip(['controller', 'action', Url::getPrefix()]));
+		$currentUrl = $this->prepareUrlForCompare($currentUrl, $keys);
+
+		foreach ($urls as $k => $url) {
+			$url = $replaceUrl + $url + $default;
+			if ($this->prepareUrlForCompare($url, $keys) == $currentUrl) {
+				return $k;
+			}
+		}
+		return false;
+	}
+
+/**
+ * Prepares the url array to be compared
+ * Sorts it by key order and filters it down to only specific keys
+ * 
+ * @param array $url The url array to be compared
+ * @param array $keys An optional array of keys to intersect
+ * @return array;
+ **/
+	private function prepareUrlForCompare($url, $keys = []) {
+		ksort($url);
+		if (!empty($keys)) {
+			$url = array_intersect_key($url, array_flip($keys));
+		}
+		return $url;
 	}
 }
