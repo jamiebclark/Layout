@@ -26,7 +26,7 @@ class Url {
 		return $action;
 	}
 	
-	//Returns a CakePHP-formatted URL Array
+	// Returns a CakePHP-formatted URL Array
 	public static function urlArray($url = null) {
 		if (empty($url)) {
 			$url = Router::url();
@@ -38,19 +38,31 @@ class Url {
 			}
 			if (!is_array($url)) {
 				$url = Router::parse($url);
+				// Strip prefix from action
 				if ($prefix = Prefix::get($url)) {
 					$url['action'] = Prefix::removeFromAction($url['action'], $prefix);
 				}
-				unset($url['url']);
-				$vars = array('pass', 'named');
-				foreach ($vars as $var) {
-					if (!empty($url[$var])) {
-						foreach ($url[$var] as $k => $v) {
-							$url[$k] = $v;
-						}
-						unset($url[$var]);
+			}
+
+			// Move Plugin to a key value
+			if (!empty($url['plugin'])) {
+				$url[$url['plugin']] = true;
+			}
+			unset($url['plugin']);
+
+			// Strip out unneeded values
+			unset($url['url']);
+			unset($url['prefix']);
+
+			// Move passed data into url
+			$variableFields = array('pass', 'named');
+			foreach ($variableFields as $field) {
+				if (!empty($url[$field])) {
+					foreach ($url[$field] as $k => $v) {
+						$url[$k] = $v;
 					}
 				}
+				unset($url[$field]);
 			}
 		} else {
 			return array();
