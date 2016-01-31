@@ -659,6 +659,7 @@ class FormLayoutHelper extends LayoutAppHelper {
 			'label' => false,
 			'onclick' => 'this.select()',
 			'readonly' => 'readonly',
+			'class' => 'form-control code',
 		), $options);
 		$options = $this->addClass($options, 'form-control input-copy');
 		
