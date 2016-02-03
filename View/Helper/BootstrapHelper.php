@@ -103,18 +103,21 @@ class BootstrapHelper extends LayoutAppHelper {
 		$linkWrapOptions = Param::keyCheck($options, 'linkWrap', true);
 
 		// Check for active
-		$urls = Hash::extract($links, '{n}.1');
-		$keyGroups = [
-			null, 
-			['plugin', 'prefix', 'controller', 'action'],
-			['plugin', 'prefix', 'controller', 'action' => 'index'],
-			['plugin', 'prefix', 'controller'],
-		];
-		foreach ($keyGroups as $keys) {
-			if (($k = $this->findUrlMatch($urls, $keys)) !== false) {
-				$links[$k][2]['active'] = true;
-				break;
+		if (!empty($options['urlActive'])) {
+			$urls = Hash::extract($links, '{n}.1');
+			$keyGroups = [
+				null, 
+				['plugin', 'prefix', 'controller', 'action'],
+				['plugin', 'prefix', 'controller', 'action' => 'index'],
+				['plugin', 'prefix', 'controller'],
+			];
+			foreach ($keyGroups as $keys) {
+				if (($k = $this->findUrlMatch($urls, $keys)) !== false) {
+					$links[$k][2]['active'] = true;
+					break;
+				}
 			}
+			unset($options['urlActive']);
 		}
 
 		// Output
