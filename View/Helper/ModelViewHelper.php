@@ -604,6 +604,10 @@ class ModelViewHelper extends LayoutAppHelper {
 			'link' => $link,
 		];
 
+		if (!empty($avatar)) {
+			$titleOptions['truncate'] = 50;
+		}
+		
 		if (!empty($titleClass)) {
 			$titleOptions = $this->addClass($titleOptions, $titleClass);
 		}
