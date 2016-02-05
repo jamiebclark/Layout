@@ -40,6 +40,8 @@ class LayoutHelper extends LayoutAppHelper {
 		'spam', 'clock',
 	);
 
+	public $paginatorElement;
+
 	public $colSizes = array('col', 'col-xs', 'col-sm', 'col-md', 'col-lg');
 	
 	public function __construct(View $View, $settings = array()) {
@@ -59,6 +61,8 @@ class LayoutHelper extends LayoutAppHelper {
 				}
 			}
 		}
+
+		$this->_set($settings);
 		return parent::__construct($View, $settings);
 	}
 
@@ -218,6 +222,10 @@ class LayoutHelper extends LayoutAppHelper {
 			'div' => 'text-center',
 			'ul' => 'pagination',
 		), (array) $options);
+
+		if (!empty($this->paginatorElement)) {
+			return $this->_View->element($this->paginatorElement, $options);
+		}
 
 		//if (empty($this->Paginator)) {
 		//	return '';
