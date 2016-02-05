@@ -64,6 +64,11 @@ $containerClass = !empty($fluid_layout_content) ? 'container-fluid' : 'container
 				'href' => $image_for_layout
 			));
 			echo $this->Html->meta(['property' => 'og:image', 'content' => $image_for_layout]);
+			if (!empty($image_for_layout_properties)) {
+				foreach ($image_for_layout_properties as $key => $val) {
+					echo $this->Html->meta(['property' => 'og:image:' . $key, 'content' => $val]);
+				}
+			}
 		}
 
 		if ($head = $this->fetch('head')) {
