@@ -13,7 +13,9 @@
 		});
 	};
 
-	documentReady(function() {
-		$('input.input-group-cash').inputGroupCash();
+
+	$(document).bind('ready ajaxComplete', function() {
+		$(':input.input-group-cash').inputGroupCash();
 	});
-});
+
+})(jQuery);
