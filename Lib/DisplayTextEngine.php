@@ -204,6 +204,10 @@ class DisplayTextEngine {
 	}
 	
 	public function quote($quote, $author = null, $options = array()) {
+		if (!empty($author)) {
+			unset($options['author']);
+		}
+
 		$text = $this->text($quote);
 
 		$options = array_merge(array(
@@ -212,14 +216,17 @@ class DisplayTextEngine {
 		), (array) $options);
 		extract($options);
 
-		$class .= 'layout-quote';
+		$class .= ' layout-quote';
 		if (!empty($author)) {
 			$text .= "<small>$author</small>";
 		}
 		if (isset($url)) {
+			if (is_array($url)) {
+				$url = Router::url($url, true);
+			}
 			$text = sprintf('<a href="%s">%s</a>', $url, $text);
 		}
-		return sprintf('<blockquote class="%s">%s</blockquote>', $class, $text);
+		return sprintf('<blockquote class="%s">%s</blockquote>', trim($class), $text);
 	}
 	
 /**
