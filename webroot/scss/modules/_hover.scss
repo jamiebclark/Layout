@@ -30,6 +30,8 @@
 	@include box-shadow($shadow-padding, $shadow-padding, $shadow-radius, $shadow-color);
 	border-radius: $border-radius-small;
 	color: $hover-window-border-color;
+	overflow: hidden;
+	
 	> .media-list > .media-wrap > .media {
 		margin-left: 0;
 		margin-right: 0;

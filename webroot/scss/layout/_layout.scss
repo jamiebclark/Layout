@@ -1229,6 +1229,7 @@ $arrow-height = 10px;
 		margin-top: $arrow-height;
 		position: reltiave;
 		z-index: 2;
+		overflow: hidden;
 		
 		color: #999;
 	}
