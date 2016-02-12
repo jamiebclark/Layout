@@ -28,13 +28,13 @@
 					$item.data('element-input-list-item-init', true);
 
 					if ($key.length) {
-						var name = $key.attr('name').replace('[id]', '[remove]');
+						var name = $key.attr('name').replace('[id]', '[remove_id]');
 						$button = $('<input/>')
 							.attr('name', name)
 							.attr('type', 'checkbox')
 							.attr('tabindex', -1)
 							.addClass('element-input-list-item-remove-input')
-							.attr('value', index)
+							.attr('value', $key.val())
 							.appendTo($item);
 
 						$button
@@ -123,13 +123,17 @@
 				disableInputs($template);
 				$button.click(function(e) {
 					e.preventDefault();
-					cloneTemplateItem();
+					$list.trigger('clone');
 				});
 				$items.each(function() {
 					initItem($(this));
 				});
 
-				$list.data('element-input-list-init', true);
+				$list
+					.on('clone', function() {
+						cloneTemplateItem();
+					})
+					.data('element-input-list-init', true);
 
 				$(document).ajaxComplete(function() {
 					disableInputs($template);
