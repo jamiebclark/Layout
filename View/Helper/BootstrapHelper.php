@@ -29,6 +29,44 @@ class BootstrapHelper extends LayoutAppHelper {
 		return $out;		
 	}
 
+	public function btnDropdown($listItems, $options = array()) {
+		$options = array_merge(array(
+			'class' => 'btn btn-default',
+			'name' => 'Items',
+		), $options);
+		extract($options);
+
+		$count = count($listItems);
+		if (!$count) {
+			$class .= ' disabled';
+			return $this->Html->tag('span', "0 $name", compact('class'));
+		} else if ($count == 1) {
+			if (empty($listItems[0][2])) {
+				$listItems[0][2] = array();
+			}
+			$listItems[0][2] = $this->addClass($listItems[0][2], $class);
+			return $this->arrayToLink($listItems[0]);
+		} else {
+			$out = '';
+			foreach ($listItems as $listItem) {
+				if (is_array($listItem)) {
+					$listItem = $this->arrayToLink($listItem);
+				}
+				$out .= $this->Html->tag('li', $listItem);
+			}
+			$out = $this->Html->tag('ul', $out, array('class' => 'dropdown-menu'));
+			$out = $this->Form->button("$count $name " . '<i class="fa fa-caret-down"></i>', [
+				'escape' => false,
+				'type' => 'button',
+				'class' => $class,
+				'data-toggle' => 'dropdown',
+				'aria-haspopup' => 'true',
+				'aria-expanded' => 1,
+			]) . $out;
+			return $this->Html->div('dropdown', $out);
+		}
+	}
+
 	public function listGroup($listItems, $options = array()) {
 		$options = $this->addClass($options, 'list-group');
 		$out = '';
@@ -249,5 +287,15 @@ class BootstrapHelper extends LayoutAppHelper {
 			$url = array_intersect_key($url, array_flip($keys));
 		}
 		return $url;
+	}
+
+
+	private function arrayToLink($array, $isForm = false) {
+		list($title, $url, $options, $click) = $array + array(null, array(), array(), null);
+		if ($isForm) {
+			return $this->Form->postLink($title, $url, $options, $click);
+		} else {
+			return $this->Html->link($title, $url, $options, $click);
+		}
 	}
 }
