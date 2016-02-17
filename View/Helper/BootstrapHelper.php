@@ -1,6 +1,7 @@
 <?php
 App::uses('LayoutAppHelper', 'Layout.View/Helper');
 App::uses('Url', 'Layout.Lib');
+App::uses('Param', 'Layout.Lib');
 
 class BootstrapHelper extends LayoutAppHelper {
 	public $name = 'Bootstrap';
