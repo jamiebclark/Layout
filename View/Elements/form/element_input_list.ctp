@@ -15,7 +15,7 @@ if (empty($modelHuman)) {
 }
 
 $this->Html->script('Layout.element_input_list', ['inline' => false]);
-// $this->Html->style('element_input_list', null, ['inline' => false]);
+$this->Html->css('Layout.elements/element_input_list', null, ['inline' => false]);
 
 if ($this->Form->value($model)) {
 	$count = count($this->Form->value($model));
