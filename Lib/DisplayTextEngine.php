@@ -220,7 +220,7 @@ class DisplayTextEngine {
 		if (!empty($author)) {
 			$text .= "<small>$author</small>";
 		}
-		if (isset($url)) {
+		if (!empty($url)) {
 			if (is_array($url)) {
 				$url = Router::url($url, true);
 			}
