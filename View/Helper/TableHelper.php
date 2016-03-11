@@ -441,7 +441,7 @@ class TableHelper extends LayoutAppHelper {
 			(!isset($options['paginate']) || $options['paginate'] !== false) &&
 			!empty($this->request->params['paging'][$model])
 		) {
-			$out .= $this->Layout->paginateNav();
+			$out .= $this->Layout->paginateNav(compact('model'));
 			//$out .= $this->Paginator->pagination(['ul' => 'pagination', 'div' => 'text-center']);
 		}
 
