@@ -74,12 +74,24 @@ class FormLayoutComponent extends Component {
 		}
 	}
 	
-	private function &initModel($model) {
-		$init = ClassRegistry::init($model, true);
+	private function &initModel($className) {
+		if (!empty($this->controller->modelClass)) {
+			$modelClass = $this->controller->modelClass;
+			if (is_object($this->controller->{$modelClass})) {
+				if ($this->controller->{$modelClass}->alias == $className) {
+					return $this->controller->{$modelClass};
+				} else if (is_object($this->controller->{$modelClass}->{$className})) {
+					if ($this->controller->{$modelClass}->{$className}->alias == $className) {
+						return $this->controller->{$modelClass}->{$className};
+					}
+				}
+			}
+		}
+		$init = ClassRegistry::init($className, true);
 		if (!$init) {
 			$plugins = CakePlugin::loaded();
 			foreach ($plugins as $plugin) {
-				if ($init = ClassRegistry::init("$plugin.$model", true)) {
+				if ($init = ClassRegistry::init("$plugin.$className", true)) {
 					return $init;
 				}
 			}
