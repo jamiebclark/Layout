@@ -6,6 +6,7 @@ $default = [
 	'element' => null,
 	'function' => null,
 	'count' => 1,
+	'pass' => [],
 ];
 $vars = array_merge($default, compact(array_keys($default)));
 extract($vars);
