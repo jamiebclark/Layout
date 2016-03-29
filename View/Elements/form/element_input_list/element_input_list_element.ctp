@@ -5,7 +5,11 @@ if (!empty($element) && is_callable($element)) {
 if (!empty($function)) {
 	$content = $function($count);
 } else if (!empty($element)) {
-	$content = $this->element($element, compact('count'));
+	if (empty($pass)) {
+		$pass = [];
+	}
+	$pass = compact('count') + $pass;
+	$content = $this->element($element, $pass);
 } else {
 	throw new Exception('No element input list content specified');
 }
