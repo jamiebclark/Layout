@@ -1363,7 +1363,7 @@ class LayoutHelper extends LayoutAppHelper {
 			
 			//debug(array($field, $Result[$field], $Result));
 			if (empty($Result[$field])) {
-				if (!empty($fieldOptions['notEmpty'])) {
+				if (!empty($fieldOptions['notBlank'])) {
 					continue;
 				} else {
 					$Result[$field] = '';
@@ -1527,7 +1527,7 @@ class LayoutHelper extends LayoutAppHelper {
 			}
 			
 			if (empty($resultInfo[$col])) {
-				if (Param::keyValCheck($config, 'notEmpty')) {
+				if (Param::keyValCheck($config, 'notBlank')) {
 					continue;
 				} else {
 					$resultInfo[$col] = '';
