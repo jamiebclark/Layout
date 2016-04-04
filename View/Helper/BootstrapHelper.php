@@ -5,16 +5,16 @@ App::uses('Param', 'Layout.Lib');
 
 class BootstrapHelper extends LayoutAppHelper {
 	public $name = 'Bootstrap';
-	public $helpers = array('Html', 'Form');
+	public $helpers = ['Html', 'Form'];
 	
-	public function thumbnail($src, $options = array()) {
-		$options = array_merge(array(
+	public function thumbnail($src, $options = []) {
+		$options = array_merge([
 			'class' => '',
 			'url' => false,
 			'tag' => 'div',
 			'caption' => null,
-			'image' => array(),		//Image Options
-		), $options);
+			'image' => [],		//Image Options
+		], $options);
 		extract($options);
 		$class = trim($class . ' thumbnail');
 		
@@ -23,18 +23,18 @@ class BootstrapHelper extends LayoutAppHelper {
 			$out .= $caption;
 		}
 		if (!empty($url)) {
-			$out = $this->Html->link($out, $url, array('escape' => false, 'class' => $class));
+			$out = $this->Html->link($out, $url, ['escape' => false, 'class' => $class]);
 		} else {
 			$out = $this->Html->tag($tag, $out, compact('class'));
 		}
 		return $out;		
 	}
 
-	public function btnDropdown($listItems, $options = array()) {
-		$options = array_merge(array(
+	public function btnDropdown($listItems, $options = []) {
+		$options = array_merge([
 			'class' => 'btn btn-default',
 			'name' => 'Items',
-		), $options);
+		], $options);
 		extract($options);
 
 		$count = count($listItems);
@@ -43,7 +43,7 @@ class BootstrapHelper extends LayoutAppHelper {
 			return $this->Html->tag('span', "0 $name", compact('class'));
 		} else if ($count == 1) {
 			if (empty($listItems[0][2])) {
-				$listItems[0][2] = array();
+				$listItems[0][2] = [];
 			}
 			$listItems[0][2] = $this->addClass($listItems[0][2], $class);
 			return $this->arrayToLink($listItems[0]);
@@ -55,7 +55,7 @@ class BootstrapHelper extends LayoutAppHelper {
 				}
 				$out .= $this->Html->tag('li', $listItem);
 			}
-			$out = $this->Html->tag('ul', $out, array('class' => 'dropdown-menu'));
+			$out = $this->Html->tag('ul', $out, ['class' => 'dropdown-menu']);
 			$out = $this->Form->button("$count $name " . '<i class="fa fa-caret-down"></i>', [
 				'escape' => false,
 				'type' => 'button',
@@ -68,13 +68,13 @@ class BootstrapHelper extends LayoutAppHelper {
 		}
 	}
 
-	public function listGroup($listItems, $options = array()) {
+	public function listGroup($listItems, $options = []) {
 		$options = $this->addClass($options, 'list-group');
 		$out = '';
 		foreach ($listItems as $item => $itemOptions) {
 			if (is_numeric($item)) {
 				$item = $itemOptions;
-				$itemOptions = array();
+				$itemOptions = [];
 			}
 			$itemOptions = $this->addClass($itemOptions, 'list-group-item');
 			$out .= $this->Html->tag('li', $item, $itemOptions);
@@ -82,7 +82,7 @@ class BootstrapHelper extends LayoutAppHelper {
 		return $this->Html->tag('ul', $out, $options);
 	}
 
-	public function linkListGroup($links, $options = array()) {
+	public function linkListGroup($links, $options = []) {
 		$options = $this->addClass($options, 'list-group');
 		$options['tag'] = 'div';
 		$options['link']['class'] = 'list-group-item';
@@ -91,7 +91,7 @@ class BootstrapHelper extends LayoutAppHelper {
 		return $this->_linkList($links, $options);
 	}
 
-	public function linkBtnGroup($links, $options = array()) {
+	public function linkBtnGroup($links, $options = []) {
 		$options = $this->addClass($options, 'btn-group');
 		$options['tag'] = 'div';
 		$options['link']['class'] = 'btn btn-default';
@@ -99,16 +99,16 @@ class BootstrapHelper extends LayoutAppHelper {
 		return $this->_linkList($links, $options);
 	}
 
-	public function linkNav($links, $options = array()) {
+	public function linkNav($links, $options = []) {
 		$options = $this->addClass($options, 'nav');
 		$options['tag'] = 'ul';
-		$options['linkWrap'] = array('tag' => 'li');
+		$options['linkWrap'] = ['tag' => 'li'];
 		return $this->_linkList($links, $options);
 	}
 
-	public function linkList($links, $options = array()) {
+	public function linkList($links, $options = []) {
 		$options['tag'] = 'ul';
-		$options['linkWrap'] = array('tag' => 'li');
+		$options['linkWrap'] = ['tag' => 'li'];
 		return $this->_linkList($links, $options);
 	}
 
@@ -119,23 +119,23 @@ class BootstrapHelper extends LayoutAppHelper {
  *	- title
  * 	- url
  * 	- linkOptions
- * 	- onClick
+ * 	- confirm
  * @param array $options Additional options to format the list
  * @return string HTML list
  **/
 
-	private function _linkList($links, $options = array()) {
-		$options = Hash::merge(array(
+	private function _linkList($links, $options = []) {
+		$options = Hash::merge([
 			'tag' => null,
 			'class' => null,
-			'linkWrap' => array(
+			'linkWrap' => [
 				'tag' => null,
 				'class' => null,
-			),
-			'link' => array(
+			],
+			'link' => [
 				'class' => null,
-			)
-		), $options);
+			]
+		], $options);
 
 		$tag = Param::keyCheck($options, 'tag', true);
 		$globalLinkOptions = Param::keyCheck($options, 'link', true);
@@ -164,7 +164,10 @@ class BootstrapHelper extends LayoutAppHelper {
 		foreach ($links as $k => $link) {
 			$isActive = false;
 			if (is_array($link)) {
-				list($linkText, $linkUrl, $linkOptions, $linkClick) = $link + array(null, array(), array(), null);
+				list($linkText, $linkUrl, $linkOptions, $confirm) = $link + [null, [], [], null];
+				if (!empty($confirm)) {
+					$linkOptions['confirm'] = $confirm;
+				}
 
 				$isActive = Param::keyCheck($linkOptions, 'active', true);
 
@@ -207,9 +210,9 @@ class BootstrapHelper extends LayoutAppHelper {
 					$linkOptions = $this->addClass($linkOptions, 'active');
 				}
 				if (Param::keyCheck($linkOptions, 'postLink', true)) {
-					$link = $this->Form->postLink($linkText, $linkUrl, $linkOptions, $linkClick);
+					$link = $this->Form->postLink($linkText, $linkUrl, $linkOptions);
 				} else {
-					$link = $this->Html->link($linkText, $linkUrl, $linkOptions, $linkClick);
+					$link = $this->Html->link($linkText, $linkUrl, $linkOptions);
 				}
 
 				$link = $before . $link . $after;
@@ -292,11 +295,14 @@ class BootstrapHelper extends LayoutAppHelper {
 
 
 	private function arrayToLink($array, $isForm = false) {
-		list($title, $url, $options, $click) = $array + array(null, array(), array(), null);
+		list($title, $url, $options, $confirm) = $array + [null, [], [], null];
+		if (!empty($confirm)) {
+			$options['confirm'] = $confirm;
+		}
 		if ($isForm) {
-			return $this->Form->postLink($title, $url, $options, $click);
+			return $this->Form->postLink($title, $url, $options);
 		} else {
-			return $this->Html->link($title, $url, $options, $click);
+			return $this->Html->link($title, $url, $options);
 		}
 	}
 }

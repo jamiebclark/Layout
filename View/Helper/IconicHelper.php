@@ -336,7 +336,7 @@ class IconicHelper extends AppHelper {
 		'sun_fill' => '2600'
 	);
 	
-	function menu($list = array(), $options = array()) {
+	public function menu($list = array(), $options = array()) {
 		$options = array_merge(array(
 			'tag' => 'nav',
 			'class' => 'iconic-list',
@@ -345,28 +345,21 @@ class IconicHelper extends AppHelper {
 		
 		$return = '';
 		foreach ($list as $item) {
-			list($title, $url, $attrs, $onclick) = $item + array(null, null, array(), null);
-			/*
-			$return .= $this->Html->tag('li', $this->Html->link(
-				$this->icon($title),
-				$url,
-				array('escape' => false) + (array) $attrs,
-				$onclick
-			));
-			*/
+			list($title, $url, $attrs, $confirm) = $item + array(null, null, array(), null);
+			if (!empty($confirm)) {
+				$attrs['confirm'] = $confirm;
+			}
 			$return .= $this->Html->link(
 				$this->icon($title),
 				$url,
-				array('escape' => false) + (array) $attrs,
-				$onclick
+				array('escape' => false) + (array) $attrs
 			);
-
 		}
 		//$return = $this->Html->tag('ul', $return);
 		return $this->Html->tag($tag, $return, compact('class'));
 	}
 	
-	function icon($title, $options = array()) {
+	public function icon($title, $options = array()) {
 		$options = array_merge(array(
 			'class' => '',
 			'tag' => 'span',
@@ -390,7 +383,7 @@ class IconicHelper extends AppHelper {
 		return $out;
 	}
 	
-	function getIcon($title) {
+	public function getIcon($title) {
 		$icon = $this->useUnicode ? $this->getCode($title) : $this->getChar($title);
 		if (!$icon && !empty($this->actions[$title])) {
 			return $this->getIcon($this->actions[$title]);
@@ -398,7 +391,7 @@ class IconicHelper extends AppHelper {
 		return $icon;
 	}
 	
-	function getCode($title) {
+	public function getCode($title) {
 		if (!empty($this->codes[$title])) {
 			return '&#x' . $this->codes[$title];
 		} else {
@@ -406,17 +399,15 @@ class IconicHelper extends AppHelper {
 		}
 	}
 	
-	function getChar($title) {
+	public function getChar($title) {
 		return !empty($this->chars[$title]) ? $this->chars[$title] : false;
 	}
 	
-	function test() {
+	public function test() {
 		$return = '';
 		foreach ($this->codes as $title => $val) {
 			$return .= "'$title' => '&#x$val',<br/>\n";
 		}
 		return $return;
 	}
-
 }
-?>

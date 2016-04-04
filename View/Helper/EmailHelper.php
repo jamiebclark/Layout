@@ -48,9 +48,9 @@ class EmailHelper extends LayoutAppHelper {
 		return $this->Html->image($url, $options);
 	}
 	
-	function link($title, $url, $options = array(), $confirm = null) {
+	function link($title, $url, $options = array()) {
 		$url = Router::url($url, true);
-		return $this->Html->link($title, $url, $options, $confirm);
+		return $this->Html->link($title, $url, $options);
 	}
 	
 	

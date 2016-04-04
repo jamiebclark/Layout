@@ -357,7 +357,10 @@ class ModelViewHelper extends LayoutAppHelper {
 					}
 				}
 				if (is_array($menuItem)) {
-					list($linkTitle, $linkUrl, $linkOptions, $linkPost) = $menuItem + [null, null, null, null];
+					list($linkTitle, $linkUrl, $linkOptions, $confirm) = $menuItem + [null, null, null, null];
+					if (!empty($confirm)) {
+						$linkOptions['confirm'] = $confirm;
+					}
 					if ((empty($linkUrl['controller']) || ($linkUrl['controller'] == $this->controller)) && !isset($linkUrl[0])) {
 						$linkUrl[0] = $id;
 					}
@@ -389,9 +392,9 @@ class ModelViewHelper extends LayoutAppHelper {
 					}
 					*/
 					if ($postLink) {
-						$menu[] = $this->Form->postLink($linkTitle, $linkUrl, $linkOptions, $linkPost);
+						$menu[] = $this->Form->postLink($linkTitle, $linkUrl, $linkOptions);
 					} else {
-						$menu[] = $this->Html->link($linkTitle, $linkUrl, $linkOptions, $linkPost);
+						$menu[] = $this->Html->link($linkTitle, $linkUrl, $linkOptions);
 					}
 
 				} else {
