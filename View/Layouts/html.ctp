@@ -17,9 +17,8 @@
  */
 
 $flashParams = array('element' => 'alert');
-if (CakePlugin::loaded('TwitterBootstrap')) {
-	$flashParams['params']['plugin'] = 'TwitterBootstrap';
-}
+//$flashParams = [];
+
 if (!empty($this->Flash)) {
 	$flash = $this->Flash->render();
 	$flash .= $this->Flash->render('auth', $flashParams);

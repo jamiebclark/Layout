@@ -214,18 +214,15 @@ class TableComponent extends Component {
 		return compact('redirect', 'message', 'success');
 	}
 	
-	private function flash($msg, $type = 'info') {
-		if ($type === true) {
-			$type = 'success';
-		} else if ($type === false) {
-			$type = 'error';
-		} else if (empty($type)) {
-			$type = 'info';
+	private function flash($msg, $element = 'info') {
+		if ($element === true) {
+			$element = 'success';
+		} else if ($element === false) {
+			$element = 'error';
+		} else if (empty($element)) {
+			$element = 'alert';
 		}
-		
-		return $this->Session->setFlash(__($msg), 'default', array(
-			'class' => 'alert alert-' . $type
-		));
+		return $this->Flash->set(__($msg), compact('element'));
 	}
 	
 	private function getHumanModel($model, $plural = false) {

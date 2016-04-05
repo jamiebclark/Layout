@@ -7,9 +7,9 @@ App::uses('Url', 'Layout.Lib');
 App::uses('InflectorPlus', 'Layout.Lib');
 
 class ActivateComponent extends Component {
-	var $name = 'Activate';
-	var $controller;
-	var $settings = array();
+	public $name = 'Activate';
+	public $controller;
+	public $settings = array();
 	
 	/*
 	var $userType = array();	//Optional setting to only let specific user types activate
@@ -21,16 +21,16 @@ class ActivateComponent extends Component {
 	var $paramOff;
 	*/
 	
-	var $sessionOutput;
-	var $_named = array();
+	public $sessionOutput;
+	protected $_named = array();
 	
-	function __construct(ComponentCollection $collection, $settings = array()) {
+	public function __construct(ComponentCollection $collection, $settings = array()) {
 		$this->settings = $settings;
 		$settings = $this->_getSettings($settings);
 		parent::__construct($collection, $settings);
 	}
 
-	function initialize(Controller $controller) {
+	public function initialize(Controller $controller) {
 		$this->controller =& $controller;
 		if (!empty($this->controller->request->params['named'])) {
 			$this->_named = $this->controller->request->params['named'];
@@ -87,19 +87,18 @@ class ActivateComponent extends Component {
 	private function _setFlash($success, $id, $setOn, $settings) {
 		if ($success) {
 			$msg = 'Successfully marked';
-			$class = 'alert-success';
 			if (method_exists($this->controller, '_afterActivate')) {
 				$this->controller->_afterActivate($id, $setOn);
 			}
+			$element = 'success';
 		} else {
 			$msg = 'There was an error marking';
-			$class = 'alert-danger';
+			$element = 'error';
 		}
 		$msg .= sprintf(' <a href="%s">%s</a> ', Router::url(array('action' => 'view', $id)), $settings['humanName']);
 		$msg .= $this->_pickSetting($settings, 'verb', $setOn);
-		
 		if ($this->sessionOutput) {
-			$this->controller->Session->setFlash($msg, 'default', compact('class'));
+			$this->controller->Flash->set($msg, compact('element'));
 		}
 	}
 	
