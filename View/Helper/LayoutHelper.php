@@ -1090,6 +1090,9 @@ class LayoutHelper extends LayoutAppHelper {
 				list($content, $link, $options, $confirm) = $menuItem + array('', array(), array(), null);
 				$hasLink = $link !== false;
 				$options = array_merge((array) $options, $urlOptions);
+				if (!empty($confirm)) {
+					$options['confirm'] = $confirm;
+				}
 				//Checks current parameters to see if it matches the given URL
 				//Can pass currentSelect as an array of what items to match array('action', 'controller')
 				if ($children = Param::keyCheck($options, 'children', true)) {
@@ -1218,7 +1221,7 @@ class LayoutHelper extends LayoutAppHelper {
 					}
 				}
 				if (!empty($link)) {
-					$menuItem = $this->Html->link($content, $link, array('escape' => false) + $options, $confirm);
+					$menuItem = $this->Html->link($content, $link, ['escape' => false] + $options);
 				} else {
 					$liAttrs += $options;
 					$menuItem = $content;
@@ -1363,7 +1366,7 @@ class LayoutHelper extends LayoutAppHelper {
 			
 			//debug(array($field, $Result[$field], $Result));
 			if (empty($Result[$field])) {
-				if (!empty($fieldOptions['notEmpty'])) {
+				if (!empty($fieldOptions['notBlank'])) {
 					continue;
 				} else {
 					$Result[$field] = '';
@@ -1527,7 +1530,7 @@ class LayoutHelper extends LayoutAppHelper {
 			}
 			
 			if (empty($resultInfo[$col])) {
-				if (Param::keyValCheck($config, 'notEmpty')) {
+				if (Param::keyValCheck($config, 'notBlank')) {
 					continue;
 				} else {
 					$resultInfo[$col] = '';

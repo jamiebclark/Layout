@@ -367,7 +367,7 @@ class FormLayoutHelper extends LayoutAppHelper {
 		if (!empty($display) && empty($displayInput)) {
 			//$displayInput = $this->Html->div('display fakeInput text', $hasValue ? $value : '', array('style'=> 'display:none;'));
 			$displayInput = $this->fakeInput($hasValue ? $value : '', array(
-				'class' => 'display text', 
+				'class' => 'display form-control', 
 				'style' => 'display: none', 
 				'label' => false,
 				'wrapInput' => false

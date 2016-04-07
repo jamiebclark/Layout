@@ -17,12 +17,15 @@
  */
 
 $flashParams = array('element' => 'alert');
-if (CakePlugin::loaded('TwitterBootstrap')) {
-	$flashParams['params']['plugin'] = 'TwitterBootstrap';
-}
+//$flashParams = [];
 
-$flash = $this->Session->flash();
-$flash .= $this->Session->flash('auth', $flashParams);
+if (!empty($this->Flash)) {
+	$flash = $this->Flash->render();
+	$flash .= $this->Flash->render('auth', $flashParams);
+} else {
+	$flash = $this->Session->flash();
+	$flash .= $this->Session->flash('auth', $flashParams);
+}
 
 $default = array(
 	'content_class' => '',
