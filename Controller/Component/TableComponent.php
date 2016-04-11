@@ -6,36 +6,34 @@
  *
  **/
 class TableComponent extends Component {
-	var $controller;
-	var $components = array('Session');
+	public $controller;
+	public $components = ['Session', 'Flash'];
 	
-	var $settings = array();
+	public $settings = [];
 	
-	function __construct(ComponentCollection $collection, $settings = array()) {
+	public function __construct(ComponentCollection $collection, $settings = []) {
 		$this->settings = $settings;
 		parent::__construct($collection, $settings);
 	}
 
-	function initialize(Controller $controller) {
+	public function initialize(Controller $controller) {
 		$this->controller =& $controller;
-		
-		//debug($controller->data);
-		//debug($controller->request->params);
-		
 		$this->setLimit();
-		
-		//$this->saveData();
 		$this->setCheckbox();
 	}
 	
-	function setLimit() {
+	public function setLimit() {
 		if (!empty($_GET['limit']) && is_numeric($_GET['limit'])) {
 			$this->controller->paginate['limit'] = $_GET['limit'];
 		}
 	}
 	
-	//Looks for in-table form edits
-	function saveData() {
+/*
+ * Looks for in-table form edits
+ *
+ * @return void;
+ **/
+	public function saveData() {
 		$result = null;
 		if (!empty($this->controller->request->data['TableEdit'])) {
 			$model = !empty($settings['model']) ? $settings['model'] : $this->controller->modelClass;
@@ -72,8 +70,8 @@ class TableComponent extends Component {
 	}
 	
 	//Scans for passed checked info
-	function setCheckbox() {
-		$data = array();
+	public function setCheckbox() {
+		$data = [];
 		$model = $this->controller->modelClass;
 
 		//debug($this->controller->request->data);
@@ -99,7 +97,7 @@ class TableComponent extends Component {
 			}
 			$action = $_POST['checked_action'];
 		}
-		$options = array();
+		$options = [];
 		if (!empty($data['useModel'])) {
 			$options['model'] = $data['useModel'];
 		}
@@ -120,7 +118,7 @@ class TableComponent extends Component {
 	}
 	
 	
-	function withChecked($action, $ids, $options = array()) {
+	public function withChecked($action, $ids, $options = []) {
 		$function = '_withChecked';
 		$redirect = true;
 		$message = false;
@@ -141,27 +139,27 @@ class TableComponent extends Component {
 			}			
 			if ($action == 'approve') {
 				$options['verb'] = 'Approved';
-				$options['saveAll'] = array('approved' => 1);
+				$options['saveAll'] = ['approved' => 1];
 			} else if ($action == 'unapprove') {
 				$options['verb'] = 'Unapproved';
-				$options['saveAll'] = array('approved' => 0);
+				$options['saveAll'] = ['approved' => 0];
 			} else if ($action == 'active') {
 				$options['verb'] = 'Activated';
-				$options['saveAll'] = array('active' => true);
+				$options['saveAll'] = ['active' => true];
 			} else if ($action == 'inactive') {
 				$options['verb'] = 'Deactivated';
-				$options['saveAll'] = array('active' => 0);
+				$options['saveAll'] = ['active' => 0];
 			} else if ($action == 'delete') {
 				$options['delete'] = true;
 			} else if ($action == 'duplicate') {
 				$options['result'] = true;
-				$options['redirect'] = array(
+				$options['redirect'] = [
 					'controller' => 'duplicates',
 					'action' => 'view',
 					'plugin' => 'cake_duplicates',
 					'staff' => true,
 					$model,
-				);
+				];
 				foreach ($ids as $id) {
 					$options['redirect'][] = $id;
 				}
@@ -170,16 +168,16 @@ class TableComponent extends Component {
 				if ($options['delete'] === true) {
 					$options['delete'] = $options['conditions'];
 				}
-				$Model->order = array();
+				$Model->order = [];
 				$options['result'] = $Model->deleteAll($options['delete'], true, true);
 				$options['count'] = count($ids);
 				if (empty($options['verb'])) {
 					$options['verb'] = 'Deleted';
 				}
 			} else if (!empty($options['saveAll'])) {
-				$data = array();
+				$data = [];
 				foreach ($ids as $id) {
-					$data[] = array($Model->primaryKey => $id) + $options['saveAll'];
+					$data[] = [$Model->primaryKey => $id] + $options['saveAll'];
 				}
 				$Model->create();
 				$options['result'] = $Model->saveAll($data);
@@ -233,5 +231,4 @@ class TableComponent extends Component {
 		$humanModelPlural = Inflector::humanize(Inflector::tableize($model));
 		return $plural ? $humanModelPlural : Inflector::singularize($humanModelPlural);
 	}
-
 }
