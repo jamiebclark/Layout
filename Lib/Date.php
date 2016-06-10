@@ -27,14 +27,38 @@ class Date {
 		return $stamp;
 	}
 
-	/**
-	 * Returns the timestamp of the relative Sunday to the given date
-	 *
-	 * @param $dateStr str The given date
-	 * @param $position str Either 'before' or 'after', depening on which Sunday
-	 * @param $skipThis bool If true, it will not return current value if it is a Sunday
-	 * @return timestamp
-	 **/
+	public static function getWeekRange($dateStart = null, $dateEnd = null) {
+		if (empty($dateStart)) {
+			$dateStart = date('Y-m-d');
+		}
+		$stamp = strtotime($dateStart);
+		$dateStart = date('Y-m-d',$stamp);
+
+		// Moves it to Sunday
+		$dateStartStamp = Date::sundayStamp($dateStart,'before', false);
+
+		$dateStart = date('Y-m-d', $dateStartStamp);
+		$dateEndStamp = strtotime($dateEnd);
+		if (empty($dateEnd) || $dateEndStamp <= $dateStartStamp) {
+			$dateEndStamp = Date::sundayStamp($dateStart,'after', true);
+
+			// Move back a day to Saturday
+			$date = new DateTime(date('Y-m-d', $dateEndStamp));
+			$dateEndStamp = $date->sub(new DateInterval('P1D'))->getTimestamp();
+		}
+
+		$dateEnd = date('Y-m-d', $dateEndStamp);
+		return [$dateStart, $dateEnd];
+	}
+
+/**
+ * Returns the timestamp of the relative Sunday to the given date
+ *
+ * @param $dateStr str The given date
+ * @param $position str Either 'before' or 'after', depening on which Sunday
+ * @param $skipThis bool If true, it will not return current value if it is a Sunday
+ * @return timestamp
+ **/
 	public static function sundayStamp($dateStr = null, $position = 'after', $skipThis = false) {
 		if (empty($dateStr)) {
 			$dateStr = 'now';

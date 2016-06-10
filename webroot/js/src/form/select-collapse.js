@@ -1,4 +1,22 @@
+function getUuid() {
+	return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function(c) {
+		var r = Math.random()*16|0, v = c == 'x' ? r : (r&0x3|0x8);
+		return v.toString(16);
+	});
+}
+
 (function($) {
+	function getElementOrCreate(tag, target, props, $parent) {
+		if (typeof $parent === "undefined") {
+			var $parent = $('body');
+		}
+		var $el = $(target, $parent);
+		if (!$el.length) {
+			$el = $("<" + tag + "></" + tag + ">", props).appendTo($parent);
+		}
+		return $el;
+	}
+
 	$.fn.selectCollapseHoverTrack = function() {
 		$(this).hover(
 			function() {$(this).data('hovering', true);}, 
@@ -10,25 +28,37 @@
 	$.fn.selectCollapse = function() {
 		return this.each(function() {
 			var $select = $(this),
-				$options = $select.find('option'),
-				$div = $('<div class="select-collapse-window"></div>'),
-				$ul = $('<ul class="select-collapse-options"></ul>'),
-				$searchResults = $('<ul class="select-collapse-search-results"></ul>'),
-				$mask = $('<div class="select-collapse-mask"></div>'),
-				$search = $('<input class="select-collapse-search" type="text"/>'),
-				$lastLi = false,
-				$scrollables = $select.parents().add($(window)),
+				uuid = $select.data('uuid') ? $select.data('uuid') : getUuid(),
+				id = $select.attr('id') ? $select.attr('id') : 'select-collapse-' + uuid,
+				windowId = 'select-collapse-window-' + uuid,
+				maskId = 'select-collapse-mask-' + uuid;
+			
+			$select.data('uuid', uuid).attr('id', id);
+			if (!$select.data('optionVals')) {
+				$select.data('optionVals', []);
+			}
+
+			var $window = getElementOrCreate("div", "#" + windowId, {id: windowId, class: 'select-collapse-window'}),
+				$search = getElementOrCreate('input', '.select-collapse-search', {
+					class: 'select-collapse-search',
+					type: 'text'
+				}, $window),
+				$ul = getElementOrCreate("ul", '.select-collapse-options', {class: 'select-collapse-options'}, $window),
+				$searchResults = getElementOrCreate('ul', '.select-collapse-search-results', {class: 'select-collapse-search-results'}, $window),
+				$mask = getElementOrCreate('div', '#' + maskId, {
+					id: maskId,
+					class: 'select-collapse-mask'
+				});
+
+			var $scrollables = $select.parents().add($(window)),
 				$modalParent = $select.closest('.modal'),
 				$scrollParent = $select.scrollParent(),
 				bulletRepeat = ' - ',
-				childIndex = 0,
-				lastChildIndex = 0,
 				initName = 'collapse-init',
-				isDisabled = $select.is(':disabled'),
-				vals = [];
+				isDisabled = $select.is(':disabled');
 				
 			function setLink($a) {
-				$div.find('.active').removeClass('active');
+				$window.find('.active').removeClass('active');
 				var $li = $a.closest('span.select-collapse-option').addClass('active').closest('li');
 				collapseAll();
 				expandUp($li);
@@ -38,6 +68,7 @@
 					$select.focus();
 				}
 			}
+
 			function set(val) {
 				$select.val(val).trigger('change');
 			}
@@ -45,7 +76,7 @@
 				return $select.data('expanded') ? hide() : show();
 			}
 			function show() {
-				if ($div.is(':hidden')) {
+				if ($window.is(':hidden')) {
 					$search.focus().val('');
 					searchUpdate();
 				}
@@ -56,13 +87,13 @@
 					w = $select.outerWidth(),
 					zIndex = $select.zIndex();
 					
-				$div.show().css({
+				$window.show().css({
 					'top' : pos.top + h, 
 					'left' : pos.left, 
 					'width' : w
 				//	'z-index' : zIndex + 1
 				});
-				$('.expanded > ul', $div).show();
+				$('.expanded > ul', $window).show();
 
 				$search.focus();
 				return true;
@@ -73,7 +104,7 @@
 				if (!isDisabled) {
 					$select.removeAttr('disabled');
 				}
-				$div.hide();
+				$window.hide();
 				return true;
 			}
 			function expand($li, recursive) {
@@ -105,7 +136,7 @@
 			}
 			
 			function collapseAll($li) {
-				var $li = typeof $li !== 'undefined' ? $li : $div;
+				var $li = typeof $li !== 'undefined' ? $li : $window;
 				$li.find('li.expanded').each(function() {
 					collapse($(this), false);
 				});
@@ -145,17 +176,17 @@
 
 			function searchUpdate() {
 				var val = $search.val(),
-					valLower = val.toLowerCase();
-
+					valLower = val.toLowerCase(),
+					optionVals = $select.data('optionVals');
 				if (val === '') {
-					$('.select-collapse-options', $div).show();
+					$ul.show();
 					$searchResults.hide();
 					return $(this);
 				}
-				$('.select-collapse-options', $div).hide();
+				$ul.hide();
 				$searchResults.show().empty();
-				for (var i = 0; i < vals.length; i++) {
-					var label = vals[i].label,
+				for (var i = 0; i < optionVals.length; i++) {
+					var label = optionVals[i].label,
 						index = label.toLowerCase().indexOf(valLower);
 
 					if (index == -1) {
@@ -164,7 +195,7 @@
 					label = label.replace(val, '<strong>' + val + '</strong>');
 					$('<a href="#"></a>')
 						.appendTo($searchResults)
-						.data('target', vals[i].target)
+						.data('target', optionVals[i].target)
 						.wrap('<li><span class="select-collapse-option"></span></li>')
 						.html(label)
 						.click(function(e) {
@@ -174,44 +205,25 @@
 						});
 				}
 			}
-			
-			if (!$select.data(initName)) {
-				$div.append($search).append($ul).append($searchResults).appendTo($('body'));
-				$mask.appendTo($('body'));
-				positionMask();
-				var $selectedA = false;
-				
-				$mask.selectCollapseHoverTrack()
-					.hover(function() {$(this).css('cursor','pointer');})
-					.click(function() {toggle();});
-				
-				$(document).click(function() {
-					if (
-						$select.data('expanded') && 
-						!$select.data('hovering') && 
-						!$mask.data('hovering') && 
-						!$div.data('hovering')
-					) {
-						hide();
-					}
-				});
-				$select
-					.selectCollapseHoverTrack()
-					.click(function(e) {
-						$select.data('expanded', true).attr('disabled', 'disabled');
 
-						e.stopPropagation();
-						e.preventDefault();
-						toggle();
-					})
-					.hover(function(e) {
-						positionMask();
-					});
-				
-				$div.selectCollapseHoverTrack();
-				
-				vals = [];
-				var valLabelPath = [];
+			function buildList() {
+				var valLabelPath = [],
+					$options = $('option', $select),
+					$lastLi = false,
+					childIndex = 0,
+					lastChildIndex = 0,
+					optionVals = [];
+
+				$select.data('optionVals', []);
+
+				$ul.empty();
+
+				console.log({
+					"Select": $select,
+					"Options": $('option', $select).length
+				});
+
+				console.log("FOUND " + $options.length + " Options"); 
 				$options.each(function(optionIndex) {
 					var $option = $(this),
 						$li = $('<li></li>').addClass('no-child'),
@@ -235,7 +247,6 @@
 							title = titlePre.substring(bulletIndexLength) + title;
 						}
 					}
-
 					if (childIndex > lastChildIndex) {
 						if ($lastLi) {
 							$ul = $('<ul></ul>').appendTo($lastLi);
@@ -277,17 +288,51 @@
 						});
 					}
 					$lastLi = $li;
-
 					if ($(this).val()) {
 						var valLabel = "";
 						valLabelPath.push(title);
 						for (i = 0; i < valLabelPath.length; i++) {
 							valLabel += "/" + valLabelPath[i];
 						}
-						vals.push({label: valLabel, value: $(this).val(), target: '#' + $a.attr('id')});
+						optionVals.push({label: valLabel, value: $(this).val(), target: '#' + $a.attr('id')});
 					}
 				});
+				$select.data('optionVals', optionVals);
+			}
+
+			if (!$select.data(initName)) {
+				positionMask();
+				var $selectedA = false;
 				
+				$mask.selectCollapseHoverTrack()
+					.hover(function() {$(this).css('cursor','pointer');})
+					.click(function() {toggle();});
+				
+				$(document).click(function() {
+					if (
+						$select.data('expanded') && 
+						!$select.data('hovering') && 
+						!$mask.data('hovering') && 
+						!$window.data('hovering')
+					) {
+						hide();
+					}
+				});
+				$select
+					.selectCollapseHoverTrack()
+					.click(function(e) {
+						$select.data('expanded', true).attr('disabled', 'disabled');
+
+						e.stopPropagation();
+						e.preventDefault();
+						toggle();
+					})
+					.hover(function(e) {
+						positionMask();
+					});
+				
+				$window.selectCollapseHoverTrack();
+
 				$search.keyup(function() {
 					searchUpdate();
 				});
@@ -324,11 +369,17 @@
 					})
 					.data(initName, true);
 			}
+			buildList();
 			return $(this);
 		});
 	};
 	
-	documentReady(function() {
+
+	$(document).bind('ajaxComplete', function() {
+		console.log('AJAX IS COMPLETE YOU FOOL');
+	});
+
+	$(document).bind('ajaxComplete ready', function() {
 		$('select.select-collapse').selectCollapse();
 	});
 
