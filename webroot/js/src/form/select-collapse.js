@@ -28,12 +28,13 @@ function getUuid() {
 	$.fn.selectCollapse = function() {
 		return this.each(function() {
 			var $select = $(this),
-				uuid = $select.data('uuid') ? $select.data('uuid') : getUuid(),
+				$selectedA = false,
+				uuid = $select.attr('uuid') ? $select.attr('uuid') : getUuid(),
 				id = $select.attr('id') ? $select.attr('id') : 'select-collapse-' + uuid,
 				windowId = 'select-collapse-window-' + uuid,
 				maskId = 'select-collapse-mask-' + uuid;
 			
-			$select.data('uuid', uuid).attr('id', id);
+			$select.attr('uuid', uuid).attr('id', id);
 			if (!$select.data('optionVals')) {
 				$select.data('optionVals', []);
 			}
@@ -212,18 +213,13 @@ function getUuid() {
 					$lastLi = false,
 					childIndex = 0,
 					lastChildIndex = 0,
+					$subUl = $ul,
 					optionVals = [];
 
+				$selectedA = false;
+
 				$select.data('optionVals', []);
-
 				$ul.empty();
-
-				console.log({
-					"Select": $select,
-					"Options": $('option', $select).length
-				});
-
-				console.log("FOUND " + $options.length + " Options"); 
 				$options.each(function(optionIndex) {
 					var $option = $(this),
 						$li = $('<li></li>').addClass('no-child'),
@@ -249,7 +245,7 @@ function getUuid() {
 					}
 					if (childIndex > lastChildIndex) {
 						if ($lastLi) {
-							$ul = $('<ul></ul>').appendTo($lastLi);
+							$subUl = $('<ul></ul>').appendTo($lastLi);
 							$lastLi.removeClass('no-child').find('a').first().before($('<a class="select-collapse-bullet" href="#">+</a>')
 								.click(function(e) {
 									e.preventDefault();
@@ -265,7 +261,7 @@ function getUuid() {
 						}
 					} else if (childIndex < lastChildIndex) {
 						for (i = childIndex; i < lastChildIndex; i++) {
-							$ul = $ul.closest('li').closest('ul');
+							$subUl = $subUl.closest('li').closest('ul');
 							valLabelPath.pop();
 						}
 						valLabelPath.pop();
@@ -274,7 +270,7 @@ function getUuid() {
 					}
 
 					lastChildIndex = childIndex;
-					$li.appendTo($ul);
+					$li.appendTo($subUl);
 					$a.html(title);
 					if ($option.is(':selected')) {
 						$selectedA = $a;
@@ -297,12 +293,14 @@ function getUuid() {
 						optionVals.push({label: valLabel, value: $(this).val(), target: '#' + $a.attr('id')});
 					}
 				});
+				if ($selectedA.length) {
+					setLink($selectedA);
+				}
 				$select.data('optionVals', optionVals);
 			}
 
 			if (!$select.data(initName)) {
 				positionMask();
-				var $selectedA = false;
 				
 				$mask.selectCollapseHoverTrack()
 					.hover(function() {$(this).css('cursor','pointer');})
@@ -337,9 +335,6 @@ function getUuid() {
 					searchUpdate();
 				});
 
-				if ($selectedA.length) {
-					setLink($selectedA);
-				}
 				$scrollables.each(function() {
 					$(this).scroll(function() {
 						if ($select.length) {
@@ -367,20 +362,22 @@ function getUuid() {
 					.on('layout-enabled', function() {
 						isDisabled = false;
 					})
+					.on('refresh', function() {
+						buildList();
+					})
 					.data(initName, true);
 			}
+			$(document).ajaxComplete(function() {
+				buildList();
+			});
+
 			buildList();
 			return $(this);
 		});
 	};
-	
-
-	$(document).bind('ajaxComplete', function() {
-		console.log('AJAX IS COMPLETE YOU FOOL');
-	});
-
 	$(document).bind('ajaxComplete ready', function() {
 		$('select.select-collapse').selectCollapse();
 	});
+
 
 })(jQuery);
