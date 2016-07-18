@@ -42,11 +42,12 @@ class FormLayoutHelper extends LayoutAppHelper {
 		parent::beforeRender($viewFile);
 
 		//$this->Html->css('Layout.style', null, ['inline' => false]);
-		
+		$this->Html->css('Layout.jquery/jquery.timepicker', null, ['inline' => false]);	
 		$this->Html->script(array(
+			'Layout.jquery/jquery.timepicker',
 			'Layout.script',
 			'Layout.form_layout',
-			'Layout.jquery/jquery.timepicker',
+			//'Layout.jquery/jquery.timepicker',
 			'Layout.jquery/datepair',
 		), array('inline' => false));
 	}
