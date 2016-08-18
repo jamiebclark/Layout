@@ -15,8 +15,7 @@ if (empty($modelHuman)) {
 	$modelHuman = Inflector::humanize(Inflector::underscore($model));
 }
 
-$this->Html->script('Layout.element_input_list', ['inline' => false]);
-$this->Html->css('Layout.elements/element_input_list', null, ['inline' => false]);
+echo $this->element('Layout.form/element_input_list/assets');
 
 if ($this->Form->value($model)) {
 	$count = count($this->Form->value($model));
