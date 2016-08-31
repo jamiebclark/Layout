@@ -161,6 +161,7 @@
 	$.fn.scrollfix = function() {
 		return this.each(function() {
 			var $scrollbox = $(this),
+				bodyOffset = 0,
 				$parent = $scrollbox.parent().addClass('scrollfix-parent'),
 				$container = $scrollbox.closest('.scrollfix-container,.row,.container,.container-fluid,body').addClass('scrollfix-container'),
 				containerTop = 0,
@@ -169,12 +170,22 @@
 				scrollboxWidth = 0,
 				scrollboxHeight = 0,
 				windowHeight = 0,
-				topOffset = 0;
+				topOffset = 0,
+
+				timeoutTimer = 0;
 
 		
+			function setDimensionsTimeout() {
+				clearTimeout(timeoutTimer);
+				timeoutTimer = setTimeout(function() {
+					setDimensions();
+				}, 1000);
+			}
+
 			function setDimensions() {
+				bodyOffset = parseInt($('body').css('padding-top'), 10);
 				windowHeight = $(window).height();
-				containerHeight = $container.height();
+				containerHeight = $container.outerHeight(true);
 				containerTop = $container.offset().top;
 				containerBottom = containerTop + containerHeight;
 				scrollboxWidth = $parent.width();
@@ -194,27 +205,31 @@
 			
 			function setScrollClass(currentScroll) {
 				currentScroll += topOffset;
+				/*
+				$scrollMeter.css({top: currentScroll + "px"});
+				$scrollMeterBottom.css({top: (currentScroll + windowHeight - 4) + "px"});
+				*/
 
 				var positions = ['scrollfix--top', 'scrollfix--bottom', 'scrollfix--fixed'],
 					key,
 					css = {top: 0},
 					fixedTop = topOffset;
+
 				if (scrollboxHeight > windowHeight) {
 					fixedTop -= scrollboxHeight - windowHeight;
 				}
 
-				console.log([currentScroll, containerTop, windowHeight, scrollboxHeight]);
-
 				if (
 					// Stick to top
-					(currentScroll < containerTop) || // Scroll is above the container
-					(
-						// Bottom of scroll window isn't clearing the screen yet
-						(windowHeight) < (containerTop + scrollboxHeight - currentScroll)
-					) 
+
+					// Scroll is above the container
+					(currentScroll < containerTop) || 
+
+					// Bottom of scroll window isn't clearing the screen yet
+					(windowHeight) < (containerTop + scrollboxHeight - currentScroll)
 				) {
 					key = 0;
-				} else if ((currentScroll + scrollboxHeight) >= containerBottom) {
+				} else if ((currentScroll + scrollboxHeight) >= (containerBottom)) {
 					// Bottom
 					key = 1;
 					css.top = (containerHeight - scrollboxHeight);
@@ -228,23 +243,43 @@
 					.addClass(positions.splice(key,1)[0])
 					.removeClass(positions.join(' '));
 			}
-			setDimensions();
 			
+			if (!$scrollbox.data('scrollfix-init')) {
+				/*
+				var $scrollMeter = $('<div class="scroll-meter"></div>').css({
+					position: 'absolute',
+					left: 0,
+					right: 0,
+					border: '2px solid red',
+					zIndex: 9999
+				}).appendTo($('body'));
 
-			// This is a test
-			var timer = 0;
-			$(window)
-				.scroll(function() {
-					setScrollClass($('body').scrollTop());
-					clearTimeout(timer);
-					timer = setTimeout(function() {
-						setDimensions();
-					}, 1000);
-				})
-				.resize(function() {
-					setDimensions();
-				});
-		 });
+				var $scrollMeterBottom = $('<div class="scroll-meter"></div>').css({
+					position: 'absolute',
+					left: 0,
+					right: 0,
+					border: '2px solid green',
+					zIndex: 9999
+				}).appendTo($('body'));
+				*/
+
+
+				setDimensions();
+
+				$(window)
+					.scroll(function() {
+						setScrollClass($(window).scrollTop());
+						setDimensionsTimeout();	
+					})
+					.resize(function() {
+						setDimensionsTimeout();
+					})
+					.load(function() {
+						setDimensionsTimeout();
+					});
+			}
+
+		});
 	};
 
 	documentReady(function() {
