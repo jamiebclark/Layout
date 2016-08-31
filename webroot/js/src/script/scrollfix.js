@@ -62,24 +62,24 @@
 			function fix() {
 				var scrollOffset = (height > windowHeight) ? height - windowHeight : 0,
 					overBorder = containerBottom && (scrollTop - scrollOffset + height) > containerBottom,
-					setPosition,
-					setTop;
-				
+					addClass = '';
+					removeClass = '',
+					style = {width: width};
+
 				if (overBorder) {
-					setTop = $container.height() - height;
-					setPosition = 'absolute';
+					addClass += 'scrollfix--bottom';
+					removeClass += 'scrollfix-fixed';
 				} else {
-					setTop = (topOffset - scrollOffset) + "px";
-					setPosition = 'fixed';
-				}	
-				$scrollfix.css({
-					'width': width,
-					'position': setPosition,
-					'top': setTop
-				});
+					removeClass += 'scrollfix--bottom';
+					addClass += 'scrollfix--fixed';
+					style.top = (topOffset - scrollOffset) + "px";
+				}
+
+				$scrollfix.addClass(addClass).removeClass(removeClass).css(style);
 			}
+
 			function unfix() {
-				$scrollfix.css({'position': 'static', 'width': 'auto'});
+				$scrollfix.removeClass('scrollfix--bottom scrollfix--fixed');
 			}
 			
 			function setSizes() {
@@ -121,7 +121,12 @@
 						break;
 					}
 				}
-				$container.css('position', 'relative');
+				$container.addClass('scrollfix-container');
+
+				var $parent = $scrollfix.parent();
+				if ($parent !== $container) {
+					$parent.addClass('scrollfix-parent');
+				}
 
 				var height,
 					width,
