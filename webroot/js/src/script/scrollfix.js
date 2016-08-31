@@ -203,6 +203,8 @@
 					fixedTop -= scrollboxHeight - windowHeight;
 				}
 
+				console.log([currentScroll, containerTop, windowHeight, scrollboxHeight]);
+
 				if (
 					// Stick to top
 					(currentScroll < containerTop) || // Scroll is above the container
