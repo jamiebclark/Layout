@@ -9,8 +9,8 @@
 		align-items: stretch;
 		position: relative;
 		.scrollfix-parent {
-			flex-basis: 0;
-			flex-grow: 1;
+			flex-basis: auto;
+			flex-grow: 0;
 		}
 	}
 
