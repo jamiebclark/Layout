@@ -228,14 +228,16 @@
 			}
 			setDimensions();
 			
-			setInterval(function() {
-				setDimensions();
-			}, 1000);
 
 			// This is a test
+			var timer = 0;
 			$(window)
 				.scroll(function() {
 					setScrollClass($('body').scrollTop());
+					clearTimeout(timer);
+					timer = setTimeout(function() {
+						setDimensions();
+					}, 1000);
 				})
 				.resize(function() {
 					setDimensions();
