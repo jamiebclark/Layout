@@ -44,7 +44,8 @@
 			
 				
 	};
-	$.fn.scrollfix = function() {
+	/*
+	$.fn.scrollfixOLD = function() {
 		return this.each(function() {
 			function checkIsFixed() {
 				if (
@@ -154,6 +155,92 @@
 			}
 
 		});
+	};
+	*/
+
+	$.fn.scrollfix = function() {
+		return this.each(function() {
+			var $scrollbox = $(this),
+				$parent = $scrollbox.parent().addClass('scrollfix-parent'),
+				$container = $scrollbox.closest('.scrollfix-container,.row,.container,.container-fluid,body').addClass('scrollfix-container'),
+				containerTop = 0,
+				containerBottom = 0,
+				containerHeight = 0,
+				scrollboxWidth = 0,
+				scrollboxHeight = 0,
+				windowHeight = 0,
+				topOffset = 0;
+
+		
+			function setDimensions() {
+				windowHeight = $(window).height();
+				containerHeight = $container.height();
+				containerTop = $container.offset().top;
+				containerBottom = containerTop + containerHeight;
+				scrollboxWidth = $parent.width();
+				$scrollbox.width(scrollboxWidth - ($scrollbox.outerWidth() - $scrollbox.width()));
+				scrollboxHeight = $scrollbox.outerHeight(true);
+
+				topOffset = 0;
+
+				$('.scrollfix-fixed:visible').each(function() {
+					if ($(this).css('position') == "fixed") {
+						var elementHeight = $(this).outerHeight();
+						windowHeight -= elementHeight;
+						topOffset += elementHeight;
+					}
+				});
+			}
+			
+			function setScrollClass(currentScroll) {
+				currentScroll += topOffset;
+
+				var positions = ['scrollfix--top', 'scrollfix--bottom', 'scrollfix--fixed'],
+					key,
+					css = {top: 0},
+					fixedTop = topOffset;
+				if (scrollboxHeight > windowHeight) {
+					fixedTop -= scrollboxHeight - windowHeight;
+				}
+
+				if (
+					// Stick to top
+					(currentScroll < containerTop) || // Scroll is above the container
+					(
+						// Bottom of scroll window isn't clearing the screen yet
+						(windowHeight) < (containerTop + scrollboxHeight - currentScroll)
+					) 
+				) {
+					key = 0;
+				} else if ((currentScroll + scrollboxHeight) >= containerBottom) {
+					// Bottom
+					key = 1;
+					css.top = (containerHeight - scrollboxHeight);
+				} else {
+					// Fixed
+					css.top = fixedTop;
+					key = 2;
+				}
+				return $scrollbox
+					.css(css)
+					.addClass(positions.splice(key,1)[0])
+					.removeClass(positions.join(' '));
+			}
+			setDimensions();
+			
+			setInterval(function() {
+				setDimensions();
+			}, 1000);
+
+			// This is a test
+			$(window)
+				.scroll(function() {
+					setScrollClass($('body').scrollTop());
+				})
+				.resize(function() {
+					setDimensions();
+				});
+		 });
 	};
 
 	documentReady(function() {
