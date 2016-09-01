@@ -181,7 +181,8 @@
 				clearTimeout(timeoutTimer);
 				timeoutTimer = setTimeout(function() {
 					setDimensions();
-				}, 1000);
+					setScrollClass($(window).scrollTop());
+				}, 500);
 			}
 
 			function setDimensions() {
