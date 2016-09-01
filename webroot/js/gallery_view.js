@@ -127,22 +127,31 @@
 		function resize() {
 			$image.removeAttr('width').removeAttr('height');
 			var screenW = $(window).width(),
-				screenH = $(window).height(),
+				screenH = $(window).height() - parseFloat($('body').css('padding-top')),
 				marginW = screenW * (marginPctWidth / 100),
 				marginH = screenH * (marginPctHeight / 100),
 				boxWidth = $image.parent().outerWidth(), //screenW - marginW * 2,
 				boxHeight = screenH - marginH * 2;
+
+
+
 			if (boxWidth > maxWidth) {
 				boxWidth = maxWidth;
 			} else if (boxWidth < minWidth) {
-				boxWidth = minWidth;
+				boxWidth = minWidth < screenW ? minWidth : screenW;
 			}
 			if (boxHeight > maxHeight) {
 				boxHeight = maxHeight;
 			} else if (boxHeight < minHeight) {
-				boxHeight = minHeight;
+				boxHeight = minHeight < screenH ? minHeight : screenH;
 			}
 			
+			console.log({
+				screen: [screenW, screenH],
+				margin: [marginW, marginH],
+				box: [boxWidth, boxHeight]
+			});
+
 			var boxWidthOuter = boxWidth + marginW * 2,
 				boxHeightOuter = boxHeight + marginH * 2;
 			var css = {
@@ -184,6 +193,10 @@
 				if (newWidth > boxWidth) {
 					newWidth = boxWidth;
 					newHeight = newWidth / imageSizeRatio;
+				}
+				if (newHeight > boxHeight) {
+					newHeight = boxHeight;
+					newWidth = newHeight * imageSizeRatio;
 				}
 				if (newWidth && newHeight) {
 					$(this).show().stop().animate({'width':newWidth,'height':newHeight});
