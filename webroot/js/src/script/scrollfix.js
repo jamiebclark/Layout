@@ -163,6 +163,8 @@
 			var $scrollbox = $(this),
 				bodyOffset = 0,
 				$parent = $scrollbox.parent().addClass('scrollfix-parent'),
+				parentPaddingTop = 0,
+				parentPaddingBottom = 0,
 				$container = $scrollbox.closest('.scrollfix-container,.row,.container,.container-fluid,body').addClass('scrollfix-container'),
 				containerTop = 0,
 				containerBottom = 0,
@@ -184,6 +186,9 @@
 
 			function setDimensions() {
 				bodyOffset = parseInt($('body').css('padding-top'), 10);
+				parentPaddingTop = parseInt($parent.css('padding-top'), 10);
+				parentPaddingBottom = parseInt($parent.css('padding-bottom'), 10);
+
 				windowHeight = $(window).height();
 				containerHeight = $container.outerHeight(true);
 				containerTop = $container.offset().top;
@@ -192,8 +197,11 @@
 				$scrollbox.width(scrollboxWidth - ($scrollbox.outerWidth() - $scrollbox.width()));
 				scrollboxHeight = $scrollbox.outerHeight(true);
 
-				topOffset = 0;
+				if ($parent.height() < containerHeight) {
+					$parent.height(containerHeight)
+				}
 
+				topOffset = 0;
 				$('.scrollfix-fixed:visible').each(function() {
 					if ($(this).css('position') == "fixed") {
 						var elementHeight = $(this).outerHeight();
@@ -204,40 +212,46 @@
 			}
 			
 			function setScrollClass(currentScroll) {
-				currentScroll += topOffset;
-				/*
-				$scrollMeter.css({top: currentScroll + "px"});
-				$scrollMeterBottom.css({top: (currentScroll + windowHeight - 4) + "px"});
-				*/
-
+				//currentScroll += topOffset;
 				var positions = ['scrollfix--top', 'scrollfix--bottom', 'scrollfix--fixed'],
 					key,
 					css = {top: 0},
-					fixedTop = topOffset;
+					baseFixedTop = topOffset + parentPaddingTop,
+					fixedTop = baseFixedTop,
+					scrollTop = currentScroll + topOffset,
+					scrollBottom = scrollTop + windowHeight;
 
 				if (scrollboxHeight > windowHeight) {
 					fixedTop -= scrollboxHeight - windowHeight;
 				}
 
+				
+				//$scrollMeter.css({top: scrollTop + "px"});
+				//$scrollMeterBottom.css({top: (scrollBottom - 4) + "px"});
+				
 				if (
 					// Stick to top
 
 					// Scroll is above the container
-					(currentScroll < containerTop) || 
+					(scrollTop < containerTop) || 
 
 					// Bottom of scroll window isn't clearing the screen yet
-					(windowHeight) < (containerTop + scrollboxHeight - currentScroll)
+					(windowHeight) < (containerTop + parentPaddingTop + parentPaddingBottom + scrollboxHeight - scrollTop)
 				) {
 					key = 0;
-				} else if ((currentScroll + scrollboxHeight) >= (containerBottom)) {
+				} else if (
+					(fixedTop < baseFixedTop && (scrollBottom >= containerBottom)) ||
+					(fixedTop >= baseFixedTop && (scrollTop + scrollboxHeight >= containerBottom))
+				) {
 					// Bottom
 					key = 1;
 					css.top = (containerHeight - scrollboxHeight);
 				} else {
 					// Fixed
-					css.top = fixedTop;
+					css.top = fixedTop - parentPaddingTop;
 					key = 2;
 				}
+
 				return $scrollbox
 					.css(css)
 					.addClass(positions.splice(key,1)[0])
