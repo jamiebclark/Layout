@@ -54,7 +54,6 @@
 	> .media {
 		margin: 0;
 		border-radius: 0;
-		padding: $padding-base-vertical $padding-base-horizontal;
 	}
 	> .media-list {
 		margin-top: 0;
@@ -70,7 +69,10 @@
 			margin-top: 0;
 			margin-bottom: 0;
 			//padding: $padding-base-vertical $padding-base-horizontal;
-			border-top: transparent;
+			border-top-color: transparent;
+			&.active {
+				border-top-color: inherit;
+			}
 		}
 	}
 }
