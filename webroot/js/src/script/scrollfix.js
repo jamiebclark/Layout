@@ -163,42 +163,67 @@
 			var $scrollbox = $(this),
 				bodyOffset = 0,
 				$parent = $scrollbox.parent().addClass('scrollfix-parent'),
+				parentTop = 0,
 				parentPaddingTop = 0,
 				parentPaddingBottom = 0,
 				$container = $scrollbox.closest('.scrollfix-container,.row,.container,.container-fluid,body').addClass('scrollfix-container'),
 				containerTop = 0,
 				containerBottom = 0,
 				containerHeight = 0,
+				scrollboxTop = 0,
 				scrollboxWidth = 0,
 				scrollboxHeight = 0,
 				windowHeight = 0,
 				topOffset = 0,
 
-				timeoutTimer = 0;
+				dimensionsTimeout = 0,
+				dimensionsInterval = 0;
 
-		
-			function setDimensionsTimeout() {
-				clearTimeout(timeoutTimer);
-				timeoutTimer = setTimeout(function() {
-					setDimensions();
+			function setDimensionsInterval() {
+				if (dimensionsTimeout) {
+					clearTimeout(dimensionsTimeout);
+					dimensionsTimeout = 0;
+				}
+				if (!dimensionsInterval) {
+					// Resets the dimensions on an interval
+					dimensionsInterval = setInterval(function() {
+						setDimensions();
+					}, 500);
+				}
+				// Clears the interval if not activated by anything else
+				dimensionsTimeout = setTimeout(function() {
+					clearInterval(dimensionsInterval);
 					setScrollClass($(window).scrollTop());
-				}, 500);
+					dimensionsInterval = 0;
+				}, 1500);
 			}
 
 			function setDimensions() {
 				bodyOffset = parseInt($('body').css('padding-top'), 10);
+				parentTop = $parent.offset().top;
 				parentPaddingTop = parseInt($parent.css('padding-top'), 10);
 				parentPaddingBottom = parseInt($parent.css('padding-bottom'), 10);
 
 				windowHeight = $(window).height();
+				$parent.hide();
 				containerHeight = $container.outerHeight(true);
+				$parent.show();
 				containerTop = $container.offset().top;
 				containerBottom = containerTop + containerHeight;
+				scrollboxTop = $scrollbox.offset().top;
 				scrollboxWidth = $parent.width();
 				$scrollbox.width(scrollboxWidth - ($scrollbox.outerWidth() - $scrollbox.width()));
 				scrollboxHeight = $scrollbox.outerHeight(true);
 
-				if ($parent.height() < containerHeight) {
+				//console.log(["SCROLLBOX", $scrollbox.width(), $scrollbox.outerWidth(), "CONTAINER", $container.width(), $container.innerWidth()]);
+				//console.log(["PARENT", parentTop, "CONTAINER", containerTop]);
+
+				$parent.css('height', 'auto');
+				if (
+					(containerTop == parentTop) && 
+					($scrollbox.outerWidth() != $container.innerWidth()) &&
+					($parent.height() < containerHeight)
+				) {
 					$parent.height(containerHeight)
 				}
 
@@ -284,16 +309,15 @@
 				$(window)
 					.scroll(function() {
 						setScrollClass($(window).scrollTop());
-						setDimensionsTimeout();	
+						setDimensionsInterval();	
 					})
 					.resize(function() {
-						setDimensionsTimeout();
+						setDimensionsInterval();
 					})
 					.load(function() {
-						setDimensionsTimeout();
+						setDimensions();
 					});
 			}
-
 		});
 	};
 
