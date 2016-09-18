@@ -2,6 +2,7 @@
 App::uses('InflectorPlus', 'Layout.Lib');
 App::uses('LayoutAppHelper', 'Layout.View/Helper');
 App::uses('Param', 'Layout.Lib');
+App::uses('Url', 'Layout.Lib');
 
 class TableHelper extends LayoutAppHelper {
 	public $name = 'Table';
