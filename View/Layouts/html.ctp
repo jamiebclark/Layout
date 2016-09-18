@@ -36,7 +36,12 @@ extract(array_merge($default, compact(array_keys($default))));
 $header_class .= ' no-print';
 $footer_class .= ' no-print';
 
-$containerClass = !empty($fluid_layout_content) ? 'container-fluid' : 'container';
+if (empty($containerClass)) {
+	$containerClass = '';
+} else {
+	$containerClass .= ' ';
+}
+$containerClass .= !empty($fluid_layout_content) ? 'container-fluid' : 'container';
 
  //<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
 ?>

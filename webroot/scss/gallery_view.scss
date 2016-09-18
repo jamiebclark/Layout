@@ -3,7 +3,7 @@ $gallery-info-control-size: 		40px !default;
 $gallery-view-border-radius:		4px !default;
 $gallery-view-body-height:			500px !default;
 
-$gallery-modal-info-width:			33%;
+$gallery-modal-info-width:			25%;
 
 @import "utilities/index";
 
@@ -114,6 +114,10 @@ a.gallery-view-control {
 	
 	border-radius: $gallery-view-border-radius;
 	
+	.modal-dialog {
+		width: 98%;
+	}
+
 	.modal-header {
 		.modal-header-title {
 			height: 30px;

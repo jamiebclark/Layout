@@ -1,11 +1,63 @@
-@media (max-width: $grid-float-breakpoint-max) {
-	.scrollfix {
-		position: static !important;
-		width: auto !important;
-		top: auto !important;
-	}
-}
-
+@import	"../utilities/index";
 .scrollfix {
 	overflow: auto;
+}
+
+@media (min-width: $grid-float-breakpoint) {
+	/*
+	.scrollfix-container {
+		display: flex;
+		align-items: stretch;
+		position: relative;
+		.scrollfix-parent {
+			flex-basis: auto;
+			flex-grow: 0;
+		}
+	}
+
+	.scrollfix {
+		position: static;
+		width: auto;
+		bottom: auto;
+		//left: 0;
+		//right: 0;
+
+		&--fixed {
+			position: fixed;
+		}
+		&--bottom {
+			position: absolute !important;
+			top: auto !important;
+			bottom: 0 !important;
+		}
+	}
+	*/
+
+	// This is the new stuff
+	.row.scrollfix-container {
+		/*
+		overflow: hidden;
+
+		> div {
+			padding-bottom:100%;
+			margin-bottom:-100%;
+			border: 1px solid transparent;
+		}
+		*/
+	}
+	.scrollfix-parent {
+		position: relative;
+	}
+	.scrollfix {
+		&--top {
+			position: static;
+		}
+		&--fixed {
+			position: fixed;
+			top: 0;
+		}
+		&--bottom {
+			position: absolute;
+		}
+	}	
 }

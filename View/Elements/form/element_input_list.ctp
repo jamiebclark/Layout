@@ -7,6 +7,7 @@ $default = [
 	'function' => null,
 	'count' => 1,
 	'pass' => [],
+	'buttonText' => null
 ];
 $vars = array_merge($default, compact(array_keys($default)));
 extract($vars);
@@ -14,9 +15,11 @@ extract($vars);
 if (empty($modelHuman)) {
 	$modelHuman = Inflector::humanize(Inflector::underscore($model));
 }
+if (empty($buttonText)) {
+	$buttonText = "Add $modelHuman";
+}
 
-$this->Html->script('Layout.element_input_list', ['inline' => false]);
-$this->Html->css('Layout.elements/element_input_list', null, ['inline' => false]);
+echo $this->element('Layout.form/element_input_list/assets');
 
 if ($this->Form->value($model)) {
 	$count = count($this->Form->value($model));
@@ -30,7 +33,7 @@ if ($this->Form->value($model)) {
 	<?php endfor; ?>
 	<div class="element-input-list-control">
 		<?php echo $this->Html->link(
-			'<i class="fa fa-plus"></i> Add ' . $modelHuman,
+			'<i class="fa fa-plus"></i> ' . $buttonText,
 			'#',
 			['class' => 'btn btn-default btn-sm element-input-list-add', 'escape' => false]
 		); ?>
