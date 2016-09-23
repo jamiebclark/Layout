@@ -602,14 +602,14 @@ class LayoutHelper extends LayoutAppHelper {
 						$linkText = $title;
 					}
 					
-					$postMsg = null;
+					$confirm = false;
 					if ($menuItem == 'delete') {
-						$postMsg = 'Delete this item?';
+						$confirm = 'Delete this item?';
 					} else if ($menuItem == 'spam') {
-						$postMsg = 'This will remove the group and all associated users and collections. Continue?';
+						$confirm = 'This will remove the group and all associated users and collections. Continue?';
 					}
 
-					$linkOptions = array('class' => $menuItem, 'title' => $title, 'escape' => false);
+					$linkOptions = array('class' => $menuItem, 'title' => $title, 'escape' => false, 'confirm' => $confirm);
 					if(!empty($config['class'])) {
 						$linkOptions = $this->addClass($linkOptions, $config['class']);
 					}
@@ -617,7 +617,6 @@ class LayoutHelper extends LayoutAppHelper {
 						$linkText, 
 						$newUrl,
 						$linkOptions,
-						$postMsg
 					);
 				} else if (is_array($menuItem)) {
 					$menu[$key][2]['escape'] = false;
