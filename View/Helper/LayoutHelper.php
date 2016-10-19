@@ -901,7 +901,7 @@ class LayoutHelper extends LayoutAppHelper {
 	}
 
 	function dropdown($title = '', $menu = array(), $userOptions = array()) {
-		$caret = ' <b class="caret"></b>';
+		$caret = ' ' . Icon::out('caret-down');
 		$options = array_merge(array(
 			'url' => '#',
 			'tag' => 'div',
