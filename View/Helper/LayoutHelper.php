@@ -132,12 +132,12 @@ class LayoutHelper extends LayoutAppHelper {
 	 * A basic box for displaying a section of information
 	 *
 	 **/
-	function contentBox($title = null, $content = null, $params = null) {
-		return $this->contentBoxOpen($title, $params) . $this->contentBoxClose($content);
+	public function contentBox($title = null, $content = null, $params = null) {
+		return $this->contentBoxOpen($title, $params) . $this->contentBoxClose($content, $params);
 	}
 	
 
-	function contentBoxOpen($title = null, $params = null) {
+	public function contentBoxOpen($title = null, $params = null) {
 		$type = !empty($params['type']) ? $params['type'] : 'default';
 		unset($params['type']);
 		$params = $this->addClass($params, 'panel panel-' . $type);
@@ -184,35 +184,48 @@ class LayoutHelper extends LayoutAppHelper {
 			$title = $this->headingActionMenu($title, $actionMenu[0], $actionMenu[1]);
 		}
 
-		$bodyClass = 'panel-body';
 		$bodyOptions = array();
-		if (!empty($params['bodyClass'])) {
-			$bodyClass = $params['bodyClass'];
-		} else if (!empty($params['list'])) {
-			$bodyClass = '';
-		}
-		if (!empty($hasToggle)) {
-			$bodyClass .= ' layout-toggle-content';
-		}
+		$bodyClass = $this->getContentBoxBodyClass($params);
+
 		if (!empty($toggleClose)) {
 			$bodyOptions['style'] = 'display:none;';
 		}
 		if (!empty($title)) {
 			$render .= $this->Html->div('panel-heading', $title);
 		}
-		$render .= $this->Html->div($bodyClass, null, $bodyOptions);
+		if ($bodyClass !== false) {
+			$render .= $this->Html->div($bodyClass, null, $bodyOptions);
+		}
 		return $render;
 	}
 
-	function contentBoxClose($content = null) {
+	public function contentBoxClose($content = null, $params = null) {
 		$render = '';
+		$bodyClass = $this->getContentBoxBodyClass($params);
 		if (!empty($content)) {
 			$render .= $content;
 		}
-		//Close the body and container div
-		return $render . "\n</div>\n</div>\n";
+		if ($bodyClass !== false) {
+			$render .= "\n</div>";	// Body DIV
+		}
+		return $render . "\n</div>\n";
 	}
 	
+	protected function getContentBoxBodyClass($params = []) {
+		$bodyClass = 'panel-body';
+		if (!empty($params)) {
+			if (array_key_exists('bodyClass', $params)) {
+				$bodyClass = $params['bodyClass'];
+			} else if (!empty($params['list'])) {
+				$bodyClass = false;
+			}
+			if (!empty($params['toggle'])) {
+				$bodyClass .= ' layout-toggle-content';
+			}
+		}
+		return $bodyClass;
+	}
+
 	/**
 	 * A uniform grouping of the Paginator functions to make all paginate menus look the same
 	 *
@@ -589,14 +602,14 @@ class LayoutHelper extends LayoutAppHelper {
 						$linkText = $title;
 					}
 					
-					$postMsg = null;
+					$confirm = false;
 					if ($menuItem == 'delete') {
-						$postMsg = 'Delete this item?';
+						$confirm = 'Delete this item?';
 					} else if ($menuItem == 'spam') {
-						$postMsg = 'This will remove the group and all associated users and collections. Continue?';
+						$confirm = 'This will remove the group and all associated users and collections. Continue?';
 					}
 
-					$linkOptions = array('class' => $menuItem, 'title' => $title, 'escape' => false);
+					$linkOptions = array('class' => $menuItem, 'title' => $title, 'escape' => false, 'confirm' => $confirm);
 					if(!empty($config['class'])) {
 						$linkOptions = $this->addClass($linkOptions, $config['class']);
 					}
@@ -604,7 +617,6 @@ class LayoutHelper extends LayoutAppHelper {
 						$linkText, 
 						$newUrl,
 						$linkOptions,
-						$postMsg
 					);
 				} else if (is_array($menuItem)) {
 					$menu[$key][2]['escape'] = false;

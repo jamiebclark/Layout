@@ -992,7 +992,7 @@ class ModelViewHelper extends LayoutAppHelper {
 	
 	private function _getColSizeClass($options = [], $unset = true) {
 		$class = '';
-		//Converts from Bootstrap 2.X spanN classes
+		// Converts from Bootstrap 2.X spanN classes
 		if (isset($options['span'])) {
 			$options['col-sm'] = $options['span'];
 			if ($unset) {
@@ -1000,7 +1000,7 @@ class ModelViewHelper extends LayoutAppHelper {
 			}
 		}
 		$suffixes = ['', '-offset'];
-		//Cycles through all of the column size types
+		// Cycles through all of the column size types
 		foreach ($this->Layout->colSizes as $sizeKey) {
 			foreach ($suffixes as $suffix) {
 				$key = $sizeKey . $suffix;
