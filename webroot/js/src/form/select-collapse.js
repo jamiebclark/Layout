@@ -29,12 +29,14 @@ function getUuid() {
 		return this.each(function() {
 			var $select = $(this),
 				$selectedA = false,
-				uuid = $select.attr('uuid') ? $select.attr('uuid') : getUuid(),
+				uuid = $select.data('uuid') ? $select.data('uuid') : getUuid(),
 				id = $select.attr('id') ? $select.attr('id') : 'select-collapse-' + uuid,
 				windowId = 'select-collapse-window-' + uuid,
 				maskId = 'select-collapse-mask-' + uuid;
 			
-			$select.attr('uuid', uuid).attr('id', id);
+			console.log("CREATED NEW SELECT COLLAPSE");
+
+			$select.data('uuid', uuid).attr('id', id);
 			if (!$select.data('optionVals')) {
 				$select.data('optionVals', []);
 			}
