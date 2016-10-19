@@ -34,8 +34,6 @@ function getUuid() {
 				windowId = 'select-collapse-window-' + uuid,
 				maskId = 'select-collapse-mask-' + uuid;
 			
-			console.log("CREATED NEW SELECT COLLAPSE");
-
 			$select.data('uuid', uuid).attr('id', id);
 			if (!$select.data('optionVals')) {
 				$select.data('optionVals', []);
