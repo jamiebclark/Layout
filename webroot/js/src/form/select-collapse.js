@@ -65,8 +65,10 @@ function getUuid() {
 				expandUp($li);
 				set($a.data('val'));
 				hide();
+
 				if ($select.data(initName)) {
-					$select.focus();
+					// This is causing unpredictable results when other elements are making AJAX calls
+					// $select.focus();
 				}
 			}
 
@@ -364,9 +366,10 @@ function getUuid() {
 					})
 					.on('refresh', function() {
 						buildList();
-					})
-					.data(initName, true);
+					});
+				$select.data(initName, true);
 			}
+
 			$(document).ajaxComplete(function() {
 				buildList();
 			});
