@@ -43,13 +43,34 @@ class EmailText {
 	
 	public static function replaceCssWithStyle($text, $style = array()) {
 		$tags = array('h1', 'h2', 'h3', 'h4', 'p', 'a', 'blockquote');
-		$replace = array();
+		$replaceText = array();
+		$styleOpen = ' style="';
+		$styleClose = '" ';
 		foreach ($tags as $tag) {
 			if (!empty($style[$tag])) {
-				$replace['#(<' . $tag . ')([^>]*)(>)#'] = '$1 style="' . $style[$tag] . '"$2$3';
+				$regx = '#(<' . $tag . ')([^>]*)(>)#';
+				preg_match_all($regx, $text, $matches);
+				if (!empty($matches[0])) {
+					foreach ($matches[0] as $k => $match) {
+
+						$lookLength = strlen($styleOpen);
+						$pos = strpos($match, $styleOpen);
+						if ($pos !== false) {
+							$replace = substr($match, 0, $pos + $lookLength);
+							$replace .= $style[$tag];
+							$replace .= substr($match, $pos + $lookLength);
+						} else {
+							$replace = $matches[1][$k] . $styleOpen . $style[$tag] . $styleClose . $matches[2][$k] . $matches[3][$k];
+						}
+					}
+					$replaceText[$match] = $replace;
+				}
 			}
 		}
-		return preg_replace(array_keys($replace), $replace, $text);
+		if (!empty($replaceText)) {
+			$text = str_replace(array_keys($replaceText), $replaceText, $text);
+		}
+		return $text;
 	}
 	
 	public static function setAbsoluteUrls($text) {
