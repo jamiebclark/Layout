@@ -1015,7 +1015,7 @@ class ModelViewHelper extends LayoutAppHelper {
 		return trim($class);
 	}
 	
-	function thumbnails($results, $options = []) {
+	public function thumbnails($results, $options = []) {
 		$options = array_merge([
 			'id' => null,
 			'urlAdd' => null,
@@ -1027,7 +1027,8 @@ class ModelViewHelper extends LayoutAppHelper {
 		unset($options['class']);
 		
 		$out = '';
-		$class = $this->_getColSizeClass($options);
+		$colSizeClass = $this->_getColSizeClass($options);
+		$class = $colSizeClass;
 		if (!empty($thumbnailClass)) {
 			$class = trim($class . ' ' . $thumbnailClass);
 		}
@@ -1044,8 +1045,8 @@ class ModelViewHelper extends LayoutAppHelper {
 		endforeach;
 
 		if (!empty($thumbnailAdd)) {
-			$out .= $this->Html->div('gallery-view-link thumbnail thumbnail-add',
-				$this->Html->link('+', $thumbnailAdd)
+			$out .= $this->Html->div($colSizeClass . ' gallery-view-link thumbnail thumbnail-add',
+				$this->Html->link(Icon::plus(), $thumbnailAdd, ['escape' => false, 'title' => 'Add a photo to the gallery'])
 			);
 		}
 
