@@ -1045,7 +1045,7 @@ class ModelViewHelper extends LayoutAppHelper {
 		endforeach;
 
 		if (!empty($thumbnailAdd)) {
-			$out .= $this->Html->div($colSizeClass . ' gallery-view-link thumbnail thumbnail-add',
+			$out .= $this->Html->div($colSizeClass . ' thumbnail thumbnail-add',
 				$this->Html->link(Icon::plus(), $thumbnailAdd, ['escape' => false, 'title' => 'Add a photo to the gallery'])
 			);
 		}
