@@ -1032,7 +1032,6 @@ class ModelViewHelper extends LayoutAppHelper {
 		if (!empty($thumbnailClass)) {
 			$class = trim($class . ' ' . $thumbnailClass);
 		}
-
 		foreach ($results as $result):
 			$modelResult = $this->_getResult($result);
 			$thumbnailOptions = !empty($options['thumbnailOptions']) ? $options['thumbnailOptions'] : [];
@@ -1052,7 +1051,7 @@ class ModelViewHelper extends LayoutAppHelper {
 
 		$out = $this->Html->div('row', $out);
 		if (!isset($paginate) || $paginate !== false) {
-			$paginate = $this->Layout->paginateNav();
+			$paginate = $this->Layout->paginateNav(['model' => $this->modelName]);
 		} else {
 			$paginate = '';
 		}
