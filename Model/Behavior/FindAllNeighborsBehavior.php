@@ -1,8 +1,8 @@
 <?php
 class FindAllNeighborsBehavior extends ModelBehavior {
-	var $name = 'FindAllNeighbors';
+	public $name = 'FindAllNeighbors';
 	
-	function findAllNeighbors(Model $Model, $query = array()) {
+	public function findAllNeighbors(Model $Model, $query = array()) {
 		$query = array_merge(array(
 			'limit' => 1,
 			'dir' => 'ASC',
@@ -36,6 +36,7 @@ class FindAllNeighborsBehavior extends ModelBehavior {
 		if (count($result['prev']) < $query['limit']) {
 			$next['limit'] += $query['limit'] - count($result['prev']);
 		}
+
 		$result['next'] = $Model->find('all', $next);
 		if (count($result['next']) < $query['limit'] && count($result['prev'] == $query['limit'])) {
 			$prev['limit'] += $query['limit'] - count($result['next']);
