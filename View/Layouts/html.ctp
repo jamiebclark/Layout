@@ -94,9 +94,9 @@ if (empty($bodyAttributes)) {
 echo $this->Html->tag('body', null, $bodyAttributes);
 ?>
 	<div id="container">
-		<div id="header" class="<?php echo $header_class;?>">
+		<header id="header" class="<?php echo $header_class;?>">
 			<?php echo $this->fetch('header'); ?>
-		</div>
+		</header>
 		<div id="content" class="<?php echo $content_class; ?>">
 			<?php echo $this->element('Layout.layout/crumbs'); ?>			
 			<?php
@@ -114,14 +114,14 @@ echo $this->Html->tag('body', null, $bodyAttributes);
 			//echo $this->element('Layout.liquid_content', compact('content'));
 			?>
 		</div>
-		<div id="footer" class="<?php echo $footer_class; ?>">
+		<footer id="footer" class="<?php echo $footer_class; ?>">
 			<?php 
 				echo $this->fetch('footer');
 				if (!empty($adminDisplay)) {
 					echo $this->element('sql_dump');
 				}
 			?>
-		</div>
+		</footer>
 	</div>
 	<?php echo $this->Asset->output(true); ?>
 </body>
