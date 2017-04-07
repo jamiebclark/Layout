@@ -89,6 +89,14 @@ class DisplayTextHelper extends LayoutAppHelper {
 		return $text;
 	}
 	
+	public function startText($output = null) {
+		ob_start();
+		echo $output;
+	}
+
+	public function stopText($options = []) {
+		return $this->text(ob_get_clean(), $options);
+	}
 	
 /**
  * Generates a table of formatting commands and their result
