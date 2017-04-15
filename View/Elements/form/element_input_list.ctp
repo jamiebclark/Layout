@@ -23,7 +23,10 @@ echo $this->element('Layout.form/element_input_list/assets');
 
 if ($this->Form->value($model)) {
 	$count = count($this->Form->value($model));
+} else if (!empty($this->request->data) && !empty($this->request->data[$model])) {
+	$count = count($this->request->data[$model]);
 }
+
 ?>
 <div class="element-input-list">
 	<?php for ($i = 0; $i < $count; $i++): ?>
