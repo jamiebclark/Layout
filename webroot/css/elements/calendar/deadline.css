@@ -1,0 +1,108 @@
+/*Layout Colors*/
+.deadline {
+  font-weight: normal; }
+
+.deadline-complete {
+  color: #ccc; }
+  .deadline-complete .calendardate-month {
+    background-color: #ccc; }
+  .deadline-complete .calendardate-day, .deadline-complete .calendardate-year {
+    color: #ccc; }
+
+.media.deadline-complete {
+  background: #fff;
+  /* Old browsers */
+  background: -moz-linear-gradient(top, #fff 0%, transparent 100%);
+  /* FF3.6+ */
+  background: -webkit-gradient(linear, left top, left bottom, color-stop(0%, #fff), color-stop(100%, transparent));
+  /* Chrome,Safari4+ */
+  background: -webkit-linear-gradient(top, #fff 0%, transparent 100%);
+  /* Chrome10+,Safari5.1+ */
+  background: -o-linear-gradient(top, #fff 0%, transparent 100%);
+  /* Opera 11.10+ */
+  background: -ms-linear-gradient(top, #fff 0%, transparent 100%);
+  /* IE10+ */
+  background: linear-gradient(to bottom, #fff 0%, transparent 100%);
+  /* W3-c */
+  filter: progid:DXImage-transform.Microsoft.gradient( start-colorstr='#fff', end-colorstr='transparent',Gradient-type=0 );
+  /* IE6-9 */ }
+
+.deadline-upcoming {
+  color: orange; }
+  .deadline-upcoming .calendardate-month {
+    background-color: orange; }
+  .deadline-upcoming .calendardate-day, .deadline-upcoming .calendardate-year {
+    color: orange; }
+
+.media.deadline-upcoming {
+  background: #fff;
+  /* Old browsers */
+  background: -moz-linear-gradient(top, #fff 0%, #ffedcc 100%);
+  /* FF3.6+ */
+  background: -webkit-gradient(linear, left top, left bottom, color-stop(0%, #fff), color-stop(100%, #ffedcc));
+  /* Chrome,Safari4+ */
+  background: -webkit-linear-gradient(top, #fff 0%, #ffedcc 100%);
+  /* Chrome10+,Safari5.1+ */
+  background: -o-linear-gradient(top, #fff 0%, #ffedcc 100%);
+  /* Opera 11.10+ */
+  background: -ms-linear-gradient(top, #fff 0%, #ffedcc 100%);
+  /* IE10+ */
+  background: linear-gradient(to bottom, #fff 0%, #ffedcc 100%);
+  /* W3-c */
+  filter: progid:DXImage-transform.Microsoft.gradient( start-colorstr='#fff', end-colorstr='#ffedcc',Gradient-type=0 );
+  /* IE6-9 */ }
+
+.deadline-past {
+  color: #780000; }
+  .deadline-past .calendardate-month {
+    background-color: #780000; }
+  .deadline-past .calendardate-day, .deadline-past .calendardate-year {
+    color: #780000; }
+
+.media.deadline-past {
+  background: #fff;
+  /* Old browsers */
+  background: -moz-linear-gradient(top, #fff 0%, #ffecec 100%);
+  /* FF3.6+ */
+  background: -webkit-gradient(linear, left top, left bottom, color-stop(0%, #fff), color-stop(100%, #ffecec));
+  /* Chrome,Safari4+ */
+  background: -webkit-linear-gradient(top, #fff 0%, #ffecec 100%);
+  /* Chrome10+,Safari5.1+ */
+  background: -o-linear-gradient(top, #fff 0%, #ffecec 100%);
+  /* Opera 11.10+ */
+  background: -ms-linear-gradient(top, #fff 0%, #ffecec 100%);
+  /* IE10+ */
+  background: linear-gradient(to bottom, #fff 0%, #ffecec 100%);
+  /* W3-c */
+  filter: progid:DXImage-transform.Microsoft.gradient( start-colorstr='#fff', end-colorstr='#ffecec',Gradient-type=0 );
+  /* IE6-9 */ }
+
+.deadline-far {
+  color: #999; }
+  .deadline-far .calendardate-month {
+    background-color: #999; }
+  .deadline-far .calendardate-day, .deadline-far .calendardate-year {
+    color: #999; }
+
+.media.deadline-far {
+  background: #fff;
+  /* Old browsers */
+  background: -moz-linear-gradient(top, #fff 0%, transparent 100%);
+  /* FF3.6+ */
+  background: -webkit-gradient(linear, left top, left bottom, color-stop(0%, #fff), color-stop(100%, transparent));
+  /* Chrome,Safari4+ */
+  background: -webkit-linear-gradient(top, #fff 0%, transparent 100%);
+  /* Chrome10+,Safari5.1+ */
+  background: -o-linear-gradient(top, #fff 0%, transparent 100%);
+  /* Opera 11.10+ */
+  background: -ms-linear-gradient(top, #fff 0%, transparent 100%);
+  /* IE10+ */
+  background: linear-gradient(to bottom, #fff 0%, transparent 100%);
+  /* W3-c */
+  filter: progid:DXImage-transform.Microsoft.gradient( start-colorstr='#fff', end-colorstr='transparent',Gradient-type=0 );
+  /* IE6-9 */ }
+
+.deadline-complete {
+  text-decoration: line-through; }
+
+/*# sourceMappingURL=deadline.css.map */

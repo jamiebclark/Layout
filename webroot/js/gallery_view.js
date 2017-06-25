@@ -369,10 +369,10 @@
 			if ($modal.is(':visible')) {
 				$info.trigger('hide');
 			}
-			$image.bind('load', function() {
+			$image.on('load', function() {
 				$("<img/>")
 					.attr('src', $(this).attr('src'))
-					.load(function() {
+					.on('load', function() {
 						naturalWidth = this.width;
 						naturalHeight = this.height;
 					});
@@ -385,7 +385,7 @@
 			if (!$this.data('gallery-view-modal-init')) {
 				/***
 				* Removed
-				$('img', $imageHolder).bind('load', function() {
+				$('img', $imageHolder).on('load', function() {
 					$("<img/>")
 						.attr('src', $(this).attr('src'))
 						.load(function() {
@@ -465,7 +465,7 @@
 				$prev = $('.gallery-view-control.prev', $view);
 
 			if (!$view.data('gallery-view-init')) {
-				$('img', $display).bind('load', function() {
+				$('img', $display).on('load', function() {
 					if ($next.length) {
 						if (!$('a', $display).length) {
 							$display.wrapInner($('<a></a>'));

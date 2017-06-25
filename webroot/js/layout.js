@@ -32,7 +32,7 @@
 			if (!$toggle.data('layout-toggle-init')) {
 				$control.change(function() {
 					toggleCheck();
-				}).bind('layout-enabled', function() {
+				}).on('layout-enabled', function() {
 					toggleCheck();
 				});
 				toggleCheck();
@@ -170,7 +170,7 @@
 				$content.data('hoverId', hoverCount);
 				$content.attr('id', 'hover-content' + hoverCount);
 				
-				$this.bind('remove', function() {
+				$this.on('remove', function() {
 					$('#hover-content' + $this.data('hoverId')).remove();
 				});
 				$hoverContentHolder.append($content);

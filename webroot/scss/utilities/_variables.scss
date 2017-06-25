@@ -189,3 +189,30 @@ $zindex-jqueryui-front:						$zindex-modal + 10;
 // Form Layout
 // ---------------------------------
 $input-container-control-bg-color:	#eee;
+
+
+// Calendar Colors
+// -------------------------------
+$calendar-grey: 						#ccc !default;
+
+$date-link-hover-color:					$color2 !default;
+
+$day-hover-color:						$color1 !default;
+$day-active-color:						$color3-light !default;
+
+$day-size: 								$font-size-base !default;	//100 / 7
+$day-height: 							2 * $day-size !default;
+$day-width: 							14.2% ; //2 * $day-size !default;
+
+// Deadline
+// --------------------------------------------------
+$deadline-past: 						#780000 !default;
+$deadline-past-background: 				#ffecec !default;
+$deadline-upcoming: 					orange !default;
+$deadline-upcoming-background: 			lighten($deadline-upcoming, 40%) !default;
+$deadline-complete: 					#ccc !default;
+$deadline-complete-background: 			transparent !default;
+$deadline-far:							#999 !default;
+$deadline-far-background:				transparent !default;
+
+

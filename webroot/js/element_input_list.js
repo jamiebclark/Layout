@@ -40,7 +40,7 @@
 						$button
 							.wrap('<label class="element-input-list-item-remove-label btn btn-default"></label>')
 							.after('<i class="fa fa-times"></i>')
-							.bind('change', function() {
+							.on('change', function() {
 								if ($(this).is(':checked')) {
 									removeItem($item);
 								} else {
@@ -143,8 +143,10 @@
 			}
 		});
 	}
-	$(document)
-		.bind('ready ajaxComplete', function() {
-			$('.element-input-list').elementInputList();
-		});
+	
+	function init($) {
+		return $('.element-input-list').elementInputList();		
+	}
+
+	$(document).ready(init).on('ajaxComplete', init);
 })(jQuery);

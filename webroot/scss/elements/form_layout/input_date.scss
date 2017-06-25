@@ -1,0 +1,184 @@
+@import "../../utilities/index";
+
+
+// Date / Time Inputs
+// ---------------------
+$input-date-width: 				165px;
+$input-time-width: 				70px;
+$datepair-inner-label-height: 	$line-height-computed + 5;
+
+input.date, input.time {
+	font-size: $font-size-small;
+}
+
+.datepicker {
+	width: $input-date-width;
+	
+}
+.ui-datepicker {
+	z-index: $zindex-modal + 50 !important;
+}
+.timepicker {
+	width: $input-time-width;
+}
+
+.datepair {
+	> label, > .control-label {
+		padding-top: $datepair-inner-label-height !important;
+	}
+	@include clearfix;
+	.input-datepair-control {
+		// Date Pair
+		& > .input-date, 
+		& > .input-time,
+		// Datetime Pair
+		& > .input-datetime {
+			float: left;
+			label {
+				color: #ccc;
+				float: none;
+				display: block;
+				line-height: $datepair-inner-label-height;
+				// width: 30px;
+				text-align: left;
+				&.control-label {
+					padding-top: 0 !important;
+					margin: 0;
+				}
+			}
+
+			&.form-group {
+				margin-left: 0;
+				margin-right: 0;
+			}
+			&:first-of-type {
+				margin-right: 10px;
+			}
+		}
+	}
+
+	.form-group {
+		margin-bottom: 0;
+	}
+}
+
+.datepair-between, .datepair .control-date-all-day {
+	float: left;
+	padding: $datepair-inner-label-height 10px 0 10px;
+	line-height: $line-height-computed + 2 * $input-padding-top + 2;
+}
+
+.control-date-all-day {
+	padding-top: $line-height-computed;
+	> label, > .checkbox, > .radio {
+		padding: 0;
+		margin: 0;
+		input[type="checkbox"] {
+			display: block;
+			margin: 0;
+			margin-top: 0;
+			float: none;
+			clear: both;
+		}
+	}
+}
+
+.input-datetime-row {
+	max-width: 500px;
+}
+
+.input-date > .input-group, .input-datetime-date {
+	max-width: $input-date-width;
+}
+.input-time , .input-datetime-time  {
+	max-width: $input-time-width;
+}
+
+.input-date-control .btn {
+	padding-left: $padding-xs-horizontal;
+	padding-right: $padding-xs-horizontal;
+}
+/*
+.input-date-control {
+	display: inline-block;
+	vertical-align: top;
+	.btn {
+		padding: $input-padding-top 4px;
+	}
+	.iconic {
+		font-size: $font-size-base;
+	}
+}
+*/
+.input-datetime {
+	.input-datetime-control {
+		display: inline-block;
+		overflow: hidden;
+		width: 100%;
+	}
+	
+	.input-date, .input-time {
+		float: left;
+		> div {
+			display: table;
+			width: auto;
+		}
+	}
+}
+.datepair {
+	.input-datetime {
+		float: left;
+	}
+}
+
+.form-horizontal {
+	.datepair {
+		/*
+		.input-datetime {
+			label {
+				width: 40px;
+				text-align: right;
+				margin: 0;
+				line-height: $line-height-base;
+				padding: #{$input-padding-top + 1} $input-padding-left;
+				float: left;
+			}
+		}
+		*/
+		.input-date, .input-time {
+			margin-left: 0;
+			margin-right: 0;
+			
+			> div {
+				margin-left: 0;
+				float: left;
+			}
+		}
+	}
+	.datepair-between {
+		display: none;
+	} 
+	.control-date-all-day {
+		// padding-top: 0;
+		// padding-bottom: 0;
+		div {
+			margin: 0;
+		}
+		label {
+			text-align: left;
+		}
+	}
+	.input-datetime {
+		.controls {
+			display: block;
+		}
+	}
+	.input-datetime-control {
+		width: auto;
+	}
+}
+.input-datetime-control > .form-group {
+	float: left;
+	margin-left: 0 !important;
+	margin-right: 0 !important;
+}

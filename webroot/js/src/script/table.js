@@ -257,7 +257,7 @@
 		});
 	};
 	
-	$(window).load(function() {
+	$(window).on('load', function() {
 		$('.action-menu').actionMenuFit();
 	});
 

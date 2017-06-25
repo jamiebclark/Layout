@@ -2,14 +2,16 @@
 App::import('Lib', 'Layout.Date');
 App::uses('LayoutAppHelper', 'Layout.View/Helper');
 class CalendarHelper extends LayoutAppHelper {
-	var $name = 'Calendar';
-	var $helpers = array(
+	public $name = 'Calendar';
+	public $helpers = array(
 		'Html',
 		'Form',
 		'Time'
 	);
 		
-	function calendarDate($start, $stop = null, $options = array()) {
+	public function calendarDate($start, $stop = null, $options = array()) {
+		$this->Html->css('Layout.elements/calendar/calendardate', null, ['inline' => false]);
+		
 		if (is_array($stop)) {
 			$options = $stop;
 			$stop = null;
@@ -83,7 +85,9 @@ class CalendarHelper extends LayoutAppHelper {
 		return $this->Form->input($field, $options);
 	}
 	
-	function weekLinks($url = null, $varName = 'week_start', $dateKey) {
+	public function weekLinks($url = null, $varName = 'week_start', $dateKey) {
+		$this->Html->css('Layout.elements/calendar/week_links', null, ['inline' => false]);
+
 		//Allows for a possible "_2" suffix
 		$dateSuffixChk = explode('_', $dateKey);
 		if (count($dateSuffixChk)>1) {

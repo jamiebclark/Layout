@@ -203,7 +203,7 @@
 			});
 			
 			if (!$collapseList.data('init')) {
-				$collapseList.bind('update', function() {
+				$collapseList.on('update', function() {
 					updateList($rootList, true);
 				});
 				selectListItem(hash);

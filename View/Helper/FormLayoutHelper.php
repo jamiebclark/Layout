@@ -13,7 +13,8 @@ class FormLayoutHelper extends LayoutAppHelper {
 		'Html', 
 		'Form', 
 		'Layout.Layout', 
-		'Layout.Iconic'
+		'Layout.Iconic',
+		'Layout.LayoutAsset',
 	);
 
 	public $buttonIcons = array(
@@ -40,15 +41,9 @@ class FormLayoutHelper extends LayoutAppHelper {
 	
 	public function beforeRender($viewFile) {
 		parent::beforeRender($viewFile);
-
-		//$this->Html->css('Layout.style', null, ['inline' => false]);
-		$this->Html->css('Layout.jquery/jquery.timepicker', null, ['inline' => false]);	
 		$this->Html->script(array(
-			'Layout.jquery/jquery.timepicker',
 			'Layout.script',
 			'Layout.form_layout',
-			//'Layout.jquery/jquery.timepicker',
-			'Layout.jquery/datepair',
 		), array('inline' => false));
 	}
 	
@@ -114,6 +109,7 @@ class FormLayoutHelper extends LayoutAppHelper {
 	 *
 	 **/
 	public function inputAutoCompleteMulti($model, $url = null, $attrs = array()) {
+		$this->LayoutAsset->js('Layout.elements/form_layout/input_autocomplete');
 		$attrs = array_merge(array(
 			'label' => 'Search',
 			'displayField' => 'title',
@@ -320,6 +316,8 @@ class FormLayoutHelper extends LayoutAppHelper {
 	}
 	
 	public function inputAutoComplete($searchField = 'title', $url = null, $options = array()) {
+		$this->LayoutAsset->js('Layout.elements/form_layout/input_autocomplete');
+
 		$custom = array(
 			'action' => null,
 			'idField' => null,
@@ -427,6 +425,8 @@ class FormLayoutHelper extends LayoutAppHelper {
 	}
 	
 	public function input($fieldName, $options = array()) {
+		$this->LayoutAsset->js('Layout.elements/form/input');
+
 		$beforeInput = '';
 		$afterInput = '';
 		$options = array_merge(array('type' => null), $this->Form->_inputDefaults, (array)$options);
@@ -844,6 +844,10 @@ class FormLayoutHelper extends LayoutAppHelper {
 	
 	*/
 	public function inputList($listContent = '', $options = array()) {
+		$this->LayoutAsset
+			->css('Layout.elements/form_layout/input_list')
+			->js('Layout.elements/form_layout/input_list');
+
 		$options = array_merge(array(
 			'model' => InflectorPlus::modelize($this->request->params['controller']),
 			'count' => 1,
@@ -905,12 +909,10 @@ class FormLayoutHelper extends LayoutAppHelper {
 		}
 		$out .= $this->Html->div('input-list-control', '');
 		$out = $this->Html->tag($tag, $out, $listOptions);
-		
 		if (!empty($legend)) {
 			$out = $this->Html->tag('legend', $legend) . $out;
 			$out = $this->Html->tag('fieldset', $out);
 		}
-		
 		return $out;
 	}
 	
@@ -1048,7 +1050,11 @@ class FormLayoutHelper extends LayoutAppHelper {
 		//return $this->Html->div('controls controls-row', $this->Form->inputs($inputs));
 	}
 	
-	function inputChoices($inputs, $options = array()) {
+	public function inputChoices($inputs, $options = array()) {
+		$this->LayoutAsset
+			->css('Layout.elements/form_layout/input_choices')
+			->js('Layout.elements/form_layout/input_choices');
+
 		$options = array_merge(array(
 			'name' => $this->inputNameCount('input_choice'),
 		), $options);
@@ -1145,6 +1151,8 @@ class FormLayoutHelper extends LayoutAppHelper {
 	}
 	
 	private function _inputDateAllDay($inputFieldName, $default = false) {
+		$this->LayoutAsset->js('Layout.elements/form_layout/date');
+
 		$prefix = '';
 		$name = explode('.', $inputFieldName);
 		if (count($name) > 1) {
@@ -1178,16 +1186,23 @@ class FormLayoutHelper extends LayoutAppHelper {
 			$afterInput = '';
 		}
 		$options['div'] = false;
-		$out  = $this->inputDatetime($startFieldName, $this->getPairOptions('first', array('label' => 'From', 'inner' => true) + $options));
+		$out  = $this->inputDatetime(
+			$startFieldName, 
+			$this->getPairOptions('first', array('label' => 'From', 'inner' => true) + $options)
+		);
 		//$out .= $this->Html->div('datepair-between', ' - ');
-		$out .= $this->inputDatetime($endFieldName, $this->getPairOptions('second', array('flip' => true, 'label' => 'To', 'inner' => true) + $options));
-		
+		$out .= $this->inputDatetime(
+			$endFieldName, 
+			$this->getPairOptions('second', array('flip' => true, 'label' => 'To', 'inner' => true) + $options)
+		);
+
+		$this->LayoutAsset->js('Layout.jquery/datepair');
+
 		return $this->fakeInput($this->Html->div('input-datepair-control', $out), array(
 			'div' => 'form-group datepair datepair-time',
 			'label' => $options['label'],
 			'editable' => true,
 			'class' => false,
-
 		) + compact('afterInput'));
 	}
 
@@ -1273,6 +1288,13 @@ class FormLayoutHelper extends LayoutAppHelper {
 	}
 	
 	public function inputDate($fieldName, $options = array()) {
+		$this->LayoutAsset->library(['jquery', 'jquery-ui'])
+			->css(['Layout.elements/form_layout/input_date'])
+			->js([
+				'Layout.elements/form_layout/datepicker',
+				'Layout.elements/form_layout/date',
+			]);
+		
 		$options = array_merge(array(
 				'placeholder' => 'mm/dd/yyyy',
 				'default' => null,
@@ -1324,6 +1346,11 @@ class FormLayoutHelper extends LayoutAppHelper {
 	}
 
 	public function inputTime($fieldName, $options = array()) {
+		$this->LayoutAsset
+			->library(['jquery', 'jquery-ui'])
+			->css(['Layout.elements/form_layout/input_date', 'Layout.jquery/jquery.timepicker'])
+			->js('Layout.jquery/jquery.timepicker');
+
 		$options = array_merge(array(
 			'placeholder' => '0:00pm',
 			'default' => null,

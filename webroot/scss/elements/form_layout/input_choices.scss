@@ -1,0 +1,64 @@
+@import "../../utilities/index";
+
+// Input Choices
+// ----------------------
+$input-choice-active-color: 		$btn-primary-bg !default;
+$input-choice-active-text-color: 	white !default;
+
+$input-choice-control-size:			$font-size-base;
+
+@include input-container("input-choices");
+
+.input-choice {
+	&-active {
+		.input-choice-control {
+			background-color: $input-choice-active-color;
+			&, label {
+				color: $input-choice-active-text-color;
+				font-weight: bold;
+			}
+		}
+	}
+	&-hover {
+		.input-choice-control {
+			text-decoration: underline;
+		}
+	}
+	&-control {
+		background-color: $input-container-control-bg-color;
+		padding: 0;
+
+		> label {
+			font-size: $input-choice-control-size;
+			font-weight: normal;
+			margin: 0;
+			display: block;
+			padding: $padding-large-vertical $padding-small-horizontal;
+			line-height: $line-height-computed;
+			&:hover {
+				cursor: pointer;
+			}
+
+			> input {
+				margin-right: 10px;
+			}
+		}
+	}
+	&-content {
+		padding: $padding-large-vertical $padding-large-horizontal;
+		padding: 20px;
+		@extend %overflow;
+	}
+
+	&-input {
+		label {
+			font-size: $font-size-large;
+			font-weight: normal;
+			float: none;
+			display: block;
+			padding: $padding-large-vertical $padding-large-horizontal;
+			padding-left: 30px;
+			margin: 0;
+		}
+	}
+}
