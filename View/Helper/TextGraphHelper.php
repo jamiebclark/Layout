@@ -95,11 +95,11 @@ class TextGraphHelper extends AppHelper {
 		return $this->Html->tag('span', $return, compact('class'));
 	}
 	
-	public function pct($val, $min = 0, $max = 0, $reverse = false) {
+	public function pct($val, $min = 0, $max = 0, $reverse = false, $prec = 2) {
 		$color = $this->colorRange($val, $min, $max, $reverse);
 		return $this->Html->tag(
 			'font', 
-			number_format($this->getPct($val, $min, $max) * 100, 2) . '%',
+			number_format($this->getPct($val, $min, $max) * 100, $prec) . '%',
 			array('style' => 'color: ' . $color)
 		);
 	}
@@ -112,34 +112,66 @@ class TextGraphHelper extends AppHelper {
 			$diff = $currentVal - $startVal;
 			$pct = $diff / $startVal;
 		}
-		return $this->pctFormat($pct, $round);
+		return $this->pctFormat($pct, ['round' => $round, 'showSign' => true]);
 	}
 	
-	public function pctFormat($pct, $settings = array()) {
+/**
+ * Displayes a percentage formatted with HTML elements
+ * 
+ * @param float $pct The percent value
+ * @param array $settings Additional formatting settings
+ *		- round: The amount of decimals to round the displayed value
+ * @return string The formatted HTML 
+ **/
+	public function pctFormat($pctValue, $settings = []) {
 		if (is_numeric($settings)) {
-			$settings = array('round' => $settings);
+			$settings = ['round' => $settings];
 		}
-		$settings = array_merge(array('round' => 2), $settings);
+		$settings = array_merge([
+			'round' => 2,
+			'showSign' => false,
+		], $settings);
 		extract($settings);
-		
-		$class = 'badge';
-		if (!isset($pct)) {
-			$pct = '---';
-			$class = ' badge-empty';
+		$class = 'badge badge-pct pct';
+		$sign = "";
+		$unit = "";
+
+		if (!isset($pctValue)) {
+			$displayedValue = '---';
+			$class = ' pct-empty';
 		} else {
-			$pct = (number_format((float)$pct * 100, $round)) . '%';
-			if ($pct > 0) {
-				$pct = '+' . $pct;
-				$class .= ' badge-success';
-			} else if ($pct < 0) {
-				$pct = $pct;
-				$class .= ' badge-warning';
+			$value = (float)$pctValue * 100;
+			$signValue = abs($value);
+			$unit = '%';
+
+			if ($value > 0) {
+				$sign = '+';
+				$class .= ' pct-positive';
+			} else if ($value < 0) {
+				$sign = '-';
+				$value = abs($value);
+				$class .= ' pct-negative';
+			}
+			$displayedValue = number_format($showSign ? $signValue : $value, $round);
+			if ($displayedValue == 0) {
+				if ($value > 0) {
+					$displayedValue = '<1';
+				} else if ($value < 0) {
+					$displayedValue = '>-1';
+				}
 			}
 		}
-		if (!empty($url)) {
-			$pct = $this->Html->link($pct, $url);
+		$value = '';
+		if ($showSign) {
+			$value = '<span class="pct-sign">' . $sign . '</span>';
 		}
-		return $this->Html->tag('span',  $pct, compact('class'));
+		$value .= '<span class="pct-value">' . $displayedValue . '</span>' .
+			'<span class="pct-unit">' . $unit . '</span>';
+
+		if (!empty($url)) {
+			$value = $this->Html->link($value, $url, ['escape' => false]);
+		}
+		return $this->Html->tag('span',  $value, compact('class'));
 	}
 	
 	public function getPct($val, $min = 0, $max = 0) {
