@@ -61,8 +61,9 @@ class SelectListBehavior extends ModelBehavior {
 		 TODO:
 		 Make this a little more elegant for checking both Tree and SuperTree.
 		 **/
-		if (array_key_exists('Tree', $Model->actsAs) || array_key_exists('SuperTree', $Model->actsAs)) {
-			if ($path = Param::keyValCheck($options, 'path')) {				$list += $this->generatePathList($Model, compact('fields', 'conditions', 'recursive', 'skipRoot'));
+		if ($Model->Behaviors->loaded('Tree') || $Model->Behaviors->loaded('SuperTree')) {
+			if ($path = Param::keyValCheck($options, 'path')) {
+				$list += $this->generatePathList($Model, compact('fields', 'conditions', 'recursive', 'skipRoot'));
 			} else {
 				$list += $Model->generateTreeList($conditions, $keyPath, $valuePath, $spacer, $recursive);
 			}
