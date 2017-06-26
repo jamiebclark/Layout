@@ -194,12 +194,12 @@ class AddressBookHelper extends LayoutAppHelper {
 		return $this->address($result, $options);
 	}
 	
-	function addressLine($result, $options = array()) {
+	public function addressLine($result, $options = array()) {
 		$options['singleLine'] = true;
 		return $this->address($result, $options);
 	}
 	
-	function address($result, $options = array()) {
+	public function address($result, $options = array()) {
 		if (isset($options) && !is_array($options)) {
 			$options = array('lineBreak' => $options);
 		}
@@ -292,10 +292,12 @@ class AddressBookHelper extends LayoutAppHelper {
 		if (in_array(trim($return), array('', 'US'))) {
 			return '';
 		}
-		if (Param::keyValCheck($options, 'map')) {
+		if (Param::keyValCheck($options, 'link')) {
+			$url = $options['link'] === true ? $this->googleMapsUrl($result) : $options['link'];
+			$return = $this->Html->link($return, $url, ['escape' => false, 'target' => '_blank']);
+		} else if (Param::keyValCheck($options, 'map')) {
 			$return .= ' ' . $this->mapLink($result);
 		}
-		
 		return $this->_out($return, $options);
 	}
 	
