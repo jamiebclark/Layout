@@ -3,6 +3,16 @@ $bar-radius: 		.25em;
 
 @import "utilities/index";
 
+
+.badge-pct {
+	&.pct-negative {
+		background-color: $red;
+	}
+	&.pct-positive {
+		background-color: $green;
+	}
+}
+
 .pie-icon {
 	vertical-align: middle;
 	img {
