@@ -1382,6 +1382,7 @@ class FormLayoutHelper extends LayoutAppHelper {
 		
 		//Extract Label
 		$label = !empty($options['label']) ? $options['label'] : false;
+		$text = "";
 		if (false !== $label) {
 			if (!is_array($label)) {
 				$label = array('text' => $label);
