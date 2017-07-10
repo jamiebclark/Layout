@@ -1,7 +1,7 @@
 <?php
 class IconicHelper extends AppHelper {
 	public $name = 'Iconic';
-	public $helpers = array('Html', 'Layout.LayoutAsset');
+	public $helpers = array('Html', 'Layout.AssetLibrary');
 	
 	var $useUnicode = false;
 	
@@ -338,7 +338,7 @@ class IconicHelper extends AppHelper {
 	
 	public function loadAssets($forceLoad = false) {
 		if ($forceLoad || !$this->_loadedAssets) {
-			$this->LayoutAsset->css('Layout.elements/iconic');
+			$this->AssetLibrary->css('Layout.elements/iconic');
 			$this->_loadedAssets = true;
 		}	
 	}
