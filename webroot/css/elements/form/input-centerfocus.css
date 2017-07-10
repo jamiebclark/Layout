@@ -1,0 +1,3 @@
+.input-centerfocus.focused{position:fixed;z-index:1000}.input-centerfocus-bg.focused{background-color:#000;opacity:.5;position:fixed;z-index:999;top:0;left:0;right:0;bottom:0}.input-centerfocus-placeholder.focused{background-color:#ccc}.input-centerfocus-label.focused{position:fixed;z-index:1001;background-color:white;border:1px solid #eee;padding:5px 10px;padding-left:0;padding-right:0;text-align:center}
+
+/*# sourceMappingURL=input-centerfocus.css.map */

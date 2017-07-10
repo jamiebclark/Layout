@@ -1,3 +1,9 @@
+/**
+ * Select Collapse
+ *
+ * @requires jQuery, jQuery-UI
+ **/
+
 function getUuid() {
 	return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function(c) {
 		var r = Math.random()*16|0, v = c == 'x' ? r : (r&0x3|0x8);
@@ -88,7 +94,7 @@ function getUuid() {
 				var pos = $select.offset(),
 					h = $select.outerHeight(),
 					w = $select.outerWidth(),
-					zIndex = $select.zIndex();
+					zIndex = null; //$select.zIndex();
 					
 				$window.show().css({
 					'top' : pos.top + h, 
@@ -378,7 +384,8 @@ function getUuid() {
 			return $(this);
 		});
 	};
-	documentReady() {
+	documentReady(function() {
+		console.log("HI");
 		return $('select.select-collapse').selectCollapse();
-	}
+	});
 })(jQuery);

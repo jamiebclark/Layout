@@ -1,0 +1,142 @@
+@import "../../utilities/index";
+// Select Collapse
+// ---------------------------------
+
+
+.select-collapse-window { 
+	border: 1px solid #aaa;
+	box-shadow: 5px 5px 5px #ccc;
+	background-color: white;
+	position: absolute;	
+	overflow: auto;
+	max-height: 400px;
+	ul, li {
+		margin: 0;
+		padding: 0;
+		list-style-type: none;
+	}
+	a {
+		font-weight: normal;
+		display: block;
+		&:hover {
+			background-color: $color1;
+			color: white;
+			text-decoration: none !important;
+		}
+	}
+	ul {
+		ul {
+			margin-left: 1em;
+			display: none;
+		}
+		&.expanded {
+			display: block;
+		}
+		span.option {
+			display: block;
+			&:hover {
+				background-color: #eee;
+			}
+			&.selected {
+				background-color: $color3;
+				a {
+					color: white;
+				}
+			}
+		}
+		li.no-child {
+			span.option {
+				a {
+					padding-left: 1.25em;
+				}
+			}
+		}
+	}
+}
+
+
+
+.select-collapse-mask {
+	z-index: $zindex-select-collapse-mask;
+	&.expanded {
+		z-index: $zindex-select-collapse-mask + 1;
+	}
+}
+.select-collapse-search {
+	width: 100%;
+	margin: 0;
+}
+.select-collapse-window { 
+	border: 1px solid $window-border-color;
+	//@include box-shadow($shadow);
+	z-index: $zindex-select-collapse;
+	box-shadow: $shadow;
+	background-color: white;
+	position: absolute;	
+	overflow: auto;
+	max-height: 400px;
+	ul {
+		@extend %blanklist;
+	}
+	
+	a {
+		font-size: $select-collapse-size;
+		font-weight: normal;
+		display: block;
+		line-height: $select-collapse-line-height;
+		&:hover {
+			background-color: $select-collapse-background-hover;
+			color: $select-collapse-color-hover;
+			text-decoration: none !important;
+		}
+	}
+	ul {
+		ul {
+			margin-left: $select-collapse-bullet-width;
+			display: none;
+		}
+		&.expanded {
+			display: block;
+		}
+	}
+}
+.select-collapse-option {
+	display: block;
+	position: relative;
+	padding-left: $select-collapse-bullet-width;
+	a {
+		color: $select-collapse-option-color;
+	}
+	.hover, &:hover {
+		background: $select-collapse-option-background-hover;
+	}
+	&.active {
+		background: $select-collapse-background-active;
+		a {
+			color: $select-collapse-color-active;
+		}
+	}
+}
+.select-collapse-link {
+	padding: $select-collapse-option-padding-top $select-collapse-option-padding-left;
+}
+
+.select-collapse-bullet {
+	position: absolute;
+	left: 0;
+	top: 0;
+	width: $select-collapse-bullet-width;
+	height: $select-collapse-option-height;
+
+	padding: 0;
+	margin: 0;
+	
+	text-align: center;
+	background-color: #ccc;
+	font-weight: bold !important;
+	&:hover {
+		background-color: #666;
+		color: white;
+	}
+}
+
