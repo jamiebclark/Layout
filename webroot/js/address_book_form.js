@@ -50,8 +50,9 @@
 			}
 		});
 	};
+
+	$(document).ready(function() {
+		$('.input-name').nameInput();
+	});
 })(jQuery);
 
-$(document).ready(function() {
-	$('.input-name').nameInput();
-});

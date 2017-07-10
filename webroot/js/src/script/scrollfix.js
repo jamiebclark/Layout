@@ -148,7 +148,7 @@
 					checkIsFixed();
 				}).resize(function() {
 					setSizes();
-				}).load(function() {
+				}).on('load', function() {
 					setSizes();
 					checkIsFixed();
 				});

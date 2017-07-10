@@ -388,7 +388,7 @@
 				$('img', $imageHolder).on('load', function() {
 					$("<img/>")
 						.attr('src', $(this).attr('src'))
-						.load(function() {
+						.on('load', function() {
 							naturalWidth = this.width;
 							naturalHeight = this.height;
 						});

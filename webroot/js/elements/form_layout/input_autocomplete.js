@@ -86,7 +86,7 @@
 					} else if (options.action == 'redirect') {
 						window.location.href = redirectUrl ? redirectUrl + value : value;
 					} else {
-						$.error('Action: ' + options.action + ' not found for jQuery.inputAutoComplete');
+						console.error('Action: ' + options.action + ' not found for jQuery.inputAutoComplete');
 					}
 					
 					if (!$.isFunction(options.click)) {
