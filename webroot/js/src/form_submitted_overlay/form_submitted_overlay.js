@@ -136,8 +136,7 @@
 			return $form;
 		});
 	};
-
-	$(document).bind('ready ajaxComplete', function() {
-		$('form.submitted-overlay').formSubmittedOverlay();
+	documentReady(function() {
+		return $('form.submitted-overlay').formSubmittedOverlay();
 	});
 })(jQuery);

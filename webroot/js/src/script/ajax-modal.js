@@ -1,3 +1,4 @@
+
 // AJAX Modal Loading Window 
 (function($) {
 	$.fn.ajaxModal = function() {

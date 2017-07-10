@@ -69,7 +69,7 @@
 			$content.data('hoverId', hoverCount);
 			$content.attr('id', 'hover-content' + hoverCount);
 			
-			$this.bind('remove', function() {
+			$this.on('remove', function() {
 				$('#hover-content' + $this.data('hoverId')).remove();
 			});
 			$hoverContentHolder.append($content);

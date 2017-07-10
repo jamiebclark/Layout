@@ -1,0 +1,32 @@
+@import "../../utilities/index";
+
+@mixin deadline($class, $color, $background) {
+	.#{$class} {
+		color: $color;
+		.calendardate-month {
+			background-color: $color;
+		}
+		.calendardate-day, .calendardate-year {
+			color: $color;
+		}
+	}
+	.media.#{$class} {
+		@if ($background == 'transparent') {
+			background: $background;
+		} @else {
+			@include gradient-vertical(#fff, $background);
+		}
+	}
+}
+
+.deadline {
+	font-weight: normal;
+}
+
+@include deadline(deadline-complete, $deadline-complete, $deadline-complete-background);
+@include deadline(deadline-upcoming, $deadline-upcoming, $deadline-upcoming-background);
+@include deadline(deadline-past, $deadline-past, $deadline-past-background);
+@include deadline(deadline-far, $deadline-far, $deadline-far-background);
+.deadline-complete {
+	text-decoration: line-through;
+}

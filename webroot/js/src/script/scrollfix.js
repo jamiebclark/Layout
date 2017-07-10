@@ -17,6 +17,8 @@
 				'width': w + "px"
 			};
 		
+
+		
 		function setStyles() {
 			if ($('body').outerWidth() < 500) {
 				styles.position = 'static';
@@ -307,14 +309,14 @@
 				setDimensions();
 
 				$(window)
-					.scroll(function() {
+					.on('scroll', function() {
 						setScrollClass($(window).scrollTop());
 						setDimensionsInterval();	
 					})
-					.resize(function() {
+					.on('resize', function() {
 						setDimensionsInterval();
 					})
-					.load(function() {
+					.on('load', function() {
 						setDimensions();
 					});
 			}

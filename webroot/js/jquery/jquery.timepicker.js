@@ -653,8 +653,8 @@
 		}
 
 		methods.hide();
-		$(document).unbind('.ui-timepicker');
-		$(window).unbind('.ui-timepicker');
+		$(document).off('.ui-timepicker');
+		$(window).off('.ui-timepicker');
 	}
 
 	function _hideKeyboard(self)

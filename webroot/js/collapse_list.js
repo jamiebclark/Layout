@@ -54,12 +54,11 @@
 				}
 				$collapseList.dequeue(qName);
 			}
-
+			
 			function scrollToSelected() {
 				var scrT = $selected.offset().top - 200;
 				$('html,body').scrollTop(scrT);
 			}
-			
 			function updateRootList(hide) {
 				$rootList.find('> li.collapse-list-item').each(function() {
 					if ($(this).find('> ul.collapse-list-list').length) {
@@ -67,7 +66,6 @@
 					}
 				});
 			}
-			
 			function updateList($list, hide, sub, qName) {
 				if (!$list) {
 					var $list = $rootList;
@@ -203,7 +201,7 @@
 			});
 			
 			if (!$collapseList.data('init')) {
-				$collapseList.bind('update', function() {
+				$collapseList.on('update', function() {
 					updateList($rootList, true);
 				});
 				selectListItem(hash);

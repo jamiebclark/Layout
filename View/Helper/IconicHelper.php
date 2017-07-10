@@ -1,7 +1,7 @@
 <?php
 class IconicHelper extends AppHelper {
-	var $name = 'Iconic';
-	var $helpers = array('Html');
+	public $name = 'Iconic';
+	public $helpers = array('Html', 'Layout.LayoutAsset');
 	
 	var $useUnicode = false;
 	
@@ -336,6 +336,13 @@ class IconicHelper extends AppHelper {
 		'sun_fill' => '2600'
 	);
 	
+	public function loadAssets($forceLoad = false) {
+		if ($forceLoad || !$this->_loadedAssets) {
+			$this->LayoutAsset->css('Layout.elements/iconic');
+			$this->_loadedAssets = true;
+		}	
+	}
+
 	public function menu($list = array(), $options = array()) {
 		$options = array_merge(array(
 			'tag' => 'nav',
@@ -392,6 +399,7 @@ class IconicHelper extends AppHelper {
 	}
 	
 	public function getCode($title) {
+		$this->loadAssets();
 		if (!empty($this->codes[$title])) {
 			return '&#x' . $this->codes[$title];
 		} else {
@@ -400,6 +408,7 @@ class IconicHelper extends AppHelper {
 	}
 	
 	public function getChar($title) {
+		$this->loadAssets();
 		return !empty($this->chars[$title]) ? $this->chars[$title] : false;
 	}
 	

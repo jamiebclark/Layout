@@ -1,0 +1,155 @@
+@import "../../utilities/index";
+
+// Calendar Date
+// -----------------------------------
+$calendardate-border-color:				#ccc !default;
+
+$calendardate-month-size:				30px !default;
+$calendardate-month-small-size:			20px !default;
+$calendardate-month-background:			$color1 !default;
+$calendardate-month-color:				white !default;
+$calendardate-month-height:				40px !default;
+
+$calendardate-day-size:					80px !default;
+$calendardate-day-small-size:			40px !default;
+$calendardate-day-background1:			#fff;	
+$calendardate-day-background2:			#eee;
+$calendardate-day-color:				inherit !default;
+$calendardate-day-height:				90px !default;
+
+$calendardate-year-size:				20px !default;
+$calendardate-year-background:			transparent !default;
+$calendardate-year-color:				inherit !default;
+$calendardate-year-height:				30px !default;
+
+$calendardate-width:					$calendardate-month-height + $calendardate-day-height;
+
+
+.calendardate-wrap {
+	clear: both;
+	position: relative;
+	float: left;
+	left: 50%;
+	.calendardate {
+		position: relative;
+		float: left;
+		left: -50%;
+	}
+}
+
+.calendardate-month, .calendardate-day, .calendardate-year {
+	text-align: center;
+	font-weight: 700;
+	float: left;
+	width: 100%;
+	clear: both;
+}
+.calendardate-month, .calendardate-day {
+	border: 1px solid $calendardate-border-color;
+}
+.calendardate-month {
+	background-color: $calendardate-month-background;
+	border-bottom: 0;
+	color: $calendardate-month-color;
+	line-height: $calendardate-month-height;
+	font-size: $calendardate-month-size;
+	&.multi {
+		font-size: $calendardate-month-small-size;
+	}
+}
+.calendardate-day {
+	@include gradient-vertical($calendardate-day-background1, $calendardate-day-background2);
+	border-top: 0;
+	line-height: $calendardate-day-height;
+	font-size: $calendardate-day-size;
+	&.multi {
+		font-size: $calendardate-day-small-size;
+	}
+}
+.calendardate-year {
+	color: $calendardate-year-color;
+	font-size: $calendardate-year-size;
+	line-height: $calendardate-year-height;
+	background: $calendardate-year-background;
+}
+
+.calendardate {
+	float: left;
+	margin: $line-height-computed 0;
+	width: $calendardate-width;
+	max-width: 100%;
+	
+	border: 0 !important;
+	border-radius: $border-radius-base;
+	
+	span {
+		float: left;
+		display: block;
+		text-align: center;
+		width: 50%;
+	}
+	&.pull-right {
+		float: right;
+	}
+	&.small {
+		width: 60px;
+		.calendardate-month {
+			line-height: 20px;
+			font-size: 14px;
+		}
+		.calendardate-day {
+			line-height: 40px;
+			font-size: 25px;
+			.multi {
+				font-size: 20px;
+			}
+		}
+		.calendardate-year {
+			font-size: 12px;
+			line-height: 20px;
+		}
+	}
+	&.tiny {
+		width: 30px;
+		.calendardate-month {
+			line-height: 12px;
+			font-size: 11px;
+		}
+		.calendardate-day {
+			line-height: 24px;
+			font-size: 18px;
+			.multi {
+				font-size: 14px;
+			}
+		}
+		.calendardate-year {
+			font-size: 10px;
+			line-height: 12px;
+		}
+	}
+	&.grey {
+		&, .calendardate-month, .calendardate-day, .calendardate-year {
+			border-color: $calendar-grey;
+			color: $calendar-grey;
+		}
+		.calendardate-month {
+			background-color: $calendar-grey;
+			color: white;
+		}
+		.calendardate-day {
+			@include gradient-vertical(#fff,#fff);
+
+		}
+	}
+	&.media-object {
+		margin-top: 0;
+		margin-bottom: 0;
+	}
+}
+a:hover {
+	.calendardate {
+		.calendardate-day, .calendardate-month {
+			border-color: $date-link-hover-color;
+		}
+	}
+}

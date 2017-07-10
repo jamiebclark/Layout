@@ -31,7 +31,7 @@
 			if (!$toggle.data('layout-toggle-init')) {
 				$control.change(function() {
 					toggleCheck();
-				}).bind('layout-enabled', function() {
+				}).on('layout-enabled', function() {
 					toggleCheck();
 				});
 				toggleCheck();
