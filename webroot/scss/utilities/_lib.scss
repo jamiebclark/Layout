@@ -2,6 +2,8 @@
 //@import "bootstrap2.3/bootstrap/variables";
 //@import "bootstrap2.3/bootstrap/mixins";
 
-//Bootstrap 3.X
-@import "lib/bootstrap3.0/bootstrap/variables";
-@import "lib/bootstrap3.0/bootstrap/mixins";
+//@import "lib/bootstrap/import";
+//@import "lib/font-awesome/import";"
+
+@import "../../../../../../node_modules/bootstrap-sass/assets/stylesheets/bootstrap/variables";
+@import "../../../../../../node_modules/bootstrap-sass/assets/stylesheets/bootstrap/mixins";
