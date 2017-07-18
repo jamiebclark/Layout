@@ -108,6 +108,7 @@ li.media {
 }
 .media-wrap, .media {
 	display: block;
+
 	position: relative;
 	max-width: $media-link-width + 2 * $media-link-padding-horizontal;
 	.media-actionmenu {
