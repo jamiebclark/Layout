@@ -11,6 +11,7 @@ class LayoutHelper extends LayoutAppHelper {
 		'Html', 
 		'Form',
 		'Paginator', 
+		'Layout.AssetLibrary',		
 		'Layout.Crumbs',
 		'Layout.Iconic',
 		'Layout.Calendar', 
@@ -67,6 +68,10 @@ class LayoutHelper extends LayoutAppHelper {
 	}
 
 	public function toggle($content, $offContent = null, $label, $options = array()) {
+		$this->AssetLibrary
+			->css('Layout.elements/layout/layout-toggle')
+			->js('Layout.elements/layout/layout-toggle');
+
 		$options = array_merge(array(
 			'checked' => null,
 			'controlPosition' => 'top',
@@ -82,7 +87,7 @@ class LayoutHelper extends LayoutAppHelper {
 		}		
 		//Toggle Off-Content
 		if (!empty($offContent)) {
-			$out .= $this->_toggleContent($offContent, !$checked, 'layout-toggle-off');
+			$out .= $this->_toggleContent($offContent, !$checked, 'layout-toggle--off');
 		}
 
 		if ($controlPosition == 'bottom') {
@@ -103,7 +108,7 @@ class LayoutHelper extends LayoutAppHelper {
 		), $options);
 		extract($options);
 		
-		$labelClass = 'control-label';
+		$labelClass = 'layout-toggle__label';
 		if (!empty($controlClass)) {
 			$labelClass .= ' ' . $controlClass;
 		}
@@ -111,15 +116,16 @@ class LayoutHelper extends LayoutAppHelper {
 		$toggleInput = $this->Form->input($name, array(
 			'type' => 'checkbox',
 			'label' => array('text' => $label, 'class' => $labelClass),
-			'class' => false,
+			'class' => 'layout-toggle__checkbox',
 			'div' => false,
+			'checkboxDiv' => false,
 			'wrapInput' => false,
 		) + compact('checked'));
-		return $this->Html->div('layout-toggle-control', $toggleInput);
+		return $this->Html->div('checkbox layout-toggle__control', $toggleInput);
 	}
 	
 	private function _toggleContent($content, $checked, $addClass = null) {
-		$class = 'layout-toggle-content';
+		$class = 'layout-toggle__content';
 		if (!empty($addClass)) {
 			$class .= ' ' . $addClass;
 		}
