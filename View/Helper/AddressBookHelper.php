@@ -5,96 +5,40 @@
  **/ 
 App::uses('LayoutAppHelper', 'Layout.View/Helper');
 class AddressBookHelper extends LayoutAppHelper {
-	var $name = 'AddressBook';
+	public $name = 'AddressBook';
 
-	/*
-	function contactItemList($result, $options = array()) {
-		$options = array_merge(array(
-			'fields' => array('address', 'email', 'phone', 'website'),
-		), $options);
-		$list = array();
-		$definition = Param::keyValCheck($options, 'definition', true);
-		foreach ($options['fields'] as $key => $col) {
-			if (!is_numeric($key)) {
-				$params = $col;
-				$col = $key;
-			} else {
-				$params = null;
-			}
-			
-			if ($col == 'address' || $col == 'name') {
-				$val = $result;
-			} else {
-				$val = isset($result[$col]) ? $result[$col] : null;
-			}
-			
-			if (empty($val)) {
-				continue;
-			}
-			
-			if (!empty($params) && !is_array($params)) {
-				$format = $params;
-			} else {
-				$format = Param::keyCheck($params, 'format', true);
-			}
-			if (empty($format)) {
-				$format = $col;
-			}
-			if (method_exists($this, $format)) {
-				$fOptions = Param::keyCheck($params, 'options');
-				$val = call_user_func(array($this, $format), $val, $fOptions);
-			}
-			if(empty($val)) {
-				continue;
-			}
-			$label = Param::keyCheck($params, 'label', false, Inflector::humanize($col));
-			$list[$label] = $val;
-		}
-		if ($dListOptions = Param::keyValCheck($options, 'definitionList', true)) {
-			if (!is_array($dListOptions)) {
-				$dListOptions = null;
-			}
-			return $this->Layout->definitionList($list, $dListOptions);
-		} else if ($infoTableOptions = Param::keyValCheck($options, 'infoTable', true)) {
-			if (!is_array($infoTableOptions)) {
-				$infoTableOptions = array();
-			}
-			return $this->Layout->infoTable($list, $infoTableOptions);
-		} else {
-			return $list;
-		}
-	}
-	function date($dateStr = null) {
-		return $this->Calendar->niceShort($dateStr);
-	}
-	
-	function title($result, $options = array()) {
-		$title = !empty($result['title']) ? $result['title'] : '<em>blank</em>';
-		$class = $tag = null;
-		if (!empty($options['div'])) {
-			list($tag, $class) = array('div', $options['div']);
-		}
-		if (!empty($options['tag'])) {
-			$tag = $options['tag'];
-		}
-		if (!empty($options['class'])) {
-			$class = $options['class'];
-		}
-		if (!empty($tag)) {
-			$title = $this->Html->tag($tag, $title, compact('class'));
-		}
-		return $title;
-	}
-	*/
-	function resultTable($result, $fields, $options = array()) {
+/**
+ * Outputs a result as a table
+ *
+ * @param array $result A map result
+ * @param array $fields An array of fields to look for in the result
+ * @param array $options Additional options to customize table
+ * @return string A table of results
+ **/
+	public function resultTable($result, $fields, $options = array()) {
 		return $this->Layout->infoTable($this->resultArray($result, $fields, $options));
 	}
 	
-	function resultList($result, $fields, $options = array()) {
+/**
+ * Outputs a result as definition list
+ *
+ * @param array $result A model result
+ * @param array $fields An array of fields to look for in the result
+ * @param array $options Additional options to customize table
+ * @return string A definition list of results
+ **/
+ 	public function resultList($result, $fields, $options = array()) {
 		return $this->Layout->definitionList($this->resultArray($result, $fields, $options));
 	}
-	
-	function resultArray($result, $fields, $options = array()) {
+/**
+ * Converts a model result into an array of contact elements
+ *	
+ * @param array $result A model result
+ * @param array $fields An array of fields to look for in the result
+ * @param array $options Additional options to customize table
+ * @return array An array of contact elements
+ **/
+	public function resultArray($result, $fields, $options = array()) {
 		$resultFunctions = array('name', 'address', 'addressLine', 'cityState');
 		$list = array();
 		foreach ($fields as $field => $config) {
@@ -134,7 +78,14 @@ class AddressBookHelper extends LayoutAppHelper {
 		return $list;
 	}
 	
-	function name($result, $options = array()) {
+/**
+ * Outputs a contact name
+ *
+ * @param array $result A model result
+ * @param array $options Additional options (not currently used)
+ * @return string The formatted name
+ **/
+	public function name($result, $options = array()) {
 		if (!empty($result['full_name'])) {
 			return $result['full_name'];
 		} else if (isset($result['name'])) {
@@ -143,14 +94,30 @@ class AddressBookHelper extends LayoutAppHelper {
 			return $result['first_name'] . ' ' . $result['last_name'];
 		}
 	}
-	function phone($phoneStr = null) {
+	
+/**
+ * Outputs a phone number in a formatted string
+ * 
+ * @param string $phoneStr The phone number string
+ * @return The updated phone number
+ **/
+	public function phone($phoneStr = null) {
 		$reg = '/^[1]{0,1}[^0-9]*([0-9]{3})[^0-9]*([0-9]{3})[^0-9]*([0-9]{4})[\s]*(.*?)$/';
 		$phoneStr = trim(preg_replace($reg, '($1) $2-$3 $4', $phoneStr, -1, $count));
 		return $phoneStr;
 	}
 
 	
-	function email($email, $options = array()) {
+/**
+ * Outputs a formatted email string
+ *
+ * @param string $email The given email address
+ * @param array $options Additional options
+ * 	- link: Whether to display the email as a link
+ * 	- protect: //Hides a certain percentage of the username with asterisks
+ * @return string The formatted email
+ **/
+	public function email($email, $options = array()) {
 		$options = array_merge(array(
 			'link' => true,			//Link the email
 			'protect' => false,		//Hides a certain percentage of the username with asterisks
@@ -178,15 +145,28 @@ class AddressBookHelper extends LayoutAppHelper {
 		}
 		return $out;
 	}
-	
-	function website($url, $options = array()) {
+
+/**
+ * Outputs a formatted website
+ * 
+ * @param string $url The url of the website
+ * @param array $options Additional options found in the Html link method
+ * @return string Formatted url;
+ **/
+	public function website($url, $options = array()) {
 		$host = Url::host($url);
 		$url = Url::validate($url);
-		
 		return $this->Html->link('[' . $host . ']', $url, $options);
 	}
 	
-	function location($result, $options = array()) {
+/**
+ * Outputs a formatting address location name
+ *
+ * @param array $result A model result
+ * @param array $options Additional options
+ * @return string The formatted location name
+ **/
+	public function location($result, $options = array()) {
 		if (!empty($options['beforeField']) && !is_array($options['beforeField'])) {
 			$options['beforeField'] = array($options['beforeField']);
 		}
@@ -194,11 +174,42 @@ class AddressBookHelper extends LayoutAppHelper {
 		return $this->address($result, $options);
 	}
 	
+/**
+ * Outputs a full address formatted on a single line
+ *
+ * @param array $result A model result
+ * @param array $options Additional options for the address method
+ * @return string The formatted address line
+ **/
 	public function addressLine($result, $options = array()) {
 		$options['singleLine'] = true;
 		return $this->address($result, $options);
 	}
-	
+
+/**
+ * Returns an address formatted as a URL-encoded string
+ *
+ * @param array $result A model result
+ * @param array $options Additional options
+ * @return string|bool A URL-encoded string of the address or false if invalid address
+ **/
+	public function addressUrlEncode($result, $options = []) {
+		$options['lineBreak'] = ', ';
+		$str = $this->address($result, $options);
+		if (in_array(trim($str), array('', 'US'))) {
+			return false;
+		}
+		return trim(urlencode(strip_tags($str)));		
+	}
+
+/**
+ * Outputs a full address
+ *
+ * @param array $result A model result
+ * @param array $options Additional options
+ * 	- lineBreak: The line break between address lines
+ * @return string The formatted name
+ **/
 	public function address($result, $options = array()) {
 		if (isset($options) && !is_array($options)) {
 			$options = array('lineBreak' => $options);
@@ -211,6 +222,7 @@ class AddressBookHelper extends LayoutAppHelper {
 			$options['lineBreak'] = ', ';
 		}
 		
+		// The fields associated with the address
 		$lines = array(
 			'addline1',
 			'addline2',
@@ -301,7 +313,14 @@ class AddressBookHelper extends LayoutAppHelper {
 		return $this->_out($return, $options);
 	}
 	
-	function cityState($result, $options = array()) {
+/**
+ * Outputs a city and state combination
+ *
+ * @param array $result A model result
+ * @param array $options Additional options
+ * @return string The formatted city/state
+ **/
+	public function cityState($result, $options = array()) {
 		$cityState = '';
 		if (!empty($result['city'])) {
 			$cityState .= $result['city'];
@@ -321,7 +340,14 @@ class AddressBookHelper extends LayoutAppHelper {
 		return $this->_out($cityState, $options);
 	}
 	
-	function mapLink($result, $options = array()) {
+/**
+ * Outputs a link to a map location
+ *
+ * @param array $result A model result
+ * @param array $options Additional google maps options
+ * @return string The formatted link
+ **/
+	public function mapLink($result, $options = array()) {
 		$alt = 'View in Google Maps';
 		$url = $this->googleMapsUrl($result, $options);
 		if (!empty($url)) {
@@ -339,140 +365,30 @@ class AddressBookHelper extends LayoutAppHelper {
 		}
 	}
 	
-	/*
-	function contactMethodDisplays($result, $options = array()) {
-		$return = array();
-		$contactInfo = !empty($result['Contact']) ? $result['Contact'] : $result;
-		
-		$options = array_merge(array(
-			'url' => array(
-				'controller' => 'contact',
-				'action' => 'view',
-				$contactInfo['id'],
-			),
-		), $options);
-		extract($options);
-		
-		foreach ($this->contactMethods as $model) {
-			$val = '';
-			if (!empty($result[$model])) {
-				$modelInfo = $result[$model];
-			} else if (!empty($result['Contact'][$model])) {
-				$modelInfo = $result['Contact'][$model];
-			} else {
-				$modelInfo = array();
-			}
-			
-			if ($modelCount = count($modelInfo)) {
-				$val = $this->contactMethodOutput($model, $modelInfo[0]);
-				if ($modelCount > 1) {
-					$hover = array();
-					for ($i = 0; $i < $modelCount; $i++) {
-						$hover[$modelInfo[$i]['label']] = $this->contactMethodOutput($model, $modelInfo[$i]);
-					}
-					$val = $this->Layout->hover(
-						$val . '&nbsp;' . $this->Html->link(
-							'(+'.($modelCount-1).')', 
-							$url, 
-							array('class' => 'secondary')
-						),
-						$this->Layout->definitionList($hover)
-					);
-				}
-			}
-			$return[$model] = $val;
+/**
+ * Outputs a link to Google Maps
+ *
+ * @param array $result A model result
+ * @param array $options Additional options
+ * @return string A url back to Google Maps
+ ***/
+	public function googleMapsUrl($result, $options = array()) {
+		if ($q = $this->addressUrlEncode($result, $options)) {
+			return 'http://maps.google.com/?q=' . $q;
 		}
-		return $return;
+		return false;
 	}
 	
-	function contactMethodOutput($model, $result) {
-		if ($model == 'ContactAddress') {
-			return $this->addressLine($result);
-		} else if ($model == 'ContactEmail') {
-			return $this->email($result['value']);
-		} else if ($model == 'ContactPhone') {
-			return $this->phone($result['value']);
-		} else {
-			return '';
-		}
-	}
-	*/
-	
-	function googleMapsUrl($result, $options = array()) {
-		$options['lineBreak'] = ', ';
-		$str = $this->address($result, $options);
-		if (in_array(trim($str), array('', 'US'))) {
-			return false;
-		}
-		$url = 'http://maps.google.com/?q=' . trim(urlencode(strip_tags($str)));
-		return $url;
-	}
-	
-	/*
-	function inputFormatTitle($name, $defaultValue = '', $options = array()) {
-		$return = '';
-		$nameParts = explode('.', $name);
-		$field = array_pop($nameParts);
-		$model = !empty($nameParts) ? array_shift($nameParts) : 'Contact';
-		$count = !empty($nameParts) ? array_pop($nameParts) : null;
-		
-		if (is_array($defaultValue)) {
-			$defaultValues = $defaultValue;
-			$defaultValue = '';
-			if (isset($count)) {
-				if (!empty($defaultValues[$model][$count][$field])) {
-					$defaultValue = $defaultValues[$model][$count][$field];
-				}
-			} else if (!empty($defaultValues[$model][$field])) {
-				$defaultValue = $defaultValues[$model][$field];
-			}
-		}
-		
-		$prefix = "$model.";
-		if (isset($count)) {
-			$prefix .= "$count.";
-		}
-		
-		$fieldKey = $field;
-		if ($model != 'Contact') {
-			$fieldKey = strtolower($model) . '_' . $fieldKey;
-		}	
-
-		$class = 'update_default_' . $field;
-		
-		$useDefault = false;
-		if (!empty($defaultValue) || !$this->Html->value("$prefix$field")) {
-			$useDefault = !$this->Html->value("$prefix$field") || $this->Html->value("$prefix$field") == $defaultValue;
-		}
-		
-		$return .= $this->Html->div('format-title-field');
-		$return .= $this->Form->hidden("$prefix{$field}_default", array('value' => $defaultValue) + compact('class'));
-		
-		$name = 'use_default_' . $field;
-		$id = $prefix . InflectorPlus::modelize($name);
-		
-		$after = $this->Html->div('default-input');
-		$after .= $this->Html->div('default-checkbox');
-		$after .= $this->Form->input("$prefix$name", array(
-			'type' => 'checkbox',
-			'label' => false,
-			'div' => false,
-			'id' => $id,
-			'checked' => $useDefault,
-		));
-		$after .= $this->Html->tag('label', $defaultValue, compact('class') + array('for' => $id));
-		$after .= "</div>\n";
-		$after .= "</div>\n";
-		
-		$return .= $this->Form->input("$prefix$field", array(
-			'between' => '<div class="format-title-input-holder"><div class="user-input">',
-			'after' => '</div>' . $after . '</div>',
-		));
-		$return .= "</div>\n";
-		return $return;
-	}
-	*/
-	
+/**
+ * Outputs text with the option to add HTML formatting
+ *
+ * @param string $output The output to display
+ * @param array $options Additional options to format the output
+ *	- div: A div class to wrap the text
+ *	- tag: An additional HTML tag to wrap the text
+ *	- class: A class to use with the HTML tag
+ * @return string The formatted output
+ **/
 	private function _out($output, $options = array()) {
 		if (!empty($options['div'])) {
 			$options['tag'] = 'div';
@@ -485,4 +401,5 @@ class AddressBookHelper extends LayoutAppHelper {
 		}
 		return $output;
 	}
+
 }
