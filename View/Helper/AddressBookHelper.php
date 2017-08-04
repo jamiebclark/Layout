@@ -404,7 +404,7 @@ class AddressBookHelper extends LayoutAppHelper {
 		if (in_array(trim($str), array('', 'US'))) {
 			return false;
 		}
-		$url = 'http://maps.google.com/?q=' . urlencode(strip_tags($str));
+		$url = 'http://maps.google.com/?q=' . trim(urlencode(strip_tags($str)));
 		return $url;
 	}
 	
