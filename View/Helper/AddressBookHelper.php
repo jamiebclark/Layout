@@ -4,6 +4,8 @@
  *
  **/ 
 App::uses('LayoutAppHelper', 'Layout.View/Helper');
+App::uses('Inflector', 'Utility');
+
 class AddressBookHelper extends LayoutAppHelper {
 	public $name = 'AddressBook';
 
