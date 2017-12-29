@@ -6,7 +6,6 @@
 				duration: slideDuration,
 				easing: slideEasing,
 				complete: function() {
-					console.log("DONE!");
 					$(window).resize();
 				}
 			};
@@ -37,6 +36,12 @@
 							.attr('value', $key.val())
 							.appendTo($item);
 
+						$button.insertBefore($('<input>')
+							.attr('name', name)
+							.attr('type', 'hidden')
+							.attr('value', '0')
+						);
+
 						$button
 							.wrap('<label class="element-input-list-item-remove-label btn btn-default"></label>')
 							.after('<i class="fa fa-times"></i>')
@@ -61,7 +66,7 @@
 
 			function removeItem($item) {
 				$item.addClass('removed');
-				var $inner = $('.element-input-list-item-inner', $item).slideUp(slideOptions);				
+				var $inner = $('.element-input-list-item-inner', $item).slideUp(slideOptions);
 				disableInputs($inner);
 			}
 
@@ -143,9 +148,9 @@
 			}
 		});
 	}
-	
+
 	function init($) {
-		return $('.element-input-list').elementInputList();		
+		return $('.element-input-list').elementInputList();
 	}
 
 	$(document).ready(init).on('ajaxComplete', init);
