@@ -45,12 +45,6 @@
 						.appendTo($listItem)
 						.wrap($('<div></div>', {'class' : removeClass}))
 						.wrap($('<label></label>', {'html': '&times;'}));
-
-					$checkbox.before($('<input/>', {
-						'type': 'hidden',
-						'name': removeName,
-						'value': '0'
-					}));
 				}
 				$checkbox.change(function() {
 					if ($(this).is(':checked')) {
