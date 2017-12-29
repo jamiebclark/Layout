@@ -36,12 +36,6 @@
 							.attr('value', $key.val())
 							.appendTo($item);
 
-						$button.insertBefore($('<input>')
-							.attr('name', name)
-							.attr('type', 'hidden')
-							.attr('value', '0')
-						);
-
 						$button
 							.wrap('<label class="element-input-list-item-remove-label btn btn-default"></label>')
 							.after('<i class="fa fa-times"></i>')
