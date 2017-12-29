@@ -23,11 +23,11 @@
 					removeCommand = 'remove',
 					$checkbox = $listItem.find('.' + removeClass + ' input[type=checkbox]'),
 					$content = $listItem.children(':not(.' + removeClass + ')');
-				
+
 				if ($list.data('input-list-remove-command')) {
 					removeCommand = $list.data('input-list-remove-command');
 				}
-				
+
 				if (!$checkbox.length) {
 					$listItem.wrapInner('<div class="input-list-item-inner"></div>');
 					var removeName = $id.attr('name').substr(0, $id.data('id-input-after-key-index')) + "[" + removeCommand + "]";
@@ -45,6 +45,12 @@
 						.appendTo($listItem)
 						.wrap($('<div></div>', {'class' : removeClass}))
 						.wrap($('<label></label>', {'html': '&times;'}));
+
+					$checkbox.insertBefore($('<input/>', {
+						'type': 'hidden',
+						'name': removeName,
+						'value': '0'
+					}));
 				}
 				$checkbox.change(function() {
 					if ($(this).is(':checked')) {
@@ -67,7 +73,7 @@
 				$(this).addClass('row');
 				return $(this);
 			});
-			
+
 			$list.on('cloned', function (e, $cloned) {
 				addRemoveBox($cloned);
 				$listItems = $('> .input-list-inner > .input-list-item', $list);
@@ -75,12 +81,12 @@
 			if (!$addLink || !$addLink.length) {
 				$addLink = $('<a class="btn btn-default btn-sm" href="#" tabindex="-1">Add</a>').appendTo($control);
 			}
-			
+
 			$addLink.click(function(e) {
 				e.preventDefault();
 				$list.trigger('add');
 			});
-					
+
 			$listItems.filter(':visible').each(function() {
 				addRemoveBox($(this));
 				return $(this);
@@ -158,8 +164,8 @@
 		if (typeof forward === 'undefined') {
 			var forward = true;
 		}
-		var i = startIndex, 
-			k = '', 
+		var i = startIndex,
+			k = '',
 			endIndex,
 			len = name.length,
 			success = true;
@@ -194,12 +200,12 @@
 			startIndex = i;
 		}
 		if (success) {
-			return {index: startIndex, key: k, endIndex: endIndex};	
+			return {index: startIndex, key: k, endIndex: endIndex};
 		} else {
 			return false;
 		}
 	}
-	
+
 	// Finds all inputs that are valid ID inputs
 	$.fn.getIdInputs = function() {
 		var $this = $(this),
@@ -223,7 +229,7 @@
 				return $(this);
 			});
 		$ids.data('id-inputs-key-index', keyIndex);
-		return $ids;	
+		return $ids;
 	};
 
 	// Clones an element, incrementing any numeric indexes
@@ -240,10 +246,10 @@
 			console.log('Key not found');
 			//return false;
 		}
-		
+
 		var	$id = $ids.last(),
 			name = $id.attr('name');
-			
+
 		if ($id.length) {
 			var $entry = $(this).last();
 			var $cloned = $entry.clone();
@@ -252,16 +258,16 @@
 			$('input', $cloned).removeClass('hasDatepicker');
 			$('input[name*="[id]"]', $cloned).val('').trigger('reset');
 			$('.clone-numbered-index', $cloned).html((newIdKey + 1));	//Re-numbers from 0 index
-			
+
 			$cloned.find(':input').each(function() {
 				return $(this).renumberInput(newIdKey, keyIndex).removeAttr('disabled');//.removeAttr('checked');
 			});
 			$cloned.insertAfter($entry);
-			
+
 			$(':checkbox,:radio', $cloned).each(function() {
 				if (typeof($(this).data('clone-numbered-default')) !== 'undefined' && $(this).data('clone-numbered-default') == $(this).val()) {
 					$(this).prop('checked', true);
-				}				
+				}
 			});
 			$('.no-clone', $cloned).remove();
 			$(':input', $cloned).not(':hidden,:checkbox,:radio,:submit,:reset').each(function() {
@@ -274,7 +280,7 @@
 				$(this).val(v);
 				$(this).trigger('reset');
 			});
-			
+
 			$cloned
 				.slideDown()
 				.data('added', true)
@@ -282,7 +288,7 @@
 
 			$cloned.find(':input:visible').first().focus();
 			$cloned.data('id-key', newIdKey);
-			
+
 			$parent.trigger('cloned', [$cloned]);
 			$entry.trigger('entry-cloned');
 			//formLayoutInit();
