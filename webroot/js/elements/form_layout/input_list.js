@@ -46,7 +46,7 @@
 						.wrap($('<div></div>', {'class' : removeClass}))
 						.wrap($('<label></label>', {'html': '&times;'}));
 
-					$checkbox.insertBefore($('<input/>', {
+					$checkbox.before($('<input/>', {
 						'type': 'hidden',
 						'name': removeName,
 						'value': '0'
